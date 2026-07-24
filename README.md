@@ -64,6 +64,8 @@ modpack desde `descargas.servidorcobblemon.es`, autenticación contra los servid
 cuando se usa una cuenta de pago, y comprobación de actualizaciones en GitHub. No recopila datos
 personales ni realiza seguimiento de los usuarios.
 
+Detalle completo en la [política de privacidad](PRIVACY.md).
+
 ## Licencia
 
 [MIT](LICENSE.txt) · Fork de Helios Launcher, © 2017-2026 Daniel D. Scalzi.
