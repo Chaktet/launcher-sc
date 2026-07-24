@@ -9,12 +9,15 @@
                     <button class="settingsNavItem" rSc="settingsTabAccount" id="settingsNavAccount" selected><%- lang('settings.navAccount') %></button>
                     <button class="settingsNavItem" rSc="settingsTabMinecraft"><%- lang('settings.navMinecraft') %></button>
                     <button class="settingsNavItem" rSc="settingsTabMods"><%- lang('settings.navMods') %></button>
+                    <button class="settingsNavItem" rSc="settingsTabResourcepacks"><%- lang('settings.navResourcepacks') %></button>
+                    <button class="settingsNavItem" rSc="settingsTabShaders"><%- lang('settings.navShaders') %></button>
                     <button class="settingsNavItem" rSc="settingsTabJava"><%- lang('settings.navJava') %></button>
                     <button class="settingsNavItem" rSc="settingsTabLauncher"><%- lang('settings.navLauncher') %></button>
                     <div class="settingsNavSpacer"></div>
                     <button class="settingsNavItem" rSc="settingsTabAbout"><%- lang('settings.navAbout') %></button>
                     <button class="settingsNavItem" rSc="settingsTabUpdate" id="settingsNavUpdate"><%- lang('settings.navUpdates') %></button>
                     <div id="settingsNavContentBottom">
+                        <button id="settingsNavViewLogs"><%- lang('settings.navViewLogs') %></button>
                         <div class="settingsNavDivider"></div>
                         <button id="settingsNavDone"><%- lang('settings.navDone') %></button>
                     </div>
@@ -152,19 +155,43 @@
                         
                     </div>
                 </div>
-                <div id="settingsShadersContainer">
-                    <div class="settingsModsHeader"><%- lang('settings.shaderpacks') %></div>
-                    <div id="settingsShaderpackDesc"><%- lang('settings.shaderpackDesc') %></div>
-                    <div id="settingsShaderpackWrapper">
-                        <button id="settingsShaderpackButton"> + </button>
-                        <div class="settingsSelectContainer">
-                            <div class="settingsSelectSelected" id="settingsShadersSelected"><%- lang('settings.selectShaderpack') %></div>
-                            <div class="settingsSelectOptions" id="settingsShadersOptions" hidden>
+                <!-- El selector de shaders vive ahora en su propia pestaña (settingsTabShaders),
+                     que escribe en config/iris.properties. El antiguo escribía en el formato de
+                     OptiFine y los dos se pisaban. -->
 
-                            </div>
-                        </div>
+            </div>
+        </div>
+        <div id="settingsTabResourcepacks" class="settingsTab" style="display: none;">
+            <div class="settingsTabHeader">
+                <span class="settingsTabHeaderText"><%- lang('settings.tabRpHeaderText') %></span>
+                <span class="settingsTabHeaderDesc"><%- lang('settings.tabRpHeaderDesc') %></span>
+            </div>
+            <div id="settingsRpGameNotice" style="display: none;"><%- lang('settings.rpGameNotice') %></div>
+            <div id="settingsRpContent">
+                <div id="settingsRpListHeader">
+                    <span id="settingsRpListTitle"><%- lang('settings.rpListTitle') %></span>
+                    <div id="settingsRpActions">
+                        <button id="settingsRpFolder"><%- lang('settings.rpFolder') %></button>
+                        <button id="settingsRpImport"><%- lang('settings.rpImport') %></button>
                     </div>
                 </div>
+                <div id="settingsRpList"></div>
+                <div id="settingsRpHint"><%- lang('settings.rpHint') %></div>
+            </div>
+        </div>
+        <div id="settingsTabShaders" class="settingsTab" style="display: none;">
+            <div class="settingsTabHeader">
+                <span class="settingsTabHeaderText"><%- lang('settings.tabShadersHeaderText') %></span>
+                <span class="settingsTabHeaderDesc"><%- lang('settings.tabShadersHeaderDesc') %></span>
+            </div>
+            <div id="settingsShadersNotice" style="display: none;"><%- lang('settings.shadersLiteNotice') %></div>
+            <div id="settingsShadersContent">
+                <div id="settingsShadersListHeader">
+                    <span id="settingsShadersListTitle"><%- lang('settings.shadersListTitle') %></span>
+                    <button id="settingsShadersImport"><%- lang('settings.shadersImport') %></button>
+                </div>
+                <div id="settingsShadersList"></div>
+                <div id="settingsShadersHint"><%- lang('settings.shadersHint') %></div>
             </div>
         </div>
         <div id="settingsTabJava" class="settingsTab" style="display: none;">
@@ -347,8 +374,16 @@
                     </div>
                 </div>
                 <div class="settingsChangelogActions">
-                    <a class="settingsChangelogButton settingsAboutButton" href="#"><%- lang('settings.viewReleaseNotes') %></a>
+                    <a class="settingsChangelogButton settingsAboutButton" href="https://github.com/Chaktet/launcher-sc/releases"><%- lang('settings.viewReleaseNotes') %></a>
                 </div>
+            </div>
+            <div id="settingsAboutHistoryCont" style="display: none;">
+                <div id="settingsAboutHistoryLabel"><%- lang('settings.aboutHistoryLabel') %></div>
+                <div id="settingsAboutHistory"></div>
+            </div>
+            <div id="settingsAboutStats" style="display: none;">
+                <div id="settingsAboutStatsTitle"><%- lang('settings.aboutStatsTitle') %></div>
+                <div id="settingsAboutStatsGrid"></div>
             </div>
         </div>
         <div id="settingsTabUpdate" class="settingsTab" style="display: none;">
@@ -374,6 +409,7 @@
                     <div id="settingsUpdateActionContainer">
                         <button id="settingsUpdateActionButton"><%- lang('settings.checkForUpdates') %></button>
                     </div>
+                    <div id="settingsUpdateAutoHint"><%- lang('settings.updateAutoHint') %></div>
                 </div>
             </div>
             <div class="settingsChangelogContainer">

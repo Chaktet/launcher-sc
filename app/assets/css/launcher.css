@@ -3966,3 +3966,1556 @@ input:checked + .toggleSwitchSlider:before {
 .rotating {
     animation: rotating 10s linear infinite;
 }
+/*******************************************************************************
+ * SC Launcher: ajustes propios (JUGAR centrado y grande, sin seccion news)    *
+ ******************************************************************************/
+#landingContainer > #lower > #center {
+    display: none;
+}
+#landingContainer > #lower > #right {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    top: auto;
+    height: 100%;
+    width: auto;
+    transform: translateX(-50%);
+    justify-content: center;
+    align-items: center;
+}
+#landingContainer > #lower > #right #launch_content {
+    top: 0;
+    align-items: center;
+}
+#launch_button {
+    font-size: 44px;
+    letter-spacing: 4px;
+}
+#launch_details {
+    top: 0;
+}
+
+/*******************************************************************************
+ * SC Launcher: tema Cobblemon (azul Lugia #4fa9de · naranja SC #e8862a)       *
+ ******************************************************************************/
+#launch_button:hover,
+#launch_button:focus {
+    color: #eaf6ff;
+    text-shadow: 0px 0px 22px #4fa9de, 0px 0px 22px #4fa9de;
+}
+#launch_button:active {
+    color: #bfe2f8;
+    text-shadow: 0px 0px 22px #2c6fb4, 0px 0px 22px #2c6fb4;
+}
+#loginButton:not(:disabled):hover,
+#loginButton:not(:disabled):focus {
+    text-shadow: 0px 0px 20px #4fa9de;
+}
+#welcomeButton:hover,
+#welcomeButton:focus {
+    text-shadow: 0px 0px 20px #4fa9de;
+}
+.loginOptionButton:hover,
+.loginOptionButton:focus {
+    text-shadow: 0px 0px 18px #4fa9de;
+}
+.loginField:focus {
+    border-bottom: 1px solid #4fa9de !important;
+}
+#server_selection_button:hover,
+#server_selection_button:focus {
+    text-shadow: 0px 0px 16px #e8862a;
+}
+#landingContainer > #lower {
+    background: linear-gradient(to top, rgba(6, 18, 32, 0.82), rgba(0, 0, 0, 0));
+}
+
+/*******************************************************************************
+ * SC Launcher · Capa de diseño moderna (v2)                                   *
+ * Paleta: acento azul Lugia · superficies cristal navy · sombras tintadas     *
+ ******************************************************************************/
+:root {
+    --sc-accent: #4fa9de;
+    --sc-accent-soft: rgba(79, 169, 222, 0.35);
+    --sc-ink: #eef4f9;
+    --sc-ink-dim: #9db4c6;
+    --sc-glass: rgba(9, 17, 29, 0.55);
+    --sc-glass-strong: rgba(9, 17, 29, 0.78);
+    --sc-line: rgba(255, 255, 255, 0.12);
+    --sc-shadow: 0 18px 40px -18px rgba(2, 8, 18, 0.9);
+    --sc-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* ---- Ambiente: brillos flotantes + viñeta sobre el artwork ---- */
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+        radial-gradient(38% 30% at 18% 82%, rgba(79, 169, 222, 0.16), transparent 70%),
+        radial-gradient(30% 26% at 84% 16%, rgba(79, 169, 222, 0.10), transparent 70%),
+        radial-gradient(120% 90% at 50% 50%, transparent 55%, rgba(2, 6, 12, 0.55) 100%);
+    /* Sin animación a propósito: esta capa está DEBAJO de los paneles con
+       backdrop-filter, así que animarla obligaba a recalcular el desenfoque de
+       toda la interfaz 60 veces por segundo. Estático se ve igual. */
+    opacity: 0.9;
+}
+
+/* ---- Barra de ventana integrada ---- */
+#frameBar {
+    background: linear-gradient(to bottom, rgba(4, 9, 17, 0.85), rgba(4, 9, 17, 0.35)) !important;
+    backdrop-filter: blur(8px);
+}
+#frameTitleText {
+    letter-spacing: 2px;
+    color: var(--sc-ink-dim);
+}
+
+/* ---- Transiciones globales en interactivos ---- */
+button, .mediaButton, .settingsNavItem, .loginField {
+    transition: transform 0.22s var(--sc-ease), box-shadow 0.22s var(--sc-ease),
+                background 0.22s var(--sc-ease), color 0.22s var(--sc-ease),
+                text-shadow 0.22s var(--sc-ease), border-color 0.22s var(--sc-ease);
+}
+button:focus-visible {
+    outline: 2px solid var(--sc-accent);
+    outline-offset: 3px;
+    border-radius: 6px;
+}
+
+/* ---- Landing: entrada escalonada ---- */
+@keyframes sc-rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+#landingContainer > #upper > #left   { animation: sc-rise 0.55s var(--sc-ease) 0.05s backwards; }
+#landingContainer > #upper > #right  { animation: sc-rise 0.55s var(--sc-ease) 0.12s backwards; }
+#landingContainer > #lower > #left   { animation: sc-rise 0.55s var(--sc-ease) 0.20s backwards; }
+#landingContainer > #lower > #right  { animation: sc-rise 0.55s var(--sc-ease) 0.28s backwards; }
+
+/* ---- Sello superior: limpio, con anillo de cristal ---- */
+#image_seal {
+    border: 1px solid var(--sc-line);
+    background: var(--sc-glass);
+    box-shadow: var(--sc-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.10);
+    padding: 6px;
+}
+#image_seal_container { margin-top: 28px; }
+
+/* ---- Dock central de juego (cristal) ---- */
+#landingContainer > #lower > #right #launch_content,
+#launch_details {
+    background: var(--sc-glass);
+    backdrop-filter: blur(18px) saturate(1.25);
+    border: 1px solid var(--sc-line);
+    border-radius: 20px;
+    box-shadow: var(--sc-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    padding: 18px 34px;
+}
+#launch_button {
+    font-family: 'Avenir Medium';
+    font-size: 38px;
+    letter-spacing: 7px;
+    color: var(--sc-ink);
+    text-shadow: 0 2px 18px rgba(2, 8, 18, 0.8);
+}
+#launch_button:hover,
+#launch_button:focus {
+    color: #ffffff;
+    text-shadow: 0 0 26px var(--sc-accent), 0 0 60px var(--sc-accent-soft);
+    transform: translateY(-1px);
+}
+#launch_button:active {
+    transform: scale(0.97);
+    color: #cfe7f7;
+}
+#server_selection_button {
+    color: var(--sc-ink-dim);
+    letter-spacing: 1px;
+}
+#server_selection_button:hover,
+#server_selection_button:focus {
+    color: var(--sc-ink);
+    text-shadow: 0 0 14px var(--sc-accent);
+}
+
+/* ---- Chips de estado (jugadores / Mojang) ---- */
+#landingContainer > #lower > #left #content {
+    background: var(--sc-glass);
+    backdrop-filter: blur(14px);
+    border: 1px solid var(--sc-line);
+    border-radius: 14px;
+    padding: 10px 18px;
+    top: 34px;
+    left: 28px;
+    box-shadow: var(--sc-shadow);
+}
+
+/* ---- Cuenta + rail social ---- */
+#user_content {
+    background: var(--sc-glass);
+    backdrop-filter: blur(14px);
+    border: 1px solid var(--sc-line);
+    border-radius: 999px;
+    padding: 6px 8px 6px 18px;
+    box-shadow: var(--sc-shadow);
+}
+.mediaButton:hover .mediaSVG, .mediaURL:hover .mediaSVG {
+    filter: drop-shadow(0 0 8px var(--sc-accent));
+}
+
+/* ---- Login: tarjeta de cristal ---- */
+#loginContainer #loginContent {
+    background: var(--sc-glass-strong);
+    backdrop-filter: blur(22px) saturate(1.2);
+    border: 1px solid var(--sc-line);
+    border-radius: 22px;
+    box-shadow: var(--sc-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    padding: 40px 48px;
+    animation: sc-rise 0.45s var(--sc-ease) backwards;
+}
+#loginImageSeal {
+    border-radius: 24%;
+    filter: drop-shadow(0 6px 18px rgba(2, 8, 18, 0.8));
+}
+.loginField:focus {
+    border-bottom: 1px solid var(--sc-accent) !important;
+    box-shadow: 0 12px 18px -14px var(--sc-accent-soft);
+}
+#loginButton:not(:disabled):hover { transform: translateY(-1px); }
+#loginButton:not(:disabled):active { transform: scale(0.97); }
+
+/* ---- Opciones de login: tarjetas ---- */
+#loginOptionsContent {
+    background: var(--sc-glass-strong);
+    backdrop-filter: blur(22px) saturate(1.2);
+    border: 1px solid var(--sc-line);
+    border-radius: 22px;
+    box-shadow: var(--sc-shadow);
+    padding: 40px 52px;
+    animation: sc-rise 0.45s var(--sc-ease) backwards;
+}
+.loginOptionButton {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--sc-line) !important;
+    border-radius: 14px;
+    padding: 14px 22px !important;
+}
+.loginOptionButton:hover,
+.loginOptionButton:focus {
+    background: rgba(79, 169, 222, 0.12);
+    border-color: var(--sc-accent) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px -16px var(--sc-accent-soft);
+}
+
+/* ---- Bienvenida ---- */
+#welcomeContent {
+    background: var(--sc-glass-strong);
+    backdrop-filter: blur(22px) saturate(1.2);
+    border: 1px solid var(--sc-line);
+    border-radius: 22px;
+    box-shadow: var(--sc-shadow);
+    padding: 42px 56px;
+    width: auto;
+    max-width: 620px;
+    animation: sc-rise 0.45s var(--sc-ease) backwards;
+}
+#welcomeImageSeal {
+    border: 1px solid var(--sc-line);
+    background: var(--sc-glass);
+    box-shadow: var(--sc-shadow);
+    margin-top: 0;
+}
+#welcomeDescription { line-height: 1.65; color: var(--sc-ink-dim); }
+#welcomeButton:hover { transform: translateY(-1px); text-shadow: 0 0 18px var(--sc-accent); }
+
+/* ---- Ajustes: navegación con acento ---- */
+.settingsNavItem[selected] {
+    color: var(--sc-accent) !important;
+    text-shadow: 0 0 14px var(--sc-accent-soft);
+}
+.settingsNavItem:hover { color: var(--sc-ink); }
+
+/* ---- Overlay (diálogos) ---- */
+#overlayContent {
+    background: var(--sc-glass-strong) !important;
+    backdrop-filter: blur(22px) saturate(1.2);
+    border: 1px solid var(--sc-line);
+    border-radius: 22px;
+    box-shadow: var(--sc-shadow);
+}
+
+/* ---- Scrollbars finas ---- */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--sc-accent-soft); }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ---- Detalles ---- */
+img { -webkit-user-drag: none; }
+
+/* ---- Selector de perfil visible + pista PRO/LITE ---- */
+#launch_content { flex-wrap: wrap; justify-content: center; }
+#server_selection_button {
+    border: 1px solid var(--sc-line) !important;
+    border-radius: 999px;
+    padding: 6px 14px !important;
+    background: rgba(255, 255, 255, 0.05);
+}
+#server_selection_button::after {
+    content: ' ▾';
+    color: var(--sc-accent);
+}
+#server_selection_button:hover,
+#server_selection_button:focus {
+    border-color: var(--sc-accent) !important;
+    background: rgba(79, 169, 222, 0.12);
+}
+#profile_hint {
+    width: 100%;
+    text-align: center;
+    margin-top: 12px;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    color: var(--sc-ink-dim);
+    cursor: pointer;
+}
+#profile_hint strong { color: var(--sc-ink); }
+.profile_hint_link {
+    color: var(--sc-accent);
+    text-decoration: underline;
+}
+#profile_hint:hover .profile_hint_link { text-shadow: 0 0 10px var(--sc-accent); }
+
+/* ---- Chip de estado: divisor y contador arreglados ---- */
+#landingContainer > #lower > #left #content { align-items: center; }
+#landingContainer > #lower > #left #content .bot_divider {
+    height: 22px;
+    margin: 0 14px;
+    opacity: 0.35;
+    align-self: center;
+}
+#player_count {
+    font-size: 14px;
+    font-family: 'Avenir Medium';
+    color: var(--sc-ink);
+}
+#launch_content > .bot_divider {
+    height: 34px;
+    margin: 0 18px;
+    opacity: 0.35;
+    align-self: center;
+}
+
+/* ---- FIX: la caja de jugadores tenia ancho fijo 75px y se solapaba ---- */
+#server_status_wrapper {
+    width: auto !important;
+    align-items: baseline;
+    white-space: nowrap;
+}
+#mojangStatusWrapper { white-space: nowrap; align-items: center; }
+
+/* ---- Selector de versiones: tarjetas claras ---- */
+#serverSelectContent {
+    background: var(--sc-glass-strong);
+    backdrop-filter: blur(22px) saturate(1.2);
+    border: 1px solid var(--sc-line);
+    border-radius: 22px;
+    box-shadow: var(--sc-shadow);
+    padding: 34px 40px;
+}
+.serverListing {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid var(--sc-line) !important;
+    border-radius: 16px !important;
+    padding: 18px 22px !important;
+    margin-bottom: 14px;
+    transition: transform 0.22s var(--sc-ease), border-color 0.22s var(--sc-ease), box-shadow 0.22s var(--sc-ease);
+}
+.serverListing:hover {
+    transform: translateY(-2px);
+    border-color: rgba(79, 169, 222, 0.5) !important;
+}
+.serverListing[selected] {
+    border-color: var(--sc-accent) !important;
+    background: rgba(79, 169, 222, 0.12) !important;
+    box-shadow: 0 14px 30px -16px var(--sc-accent-soft);
+}
+.serverListingImg { border-radius: 12px; }
+.serverListingName {
+    font-family: 'Avenir Medium';
+    font-size: 17px;
+    letter-spacing: 0.5px;
+}
+.serverListingDescription {
+    color: var(--sc-ink-dim);
+    font-size: 12.5px;
+    line-height: 1.5;
+}
+.serverListingVersion {
+    background: rgba(79, 169, 222, 0.18) !important;
+    color: #bfe2f8 !important;
+    border-radius: 999px;
+    padding: 2px 10px !important;
+}
+.serverListingRevision, .serverListingStarWrapper { display: none !important; }
+#serverSelectConfirm {
+    background: var(--sc-accent) !important;
+    color: #06121f !important;
+    border: none !important;
+    border-radius: 999px !important;
+    padding: 10px 34px !important;
+    font-family: 'Avenir Medium';
+    letter-spacing: 1px;
+}
+#serverSelectConfirm:hover { transform: translateY(-1px); box-shadow: 0 12px 26px -12px var(--sc-accent); }
+#serverSelectCancel { color: var(--sc-ink-dim) !important; }
+#serverSelectCancel:hover { color: var(--sc-ink) !important; }
+
+/* ---- FIX selector: medidas fluidas, sin recortes ni saltos ---- */
+.serverListing {
+    width: min(560px, 78vw) !important;
+    min-height: 0 !important;
+    height: auto !important;
+    align-items: center !important;
+    text-align: left;
+    transform: none !important;
+}
+.serverListing:hover {
+    transform: none !important;
+    box-shadow: 0 10px 24px -14px var(--sc-accent-soft);
+}
+.serverListingDetails {
+    height: auto !important;
+    flex: 1;
+    gap: 6px;
+}
+.serverListingImg {
+    height: 56px !important;
+    width: 56px !important;
+    flex-shrink: 0;
+    margin: 0 16px 0 0 !important;
+    border: 1px solid var(--sc-line) !important;
+}
+.serverListingName {
+    text-align: left;
+    line-height: 1.3;
+}
+.serverListingDescription {
+    font-size: 12.5px !important;
+    line-height: 1.5 !important;
+    font-weight: normal !important;
+}
+.serverListingInfo { margin-top: 4px; }
+#serverSelectContent {
+    width: min(640px, 84vw);
+}
+#serverSelectListScrollable {
+    max-height: 52vh;
+    overflow-y: auto;
+    padding-right: 6px;
+}
+
+/* ---- Rendimiento overlays: paneles sin backdrop-filter (el fondo ya se oscurece) ---- */
+#serverSelectContent,
+#overlayContent {
+    backdrop-filter: none !important;
+    background: rgba(9, 17, 29, 0.94) !important;
+}
+
+/* ---- Login no-premium: campo real, claro y bonito ---- */
+#loginContainer #loginContent { padding: 44px 60px; }
+#loginSubheader {
+    font-size: 21px;
+    letter-spacing: 3px;
+    margin-bottom: 4px;
+}
+.sc-login-help {
+    display: block;
+    text-align: center;
+    color: var(--sc-ink-dim);
+    font-size: 12.5px;
+    letter-spacing: 0.5px;
+    margin-bottom: 26px;
+}
+.loginFieldContainer {
+    position: relative;
+    width: 300px;
+}
+.loginField {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    background: rgba(255, 255, 255, 0.07) !important;
+    border: 1px solid var(--sc-line) !important;
+    border-radius: 12px !important;
+    padding: 15px 16px 15px 46px !important;
+    font-size: 16px !important;
+    letter-spacing: 1.5px;
+    color: var(--sc-ink) !important;
+    text-align: left !important;
+    transition: border-color 0.22s var(--sc-ease), box-shadow 0.22s var(--sc-ease);
+}
+.loginField::placeholder {
+    color: rgba(157, 180, 198, 0.6);
+    font-size: 13px;
+    letter-spacing: 2px;
+}
+.loginField:focus {
+    border: 1px solid var(--sc-accent) !important;
+    box-shadow: 0 0 0 3px var(--sc-accent-soft);
+}
+.loginSVG {
+    position: absolute !important;
+    left: 15px !important;
+    top: 50% !important;
+    transform: translateY(-50%);
+    height: 17px !important;
+    width: 17px !important;
+    fill: #9db4c6;
+}
+.loginErrorSpan {
+    position: absolute !important;
+    top: -22px !important;
+    right: 0 !important;
+    font-size: 11px !important;
+    letter-spacing: 0.5px;
+}
+#loginButton {
+    background: var(--sc-accent) !important;
+    color: #06121f !important;
+    border-radius: 999px !important;
+    padding: 13px 44px !important;
+    font-family: 'Avenir Medium';
+    font-size: 16px !important;
+    letter-spacing: 3px;
+    margin-top: 8px;
+}
+#loginButton:disabled {
+    background: rgba(255, 255, 255, 0.10) !important;
+    color: var(--sc-ink-dim) !important;
+}
+#loginButton:not(:disabled):hover {
+    box-shadow: 0 16px 34px -12px var(--sc-accent);
+    transform: translateY(-1px);
+}
+#loginButton .arrowLine { stroke: #06121f !important; }
+
+/* ---- Ajustes: panel sólido legible + navegación clara + botones reales ---- */
+#settingsContainer {
+    background: linear-gradient(120deg, rgba(6, 12, 20, 0.97), rgba(9, 17, 29, 0.93)) !important;
+}
+#settingsNavContainer {
+    background: rgba(255, 255, 255, 0.03);
+    border-right: 1px solid var(--sc-line);
+}
+.settingsNavItem {
+    padding: 10px 20px !important;
+    border-radius: 0 999px 999px 0 !important;
+    text-align: left !important;
+    letter-spacing: 1px;
+    color: var(--sc-ink-dim);
+    transition: background 0.2s var(--sc-ease), color 0.2s var(--sc-ease);
+}
+.settingsNavItem:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--sc-ink) !important;
+}
+.settingsNavItem[selected] {
+    background: rgba(79, 169, 222, 0.15) !important;
+    color: var(--sc-accent) !important;
+    border-left: 3px solid var(--sc-accent) !important;
+    text-shadow: none !important;
+}
+#settingsNavDone {
+    background: var(--sc-accent) !important;
+    color: #06121f !important;
+    border-radius: 999px !important;
+    padding: 12px 38px !important;
+    font-family: 'Avenir Medium';
+    font-size: 15px !important;
+    letter-spacing: 2px;
+    transition: transform 0.2s var(--sc-ease), box-shadow 0.2s var(--sc-ease);
+}
+#settingsNavDone:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 28px -10px var(--sc-accent);
+}
+.settingsTabHeaderText {
+    font-size: 26px;
+    font-family: 'Avenir Medium';
+}
+.settingsAuthAccount {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid var(--sc-line) !important;
+    border-radius: 14px !important;
+    margin-bottom: 14px !important;
+    padding: 16px 20px !important;
+}
+.settingsAuthAccountSelect[selected] {
+    color: var(--sc-accent) !important;
+}
+.settingsAddAuthAccount {
+    border: 1px solid var(--sc-accent) !important;
+    color: var(--sc-accent) !important;
+    border-radius: 999px !important;
+    padding: 9px 20px !important;
+    background: transparent !important;
+    letter-spacing: 0.5px;
+    transition: background 0.2s var(--sc-ease), transform 0.2s var(--sc-ease);
+}
+.settingsAddAuthAccount:hover {
+    background: rgba(79, 169, 222, 0.15) !important;
+    transform: translateY(-1px);
+}
+.settingsAuthAccountTypeContainer { margin-bottom: 26px; }
+
+/* ---- FIX responsive ajustes: "Listo" anclado abajo sin solapar ---- */
+#settingsNavItemsContainer {
+    height: auto !important;
+    flex: 1 1 auto !important;
+    min-height: 0;
+    overflow-y: auto;
+}
+#settingsNavItemsContent {
+    display: flex !important;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+}
+#settingsNavContentBottom {
+    position: static !important;
+    top: auto !important;
+    margin-top: auto;
+    padding: 16px 0 20px 0;
+}
+
+/* ---- Responsive general: ventanas pequenas ---- */
+@media (max-height: 660px) {
+    #image_seal_container { margin-top: 12px; }
+    #image_seal { height: 54px; width: 54px; }
+    #launch_button { font-size: 30px; letter-spacing: 5px; }
+    #landingContainer > #lower > #right #launch_content,
+    #launch_details { padding: 12px 24px; }
+    #profile_hint { margin-top: 8px; font-size: 11px; }
+    #loginContainer #loginContent { padding: 28px 40px; }
+    .sc-login-help { margin-bottom: 18px; }
+    .settingsTabHeaderText { font-size: 22px; }
+    #settingsNavDone { padding: 9px 28px !important; font-size: 13px !important; }
+    .settingsNavItem { padding: 7px 16px !important; }
+}
+@media (max-width: 980px) {
+    #launch_button { font-size: 26px; letter-spacing: 4px; }
+    #landingContainer > #lower > #right #launch_content,
+    #launch_details { padding: 12px 18px; }
+    #landingContainer > #lower > #left #content { padding: 8px 12px; left: 12px; }
+    .serverListing { width: 82vw !important; }
+}
+
+/* ---- FIX definitivo selector: tarjetas al 100% del CONTENEDOR, nunca de la ventana ---- */
+#serverSelectContent {
+    width: min(680px, 86vw) !important;
+    box-sizing: border-box !important;
+}
+#serverSelectListScrollable {
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+.serverListing {
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+@media (max-width: 980px) {
+    .serverListing { width: 100% !important; }
+}
+
+/* ---- Ajustes: aire lateral ---- */
+#settingsNavContainer {
+    padding-left: 26px !important;
+    box-sizing: border-box;
+}
+.settingsTab {
+    padding-left: 38px !important;
+    padding-right: 34px !important;
+    box-sizing: border-box;
+}
+
+/* ---- Selector de version: sin scroll (2 tarjetas caben siempre) ---- */
+#serverSelectListScrollable {
+    max-height: none !important;
+    overflow-y: visible !important;
+}
+@media (max-height: 620px) {
+    #serverSelectListScrollable {
+        max-height: 58vh !important;
+        overflow-y: auto !important;
+    }
+    .serverListing { padding: 12px 16px !important; }
+    .serverListingDescription { font-size: 11.5px !important; }
+}
+
+/* ---- Chip de cuenta: avatar cara + nombre + subtitulo clicable ---- */
+#user_content {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 8px 10px 8px 20px;
+    transition: border-color 0.22s var(--sc-ease), box-shadow 0.22s var(--sc-ease);
+}
+#user_content:hover {
+    border-color: var(--sc-accent);
+    box-shadow: 0 12px 26px -14px var(--sc-accent-soft);
+}
+#user_meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+#user_text {
+    font-family: 'Avenir Medium';
+    font-size: 15px !important;
+    letter-spacing: 0.5px;
+}
+#user_role {
+    font-size: 10.5px;
+    letter-spacing: 1px;
+    color: var(--sc-ink-dim);
+}
+#user_content:hover #user_role { color: var(--sc-accent); }
+#avatarContainer {
+    height: 46px !important;
+    width: 46px !important;
+    border-radius: 12px !important;
+    border: 2px solid var(--sc-line) !important;
+    background-size: cover !important;
+    background-position: center !important;
+    image-rendering: pixelated;
+    overflow: hidden;
+    transition: border-color 0.22s var(--sc-ease);
+}
+#user_content:hover #avatarContainer { border-color: var(--sc-accent) !important; }
+#avatarOverlay {
+    width: 100%;
+    height: 100%;
+    background: rgba(6, 18, 32, 0.72);
+    color: var(--sc-ink);
+    font-size: 10px;
+    letter-spacing: 1px;
+    opacity: 0;
+    transition: opacity 0.2s var(--sc-ease);
+}
+#avatarContainer:hover #avatarOverlay { opacity: 1; }
+
+/* ---- FIX tarjetas de cuenta: nada se sale del borde ---- */
+.settingsAuthAccount {
+    display: flex !important;
+    align-items: center !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    width: 100%;
+}
+.settingsAuthAccountRight {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 18px;
+    min-width: 0 !important;
+    width: 100% !important;
+}
+.settingsAuthAccountDetails {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+}
+.settingsAuthAccountDetailValue {
+    overflow-wrap: anywhere;
+    font-size: 13px;
+}
+.settingsAuthAccountActions {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-end !important;
+    justify-content: center;
+    gap: 10px;
+    flex-shrink: 0 !important;
+    padding-right: 6px;
+}
+.settingsAuthAccountSelect { color: var(--sc-accent); }
+.settingsAuthAccountLogOut {
+    padding: 6px 16px !important;
+    border-radius: 999px !important;
+}
+.settingsAuthAccountImage {
+    height: 92px !important;
+    image-rendering: pixelated;
+}
+
+/* ---- FIX chip de cuenta: nombre y subtitulo sin solaparse ---- */
+#user_content {
+    width: auto !important;
+    height: auto !important;
+    justify-content: flex-end !important;
+}
+#user_meta {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-end !important;
+}
+#user_text, #user_role {
+    position: static !important;
+    line-height: 1.3 !important;
+    margin: 0 !important;
+}
+
+/* ---- FIX DEFINITIVO chip de cuenta (medido en vivo): la columna derecha
+   del landing era de ancho fijo (15%) y el chip la desbordaba creando
+   scroll horizontal. Ahora la columna se adapta a su contenido. ---- */
+#landingContainer > #upper > #right {
+    width: auto !important;
+    min-width: 160px;
+    flex-shrink: 0 !important;
+}
+#rightContainer {
+    width: auto !important;
+    align-items: flex-end !important;
+}
+#user_content {
+    max-width: min(320px, 40vw);
+}
+#user_text {
+    max-width: 190px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+body { overflow-x: hidden; }
+
+/* ---- Selector: sin barra de scroll visible nunca + compactado en ventanas bajas ---- */
+#serverSelectListScrollable {
+    scrollbar-width: none !important;
+}
+#serverSelectListScrollable::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+}
+@media (max-height: 700px) {
+    #serverSelectContent { padding: 20px 28px !important; }
+    .serverListing {
+        padding: 10px 16px !important;
+        margin-bottom: 10px !important;
+    }
+    .serverListingImg {
+        height: 42px !important;
+        width: 42px !important;
+        margin-right: 12px !important;
+    }
+    .serverListingName { font-size: 15px !important; }
+    .serverListingDescription { font-size: 11.5px !important; line-height: 1.4 !important; }
+    .serverListingVersion { font-size: 9px !important; }
+}
+
+/* ---- FIX: la animacion de entrada pisaba el centrado del dock (translateX)
+   y al volver de Ajustes se veia "viajar" de derecha a izquierda ---- */
+@keyframes sc-rise-center {
+    from { opacity: 0; transform: translateX(-50%) translateY(14px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+#landingContainer > #lower > #right {
+    animation: sc-rise-center 0.55s var(--sc-ease) 0.28s backwards !important;
+}
+
+/* ---- Overlay: apertura instantanea compuesta en GPU (sin fundido jQuery) ---- */
+#overlayContainer {
+    opacity: 0;
+    transition: opacity 0.18s ease-out;
+    will-change: opacity;
+}
+#overlayContainer[visible] { opacity: 1; }
+#overlayContainer:not([visible]) { pointer-events: none; }
+#overlayContainer[visible] #overlayContent,
+#overlayContainer[visible] #serverSelectContent,
+#overlayContainer[visible] #accountSelectContent {
+    animation: sc-pop-in 0.22s var(--sc-ease) backwards;
+}
+@keyframes sc-pop-in {
+    from { opacity: 0; transform: translateY(10px) scale(0.985); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ---- Indicador de actualizacion: halo azul elegante + aviso siempre visible ---- */
+#image_seal_container[update] {
+    transform: scale(1.14);
+    transform-origin: top left;
+}
+#image_seal_container[update] #image_seal {
+    border-color: var(--sc-accent) !important;
+    box-shadow: 0 0 22px var(--sc-accent-soft), var(--sc-shadow) !important;
+}
+#image_seal_container[update]:before,
+#image_seal_container[update]:after {
+    background: none !important;
+    border: 2px solid var(--sc-accent);
+    box-shadow: 0 0 18px var(--sc-accent-soft) !important;
+    animation: sc-halo 2.6s ease-out infinite !important;
+}
+#image_seal_container[update]:before { animation-delay: 1.3s !important; }
+@keyframes sc-halo {
+    0%   { transform: scale(1);    opacity: 0.85; }
+    100% { transform: scale(1.65); opacity: 0; }
+}
+/* pildora visible sin necesidad de hover */
+#image_seal_container[update] #updateAvailableTooltip {
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: auto !important;
+    height: auto !important;
+    white-space: nowrap;
+    top: calc(100% + 12px) !important;
+    left: 50% !important;
+    transform: translateX(-50%);
+    padding: 7px 16px !important;
+    border-radius: 999px !important;
+    background: linear-gradient(180deg, #5cb6e8, var(--sc-accent)) !important;
+    color: #06131f !important;
+    font-size: 12px !important;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    box-shadow: 0 6px 18px -6px var(--sc-accent-soft), 0 0 0 1px rgba(255, 255, 255, 0.18) inset;
+    transition: transform 0.2s var(--sc-ease);
+}
+#image_seal_container[update] #updateAvailableTooltip:hover { transform: translateX(-50%) scale(1.05); }
+#updateAvailableTooltip::after { border-color: transparent transparent var(--sc-accent) transparent !important; }
+
+/* ---- Pestana Actualizaciones: mas grande y mas clara ---- */
+#settingsUpdateStatusContainer {
+    background: var(--sc-glass);
+    border: 1px solid var(--sc-line);
+    border-radius: 18px;
+    padding: 22px 26px;
+    width: 75%;
+    box-sizing: border-box;
+    margin-bottom: 22px;
+}
+#settingsUpdateTitle {
+    font-size: 22px !important;
+    color: var(--sc-ink);
+    padding-left: 0 !important;
+    letter-spacing: 0.2px;
+}
+#settingsUpdateVersion { margin-top: 14px; align-items: center; }
+#settingsUpdateVersionCheck {
+    height: 24px !important;
+    width: 24px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    margin: 0 14px 0 0 !important;
+    box-shadow: 0 0 14px rgba(35, 170, 35, 0.45);
+}
+#settingsUpdateVersionTitle { font-size: 15px; color: var(--sc-ink); font-weight: 600; }
+#settingsUpdateVersionLine { margin-top: 3px; }
+#settingsUpdateVersionText { font-size: 13px; color: var(--sc-ink-dim); }
+#settingsUpdateVersionValue { font-size: 15px; font-weight: 700; color: var(--sc-accent); }
+#settingsUpdateActionContainer { margin-top: 18px; }
+#settingsUpdateActionButton {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 30px !important;
+    border-radius: 999px !important;
+    background: linear-gradient(180deg, #5cb6e8, var(--sc-accent)) !important;
+    color: #06131f !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.3px;
+    box-shadow: 0 10px 24px -10px var(--sc-accent-soft);
+    transition: transform 0.18s var(--sc-ease), box-shadow 0.18s var(--sc-ease);
+}
+#settingsUpdateActionButton:hover,
+#settingsUpdateActionButton:focus {
+    text-shadow: none !important;
+    transform: translateY(-1px);
+    box-shadow: 0 14px 30px -10px var(--sc-accent-soft);
+}
+#settingsUpdateActionButton:active { transform: scale(0.97); color: #06131f !important; text-shadow: none !important; }
+#settingsUpdateActionButton:disabled { opacity: 0.55; }
+.settingsChangelogContainer {
+    background: var(--sc-glass) !important;
+    border: 1px solid var(--sc-line) !important;
+    border-radius: 18px !important;
+}
+.settingsChangelogContent { padding: 20px 24px !important; }
+.settingsChangelogLabel {
+    font-size: 11px !important;
+    color: var(--sc-accent) !important;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+.settingsChangelogTitle { font-size: 19px; color: var(--sc-ink); font-weight: 700; margin-top: 4px; }
+.settingsChangelogText { font-size: 14px !important; line-height: 1.7; color: rgba(236, 244, 251, 0.88); }
+.settingsChangelogText a { color: var(--sc-accent) !important; }
+
+/* ---- Boton "Registros del juego" (soporte / tickets) ---- */
+#settingsNavViewLogs {
+    display: block;
+    background: none;
+    border: 1px solid var(--sc-line);
+    border-radius: 999px;
+    color: var(--sc-ink-dim);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    padding: 8px 18px;
+    margin-bottom: 14px;
+    cursor: pointer;
+    transition: color 0.2s var(--sc-ease), border-color 0.2s var(--sc-ease), transform 0.18s var(--sc-ease);
+}
+#settingsNavViewLogs:hover {
+    color: var(--sc-ink);
+    border-color: var(--sc-accent);
+    transform: translateY(-1px);
+}
+#settingsNavViewLogs:active { transform: scale(0.97); }
+
+/* ---- Pestana Shaders ---- */
+#settingsShadersContent { width: 75%; }
+#settingsShadersNotice {
+    width: 75%;
+    box-sizing: border-box;
+    background: rgba(232, 170, 60, 0.12);
+    border: 1px solid rgba(232, 170, 60, 0.45);
+    border-radius: 12px;
+    color: #f0c47a;
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 12px 16px;
+    margin-bottom: 18px;
+}
+#settingsShadersListHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+#settingsShadersListTitle { font-size: 17px; font-weight: 700; color: var(--sc-ink); }
+#settingsShadersImport {
+    background: none;
+    border: 1px solid var(--sc-line);
+    border-radius: 999px;
+    color: var(--sc-ink-dim);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: color 0.2s var(--sc-ease), border-color 0.2s var(--sc-ease), transform 0.18s var(--sc-ease);
+}
+#settingsShadersImport:hover { color: var(--sc-ink); border-color: var(--sc-accent); transform: translateY(-1px); }
+#settingsShadersImport:active { transform: scale(0.97); }
+#settingsShadersList { display: flex; flex-direction: column; gap: 10px; }
+.settingsShaderRow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--sc-glass);
+    border: 1px solid var(--sc-line);
+    border-radius: 14px;
+    padding: 13px 18px;
+    cursor: pointer;
+    transition: border-color 0.2s var(--sc-ease), background 0.2s var(--sc-ease), transform 0.18s var(--sc-ease);
+}
+.settingsShaderRow:hover { border-color: rgba(79, 169, 222, 0.55); transform: translateY(-1px); }
+.settingsShaderRow[selected] {
+    border-color: var(--sc-accent);
+    background: rgba(79, 169, 222, 0.10);
+}
+.settingsShaderRadio {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    border: 2px solid var(--sc-ink-dim);
+    flex-shrink: 0;
+    transition: border-color 0.2s var(--sc-ease), box-shadow 0.2s var(--sc-ease);
+}
+.settingsShaderRow[selected] .settingsShaderRadio {
+    border-color: var(--sc-accent);
+    box-shadow: inset 0 0 0 3.5px var(--sc-accent);
+}
+.settingsShaderMeta { min-width: 0; }
+.settingsShaderName { font-size: 14px; font-weight: 700; color: var(--sc-ink); }
+.settingsShaderFile { font-size: 11px; color: var(--sc-ink-dim); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.settingsShaderActive {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    color: #06131f;
+    background: linear-gradient(180deg, #5cb6e8, var(--sc-accent));
+    border-radius: 999px;
+    padding: 4px 12px;
+}
+#settingsShadersHint { font-size: 12px; color: var(--sc-ink-dim); line-height: 1.6; margin-top: 16px; }
+
+/* ---- Panel oculto de estadisticas (Acerca de) ---- */
+#settingsAboutStats {
+    width: 75%;
+    box-sizing: border-box;
+    background: var(--sc-glass);
+    border: 1px solid var(--sc-accent);
+    border-radius: 18px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+}
+#settingsAboutStatsTitle { font-size: 15px; font-weight: 700; color: var(--sc-accent); letter-spacing: 0.5px; margin-bottom: 14px; }
+#settingsAboutStatsGrid { display: flex; flex-wrap: wrap; gap: 22px; align-items: flex-end; }
+.sc-stat-num { font-size: 30px; font-weight: 800; color: var(--sc-ink); line-height: 1; }
+.sc-stat-label { font-size: 11px; color: var(--sc-ink-dim); margin-top: 5px; max-width: 130px; line-height: 1.4; }
+.sc-stat-updated { flex-basis: 100%; font-size: 10px; color: var(--sc-ink-dim); opacity: 0.7; }
+.sc-stat-error { font-size: 13px; color: #e08f8f; }
+
+/* ---- Historial de versiones plegable (Acerca de) ---- */
+#settingsAboutHistoryCont {
+    width: 75%;
+    box-sizing: border-box;
+    background: var(--sc-glass);
+    border: 1px solid var(--sc-line);
+    border-radius: 18px;
+    padding: 18px 24px;
+    margin-bottom: 22px;
+}
+#settingsAboutHistoryLabel {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--sc-accent);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+}
+.sc-relnote { border-top: 1px solid var(--sc-line); }
+.sc-relnote:first-of-type { border-top: none; }
+.sc-relnote summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 2px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--sc-ink);
+    transition: color 0.2s var(--sc-ease);
+}
+.sc-relnote summary::-webkit-details-marker { display: none; }
+.sc-relnote summary::before {
+    content: '▸';
+    font-size: 11px;
+    color: var(--sc-ink-dim);
+    transition: transform 0.2s var(--sc-ease), color 0.2s var(--sc-ease);
+}
+.sc-relnote[open] summary::before { transform: rotate(90deg); color: var(--sc-accent); }
+.sc-relnote summary:hover { color: var(--sc-accent); }
+.sc-relnote-body {
+    font-size: 13px;
+    line-height: 1.65;
+    color: rgba(236, 244, 251, 0.85);
+    padding: 2px 2px 14px 21px;
+}
+.sc-relnote-body a { color: var(--sc-accent); }
+
+/* ---- Pestana Paquetes de recursos ---- */
+#settingsRpContent { width: 75%; }
+#settingsRpListHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+#settingsRpListTitle { font-size: 17px; font-weight: 700; color: var(--sc-ink); }
+#settingsRpActions { display: flex; gap: 8px; }
+#settingsRpImport, #settingsRpFolder {
+    background: none;
+    border: 1px solid var(--sc-line);
+    border-radius: 999px;
+    color: var(--sc-ink-dim);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 8px 16px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.2s var(--sc-ease), border-color 0.2s var(--sc-ease), transform 0.18s var(--sc-ease);
+}
+#settingsRpImport:hover, #settingsRpFolder:hover { color: var(--sc-ink); border-color: var(--sc-accent); transform: translateY(-1px); }
+#settingsRpImport:active, #settingsRpFolder:active { transform: scale(0.97); }
+#settingsRpList { display: flex; flex-direction: column; gap: 10px; }
+.settingsRpRow {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--sc-glass);
+    border: 1px solid var(--sc-line);
+    border-radius: 14px;
+    padding: 13px 18px;
+    transition: border-color 0.2s var(--sc-ease);
+}
+.settingsRpRow:hover { border-color: rgba(79, 169, 222, 0.45); }
+.settingsRpRow .toggleSwitch { flex-shrink: 0; }
+.settingsRpMeta { min-width: 0; flex: 1 1 auto; }
+.settingsRpName {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--sc-ink);
+}
+.settingsRpBadge {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.1px;
+    color: #06131f;
+    background: linear-gradient(180deg, #5cb6e8, var(--sc-accent));
+    border-radius: 999px;
+    padding: 3px 9px;
+    flex-shrink: 0;
+}
+.settingsRpFile {
+    font-size: 11px;
+    color: var(--sc-ink-dim);
+    margin-top: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.settingsRpDelete {
+    flex-shrink: 0;
+    background: none;
+    border: 1px solid rgba(224, 143, 143, 0.4);
+    border-radius: 999px;
+    color: #e08f8f;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: background 0.2s var(--sc-ease), border-color 0.2s var(--sc-ease);
+}
+.settingsRpDelete:hover { background: rgba(224, 143, 143, 0.14); border-color: #e08f8f; }
+.settingsRpEmpty {
+    font-size: 13px;
+    color: var(--sc-ink-dim);
+    background: var(--sc-glass);
+    border: 1px dashed var(--sc-line);
+    border-radius: 14px;
+    padding: 22px;
+    text-align: center;
+}
+#settingsRpHint { font-size: 12px; color: var(--sc-ink-dim); line-height: 1.6; margin-top: 16px; }
+
+/* ============================================================================
+   CAPA DE AUDITORIA — correcciones de responsive, rendimiento y acabado visual
+   ========================================================================= */
+
+/* ---- Arranque: fundido por CSS (antes eran 1,75s de esperas con jQuery) ---- */
+.sc-view-in { animation: sc-fade-in 0.35s var(--sc-ease) both; }
+@keyframes sc-fade-in { from { opacity: 0; } to { opacity: 1; } }
+#loadingContainer { transition: opacity 0.3s ease; }
+#loadingContainer[hidden-fade] { opacity: 0; pointer-events: none; }
+
+/* ---- Ajustes: navegacion completa y "Listo" SIEMPRE visible ---- */
+#settingsNavHeader {
+    height: auto !important;
+    flex: 0 0 auto;
+    padding: 4px 0 10px;
+}
+#settingsNavItemsContent {
+    height: auto !important;
+    min-height: 100%;
+}
+.settingsNavItem { flex-shrink: 0; }
+.settingsNavSpacer { flex: 0 0 22px; }
+#settingsNavContentBottom {
+    position: sticky !important;
+    bottom: 0;
+    margin-top: auto;
+    background: linear-gradient(to top, rgba(6, 12, 20, 0.97) 62%, rgba(6, 12, 20, 0));
+    z-index: 2;
+}
+#settingsContainerLeft {
+    padding-top: clamp(10px, 3vh, 30px) !important;
+    height: 100%;
+    box-sizing: border-box;
+}
+@media (max-height: 660px) {
+    .settingsNavItem { padding: 5px 14px !important; margin: 2px 0 !important; }
+    .settingsNavSpacer { flex: 0 0 10px; }
+    #settingsNavViewLogs { margin-bottom: 8px; padding: 6px 14px; }
+    .settingsNavDivider { margin-bottom: 12px !important; }
+    #settingsNavDone { padding: 8px 24px !important; }
+}
+
+/* ---- Ajustes: sin zona muerta al final y barra de scroll usable ---- */
+.settingsTab > *:first-child { margin-top: 30px !important; }
+.settingsTab > *:last-child { margin-bottom: 48px !important; }
+.settingsTab::-webkit-scrollbar { width: 8px; }
+.settingsTab::-webkit-scrollbar-track { display: block; background: transparent; }
+.settingsTab::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    box-shadow: none;
+}
+.settingsTab::-webkit-scrollbar-thumb:hover { background: var(--sc-accent); }
+
+/* ---- Selector de version/cuenta: se ajusta al contenido en cualquier pantalla ---- */
+#serverSelectContent,
+#accountSelectContent {
+    height: auto !important;
+    max-height: min(78vh, 640px) !important;
+    justify-content: flex-start !important;
+}
+#serverSelectList, #accountSelectList { min-height: 0; max-height: none; }
+#serverSelectListScrollable {
+    max-height: min(52vh, 420px) !important;
+    overflow-y: auto !important;
+}
+
+/* ---- Interruptores: azul del tema en vez del verde heredado ---- */
+.toggleSwitchSlider {
+    background-color: rgba(255, 255, 255, 0.10) !important;
+    border: 1px solid var(--sc-line) !important;
+    transition: background-color 0.22s var(--sc-ease), border-color 0.22s var(--sc-ease) !important;
+}
+.toggleSwitchSlider:before {
+    height: 14px !important;
+    width: 14px !important;
+    left: 2px !important;
+    bottom: 2px !important;
+    border-radius: 50% !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6) !important;
+    transition: transform 0.22s var(--sc-ease) !important;
+}
+input:checked + .toggleSwitchSlider {
+    background-color: var(--sc-accent) !important;
+    border-color: var(--sc-accent) !important;
+    box-shadow: 0 0 12px -2px var(--sc-accent-soft);
+}
+input:checked + .toggleSwitchSlider:before { transform: translateX(20px) !important; }
+input:disabled + .toggleSwitchSlider { opacity: 0.45; cursor: not-allowed; }
+
+/* ---- Barra de progreso de lanzamiento: rail + acento ---- */
+#launch_progress[value] {
+    height: 6px !important;
+    border-radius: 999px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.10);
+}
+#launch_progress[value]::-webkit-progress-bar {
+    background-color: rgba(255, 255, 255, 0.10) !important;
+    border-radius: 999px;
+}
+#launch_progress[value]::-webkit-progress-value {
+    background-color: transparent !important;
+    background-image: linear-gradient(90deg, #5cb6e8, var(--sc-accent)) !important;
+    border-radius: 999px;
+    box-shadow: 0 0 14px var(--sc-accent-soft);
+    transition: width 0.25s var(--sc-ease);
+}
+
+/* ---- Hairlines unificadas al sistema del tema ---- */
+.settingsFieldContainer,
+#settingsGameResolutionContainer,
+.settingsFileSelContainer,
+#settingsMemoryContainer,
+#settingsMemoryTitle,
+.settingsModsHeader,
+.settingsAuthAccountTypeHeader,
+#settingsAboutCurrentHeadline,
+#settingsUpdateStatusHeadline,
+#settingsUpdateVersion,
+.settingsChangelogHeadline {
+    border-bottom-color: var(--sc-line) !important;
+}
+.settingsSubMod { border-left-color: var(--sc-line) !important; }
+.settingsDivider { background: var(--sc-line) !important; }
+.settingsNavDivider {
+    background: var(--sc-line) !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-bottom: 14px !important;
+}
+
+/* ---- Tarjeta de "Acerca de": mismo lenguaje que las nuevas ---- */
+#settingsAboutCurrentContainer {
+    background: var(--sc-glass) !important;
+    border: 1px solid var(--sc-line) !important;
+    border-radius: 18px !important;
+    overflow: hidden;
+}
+#settingsAboutCurrentContent { padding: 20px 24px !important; }
+#settingsAboutButtons { padding: 0 24px 6px !important; }
+#settingsAboutTitle { font-size: 18px; letter-spacing: 0.2px; padding-left: 12px; }
+#settingsUpdateTitle { font-size: 18px !important; }
+#settingsAboutCurrentVersionCheck,
+#settingsUpdateVersionCheck {
+    background: var(--sc-accent) !important;
+    color: #06131f !important;
+    box-shadow: 0 0 14px var(--sc-accent-soft) !important;
+}
+#settingsAboutCurrentVersionTitle { color: var(--sc-ink) !important; }
+
+/* ---- Textos: jerarquia y legibilidad (adios al gris de 10px) ---- */
+.settingsAboutButton {
+    font-size: 12px !important;
+    color: var(--sc-ink-dim) !important;
+    letter-spacing: 0.2px;
+}
+.settingsAboutButton:hover, .settingsAboutButton:focus { color: var(--sc-accent) !important; }
+.settingsFileSelDesc,
+#settingsMemoryDesc,
+#settingsJVMOptsDesc,
+#settingsDropinRefreshNote,
+#settingsAboutCurrentVersionLine {
+    font-size: 12px !important;
+    color: var(--sc-ink-dim) !important;
+    font-weight: normal !important;
+    line-height: 1.55;
+}
+.settingsTabHeaderDesc {
+    font-size: 13px;
+    color: var(--sc-ink-dim);
+    line-height: 1.5;
+    margin-top: 6px;
+    max-width: 62ch;
+}
+.settingsFieldTitle { color: var(--sc-ink) !important; font-size: 15px; letter-spacing: 0.2px; }
+.settingsFieldDesc {
+    color: var(--sc-ink-dim) !important;
+    font-size: 12.5px;
+    line-height: 1.5;
+    margin-top: 6px;
+    max-width: 56ch;
+}
+.settingsModVersion { font-size: 11.5px; color: var(--sc-ink-dim) !important; }
+#settingsTabJava a {
+    color: var(--sc-accent) !important;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(79, 169, 222, 0.35);
+}
+#settingsTabJava a:hover, #settingsTabJava a:focus { color: #7fc4ea !important; }
+
+/* ---- Acciones visibles sin necesidad de pasar el raton ---- */
+.settingsAuthAccountSelect,
+.settingsAuthAccountLogOut,
+.settingsSwitchServerButton { opacity: 1 !important; }
+.settingsAuthAccountSelect:not([selected]) { color: var(--sc-ink-dim) !important; }
+.settingsAuthAccountSelect:not([selected]):hover,
+.settingsAuthAccountSelect:not([selected]):focus {
+    color: var(--sc-accent) !important;
+    text-shadow: none !important;
+}
+.settingsAuthAccountLogOut {
+    border: 1px solid rgba(224, 143, 143, 0.40) !important;
+    color: #e08f8f !important;
+}
+.settingsAuthAccountLogOut:hover, .settingsAuthAccountLogOut:focus {
+    background: rgba(224, 143, 143, 0.14) !important;
+    text-shadow: none !important;
+}
+
+/* ---- Desplegables ---- */
+.settingsSelectSelected, .settingsSelectOptions, .settingsSelectOptions div {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: var(--sc-line) !important;
+    color: var(--sc-ink) !important;
+}
+.settingsSelectSelected {
+    border-radius: 12px !important;
+    padding: 9px 18px !important;
+    transition: border-color 0.2s var(--sc-ease), background 0.2s var(--sc-ease);
+}
+.settingsSelectSelected:hover { border-color: var(--sc-accent) !important; }
+.settingsSelectOptions div:hover { background: rgba(79, 169, 222, 0.18) !important; }
+
+/* ---- Sliders de memoria ---- */
+.rangeSlider { background: rgba(255, 255, 255, 0.12) !important; height: 6px !important; border-radius: 999px !important; }
+.rangeSliderBar {
+    background: linear-gradient(90deg, #5cb6e8, var(--sc-accent)) !important;
+    height: 6px !important;
+    border-radius: 999px 0 0 999px !important;
+}
+.rangeSliderTrack {
+    width: 9px !important;
+    height: 18px !important;
+    border-radius: 999px !important;
+    background: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(2, 8, 18, 0.75);
+    transition: box-shadow 0.2s var(--sc-ease);
+}
+.rangeSliderTrack:hover { box-shadow: 0 0 0 6px var(--sc-accent-soft); }
+
+/* ---- Foco de teclado visible (accesibilidad) ---- */
+#settingsNavDone:focus-visible,
+#settingsNavViewLogs:focus-visible,
+#settingsUpdateActionButton:focus-visible,
+#settingsRpImport:focus-visible,
+#settingsRpFolder:focus-visible,
+#settingsShadersImport:focus-visible,
+.settingsRpDelete:focus-visible,
+.settingsAuthAccountLogOut:focus-visible,
+.settingsAuthAccountSelect:focus-visible,
+#launch_button:focus-visible {
+    outline: 2px solid var(--sc-accent) !important;
+    outline-offset: 3px;
+}
+
+/* ---- Nombres largos: que envuelvan en vez de desbordar ---- */
+.settingsRpName { min-width: 0; overflow-wrap: anywhere; }
+.settingsShaderName { min-width: 0; overflow-wrap: anywhere; }
+.settingsShaderMeta { min-width: 0; flex: 1 1 auto; }
+#settingsShadersListHeader { flex-wrap: wrap; gap: 12px; }
+
+/* ---- Aviso de juego abierto en la pestana Paquetes ---- */
+#settingsRpGameNotice {
+    width: 75%;
+    box-sizing: border-box;
+    background: rgba(232, 170, 60, 0.12);
+    border: 1px solid rgba(232, 170, 60, 0.45);
+    border-radius: 12px;
+    color: #f0c47a;
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 12px 16px;
+    margin-bottom: 18px;
+}
+
+/* ---- Aviso de actualizacion automatica ---- */
+#settingsUpdateAutoHint {
+    font-size: 12px;
+    color: var(--sc-ink-dim);
+    line-height: 1.6;
+    margin-top: 14px;
+    max-width: 60ch;
+}
+
+/* ---- FIX: el pie de la navegacion de Ajustes se veia como una caja negra ----
+   El panel de ajustes es casi opaco y el rail izquierdo lleva ademas un velo
+   blanco del 3%, pero el pie pegajoso usaba el color del panel SIN ese velo, asi
+   que salia mas oscuro; y el padding-left de 26px del rail dejaba un borde
+   vertical a la izquierda. Ahora rail y pie comparten el MISMO color solido y el
+   pie ocupa todo el ancho de la columna, con lo que la costura desaparece. */
+#settingsNavContainer {
+    background: #0d131c !important;
+}
+#settingsNavContentBottom {
+    background: #0d131c !important;
+    margin-left: -26px;
+    padding-left: 26px;
+    padding-right: 12px;
+    box-sizing: border-box;
+    width: calc(100% + 26px);
+}

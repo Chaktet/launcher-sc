@@ -65,6 +65,10 @@ function bindOverlayKeys(state, content, dismissable){
  * @param {boolean} dismissable Optional. True to show the dismiss option, otherwise false.
  * @param {string} content Optional. The content div to be shown.
  */
+// El fundido de jQuery repintaba toda la ventana en cada tick (lag al abrir el
+// selector); ahora la visibilidad se anima con una transición CSS compuesta en GPU.
+let overlayHideTimeout = null
+
 function toggleOverlay(toggleState, dismissable = false, content = 'overlayContent'){
     if(toggleState == null){
         toggleState = !document.getElementById('main').hasAttribute('overlay')
@@ -74,7 +78,12 @@ function toggleOverlay(toggleState, dismissable = false, content = 'overlayConte
         dismissable = false
     }
     bindOverlayKeys(toggleState, content, dismissable)
+    const overlayContainer = document.getElementById('overlayContainer')
     if(toggleState){
+        if(overlayHideTimeout != null){
+            clearTimeout(overlayHideTimeout)
+            overlayHideTimeout = null
+        }
         document.getElementById('main').setAttribute('overlay', true)
         // Make things untabbable.
         $('#main *').attr('tabindex', '-1')
@@ -85,35 +94,31 @@ function toggleOverlay(toggleState, dismissable = false, content = 'overlayConte
         } else {
             $('#overlayDismiss').hide()
         }
-        $('#overlayContainer').fadeIn({
-            duration: 250,
-            start: () => {
-                if(getCurrentView() === VIEWS.settings){
-                    document.getElementById('settingsContainer').style.backgroundColor = 'transparent'
-                }
-            }
-        })
+        if(getCurrentView() === VIEWS.settings){
+            document.getElementById('settingsContainer').style.backgroundColor = 'transparent'
+        }
+        overlayContainer.style.display = 'flex'
+        // Doble rAF: garantiza que el display ya está aplicado antes de iniciar la transición.
+        requestAnimationFrame(() => requestAnimationFrame(() => overlayContainer.setAttribute('visible', '')))
     } else {
         document.getElementById('main').removeAttribute('overlay')
         // Make things tabbable.
         $('#main *').removeAttr('tabindex')
-        $('#overlayContainer').fadeOut({
-            duration: 250,
-            start: () => {
-                if(getCurrentView() === VIEWS.settings){
-                    document.getElementById('settingsContainer').style.backgroundColor = 'rgba(0, 0, 0, 0.50)'
-                }
-            },
-            complete: () => {
-                $('#' + content).parent().children().hide()
-                $('#' + content).show()
-                if(dismissable){
-                    $('#overlayDismiss').show()
-                } else {
-                    $('#overlayDismiss').hide()
-                }
+        if(getCurrentView() === VIEWS.settings){
+            document.getElementById('settingsContainer').style.backgroundColor = 'rgba(0, 0, 0, 0.50)'
+        }
+        overlayContainer.removeAttribute('visible')
+        overlayHideTimeout = setTimeout(() => {
+            overlayHideTimeout = null
+            overlayContainer.style.display = 'none'
+            $('#' + content).parent().children().hide()
+            $('#' + content).show()
+            if(dismissable){
+                $('#overlayDismiss').show()
+            } else {
+                $('#overlayDismiss').hide()
             }
-        })
+        }, 200)
     }
 }
 
@@ -182,11 +187,19 @@ document.getElementById('serverSelectConfirm').addEventListener('click', async (
             return
         }
     }
-    // None are selected? Not possible right? Meh, handle it.
+    // Si no hay ninguna marcada (p.ej. la config apunta a una versión que ya no
+    // existe) se elige la primera. Antes usaba 'i' fuera del bucle -> ReferenceError
+    // y el jugador se quedaba sin poder elegir versión.
     if(listings.length > 0){
-        const serv = (await DistroAPI.getDistribution()).getServerById(listings[i].getAttribute('servid'))
-        updateSelectedServer(serv)
-        toggleOverlay(false)
+        try {
+            const serv = (await DistroAPI.getDistribution()).getServerById(listings[0].getAttribute('servid'))
+            updateSelectedServer(serv)
+            refreshServerStatus(true)
+        } catch(err) {
+            console.error('No se pudo seleccionar la versión.', err)
+        } finally {
+            toggleOverlay(false)
+        }
     }
 })
 

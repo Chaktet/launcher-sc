@@ -57,7 +57,10 @@ function getCurrentView(){
     return currentView
 }
 
+let mainUIStarted = false
+
 async function showMainUI(data){
+    mainUIStarted = true
 
     if(!isDev){
         loggerAutoUpdater.info('Initializing..')
@@ -67,42 +70,42 @@ async function showMainUI(data){
     await prepareSettings(true)
     updateSelectedServer(data.getServerById(ConfigManager.getSelectedServer()))
     refreshServerStatus()
-    setTimeout(() => {
-        document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
-        document.body.style.backgroundImage = `url('assets/images/backgrounds/${document.body.getAttribute('bkid')}.jpg')`
-        $('#main').show()
 
-        const isLoggedIn = Object.keys(ConfigManager.getAuthAccounts()).length > 0
+    // Antes había 1,75 s de esperas fijas (setTimeout 750 + fadeIn 1000 de jQuery)
+    // que no hacían ningún trabajo útil y encima solapaban el fundido con el
+    // spinner girando. Ahora se muestra en cuanto está listo, con transición CSS.
+    document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
+    document.body.style.backgroundImage = `url('assets/images/backgrounds/${document.body.getAttribute('bkid')}.jpg')`
+    $('#main').show()
 
-        // If this is enabled in a development environment we'll get ratelimited.
-        // The relaunch frequency is usually far too high.
-        if(!isDev && isLoggedIn){
-            validateSelectedAccount()
-        }
+    const isLoggedIn = Object.keys(ConfigManager.getAuthAccounts()).length > 0
 
-        if(ConfigManager.isFirstLaunch()){
-            currentView = VIEWS.welcome
-            $(VIEWS.welcome).fadeIn(1000)
-        } else {
-            if(isLoggedIn){
-                currentView = VIEWS.landing
-                $(VIEWS.landing).fadeIn(1000)
-            } else {
-                loginOptionsCancelEnabled(false)
-                loginOptionsViewOnLoginSuccess = VIEWS.landing
-                loginOptionsViewOnLoginCancel = VIEWS.loginOptions
-                currentView = VIEWS.loginOptions
-                $(VIEWS.loginOptions).fadeIn(1000)
-            }
-        }
+    // If this is enabled in a development environment we'll get ratelimited.
+    // The relaunch frequency is usually far too high.
+    if(!isDev && isLoggedIn){
+        validateSelectedAccount()
+    }
 
-        setTimeout(() => {
-            $('#loadingContainer').fadeOut(500, () => {
-                $('#loadSpinnerImage').removeClass('rotating')
-            })
-        }, 250)
-        
-    }, 750)
+    if(ConfigManager.isFirstLaunch()){
+        currentView = VIEWS.welcome
+    } else if(isLoggedIn){
+        currentView = VIEWS.landing
+    } else {
+        loginOptionsCancelEnabled(false)
+        loginOptionsViewOnLoginSuccess = VIEWS.landing
+        loginOptionsViewOnLoginCancel = VIEWS.loginOptions
+        currentView = VIEWS.loginOptions
+    }
+    const vistaInicial = document.querySelector(currentView)
+    vistaInicial.style.display = 'block'
+    vistaInicial.classList.add('sc-view-in')
+
+    // Detener el giro ANTES de ocultar, para dejar de animar cuanto antes.
+    $('#loadSpinnerImage').removeClass('rotating')
+    const loading = document.getElementById('loadingContainer')
+    loading.setAttribute('hidden-fade', '')
+    setTimeout(() => { loading.style.display = 'none' }, 320)
+
     // Disable tabbing to the news container.
     initNews().then(() => {
         $('#newsContainer *').attr('tabindex', '-1')
@@ -455,6 +458,35 @@ ipcRenderer.on('distributionIndexDone', async (event, res) => {
         }
     }
 })
+
+// Rescate anti-carrera: si la distribución cargó tan rápido (caché local) que el
+// evento 'distributionIndexDone' se emitió ANTES de registrar el listener de arriba,
+// el evento se pierde y el launcher se queda en la pantalla de carga para siempre.
+// Comprobamos tras unos segundos y arrancamos manualmente si nadie lo hizo.
+setTimeout(async () => {
+    if(!mainUIStarted && !fatalStartupError && !rscShouldLoad){
+        console.log('[UIBinder] Evento de distribución perdido por carrera — arrancando manualmente.')
+        try {
+            const data = await DistroAPI.getDistribution()
+            if(data != null){
+                syncModConfigurations(data)
+                ensureJavaSettings(data)
+                if(document.readyState === 'interactive' || document.readyState === 'complete'){
+                    await showMainUI(data)
+                } else {
+                    rscShouldLoad = true
+                }
+            } else {
+                fatalStartupError = true
+                showFatalStartupError()
+            }
+        } catch(err) {
+            console.error('[UIBinder] Rescate falló:', err)
+            fatalStartupError = true
+            showFatalStartupError()
+        }
+    }
+}, 3000)
 
 // Util for development
 async function devModeToggle() {

@@ -139,32 +139,29 @@ function mojangErrorDisplayable(errorCode) {
  * @param {string} password The account password.
  * @returns {Promise.<Object>} Promise which resolves the resolved authenticated account object.
  */
+// Login NO-PREMIUM (offline): no se contacta con la API de Mojang.
+// El UUID debe coincidir con el que genera el servidor en online-mode=false:
+// UUID v3 = md5("OfflinePlayer:" + nombre), con nibbles de version/variante como
+// Java UUID.nameUUIDFromBytes.
+function getOfflineUUID(username) {
+    const crypto = require('crypto')
+    const hash = crypto.createHash('md5').update('OfflinePlayer:' + username, 'utf8').digest()
+    hash[6] = (hash[6] & 0x0f) | 0x30
+    hash[8] = (hash[8] & 0x3f) | 0x80
+    return hash.toString('hex')
+}
+
 exports.addMojangAccount = async function(username, password) {
-    try {
-        const response = await MojangRestAPI.authenticate(username, password, ConfigManager.getClientToken())
-        console.log(response)
-        if(response.responseStatus === RestResponseStatus.SUCCESS) {
-
-            const session = response.data
-            if(session.selectedProfile != null){
-                const ret = ConfigManager.addMojangAuthAccount(session.selectedProfile.id, session.accessToken, username, session.selectedProfile.name)
-                if(ConfigManager.getClientToken() == null){
-                    ConfigManager.setClientToken(session.clientToken)
-                }
-                ConfigManager.save()
-                return ret
-            } else {
-                return Promise.reject(mojangErrorDisplayable(MojangErrorCode.ERROR_NOT_PAID))
-            }
-
-        } else {
-            return Promise.reject(mojangErrorDisplayable(response.mojangErrorCode))
-        }
-        
-    } catch (err){
-        log.error(err)
-        return Promise.reject(mojangErrorDisplayable(MojangErrorCode.UNKNOWN))
+    if(!/^[a-zA-Z0-9_]{3,16}$/.test(username)) {
+        return Promise.reject({
+            title: 'Nombre no válido',
+            desc: 'El nombre debe tener 3-16 caracteres: letras, números y _ (sin espacios).'
+        })
     }
+    const uuid = getOfflineUUID(username)
+    const ret = ConfigManager.addMojangAuthAccount(uuid, uuid, username, username)
+    ConfigManager.save()
+    return ret
 }
 
 const AUTH_MODE = { FULL: 0, MS_REFRESH: 1, MC_REFRESH: 2 }
@@ -318,30 +315,8 @@ exports.removeMicrosoftAccount = async function(uuid){
  * otherwise false.
  */
 async function validateSelectedMojangAccount(){
-    const current = ConfigManager.getSelectedAccount()
-    const response = await MojangRestAPI.validate(current.accessToken, ConfigManager.getClientToken())
-
-    if(response.responseStatus === RestResponseStatus.SUCCESS) {
-        const isValid = response.data
-        if(!isValid){
-            const refreshResponse = await MojangRestAPI.refresh(current.accessToken, ConfigManager.getClientToken())
-            if(refreshResponse.responseStatus === RestResponseStatus.SUCCESS) {
-                const session = refreshResponse.data
-                ConfigManager.updateMojangAuthAccount(current.uuid, session.accessToken)
-                ConfigManager.save()
-            } else {
-                log.error('Error while validating selected profile:', refreshResponse.error)
-                log.info('Account access token is invalid.')
-                return false
-            }
-            log.info('Account access token validated.')
-            return true
-        } else {
-            log.info('Account access token validated.')
-            return true
-        }
-    }
-    
+    // Cuentas no-premium (offline): siempre válidas, no hay token que refrescar.
+    return true
 }
 
 /**

@@ -22,7 +22,9 @@
             z-index: 10;
         }
         #main[overlay] {
-            filter: blur(3px) contrast(0.9) brightness(1.0);
+            /* blur de pantalla completa eliminado: causaba tirones al abrir
+               overlays; un simple oscurecido es igual de legible y va fluido */
+            opacity: 0.35;
         }
     </style>
 </head>

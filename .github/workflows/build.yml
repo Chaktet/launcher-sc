@@ -1,38 +1,76 @@
 name: Build
 
-on: push
+# Compilación del instalador de Windows en un entorno público y reproducible.
+# SignPath firma el artefacto producido por ESTE flujo, y así queda verificado
+# que el binario procede del código fuente de este repositorio.
+
+on:
+  push:
+    branches: [master, main]
+    tags: ['v*']
+  workflow_dispatch:
 
 jobs:
-  release:
-    runs-on: ${{ matrix.os }}
+  build-windows:
+    runs-on: windows-latest
 
     permissions:
       contents: write
+      id-token: write
 
-    strategy:
-      matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+    env:
+      # Los secretos no se pueden consultar directamente en un "if", así que se
+      # traduce aquí a un simple true/false.
+      SIGNPATH_CONFIGURADO: ${{ secrets.SIGNPATH_API_TOKEN != '' }}
 
     steps:
-      - name: Check out Git repository
+      - name: Descargar el repositorio
         uses: actions/checkout@v6
 
-      - name: Set up Node
+      - name: Preparar Node
         uses: actions/setup-node@v6
         with:
           node-version: 22
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: 3.x
-
-      - name: Install Dependencies
+      - name: Instalar dependencias
         run: npm ci
-        shell: bash
 
-      - name: Build
+      - name: Compilar instalador de Windows
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run dist
-        shell: bash
+        # Aquí solo se construye; la release se publica aparte con el .exe ya firmado.
+        run: npx electron-builder --win --x64 --publish never
+
+      - name: Publicar artefacto sin firmar
+        id: artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: instalador-sin-firmar
+          path: |
+            dist/*.exe
+            dist/*.blockmap
+            dist/latest.yml
+          if-no-files-found: error
+
+      # Los pasos siguientes solo se ejecutan cuando SignPath ya está configurado.
+      # Mientras SignPath Foundation no apruebe el proyecto, el secreto no existe
+      # y se saltan, de modo que el flujo sigue siendo válido igualmente.
+      - name: Solicitar firma a SignPath
+        if: env.SIGNPATH_CONFIGURADO == 'true'
+        uses: signpath/github-action-submit-signing-request@v1
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: sc-launcher
+          signing-policy-slug: release-signing
+          github-artifact-id: ${{ steps.artefacto.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: dist-firmado
+
+      - name: Publicar instalador firmado
+        if: env.SIGNPATH_CONFIGURADO == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: instalador-firmado
+          path: dist-firmado/**
+          if-no-files-found: error

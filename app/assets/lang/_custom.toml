@@ -1,20 +1,399 @@
-# Custom Language File for Launcher Customizer
+# Personalización SC Launcher (Servidor Cobblemon) · traducción completa ES
 
 [ejs.app]
-title = "Helios Launcher"
+title = "SC Launcher"
 
 [ejs.landing]
-mediaGitHubURL = "https://github.com/dscalzi/HeliosLauncher"
+updateAvailableTooltip = "Actualización disponible"
+usernamePlaceholder = "Usuario"
+usernameEditButton = "Editar"
+settingsTooltip = "Ajustes"
+serverStatus = "SERVIDOR"
+serverStatusPlaceholder = "OFFLINE"
+mojangStatus = "ESTADO MOJANG"
+mojangStatusTooltipTitle = "Servicios"
+mojangStatusNETitle = "No&nbsp;esenciales"
+newsButton = "NOTICIAS"
+launchButton = "JUGAR"
+launchButtonPlaceholder = "&#8226; Sin servidor seleccionado"
+launchDetails = "Espera un momento.."
+newsNavigationStatus = "{currentPage} de {totalPages}"
+newsErrorLoadSpan = "Buscando noticias.."
+newsErrorFailedSpan = "No se pudieron cargar las noticias"
+newsErrorRetryButton = "Reintentar"
+newsErrorNoneSpan = "Sin noticias"
+mediaGitHubURL = "https://servidorcobblemon.es"
 mediaXURL = "#"
 mediaInstagramURL = "#"
 mediaYouTubeURL = "#"
-mediaDiscordURL = "https://discord.gg/zNWUXdt"
+mediaDiscordURL = "https://discord.gg/servidorcobblemon"
+
+[ejs.login]
+loginCancelText = "Cancelar"
+loginSubheader = "ACCESO NO PREMIUM"
+loginEmailError = "* Nombre no válido"
+loginEmailPlaceholder = "NOMBRE DE USUARIO"
+loginPasswordError = "* Obligatorio"
+loginPasswordPlaceholder = "CONTRASEÑA"
+loginForgotPasswordLink = "#"
+loginForgotPasswordText = ""
+loginRememberMeText = "¿recordarme?"
+loginButtonText = "ENTRAR"
+loginNeedAccountLink = "#"
+loginNeedAccountText = ""
+loginPasswordDisclaimer1 = "Tu cuenta se protege con contraseña DENTRO del servidor (/register y /login)."
+loginPasswordDisclaimer2 = "{appName} no está afiliado a Mojang AB."
+
+[ejs.loginOptions]
+loginOptionsTitle = "¿Cómo quieres entrar?"
+loginWithMicrosoft = "Premium (cuenta Microsoft)"
+loginWithMojang = "No Premium (solo nombre)"
+cancelButton = "Cancelar"
+
+[ejs.overlay]
+serverSelectHeader = "¿Qué versión quieres jugar?"
+serverSelectConfirm = "Jugar esta versión"
+serverSelectCancel = "Cancelar"
+accountSelectHeader = "Elige una cuenta"
+accountSelectConfirm = "Seleccionar"
+accountSelectCancel = "Cancelar"
 
 [ejs.settings]
-sourceGithubLink = "https://github.com/dscalZi/HeliosLauncher"
-supportLink = "https://github.com/dscalZi/HeliosLauncher/issues"
+sourceGithubLink = "https://github.com/Chaktet/launcher-sc"
+supportLink = "https://discord.gg/servidorcobblemon"
+navViewLogs = "📄 Registros del juego"
+tabRpHeaderText = "Paquetes de recursos"
+tabRpHeaderDesc = "Activa, desactiva, importa o quita paquetes de texturas."
+rpListTitle = "Tus paquetes"
+rpImport = "＋ Importar paquete (.zip)"
+rpGameNotice = "⚠ Minecraft está abierto. Ciérralo para cambiar los paquetes: el juego reescribe su configuración al salir y perderías los cambios."
+rpFolder = "📁 Abrir carpeta"
+rpHint = "Los cambios se aplican la próxima vez que abras Minecraft. El paquete oficial del servidor siempre mantiene la prioridad más alta para que los Pokémon y menús se vean bien."
+tabShadersHeaderText = "Ajustes de shaders"
+tabShadersHeaderDesc = "Activa, desactiva o importa shaders. Se aplican al abrir el juego."
+shadersLiteNotice = "⚠ Los shaders solo funcionan en la versión PRO. La versión LITE no los incluye para dar el máximo rendimiento."
+shadersListTitle = "Elige tu shader"
+shadersImport = "＋ Importar shader (.zip)"
+shadersHint = "El cambio se aplica la próxima vez que abras Minecraft. Si el juego va lento, vuelve a \"Sin shaders\"."
+aboutStatsTitle = "📊 Estadísticas del launcher"
+aboutHistoryLabel = "Versiones anteriores"
+updateAutoHint = "Las actualizaciones se descargan solas. No hace falta reinstalar nada: pulsa el botón para reiniciar e instalar al momento, o simplemente cierra el launcher y se aplicará sola para la próxima vez."
+navHeaderText = "Ajustes"
+navAccount = "Cuenta"
+navMinecraft = "Minecraft"
+navMods = "Mods"
+navResourcepacks = "Paquetes"
+navShaders = "Shaders"
+navJava = "Java"
+navLauncher = "Launcher"
+navAbout = "Acerca de"
+navUpdates = "Actualizaciones"
+navDone = "Listo"
+tabAccountHeaderText = "Ajustes de cuenta"
+tabAccountHeaderDesc = "Añade cuentas nuevas o gestiona las existentes."
+microsoftAccount = "Microsoft (Premium)"
+addMicrosoftAccount = "+ Añadir cuenta Microsoft"
+mojangAccount = "No Premium"
+addMojangAccount = "+ Añadir cuenta No Premium"
+minecraftTabHeaderText = "Ajustes de Minecraft"
+minecraftTabHeaderDesc = "Opciones del lanzamiento del juego."
+gameResolutionTitle = "Resolución del juego"
+launchFullscreenTitle = "Iniciar en pantalla completa."
+autoConnectTitle = "Conectar automáticamente al servidor al iniciar."
+launchDetachedTitle = "Iniciar el juego separado del launcher."
+launchDetachedDesc = "Si el juego no está separado, cerrar el launcher también cerrará el juego."
+tabModsHeaderText = "Ajustes de mods"
+tabModsHeaderDesc = "Activa o desactiva mods."
+switchServerButton = "Cambiar"
+requiredMods = "Mods obligatorios"
+optionalMods = "Mods opcionales"
+dropinMods = "Mods propios"
+addMods = "Añadir mods"
+dropinRefreshNote = "(F5 para refrescar)"
+shaderpacks = "Shaders"
+shaderpackDesc = "Activa o desactiva shaders. Ten en cuenta que los shaders solo van fluidos en equipos potentes. Puedes añadir packs personalizados aquí."
+selectShaderpack = "Elegir shaderpack"
+tabJavaHeaderText = "Ajustes de Java"
+tabJavaHeaderDesc = "Gestiona la configuración de Java (avanzado)."
+memoryTitle = "Memoria"
+maxRAM = "RAM máxima"
+minRAM = "RAM mínima"
+memoryDesc = "El mínimo recomendado son 3 gigabytes de RAM. Poner el mínimo y el máximo al mismo valor puede reducir el lag."
+memoryTotalTitle = "Total"
+memoryAvailableTitle = "Disponible"
+javaExecutableTitle = "Ejecutable de Java"
+javaExecSelDialogTitle = "Selecciona el ejecutable de Java"
+javaExecSelButtonText = "Elegir archivo"
+javaExecDesc = "El ejecutable de Java se valida antes de lanzar el juego."
+javaPathDesc = "La ruta debe terminar en <strong>{pathSuffix}</strong>."
+jvmOptsTitle = "Opciones adicionales de JVM"
+jvmOptsDesc = "Opciones que se pasan a la JVM al ejecutar. No incluyas <em>-Xms</em> ni <em>-Xmx</em>."
+launcherTabHeaderText = "Ajustes del launcher"
+launcherTabHeaderDesc = "Opciones del propio launcher."
+allowPrereleaseTitle = "Permitir actualizaciones pre-release."
+allowPrereleaseDesc = "Las pre-releases incluyen novedades que quizá no estén del todo probadas.<br>Esto siempre estará activo si ya usas una versión pre-release."
+dataDirectoryTitle = "Carpeta de datos"
+selectDataDirectory = "Selecciona la carpeta de datos"
+chooseFolder = "Elegir carpeta"
+dataDirectoryDesc = "Todos los archivos del juego y las instalaciones locales de Java se guardan en la carpeta de datos.<br>Las capturas y los mundos se guardan en la carpeta de la instancia del servidor correspondiente."
+aboutTabHeaderText = "Acerca de"
+aboutTabHeaderDesc = "Información y notas de la versión actual."
+aboutTitle = "{appName}"
+stableRelease = "Versión estable"
+versionText = "Versión "
+sourceGithub = "Código (GitHub)"
+support = "Soporte"
+devToolsConsole = "Consola DevTools"
+releaseNotes = "Notas de la versión"
+changelog = "Cambios"
+noReleaseNotes = "Sin notas de versión"
+viewReleaseNotes = "Ver notas de la versión en GitHub"
+launcherUpdatesHeaderText = "Actualizaciones del launcher"
+launcherUpdatesHeaderDesc = "Descarga, instala y revisa actualizaciones del launcher."
+checkForUpdates = "Buscar actualizaciones"
+whatsNew = "Novedades"
+updateReleaseNotes = "Notas de la actualización"
+
+[ejs.waiting]
+waitingText = "Esperando a Microsoft.."
 
 [ejs.welcome]
-welcomeHeader = "WELCOME TO WESTEROSCRAFT"
-welcomeDescription = "Our mission is to recreate the universe imagined by author George RR Martin in his fantasy series, A Song of Ice and Fire.  Through the collaborative effort of thousands of community members, we have sought to create Westeros as accurately and precisely as possible within Minecraft.  The world we are creating is yours to explore.  Journey from Dorne to Castle Black, and if you aren’t afraid, beyond the Wall itself, but best not delay.  As the words of House Stark ominously warn: Winter is Coming."
-welcomeDescCTA = "You are just a few clicks away from Westeros."
+welcomeHeader = "BIENVENIDO A SERVIDOR COBBLEMON"
+welcomeDescription = "Tu aventura Cobblemon empieza aquí. El launcher instala automáticamente todo lo necesario: Minecraft 1.21.1, los mods y el paquete de recursos del servidor. Solo inicia sesión y pulsa JUGAR."
+welcomeDescCTA = "Estás a un clic de empezar."
+continueButton = "CONTINUAR"
+
+[js.discord]
+waiting = "Esperando al cliente.."
+state = "Servidor: {shortId}"
+
+[js.index]
+microsoftLoginTitle = "Inicio de sesión Microsoft"
+microsoftLogoutTitle = "Cierre de sesión Microsoft"
+
+[js.login]
+login = "ENTRAR"
+loggingIn = "ENTRANDO"
+success = "¡LISTO!"
+tryAgain = "Reintentar"
+
+[js.login.error]
+invalidValue = "* Nombre no válido (3-16 letras, números o _)"
+requiredValue = "* Escribe tu nombre de usuario"
+
+[js.login.error.unknown]
+title = "Error desconocido al entrar"
+desc = "Ha ocurrido un error desconocido. Mira la consola para más detalles."
+
+[js.landing.launch]
+pleaseWait = "Espera un momento.."
+failureTitle = "Error al iniciar"
+failureText = "Mira la consola (CTRL + Shift + i) para más detalles."
+okay = "Vale"
+
+[js.landing.selectedAccount]
+noAccountSelected = "Sin cuenta seleccionada"
+
+[js.landing.selectedServer]
+noSelection = "Sin servidor seleccionado"
+loading = "Cargando.."
+
+[js.landing.serverStatus]
+server = "SERVIDOR"
+offline = "OFFLINE"
+players = "JUGADORES"
+
+[js.landing.systemScan]
+checking = "Comprobando el sistema.."
+noCompatibleJava = "No se encontró una<br>instalación de Java compatible"
+installJavaMessage = "Para jugar necesitas Java {major} de 64 bits. ¿Quieres que lo instalemos por ti?"
+installJava = "Instalar Java"
+installJavaManually = "Instalar manualmente"
+javaDownloadPrepare = "Preparando la descarga de Java.."
+javaDownloadFailureTitle = "Error al descargar Java"
+javaDownloadFailureText = "Mira la consola (CTRL + Shift + i) para más detalles."
+javaRequired = "Se necesita Java<br>para jugar"
+javaRequiredMessage = 'Se necesita una instalación x64 de Java {major} para jugar.<br><br>Instálalo e inténtalo de nuevo.'
+javaRequiredDismiss = "Entendido"
+javaRequiredCancel = "Volver"
+
+[js.landing.downloadJava]
+findJdkFailure = "No se pudo encontrar la distribución de OpenJDK."
+javaDownloadCorruptedError = "El JDK descargado tiene un hash incorrecto, el archivo puede estar corrupto."
+extractingJava = "Extrayendo Java"
+javaInstalled = "¡Java instalado!"
+
+[js.landing.dlAsync]
+loadingServerInfo = "Cargando información del servidor.."
+fatalError = "Error fatal"
+unableToLoadDistributionIndex = "No se pudo cargar el índice de distribución. Mira la consola (CTRL + Shift + i) para más detalles."
+pleaseWait = "Espera un momento.."
+errorDuringLaunchTitle = "Error al iniciar"
+seeConsoleForDetails = "Mira la consola (CTRL + Shift + i) para más detalles."
+validatingFileIntegrity = "Verificando archivos.."
+errorDuringFileVerificationTitle = "Error al verificar archivos"
+downloadingFiles = "Descargando archivos.."
+errorDuringFileDownloadTitle = "Error al descargar archivos"
+preparingToLaunch = "Preparando el lanzamiento.."
+launchingGame = "Iniciando el juego.."
+launchWrapperNotDownloaded = "El archivo principal, LaunchWrapper, no se descargó correctamente y el juego no puede iniciar.<br><br>Para arreglarlo, desactiva temporalmente tu antivirus y vuelve a iniciar el juego."
+doneEnjoyServer = "¡Listo! ¡Disfruta del servidor!"
+checkConsoleForDetails = "Mira la consola (CTRL + Shift + i) para más detalles."
+
+[js.landing.news]
+checking = "Buscando noticias"
+
+[js.landing.discord]
+loading = "Cargando el juego.."
+joining = "¡Entrando a Servidor Cobblemon!"
+joined = "¡Atrapándolos a todos!"
+
+[js.overlay]
+dismiss = "Cerrar"
+
+[js.settings.fileSelectors]
+executables = "Ejecutables"
+allFiles = "Todos los archivos"
+
+[js.settings.mstfLogin]
+errorTitle = "Algo salió mal"
+errorMessage = "La autenticación con Microsoft falló. Inténtalo de nuevo."
+okButton = "OK"
+
+[js.settings.mstfLogout]
+errorTitle = "Algo salió mal"
+errorMessage = "El cierre de sesión de Microsoft falló. Inténtalo de nuevo."
+okButton = "OK"
+
+[js.settings.authAccountSelect]
+selectButton = "Seleccionar cuenta"
+selectedButton = "Cuenta seleccionada &#10004;"
+
+[js.settings.authAccountLogout]
+lastAccountWarningTitle = "Aviso<br>Es tu única cuenta"
+lastAccountWarningMessage = "Para usar el launcher necesitas al menos una cuenta. Tendrás que iniciar sesión de nuevo.<br><br>¿Seguro que quieres salir?"
+confirmButton = "Sí, seguro"
+cancelButton = "Cancelar"
+
+[js.settings.authAccountPopulate]
+username = "Usuario"
+uuid = "UUID"
+selectAccount = "Seleccionar cuenta"
+selectedAccount = "Cuenta seleccionada ✓"
+logout = "Cerrar sesión"
+
+[js.settings.dropinMods]
+removeButton = "Quitar"
+deleteFailedTitle = "No se pudo borrar<br>el mod {fullName}"
+deleteFailedMessage = "Asegúrate de que el archivo no está en uso e inténtalo de nuevo."
+failedToggleTitle = "No se pudieron activar/desactivar<br>uno o más mods"
+okButton = "Vale"
+
+[js.settings.serverListing]
+mainServer = "Servidor principal"
+
+[js.settings.java]
+selectedJava = "Seleccionado: Java {version} ({vendor})"
+invalidSelection = "Selección no válida"
+requiresJava = "Requiere Java {major} x64."
+availableOptions = "Opciones disponibles para Java {major} (HotSpot VM)"
+
+[js.settings.about]
+preReleaseTitle = "Pre-release"
+stableReleaseTitle = "Versión estable"
+releaseNotesFailed = "No se pudieron cargar las notas de la versión."
+
+[js.settings.updates]
+newReleaseTitle = "Nueva versión disponible"
+newPreReleaseTitle = "Nueva pre-release disponible"
+downloadingButton = "Descargando.."
+downloadButton = 'Descargar desde GitHub<span style="font-size: 10px;color: gray;text-shadow: none !important;">Cierra el launcher y ejecuta el instalador para actualizar.</span>'
+latestVersionTitle = "Tienes la última versión"
+checkForUpdatesButton = "Buscar actualizaciones"
+checkingForUpdatesButton = "Buscando actualizaciones.."
+
+[js.settings.msftLogin]
+errorTitle = "Fallo al entrar con Microsoft"
+errorMessage = "No pudimos autenticar tu cuenta Microsoft. Inténtalo de nuevo."
+okButton = "OK"
+
+[js.uibinder.startup]
+fatalErrorTitle = "Error fatal: no se pudo cargar el índice de distribución"
+fatalErrorMessage = "No se pudo conectar con nuestros servidores para descargar el índice de distribución y no hay copia local. <br><br>Este archivo es esencial: contiene la información más reciente del servidor y el launcher no puede arrancar sin él. Comprueba tu conexión a internet y vuelve a abrir la aplicación."
+closeButton = "Cerrar"
+
+[js.uibinder.validateAccount]
+failedMessageTitle = "No se pudo refrescar la sesión"
+failedMessage = "No pudimos refrescar la sesión de <strong>{account}</strong>. Elige otra cuenta o inicia sesión de nuevo."
+failedMessageSelectAnotherAccount = "No pudimos refrescar la sesión de <strong>{account}</strong>. Inicia sesión de nuevo."
+loginButton = "Entrar"
+selectAnotherAccountButton = "Elegir otra cuenta"
+
+[js.settings]
+rpEmpty = "Todavía no hay paquetes. Usa \"Importar paquete\" para añadir el tuyo."
+rpOfficial = "OFICIAL"
+rpDelete = "Quitar"
+rpImportTitle = "Selecciona paquetes de recursos (.zip) para importar"
+rpDeleteTitle = "¿Quitar este paquete?"
+rpDeleteDesc = "{pack} se moverá a la papelera de Windows. Podrás recuperarlo desde ahí si te arrepientes."
+rpDeleteConfirm = "Quitar"
+rpDeleteCancel = "Cancelar"
+shadersNone = "Sin shaders"
+shadersNoneDesc = "Máximo rendimiento (recomendado)"
+shadersActive = "ACTIVO"
+shadersImportTitle = "Selecciona shaders (.zip) para importar"
+statsLaunchersHour = "Launchers activos (últimas 2 h)"
+statsLaunchersToday = "Launchers únicos hoy"
+statsExeToday = "Descargas del instalador hoy"
+statsUpdated = "Actualizado"
+statsError = "No se pudieron cargar las estadísticas"
+
+[js.uicore.autoUpdate]
+checkingForUpdateButton = "Buscando actualizaciones..."
+installNowButton = "Reiniciar e instalar"
+checkForUpdatesButton = "Buscar actualizaciones"
+downloadingProgress = "Descargando"
+tooltipDownloading = "Descargando actualización…"
+tooltipReady = "¡Lista! Pulsa aquí para instalar"
+
+[js.auth.microsoft.error]
+noProfileTitle = "Error al entrar:<br>perfil sin configurar"
+noProfileDesc = "Tu cuenta Microsoft aún no tiene un perfil de Minecraft. Si compraste el juego hace poco o lo canjeaste con Xbox Game Pass, configura tu perfil en <a href=\"https://minecraft.net/\">Minecraft.net</a>.<br><br>Si no tienes el juego comprado, puedes entrar igualmente con la opción No Premium."
+noXboxAccountTitle = "Error al entrar:<br>sin cuenta Xbox"
+noXboxAccountDesc = "Tu cuenta Microsoft no tiene ninguna cuenta Xbox asociada."
+xblBannedTitle = "Error al entrar:<br>Xbox Live no disponible"
+xblBannedDesc = "Tu cuenta Microsoft es de un país donde Xbox Live no está disponible."
+under18Title = "Error al entrar:<br>se necesita aprobación parental"
+under18Desc = "Las cuentas de menores de 18 años deben añadirse a una Familia por un adulto."
+unknownTitle = "Error desconocido al entrar"
+unknownDesc = "Ha ocurrido un error desconocido. Mira la consola para más detalles."
+
+[js.auth.mojang.error]
+methodNotAllowedTitle = "Error interno:<br>método no permitido"
+methodNotAllowedDesc = "Método no permitido. Reporta este error."
+notFoundTitle = "Error interno:<br>no encontrado"
+notFoundDesc = "No se encontró el endpoint de autenticación. Reporta este error."
+accountMigratedTitle = "Error al entrar:<br>cuenta migrada"
+accountMigratedDesc = "Intentaste entrar con una cuenta migrada. Prueba usando el email de la cuenta como usuario."
+invalidCredentialsTitle = "Error al entrar:<br>credenciales incorrectas"
+invalidCredentialsDesc = "El nombre o la contraseña no son correctos. Inténtalo de nuevo."
+tooManyAttemptsTitle = "Error al entrar:<br>demasiados intentos"
+tooManyAttemptsDesc = "Ha habido demasiados intentos con esta cuenta. Espera un poco e inténtalo de nuevo."
+invalidTokenTitle = "Error al entrar:<br>token no válido"
+invalidTokenDesc = "El token de acceso no es válido."
+tokenHasProfileTitle = "Error al entrar:<br>token con perfil"
+tokenHasProfileDesc = "El token de acceso ya tiene un perfil asignado."
+credentialsMissingTitle = "Error al entrar:<br>faltan credenciales"
+credentialsMissingDesc = "No se envió usuario/contraseña o la contraseña es demasiado corta."
+invalidSaltVersionTitle = "Error al entrar:<br>versión de salt no válida"
+invalidSaltVersionDesc = "Versión de salt no válida."
+unsupportedMediaTypeTitle = "Error interno:<br>tipo de medio no soportado"
+unsupportedMediaTypeDesc = "Tipo de medio no soportado. Reporta este error."
+accountGoneTitle = "Error al entrar:<br>cuenta migrada"
+accountGoneDesc = "La cuenta fue migrada a una cuenta Microsoft. Entra con Microsoft."
+unreachableTitle = "Error al entrar:<br>sin conexión"
+unreachableDesc = "No se pudo contactar con los servidores de autenticación. Comprueba tu conexión a internet."
+gameNotPurchasedTitle = "Error al entrar:<br>juego no comprado"
+gameNotPurchasedDesc = "Esta cuenta no tiene Minecraft comprado. Puedes entrar igualmente con la opción No Premium."
+unknownErrorTitle = "Error desconocido al entrar"
+unknownErrorDesc = "Ha ocurrido un error desconocido. Mira la consola para más detalles."

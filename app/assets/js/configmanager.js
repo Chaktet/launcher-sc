@@ -529,6 +529,16 @@ function defaultJavaConfig8(ram) {
     }
 }
 
+// Ruta ASCII compartida para las DLL de LWJGL, con subcarpeta por usuario
+// (hash) para evitar choques de permisos en equipos multiusuario.
+function lwjglExtractPath() {
+    const os = require('os')
+    const crypto = require('crypto')
+    const base = process.env.ProgramData || 'C:\\ProgramData'
+    const userTag = crypto.createHash('md5').update(os.userInfo().username, 'utf8').digest('hex').substring(0, 8)
+    return path.join(base, 'SCLauncher', 'natives-' + userTag)
+}
+
 function defaultJavaConfig17(ram) {
     return {
         minRAM: resolveSelectedRAM(ram),
@@ -540,7 +550,12 @@ function defaultJavaConfig17(ram) {
             '-XX:G1NewSizePercent=20',
             '-XX:G1ReservePercent=20',
             '-XX:MaxGCPauseMillis=50',
-            '-XX:G1HeapRegionSize=32M'
+            '-XX:G1HeapRegionSize=32M',
+            // LWJGL extrae sus DLL a %TEMP% por defecto y falla si el antivirus
+            // lo bloquea o si la ruta contiene tildes/ñ (usuarios españoles):
+            // "Failed to locate library: lwjgl.dll". Extraemos a una ruta ASCII
+            // fija fuera del perfil del usuario y de %TEMP%.
+            '-Dorg.lwjgl.system.SharedLibraryExtractPath=' + lwjglExtractPath()
         ],
     }
 }
@@ -554,6 +569,13 @@ function defaultJavaConfig17(ram) {
 exports.ensureJavaConfig = function(serverid, effectiveJavaOptions, ram) {
     if(!Object.prototype.hasOwnProperty.call(config.javaConfig, serverid)) {
         config.javaConfig[serverid] = defaultJavaConfig(effectiveJavaOptions, ram)
+    } else {
+        // Migración: añade la ruta de extracción de LWJGL a configuraciones
+        // creadas antes del fix (antivirus / rutas con tildes).
+        const jvmOpts = config.javaConfig[serverid].jvmOptions
+        if(Array.isArray(jvmOpts) && !jvmOpts.some(o => typeof o === 'string' && o.startsWith('-Dorg.lwjgl.system.SharedLibraryExtractPath'))) {
+            jvmOpts.push('-Dorg.lwjgl.system.SharedLibraryExtractPath=' + lwjglExtractPath())
+        }
     }
 }
 

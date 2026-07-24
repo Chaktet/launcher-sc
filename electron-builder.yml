@@ -1,8 +1,13 @@
-appId: 'helioslauncher'
-productName: 'Helios Launcher'
-artifactName: '${productName}-setup-${version}.${ext}'
+appId: 'es.servidorcobblemon.sclauncher'
+productName: 'SC Launcher'
+artifactName: 'SC-Launcher-setup-${version}.${ext}'
 
-copyright: 'Copyright © 2018-2026 Daniel Scalzi'
+publish:
+  provider: 'github'
+  owner: 'Chaktet'
+  repo: 'launcher-sc'
+
+copyright: 'Servidor Cobblemon · basado en Helios Launcher (Daniel Scalzi)'
 
 asar: true
 compression: 'maximum'
@@ -21,10 +26,18 @@ win:
 
 # Windows Installer Configuration
 nsis:
-  oneClick: false
+  # Instalación de un solo clic (sin asistente): permite que las actualizaciones
+  # se instalen en silencio desde el propio launcher y que éste se reinicie solo.
+  oneClick: true
   perMachine: false
   allowElevation: true
-  allowToChangeInstallationDirectory: true
+  allowToChangeInstallationDirectory: false
+  createDesktopShortcut: always
+  createStartMenuShortcut: true
+  shortcutName: 'SC Launcher'
+  runAfterFinish: true
+  # Nunca borrar los datos del jugador (cuentas, mods, mundos) al desinstalar.
+  deleteAppDataOnUninstall: false
 
 # macOS Configuration
 mac:

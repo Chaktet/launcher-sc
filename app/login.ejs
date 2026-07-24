@@ -9,6 +9,7 @@
         <form id="loginForm">
             <img id="loginImageSeal" src="assets/images/SealCircle.png"/>
             <span id="loginSubheader"><%- lang('login.loginSubheader') %></span>
+            <span class="sc-login-help">Escribe el nombre con el que quieres jugar y pulsa ENTRAR</span>
             <div class="loginFieldContainer">
                 <svg id="profileSVG" class="loginSVG" viewBox="40 37 65.36 61.43">
                     <g>
@@ -18,7 +19,8 @@
                 <span class="loginErrorSpan" id="loginEmailError"><%- lang('login.loginEmailError') %></span>
                 <input id="loginUsername" class="loginField" type="text" placeholder="<%- lang('login.loginEmailPlaceholder') %>"/>
             </div>
-            <div class="loginFieldContainer">
+            <!-- No-premium: sin contraseña en el launcher (la cuenta se protege con /login del servidor) -->
+            <div class="loginFieldContainer" style="display: none;">
                 <svg id="lockSVG" class="loginSVG" viewBox="40 32 60.36 70.43">
                     <g>
                         <path d="M86.16,54a16.38,16.38,0,1,0-32,0H44V102.7H96V54Zm-25.9-3.39a9.89,9.89,0,1,1,19.77,0A9.78,9.78,0,0,1,79.39,54H60.89A9.78,9.78,0,0,1,60.26,50.59ZM70,96.2a6.5,6.5,0,0,1-6.5-6.5,6.39,6.39,0,0,1,3.1-5.4V67h6.5V84.11a6.42,6.42,0,0,1,3.39,5.6A6.5,6.5,0,0,1,70,96.2Z"/>
@@ -28,7 +30,7 @@
                 <input id="loginPassword" class="loginField" type="password" placeholder="<%- lang('login.loginPasswordPlaceholder') %>"/>
             </div>
             <div id="loginOptions">
-                <span class="loginSpanDim">
+                <span class="loginSpanDim" style="display: none;">
                     <a href="<%- lang('login.loginForgotPasswordLink') %>"><%- lang('login.loginForgotPasswordText') %></a>
                 </span>
                 <label id="checkmarkContainer">
@@ -53,7 +55,7 @@
                 </div>
             </button>
             <div id="loginDisclaimer">
-                <span class="loginSpanDim" id="loginRegisterSpan">
+                <span class="loginSpanDim" id="loginRegisterSpan" style="display: none;">
                     <a href="<%- lang('login.loginNeedAccountLink') %>"><%- lang('login.loginNeedAccountText') %></a>
                 </span>
                 <p class="loginDisclaimerText"><%- lang('login.loginPasswordDisclaimer1') %></p>

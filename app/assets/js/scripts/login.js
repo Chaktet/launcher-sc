@@ -2,7 +2,8 @@
  * Script for login.ejs
  */
 // Validation Regexes.
-const validUsername         = /^[a-zA-Z0-9_]{1,16}$/
+// No-premium: solo nombre de Minecraft valido (3-16, sin emails).
+const validUsername         = /^[a-zA-Z0-9_]{3,16}$/
 const basicEmail            = /^\S+@\S+\.\S+$/
 //const validEmail          = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
 
@@ -19,7 +20,8 @@ const loginButton           = document.getElementById('loginButton')
 const loginForm             = document.getElementById('loginForm')
 
 // Control variables.
-let lu = false, lp = false
+// lp=true: el campo contraseña esta oculto (login no-premium solo con nombre).
+let lu = false, lp = true
 
 
 /**
@@ -53,7 +55,7 @@ function shakeError(element){
  */
 function validateEmail(value){
     if(value){
-        if(!basicEmail.test(value) && !validUsername.test(value)){
+        if(!validUsername.test(value)){
             showError(loginEmailError, Lang.queryJS('login.error.invalidValue'))
             loginDisabled(true)
             lu = false

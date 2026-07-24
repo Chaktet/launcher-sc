@@ -1,6 +1,9 @@
 MIT License
 
-Copyright (c) 2017-2026 Daniel D. Scalzi
+Copyright (c) 2017-2026 Daniel D. Scalzi (Helios Launcher)
+Copyright (c) 2026 Servidor Cobblemon (SC Launcher)
+
+SC Launcher is a fork of Helios Launcher (https://github.com/dscalzi/HeliosLauncher).
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +22,13 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+NOTA SOBRE MARCAS
+
+Minecraft es una marca registrada de Mojang Studios / Microsoft. Este proyecto
+no está afiliado ni respaldado por Mojang Studios, Microsoft, Nintendo,
+The Pokémon Company ni por el equipo de Cobblemon. SC Launcher no distribuye
+archivos del juego Minecraft: cada usuario debe disponer de su propia copia y
+cuenta.

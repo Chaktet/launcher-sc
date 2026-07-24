@@ -100,6 +100,10 @@ function setLaunchEnabled(val){
 
 // Bind launch button
 document.getElementById('launch_button').addEventListener('click', async e => {
+    if(proc != null){
+        loggerLanding.info('El juego ya está en marcha — ignorando clic en JUGAR.')
+        return
+    }
     loggerLanding.info('Launching game..')
     try {
         const server = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
@@ -149,7 +153,7 @@ function updateSelectedAccount(authUser){
             username = authUser.displayName
         }
         if(authUser.uuid != null){
-            document.getElementById('avatarContainer').style.backgroundImage = `url('https://mc-heads.net/body/${authUser.uuid}/right')`
+            document.getElementById('avatarContainer').style.backgroundImage = `url('https://mc-heads.net/avatar/${authUser.uuid}/64')`
         }
     }
     user_text.innerHTML = username
@@ -245,7 +249,6 @@ const refreshServerStatus = async (fade = false) => {
     try {
 
         const servStat = await getServerStatus(47, serv.hostname, serv.port)
-        console.log(servStat)
         pLabel = Lang.queryJS('landing.serverStatus.players')
         pVal = servStat.players.online + '/' + servStat.players.max
 
@@ -560,8 +563,12 @@ async function dlAsync(login = true) {
         // const SERVER_JOINED_REGEX = /\[.+\]: \[CHAT\] [a-zA-Z0-9_]{1,16} joined the game/
         const SERVER_JOINED_REGEX = new RegExp(`\\[.+\\]: \\[CHAT\\] ${authUser.displayName} joined the game`)
 
+        // La barra de estado se mantiene visible durante TODO el arranque del
+        // juego (antes volvía al botón JUGAR a los pocos segundos y parecía
+        // que no pasaba nada → la gente pulsaba JUGAR varias veces).
         const onLoadComplete = () => {
-            toggleLaunchArea(false)
+            setLaunchDetails(Lang.queryJS('landing.dlAsync.doneEnjoyServer'))
+            setTimeout(() => toggleLaunchArea(false), 3000)
             if(hasRPC){
                 DiscordWrapper.updateDetails(Lang.queryJS('landing.discord.loading'))
                 proc.stdout.on('data', gameStateChange)
@@ -569,20 +576,14 @@ async function dlAsync(login = true) {
             proc.stdout.removeListener('data', tempListener)
             proc.stderr.removeListener('data', gameErrorListener)
         }
-        const start = Date.now()
 
-        // Attach a temporary listener to the client output.
-        // Will wait for a certain bit of text meaning that
-        // the client application has started, and we can hide
-        // the progress bar stuff.
+        // Hitos reales del arranque leídos del log del juego.
         const tempListener = function(data){
-            if(GAME_LAUNCH_REGEX.test(data.trim())){
-                const diff = Date.now()-start
-                if(diff < MIN_LINGER) {
-                    setTimeout(onLoadComplete, MIN_LINGER-diff)
-                } else {
-                    onLoadComplete()
-                }
+            data = data.trim()
+            if(GAME_LAUNCH_REGEX.test(data)){
+                setLaunchDetails('Cargando los mods..')
+            } else if(GAME_JOINED_REGEX.test(data) || data.includes('Connecting to')){
+                onLoadComplete()
             }
         }
 
@@ -612,7 +613,13 @@ async function dlAsync(login = true) {
             proc.stdout.on('data', tempListener)
             proc.stderr.on('data', gameErrorListener)
 
-            setLaunchDetails(Lang.queryJS('landing.dlAsync.doneEnjoyServer'))
+            setLaunchDetails('Abriendo Minecraft..')
+
+            // Si el juego muere o se cierra, restaurar el botón JUGAR.
+            proc.on('close', () => {
+                toggleLaunchArea(false)
+                proc = null
+            })
 
             // Init Discord Hook
             if(distro.rawDistribution.discord != null && serv.rawServer.discord != null){
@@ -1023,4 +1030,38 @@ async function loadNews(){
     })
 
     return await promise
+}
+
+// Pista de perfiles PRO/LITE: abre el mismo selector de servidor.
+const profileHint = document.getElementById('profile_hint')
+if(profileHint != null){
+    profileHint.addEventListener('click', () => {
+        document.getElementById('server_selection_button').click()
+    })
+    // Actualiza el texto segun el perfil seleccionado.
+    const refreshProfileHint = () => {
+        const sel = ConfigManager.getSelectedServer() || ''
+        if(sel.includes('Lite')){
+            profileHint.innerHTML = 'Juegas la versión <strong>LITE</strong> (gama baja) — ¿PC potente? <span class="profile_hint_link">Cambia a PRO aquí</span>'
+        } else {
+            profileHint.innerHTML = 'Juegas la versión <strong>PRO</strong> — ¿tu PC es de gama baja? <span class="profile_hint_link">Cambia a LITE aquí</span>'
+        }
+    }
+    refreshProfileHint()
+    // Reengancha cuando cambie la seleccion (el texto del boton selector cambia al elegir).
+    const selObserver = new MutationObserver(refreshProfileHint)
+    selObserver.observe(document.getElementById('server_selection_button'), { childList: true, subtree: true })
+}
+
+// Toda la pildora de cuenta abre la gestion de cuentas.
+const userContentChip = document.getElementById('user_content')
+if(userContentChip != null){
+    userContentChip.style.cursor = 'pointer'
+    userContentChip.addEventListener('click', async e => {
+        if(e.target && e.target.id === 'avatarOverlay'){ return }
+        await prepareSettings()
+        switchView(getCurrentView(), VIEWS.settings, 500, 500, () => {
+            settingsNavItemListener(document.getElementById('settingsNavAccount'), false)
+        })
+    })
 }

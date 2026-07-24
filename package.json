@@ -1,13 +1,13 @@
 {
-  "name": "helioslauncher",
-  "version": "2.2.1",
-  "productName": "Helios Launcher",
-  "description": "Modded Minecraft Launcher",
+  "name": "sclauncher",
+  "version": "1.2.2",
+  "productName": "SC Launcher",
+  "description": "Launcher oficial de servidorcobblemon.es — servidor de Minecraft Java con Cobblemon",
   "author": "Daniel Scalzi (https://github.com/dscalzi/)",
-  "license": "UNLICENSED",
-  "homepage": "https://github.com/dscalzi/HeliosLauncher",
+  "license": "MIT",
+  "homepage": "https://servidorcobblemon.es",
   "bugs": {
-    "url": "https://github.com/dscalzi/HeliosLauncher/issues"
+    "url": "https://servidorcobblemon.es"
   },
   "private": true,
   "main": "index.js",
@@ -47,6 +47,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dscalzi/HeliosLauncher.git"
+    "url": "git+https://github.com/Chaktet/launcher-sc.git"
   }
 }

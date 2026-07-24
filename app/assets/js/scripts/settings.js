@@ -3,7 +3,7 @@ const os     = require('os')
 const semver = require('semver')
 
 const DropinModUtil  = require('./assets/js/dropinmodutil')
-const { MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR } = require('./assets/js/ipcconstants')
+const { MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR, SHELL_OPCODE } = require('./assets/js/ipcconstants')
 
 const settingsState = {
     invalid: new Set()
@@ -326,13 +326,30 @@ function fullSettingsSave() {
     saveModConfiguration()
     ConfigManager.save()
     saveDropinModConfiguration()
-    saveShaderpackSettings()
+    // saveShaderpackSettings() eliminado: escribía shaderPack=OFF en el formato de
+    // OptiFine cada vez que se pulsaba "Listo", peleándose con la pestaña Shaders.
 }
 
 /* Closes the settings view and saves all data. */
 settingsNavDone.onclick = () => {
     fullSettingsSave()
     switchView(getCurrentView(), VIEWS.landing)
+}
+
+/* Abre la carpeta de registros de la instancia seleccionada, con latest.log
+   resaltado, para que el jugador pueda adjuntarlo en un ticket de soporte. */
+document.getElementById('settingsNavViewLogs').onclick = () => {
+    const nodeFs = require('fs')
+    const nodePath = require('path')
+    const instDir = nodePath.join(ConfigManager.getInstanceDirectory(), ConfigManager.getSelectedServer() || '')
+    const latestLog = nodePath.join(instDir, 'logs', 'latest.log')
+    if(nodeFs.existsSync(latestLog)){
+        shell.showItemInFolder(latestLog)
+    } else if(nodeFs.existsSync(instDir)){
+        shell.openPath(instDir)
+    } else {
+        shell.openPath(ConfigManager.getDataDirectory())
+    }
 }
 
 /**
@@ -969,12 +986,15 @@ function saveDropinModConfiguration(){
 // Refresh the drop-in mods when F5 is pressed.
 // Only active on the mods tab.
 document.addEventListener('keydown', async (e) => {
-    if(getCurrentView() === VIEWS.settings && selectedSettingsTab === 'settingsTabMods'){
-        if(e.key === 'F5'){
-            await reloadDropinMods()
-            saveShaderpackSettings()
-            await resolveShaderpacksForUI()
-        }
+    if(getCurrentView() !== VIEWS.settings || e.key !== 'F5'){
+        return
+    }
+    if(selectedSettingsTab === 'settingsTabMods'){
+        await reloadDropinMods()
+    } else if(selectedSettingsTab === 'settingsTabShaders'){
+        populateShadersTab()
+    } else if(selectedSettingsTab === 'settingsTabResourcepacks'){
+        await populateResourcepacksTab()
     }
 })
 
@@ -1132,10 +1152,8 @@ function animateSettingsTabRefresh(){
 async function prepareModsTab(first){
     await resolveModsForUI()
     await resolveDropinModsForUI()
-    await resolveShaderpacksForUI()
     bindDropinModsRemoveButton()
     bindDropinModFileSystemButton()
-    bindShaderpackButton()
     bindModsToggleSwitch()
     await loadSelectedServerOnModsTab()
 }
@@ -1453,11 +1471,26 @@ function populateAboutVersionInformation(){
  */
 function populateReleaseNotes(){
     $.ajax({
-        url: 'https://github.com/dscalzi/HeliosLauncher/releases.atom',
+        url: 'https://github.com/Chaktet/launcher-sc/releases.atom',
         success: (data) => {
             const version = 'v' + remote.app.getVersion()
             const entries = $(data).find('entry')
-            
+
+            // Versión instalada desplegada + historial de versiones anteriores plegado.
+            let historyHtml = ''
+            for(let i=0; i<entries.length; i++){
+                const entry = $(entries[i])
+                let id = entry.find('id').text()
+                id = id.substring(id.lastIndexOf('/')+1)
+                if(id !== version){
+                    historyHtml += `<details class="sc-relnote"><summary>${entry.find('title').text()}</summary><div class="sc-relnote-body">${entry.find('content').text()}</div></details>`
+                }
+            }
+            if(historyHtml.length > 0){
+                document.getElementById('settingsAboutHistory').innerHTML = historyHtml
+                document.getElementById('settingsAboutHistoryCont').style.display = 'block'
+            }
+
             for(let i=0; i<entries.length; i++){
                 const entry = $(entries[i])
                 let id = entry.find('id').text()
@@ -1565,6 +1598,399 @@ function prepareUpdateTab(data = null){
   * 
   * @param {boolean} first Whether or not it is the first load.
   */
+/**
+ * Shaders Tab (Iris)
+ * Gestión de shaderpacks de la instancia seleccionada: activar uno, ninguno,
+ * o importar zips propios. El estado vive en config/iris.properties.
+ */
+function sc$shadersDirs(){
+    const nodePath = require('path')
+    const inst = nodePath.join(ConfigManager.getInstanceDirectory(), ConfigManager.getSelectedServer() || '')
+    return {
+        packs: nodePath.join(inst, 'shaderpacks'),
+        irisCfg: nodePath.join(inst, 'config', 'iris.properties')
+    }
+}
+
+function sc$escapeHtml(s){
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;')
+}
+
+function sc$readActiveShader(){
+    const nodeFs = require('fs')
+    const d = sc$shadersDirs()
+    try {
+        if(nodeFs.existsSync(d.irisCfg)){
+            const txt = nodeFs.readFileSync(d.irisCfg, 'utf8')
+            const enabled = /^enableShaders\s*=\s*true/m.test(txt)
+            const m = txt.match(/^shaderPack\s*=\s*(.*)$/m)
+            if(enabled && m != null && m[1].trim().length > 0){
+                return m[1].trim()
+            }
+        }
+    } catch(e){
+        console.warn('No se pudo leer iris.properties', e)
+    }
+    return null
+}
+
+function sc$writeActiveShader(packName){
+    const nodeFs = require('fs')
+    const nodePath = require('path')
+    const d = sc$shadersDirs()
+    nodeFs.mkdirSync(nodePath.dirname(d.irisCfg), { recursive: true })
+    let lines = []
+    if(nodeFs.existsSync(d.irisCfg)){
+        lines = nodeFs.readFileSync(d.irisCfg, 'utf8').split(/\r?\n/)
+            .filter(l => !/^enableShaders\s*=/.test(l) && !/^shaderPack\s*=/.test(l))
+            .filter(l => l.trim().length > 0)
+    }
+    lines.push('enableShaders=' + (packName != null))
+    lines.push('shaderPack=' + (packName != null ? packName : ''))
+    nodeFs.writeFileSync(d.irisCfg, lines.join('\n') + '\n')
+}
+
+function sc$shaderDisplayName(f){
+    return f.replace(/\.zip$/i, '').replace(/[_-]+/g, ' ').replace(/\s{2,}/g, ' ').trim()
+}
+
+function sc$shaderRow(packName, selected){
+    const label = packName == null ? Lang.queryJS('settings.shadersNone') : sc$shaderDisplayName(packName)
+    const sub = packName == null ? Lang.queryJS('settings.shadersNoneDesc') : packName
+    return `<div class="settingsShaderRow" packname="${packName == null ? '' : sc$escapeHtml(packName)}"${selected ? ' selected' : ''}>
+        <div class="settingsShaderRadio"></div>
+        <div class="settingsShaderMeta">
+            <div class="settingsShaderName">${sc$escapeHtml(label)}</div>
+            <div class="settingsShaderFile">${sc$escapeHtml(sub)}</div>
+        </div>
+        ${selected ? `<div class="settingsShaderActive">${Lang.queryJS('settings.shadersActive')}</div>` : ''}
+    </div>`
+}
+
+function populateShadersTab(){
+    const nodeFs = require('fs')
+    const d = sc$shadersDirs()
+    const isLite = (ConfigManager.getSelectedServer() || '').toLowerCase().includes('lite')
+    document.getElementById('settingsShadersNotice').style.display = isLite ? 'block' : 'none'
+    let packs = []
+    try {
+        if(nodeFs.existsSync(d.packs)){
+            packs = nodeFs.readdirSync(d.packs).filter(f => f.toLowerCase().endsWith('.zip')).sort()
+        }
+    } catch(e){
+        packs = []
+    }
+    const active = sc$readActiveShader()
+    const list = document.getElementById('settingsShadersList')
+    let html = sc$shaderRow(null, active == null)
+    for(const p of packs){
+        html += sc$shaderRow(p, p === active)
+    }
+    list.innerHTML = html
+    Array.from(list.getElementsByClassName('settingsShaderRow')).forEach(row => {
+        row.onclick = () => {
+            const val = row.getAttribute('packname')
+            sc$writeActiveShader(val === '' ? null : val)
+            populateShadersTab()
+        }
+    })
+}
+
+document.getElementById('settingsShadersImport').onclick = async () => {
+    const nodeFs = require('fs')
+    const nodePath = require('path')
+    const d = sc$shadersDirs()
+    const res = await remote.dialog.showOpenDialog(remote.getCurrentWindow(), {
+        title: Lang.queryJS('settings.shadersImportTitle'),
+        properties: ['openFile', 'multiSelections'],
+        filters: [{ name: 'Shader pack (.zip)', extensions: ['zip'] }]
+    })
+    if(res.canceled || res.filePaths.length === 0){
+        return
+    }
+    nodeFs.mkdirSync(d.packs, { recursive: true })
+    for(const fp of res.filePaths){
+        nodeFs.copyFileSync(fp, nodePath.join(d.packs, nodePath.basename(fp)))
+    }
+    populateShadersTab()
+}
+
+/**
+ * Resourcepacks Tab
+ * Activa/desactiva, importa o quita paquetes de recursos. El estado vive en la
+ * línea resourcePacks de options.txt (el último de la lista manda), así que el
+ * pack oficial se mantiene siempre con la máxima prioridad.
+ */
+const SC_PACK_OFICIAL = 'SC-Pack.zip'
+
+function sc$rpDirs(){
+    const nodePath = require('path')
+    const inst = nodePath.join(ConfigManager.getInstanceDirectory(), ConfigManager.getSelectedServer() || '')
+    return {
+        packs: nodePath.join(inst, 'resourcepacks'),
+        options: nodePath.join(inst, 'options.txt')
+    }
+}
+
+function sc$readOptionsPacks(){
+    const nodeFs = require('fs')
+    const d = sc$rpDirs()
+    const res = { base: ['vanilla', 'fabric'], enabled: [] }
+    try {
+        if(nodeFs.existsSync(d.options)){
+            const line = nodeFs.readFileSync(d.options, 'utf8').split(/\r?\n/).find(l => l.startsWith('resourcePacks:'))
+            if(line != null){
+                const arr = JSON.parse(line.substring('resourcePacks:'.length))
+                res.base = arr.filter(e => !e.startsWith('file/'))
+                res.enabled = arr.filter(e => e.startsWith('file/')).map(e => e.substring(5))
+            }
+        }
+    } catch(e){
+        console.warn('No se pudo leer resourcePacks de options.txt', e)
+    }
+    return res
+}
+
+function sc$writeOptionsPacks(base, enabled){
+    const nodeFs = require('fs')
+    const d = sc$rpDirs()
+    const value = 'resourcePacks:' + JSON.stringify([...base, ...enabled.map(f => 'file/' + f)])
+    const raw = nodeFs.existsSync(d.options) ? nodeFs.readFileSync(d.options, 'utf8') : ''
+    // Respetar el fin de línea original (Windows suele usar CRLF) y no dejar
+    // líneas en blanco ni perder el salto final.
+    const eol = raw.includes('\r\n') ? '\r\n' : '\n'
+    const lines = raw.length > 0 ? raw.split(/\r?\n/) : []
+    while(lines.length > 0 && lines[lines.length - 1].trim() === ''){
+        lines.pop()
+    }
+    const idx = lines.findIndex(l => l.startsWith('resourcePacks:'))
+    if(idx >= 0){
+        lines[idx] = value
+    } else {
+        lines.push(value)
+    }
+    nodeFs.writeFileSync(d.options, lines.join(eol) + eol)
+}
+
+/* Minecraft reescribe options.txt al cerrarse, así que cualquier cambio hecho
+   con el juego abierto se perdería. */
+function sc$juegoAbierto(){
+    return typeof proc !== 'undefined' && proc != null
+}
+
+async function sc$officialPackNames(){
+    const nodePath = require('path')
+    const out = new Set()
+    try {
+        const serv = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
+        for(const mdl of serv.modules){
+            const p = mdl.getPath()
+            if(p != null && p.replace(/\\/g, '/').includes('/resourcepacks/') && p.toLowerCase().endsWith('.zip')){
+                out.add(nodePath.basename(p))
+            }
+        }
+    } catch(e){
+        console.warn('No se pudo leer la lista de packs oficiales', e)
+    }
+    return out
+}
+
+function sc$togglePack(packName, activar){
+    const { base, enabled } = sc$readOptionsPacks()
+    let lista = enabled.filter(p => p !== packName)
+    if(activar){
+        // El pack oficial conserva siempre la prioridad más alta (va el último).
+        const posOficial = lista.indexOf(SC_PACK_OFICIAL)
+        if(packName !== SC_PACK_OFICIAL && posOficial >= 0){
+            lista.splice(posOficial, 0, packName)
+        } else {
+            lista.push(packName)
+        }
+    }
+    sc$writeOptionsPacks(base, lista)
+}
+
+/**
+ * Activa una sola vez los paquetes oficiales nuevos que llegan con una
+ * actualización del servidor. options.txt no se sobrescribe en instalaciones
+ * ya existentes, así que sin esto el jugador se descargaría el paquete pero no
+ * lo vería. Se apunta lo ya aplicado para no volver a activar lo que el jugador
+ * haya desactivado a propósito.
+ */
+function sc$activarPacksOficialesNuevos(oficiales){
+    if(sc$juegoAbierto()){
+        return
+    }
+    const nodeFs = require('fs')
+    const nodePath = require('path')
+    const d = sc$rpDirs()
+    const marcador = nodePath.join(nodePath.dirname(d.options), '.sc-packs-auto.json')
+    try {
+        let yaAplicados = []
+        if(nodeFs.existsSync(marcador)){
+            yaAplicados = JSON.parse(nodeFs.readFileSync(marcador, 'utf8'))
+        }
+        const activos = sc$readOptionsPacks().enabled
+        let cambios = false
+        for(const p of oficiales){
+            if(yaAplicados.includes(p) || activos.includes(p)){
+                if(!yaAplicados.includes(p)){
+                    yaAplicados.push(p)
+                    cambios = true
+                }
+                continue
+            }
+            if(nodeFs.existsSync(nodePath.join(d.packs, p))){
+                sc$togglePack(p, true)
+                yaAplicados.push(p)
+                cambios = true
+            }
+        }
+        if(cambios){
+            nodeFs.writeFileSync(marcador, JSON.stringify(yaAplicados))
+        }
+    } catch(e){
+        console.warn('No se pudieron activar los paquetes oficiales nuevos', e)
+    }
+}
+
+async function populateResourcepacksTab(){
+    const nodeFs = require('fs')
+    const oficiales = await sc$officialPackNames()
+    sc$activarPacksOficialesNuevos(oficiales)
+    const d = sc$rpDirs()
+    let packs = []
+    try {
+        if(nodeFs.existsSync(d.packs)){
+            packs = nodeFs.readdirSync(d.packs).filter(f => f.toLowerCase().endsWith('.zip')).sort((a, b) => a.localeCompare(b, 'es'))
+        }
+    } catch(e){
+        packs = []
+    }
+    const activos = sc$readOptionsPacks().enabled
+    const list = document.getElementById('settingsRpList')
+    if(packs.length === 0){
+        list.innerHTML = `<div class="settingsRpEmpty">${Lang.queryJS('settings.rpEmpty')}</div>`
+        return
+    }
+    let html = ''
+    for(const p of packs){
+        const esOficial = oficiales.has(p)
+        const activo = activos.includes(p)
+        html += `<div class="settingsRpRow">
+            <label class="toggleSwitch">
+                <input type="checkbox" class="settingsRpToggle" packname="${sc$escapeHtml(p)}"${activo ? ' checked' : ''}>
+                <span class="toggleSwitchSlider"></span>
+            </label>
+            <div class="settingsRpMeta">
+                <div class="settingsRpName">${sc$escapeHtml(sc$shaderDisplayName(p))}${esOficial ? `<span class="settingsRpBadge">${Lang.queryJS('settings.rpOfficial')}</span>` : ''}</div>
+                <div class="settingsRpFile">${sc$escapeHtml(p)}</div>
+            </div>
+            ${esOficial ? '' : `<button class="settingsRpDelete" packname="${sc$escapeHtml(p)}">${Lang.queryJS('settings.rpDelete')}</button>`}
+        </div>`
+    }
+    list.innerHTML = html
+    const bloqueado = sc$juegoAbierto()
+    document.getElementById('settingsRpGameNotice').style.display = bloqueado ? 'block' : 'none'
+    Array.from(list.getElementsByClassName('settingsRpToggle')).forEach(inp => {
+        inp.disabled = bloqueado
+        inp.onchange = () => {
+            try {
+                sc$togglePack(inp.getAttribute('packname'), inp.checked)
+            } catch(e){
+                console.warn('No se pudo guardar el cambio del paquete', e)
+                inp.checked = !inp.checked // revertir: no se guardó nada
+            }
+        }
+    })
+    Array.from(list.getElementsByClassName('settingsRpDelete')).forEach(btn => {
+        btn.disabled = bloqueado
+        btn.onclick = () => {
+            const nodePath = require('path')
+            const p = btn.getAttribute('packname')
+            setOverlayContent(
+                Lang.queryJS('settings.rpDeleteTitle'),
+                Lang.queryJS('settings.rpDeleteDesc').replace('{pack}', sc$shaderDisplayName(p)),
+                Lang.queryJS('settings.rpDeleteConfirm'),
+                Lang.queryJS('settings.rpDeleteCancel')
+            )
+            setOverlayHandler(async () => {
+                toggleOverlay(false)
+                // A la papelera (recuperable), igual que hace el launcher con los mods.
+                const res = await ipcRenderer.invoke(SHELL_OPCODE.TRASH_ITEM, nodePath.join(d.packs, p))
+                if(res.result){
+                    sc$togglePack(p, false)
+                } else {
+                    console.warn('No se pudo mover el paquete a la papelera', res.error)
+                }
+                await populateResourcepacksTab()
+            })
+            setDismissHandler(() => toggleOverlay(false))
+            toggleOverlay(true, true)
+        }
+    })
+}
+
+document.getElementById('settingsRpImport').onclick = async () => {
+    const nodeFs = require('fs')
+    const nodePath = require('path')
+    const d = sc$rpDirs()
+    const res = await remote.dialog.showOpenDialog(remote.getCurrentWindow(), {
+        title: Lang.queryJS('settings.rpImportTitle'),
+        properties: ['openFile', 'multiSelections'],
+        filters: [{ name: 'Paquete de recursos (.zip)', extensions: ['zip'] }]
+    })
+    if(res.canceled || res.filePaths.length === 0){
+        return
+    }
+    nodeFs.mkdirSync(d.packs, { recursive: true })
+    for(const fp of res.filePaths){
+        const destino = nodePath.basename(fp)
+        nodeFs.copyFileSync(fp, nodePath.join(d.packs, destino))
+        sc$togglePack(destino, true)
+    }
+    await populateResourcepacksTab()
+}
+
+document.getElementById('settingsRpFolder').onclick = () => {
+    const nodeFs = require('fs')
+    const d = sc$rpDirs()
+    nodeFs.mkdirSync(d.packs, { recursive: true })
+    shell.openPath(d.packs)
+}
+
+/**
+ * Panel oculto de estadísticas (solo para el staff): 5 clics en el logo de
+ * "Acerca de" lo muestran. Lee stats.json generado cada 5 min en el servidor
+ * de descargas a partir del log de accesos.
+ */
+let sc$statsClicks = 0
+document.getElementById('settingsAboutLogo').addEventListener('click', async () => {
+    if(++sc$statsClicks < 5){
+        return
+    }
+    const panel = document.getElementById('settingsAboutStats')
+    const grid = document.getElementById('settingsAboutStatsGrid')
+    panel.style.display = 'block'
+    grid.innerHTML = '…'
+    try {
+        const res = await fetch('https://descargas.servidorcobblemon.es/launcher/stats.json', { cache: 'no-store' })
+        if(!res.ok){
+            throw new Error('HTTP ' + res.status)
+        }
+        const s = await res.json()
+        // Datos remotos: escapar siempre antes de inyectarlos como HTML.
+        const fila = (label, val) => `<div class="sc-stat"><div class="sc-stat-num">${sc$escapeHtml(val)}</div><div class="sc-stat-label">${label}</div></div>`
+        grid.innerHTML =
+            fila(Lang.queryJS('settings.statsLaunchersHour'), s.launchers_ultimas_2h) +
+            fila(Lang.queryJS('settings.statsLaunchersToday'), s.launchers_hoy) +
+            fila(Lang.queryJS('settings.statsExeToday'), s.descargas_exe_hoy) +
+            `<div class="sc-stat-updated">${Lang.queryJS('settings.statsUpdated')}: ${sc$escapeHtml(s.generado)}</div>`
+    } catch(e){
+        grid.innerHTML = `<span class="sc-stat-error">${Lang.queryJS('settings.statsError')}</span>`
+    }
+})
+
 async function prepareSettings(first = false) {
     if(first){
         setupSettingsTabs()
@@ -1573,6 +1999,8 @@ async function prepareSettings(first = false) {
     } else {
         await prepareModsTab()
     }
+    populateShadersTab()
+    await populateResourcepacksTab()
     await initSettingsValues()
     prepareAccountsTab()
     await prepareJavaTab()

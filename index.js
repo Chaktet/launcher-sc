@@ -29,12 +29,20 @@ function initAutoUpdater(event, data) {
     if(isDev){
         autoUpdater.autoInstallOnAppQuit = false
         autoUpdater.updateConfigPath = path.join(__dirname, 'dev-app-update.yml')
+    } else {
+        // Descarga en segundo plano y, si el jugador simplemente cierra el
+        // launcher, la actualización se aplica sola sin pedirle nada.
+        autoUpdater.autoDownload = true
+        autoUpdater.autoInstallOnAppQuit = true
     }
     if(process.platform === 'darwin'){
         autoUpdater.autoDownload = false
     }
     autoUpdater.on('update-available', (info) => {
         event.sender.send('autoUpdateNotification', 'update-available', info)
+    })
+    autoUpdater.on('download-progress', (progress) => {
+        event.sender.send('autoUpdateNotification', 'download-progress', progress)
     })
     autoUpdater.on('update-downloaded', (info) => {
         event.sender.send('autoUpdateNotification', 'update-downloaded', info)
@@ -77,7 +85,9 @@ ipcMain.on('autoUpdateAction', (event, arg, data) => {
             }
             break
         case 'installUpdateNow':
-            autoUpdater.quitAndInstall()
+            // (isSilent, isForceRunAfter): instala sin asistente y vuelve a abrir
+            // el launcher automáticamente.
+            autoUpdater.quitAndInstall(true, true)
             break
         default:
             console.log('Unknown argument', arg)
@@ -104,9 +114,10 @@ ipcMain.handle(SHELL_OPCODE.TRASH_ITEM, async (event, ...args) => {
     }
 })
 
-// Disable hardware acceleration.
-// https://electronjs.org/docs/tutorial/offscreen-rendering
-app.disableHardwareAcceleration()
+// La aceleración por hardware se mantiene ACTIVADA a propósito: la interfaz usa
+// varias capas con desenfoque (backdrop-filter) que por CPU van a tirones en
+// equipos modestos. Chromium ya cae solo a software en las GPU problemáticas.
+// (HeliosLauncher la desactivaba por un fallo antiguo de Electron.)
 
 
 const REDIRECT_URI_PREFIX = 'https://login.microsoftonline.com/common/oauth2/nativeclient?'
@@ -225,8 +236,12 @@ let win
 function createWindow() {
 
     win = new BrowserWindow({
-        width: 980,
-        height: 552,
+        width: 1100,
+        height: 700,
+        // Sin mínimo, la ventana se podía encoger hasta romper toda la interfaz.
+        // Este mínimo sigue cabiendo de sobra en portátiles de 1366x768.
+        minWidth: 900,
+        minHeight: 540,
         icon: getPlatformIcon('SealCircle'),
         frame: false,
         webPreferences: {
