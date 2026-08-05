@@ -10,7 +10,10 @@ exports.MSFT_OPCODE = {
     OPEN_LOGIN: 'MSFT_AUTH_OPEN_LOGIN',
     OPEN_LOGOUT: 'MSFT_AUTH_OPEN_LOGOUT',
     REPLY_LOGIN: 'MSFT_AUTH_REPLY_LOGIN',
-    REPLY_LOGOUT: 'MSFT_AUTH_REPLY_LOGOUT'
+    REPLY_LOGOUT: 'MSFT_AUTH_REPLY_LOGOUT',
+    // Cierra las ventanas de Microsoft desde el propio launcher, para que el
+    // botón de cancelar de la pantalla de espera tenga algo que cancelar.
+    CANCEL: 'MSFT_AUTH_CANCEL'
 }
 // Reply types for REPLY opcode.
 exports.MSFT_REPLY_TYPE = {

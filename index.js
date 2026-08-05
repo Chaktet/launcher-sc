@@ -159,8 +159,8 @@ ipcMain.on(MSFT_OPCODE.OPEN_LOGIN, (ipcEvent, ...arguments_) => {
             let queryMap = {}
             
             new URL(uri).searchParams.forEach((v, k) => {
-                queryMap[k] = v;
-            });
+                queryMap[k] = v
+            })
 
             ipcEvent.reply(MSFT_OPCODE.REPLY_LOGIN, MSFT_REPLY_TYPE.SUCCESS, queryMap, msftAuthViewSuccess)
 
@@ -172,6 +172,18 @@ ipcMain.on(MSFT_OPCODE.OPEN_LOGIN, (ipcEvent, ...arguments_) => {
 
     msftAuthWindow.removeMenu()
     msftAuthWindow.loadURL(`https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?prompt=select_account&client_id=${AZURE_CLIENT_ID}&response_type=code&scope=XboxLive.signin%20offline_access&redirect_uri=https://login.microsoftonline.com/common/oauth2/nativeclient`)
+})
+
+// El jugador cancela desde la pantalla de espera. Cerrar la ventana dispara su
+// evento 'close', que ya responde NOT_FINISHED y devuelve al launcher a la
+// pantalla anterior; así hay un único camino de vuelta en vez de dos.
+ipcMain.on(MSFT_OPCODE.CANCEL, () => {
+    if(msftAuthWindow) {
+        msftAuthWindow.close()
+    }
+    if(msftLogoutWindow) {
+        msftLogoutWindow.close()
+    }
 })
 
 // Microsoft Auth Logout
@@ -247,7 +259,16 @@ function createWindow() {
         webPreferences: {
             preload: path.join(__dirname, 'app', 'assets', 'js', 'preloader.js'),
             nodeIntegration: true,
-            contextIsolation: false
+            contextIsolation: false,
+            // Chromium frena los temporizadores y las animaciones cuando la
+            // ventana queda tapada o minimizada (llega a ejecutarlos una vez
+            // por minuto). Como las transiciones entre pantallas dependen del
+            // final de una animación, el launcher se quedaba a medias y sin
+            // responder en cuanto el jugador se iba a otra aplicación.
+            // Esto no es una pestaña de fondo: nos interesa que el contador de
+            // jugadores, la búsqueda de actualizaciones y las descargas sigan
+            // funcionando aunque no esté delante.
+            backgroundThrottling: false
         },
         backgroundColor: '#171614'
     })

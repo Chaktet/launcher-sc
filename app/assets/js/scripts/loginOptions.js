@@ -19,6 +19,8 @@ function loginOptionsCancelEnabled(val){
 }
 
 loginOptionMicrosoft.onclick = (e) => {
+    // Para que el botón de cancelar de la pantalla de espera sepa a dónde volver.
+    scVistaVueltaEspera = loginOptionsViewOnLoginCancel || VIEWS.loginOptions
     switchView(getCurrentView(), VIEWS.waiting, 500, 500, () => {
         ipcRenderer.send(
             MSFT_OPCODE.OPEN_LOGIN,

@@ -122,9 +122,33 @@ function toggleOverlay(toggleState, dismissable = false, content = 'overlayConte
     }
 }
 
-async function toggleServerSelection(toggleState){
+// Cuando es la primera vez, el selector se muestra con otro texto y al cerrarlo
+// se anota la elección para no volver a preguntar.
+let scEligiendoPorPrimeraVez = false
+
+async function toggleServerSelection(toggleState, primeraVez = false){
+    scEligiendoPorPrimeraVez = primeraVez
     await prepareServerSelectionList()
+    const cabecera = document.getElementById('serverSelectHeader')
+    if(cabecera != null){
+        cabecera.innerHTML = primeraVez
+            ? Lang.queryJS('overlay.serverSelectHeaderPrimera')
+            : Lang.queryJS('overlay.serverSelectHeader')
+    }
+    const pista = document.getElementById('serverSelectPista')
+    if(pista != null){
+        pista.style.display = primeraVez ? 'block' : 'none'
+    }
     toggleOverlay(toggleState, true, 'serverSelectContent')
+}
+
+/** Anota que el jugador ya ha pasado por la pantalla de elección. */
+function scMarcarPerfilElegido(){
+    if(scEligiendoPorPrimeraVez){
+        scEligiendoPorPrimeraVez = false
+        ConfigManager.setPerfilElegido(true)
+        ConfigManager.save()
+    }
 }
 
 /**
@@ -178,6 +202,7 @@ function setDismissHandler(handler){
 
 document.getElementById('serverSelectConfirm').addEventListener('click', async () => {
     const listings = document.getElementsByClassName('serverListing')
+    scMarcarPerfilElegido()
     for(let i=0; i<listings.length; i++){
         if(listings[i].hasAttribute('selected')){
             const serv = (await DistroAPI.getDistribution()).getServerById(listings[i].getAttribute('servid'))
@@ -233,6 +258,8 @@ document.getElementById('accountSelectConfirm').addEventListener('click', async 
 
 // Bind server select cancel button.
 document.getElementById('serverSelectCancel').addEventListener('click', () => {
+    // Aunque cierre sin tocar nada, ya se le ha preguntado: no insistimos.
+    scMarcarPerfilElegido()
     toggleOverlay(false)
 })
 

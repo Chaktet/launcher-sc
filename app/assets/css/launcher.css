@@ -4962,7 +4962,8 @@ body { overflow-x: hidden; }
 .settingsChangelogText a { color: var(--sc-accent) !important; }
 
 /* ---- Boton "Registros del juego" (soporte / tickets) ---- */
-#settingsNavViewLogs {
+#settingsNavViewLogs,
+#settingsNavViewLauncherLogs {
     display: block;
     background: none;
     border: 1px solid var(--sc-line);
@@ -4976,12 +4977,14 @@ body { overflow-x: hidden; }
     cursor: pointer;
     transition: color 0.2s var(--sc-ease), border-color 0.2s var(--sc-ease), transform 0.18s var(--sc-ease);
 }
-#settingsNavViewLogs:hover {
+#settingsNavViewLogs:hover,
+#settingsNavViewLauncherLogs:hover {
     color: var(--sc-ink);
     border-color: var(--sc-accent);
     transform: translateY(-1px);
 }
-#settingsNavViewLogs:active { transform: scale(0.97); }
+#settingsNavViewLogs:active,
+#settingsNavViewLauncherLogs:active { transform: scale(0.97); }
 
 /* ---- Pestana Shaders ---- */
 #settingsShadersContent { width: 75%; }
@@ -5254,7 +5257,8 @@ body { overflow-x: hidden; }
 @media (max-height: 660px) {
     .settingsNavItem { padding: 5px 14px !important; margin: 2px 0 !important; }
     .settingsNavSpacer { flex: 0 0 10px; }
-    #settingsNavViewLogs { margin-bottom: 8px; padding: 6px 14px; }
+    #settingsNavViewLogs,
+    #settingsNavViewLauncherLogs { margin-bottom: 8px; padding: 6px 14px; }
     .settingsNavDivider { margin-bottom: 12px !important; }
     #settingsNavDone { padding: 8px 24px !important; }
 }
@@ -5461,6 +5465,7 @@ input:disabled + .toggleSwitchSlider { opacity: 0.45; cursor: not-allowed; }
 /* ---- Foco de teclado visible (accesibilidad) ---- */
 #settingsNavDone:focus-visible,
 #settingsNavViewLogs:focus-visible,
+#settingsNavViewLauncherLogs:focus-visible,
 #settingsUpdateActionButton:focus-visible,
 #settingsRpImport:focus-visible,
 #settingsRpFolder:focus-visible,
@@ -5518,4 +5523,719 @@ input:disabled + .toggleSwitchSlider { opacity: 0.45; cursor: not-allowed; }
     padding-right: 12px;
     box-sizing: border-box;
     width: calc(100% + 26px);
+}
+
+/* ---- Codigo de error en el dialogo de fallo de arranque ---- */
+.sc-cod-error {
+    display: inline-block;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--sc-accent);
+    background: rgba(79, 169, 222, 0.12);
+    border: 1px solid rgba(79, 169, 222, 0.45);
+    border-radius: 8px;
+    padding: 5px 14px;
+    margin-right: 10px;
+    user-select: text;
+}
+.sc-cod-ayuda {
+    font-size: 12px;
+    color: var(--sc-ink-dim);
+}
+
+/* ---- Pista de la primera eleccion de version ---- */
+#serverSelectPista {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--sc-ink-dim);
+    background: rgba(79, 169, 222, 0.10);
+    border: 1px solid rgba(79, 169, 222, 0.35);
+    border-radius: 14px;
+    padding: 12px 18px;
+    margin: 14px 0 4px;
+    max-width: 560px;
+    text-align: left;
+}
+#serverSelectPista b { color: var(--sc-ink); }
+
+/* ============================================================================
+   DOCK DE JUGAR — rediseno
+   El boton era texto blanco suelto: no parecia pulsable y competia con el
+   selector de version. Ahora hay una jerarquia clara en vertical:
+   accion principal (relleno con el acento) > selector > pista.
+   Sin animaciones en bucle: solo hover/active, para no penalizar equipos flojos.
+   ========================================================================= */
+
+#landingContainer > #lower > #right #launch_content {
+    flex-direction: column !important;
+    align-items: center;
+    gap: 12px;
+    padding: 26px 40px 22px !important;
+}
+#landingContainer > #lower > #right #launch_content .bot_divider { display: none; }
+
+/* ---- Accion principal ---- */
+#launch_button {
+    order: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 16px 72px !important;
+    border: none !important;
+    border-radius: 999px !important;
+    font-size: 38px !important;
+    font-weight: 700 !important;
+    letter-spacing: 7px !important;
+    text-indent: 7px; /* compensa el espaciado final, centra opticamente */
+    color: #08131d !important;
+    background: linear-gradient(180deg, #7fd0ff 0%, #4fa9de 55%, #2f8ec6 100%) !important;
+    box-shadow:
+        0 14px 34px -12px rgba(79, 169, 222, 0.75),
+        0 2px 0 rgba(255, 255, 255, 0.35) inset,
+        0 -2px 0 rgba(0, 0, 0, 0.18) inset;
+    cursor: pointer;
+    transition: transform 0.18s var(--sc-ease), box-shadow 0.22s var(--sc-ease), filter 0.18s var(--sc-ease);
+}
+#launch_button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    filter: saturate(1.12) brightness(1.04);
+    box-shadow:
+        0 20px 44px -12px rgba(79, 169, 222, 0.9),
+        0 2px 0 rgba(255, 255, 255, 0.45) inset,
+        0 -2px 0 rgba(0, 0, 0, 0.18) inset;
+}
+#launch_button:active:not(:disabled) {
+    transform: scale(0.975);
+    box-shadow: 0 6px 18px -10px rgba(79, 169, 222, 0.8), 0 2px 6px rgba(0, 0, 0, 0.3) inset;
+}
+#launch_button:disabled {
+    filter: grayscale(0.75);
+    opacity: 0.55;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+#launch_button:focus-visible {
+    outline: 3px solid #ffffff !important;
+    outline-offset: 3px;
+}
+
+/* Barrido de brillo al pasar el raton: comunica que es pulsable.
+   Se apaga con prefers-reduced-motion. */
+@media (prefers-reduced-motion: no-preference) {
+    #launch_button::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, 0.42) 50%, transparent 62%);
+        transform: translateX(-120%);
+        pointer-events: none;
+    }
+    #launch_button:hover:not(:disabled)::after {
+        transition: transform 0.75s var(--sc-ease);
+        transform: translateX(120%);
+    }
+}
+
+/* ---- Selector de version (accion secundaria) ---- */
+#server_selection_button {
+    order: 2;
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid var(--sc-line) !important;
+    border-radius: 999px !important;
+    color: var(--sc-ink) !important;
+    font-size: 12.5px !important;
+    letter-spacing: 0.6px !important;
+    padding: 8px 18px !important;
+    opacity: 1 !important;
+    cursor: pointer;
+    transition: border-color 0.2s var(--sc-ease), background 0.2s var(--sc-ease), transform 0.18s var(--sc-ease);
+}
+#server_selection_button:hover {
+    border-color: var(--sc-accent) !important;
+    background: rgba(79, 169, 222, 0.14) !important;
+    transform: translateY(-1px);
+}
+#server_selection_button:active { transform: scale(0.98); }
+#server_selection_button:focus-visible { outline: 2px solid var(--sc-accent); outline-offset: 3px; }
+
+/* ---- Pista de perfil ---- */
+#profile_hint {
+    order: 3;
+    margin-top: 0 !important;
+    font-size: 11.5px;
+    color: var(--sc-ink-dim);
+    cursor: pointer;
+}
+#profile_hint strong { color: var(--sc-ink); }
+.profile_hint_link {
+    color: var(--sc-accent);
+    border-bottom: 1px solid rgba(79, 169, 222, 0.45);
+}
+#profile_hint:hover .profile_hint_link { border-bottom-color: var(--sc-accent); }
+
+/* ---- Ventanas bajas: el dock se compacta ---- */
+@media (max-height: 660px) {
+    #landingContainer > #lower > #right #launch_content { padding: 18px 30px 16px !important; gap: 9px; }
+    #launch_button { font-size: 30px !important; padding: 12px 52px !important; letter-spacing: 5px !important; text-indent: 5px; }
+    #profile_hint { font-size: 10.5px; }
+}
+
+/* ============================================================================
+   INSIGNIA DE VERSION (junto al logo)
+   Estado normal discreto; cuando hay actualizacion se vuelve la accion
+   destacada y se instala desde ahi, sin pasar por Ajustes.
+   ========================================================================= */
+#sc_version_badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 12px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--sc-line);
+    background: var(--sc-glass);
+    color: var(--sc-ink-dim);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color 0.2s var(--sc-ease), border-color 0.2s var(--sc-ease), background 0.2s var(--sc-ease), transform 0.18s var(--sc-ease);
+}
+#sc_version_badge:hover:not(:disabled) {
+    color: var(--sc-ink);
+    border-color: var(--sc-accent);
+    transform: translateY(-1px);
+}
+#sc_version_badge:active:not(:disabled) { transform: scale(0.97); }
+#sc_version_badge:disabled { cursor: default; }
+#sc_version_badge:focus-visible { outline: 2px solid var(--sc-accent); outline-offset: 3px; }
+
+/* Punto de estado a la izquierda del texto */
+#sc_version_badge::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #46c46a;
+    box-shadow: 0 0 7px rgba(70, 196, 106, 0.85);
+    flex-shrink: 0;
+}
+#sc_version_badge[estado='buscando']::before,
+#sc_version_badge[estado='descargando']::before {
+    background: var(--sc-accent);
+    box-shadow: 0 0 7px var(--sc-accent-soft);
+}
+
+/* Estado destacado: hay actualizacion lista para instalar */
+#sc_version_badge[estado='lista'] {
+    color: #08131d;
+    background: linear-gradient(180deg, #7fd0ff, #4fa9de);
+    border-color: transparent;
+    font-weight: 700;
+    box-shadow: 0 10px 26px -12px rgba(79, 169, 222, 0.9);
+}
+#sc_version_badge[estado='lista']::before {
+    background: #08131d;
+    box-shadow: none;
+}
+#sc_version_badge[estado='lista']:hover { color: #08131d; filter: brightness(1.06); }
+
+@media (max-height: 660px) {
+    #sc_version_badge { margin-top: 8px; font-size: 10px; padding: 5px 11px; }
+}
+
+/* ---- FIX: la insignia de version se estiraba a toda la columna ----
+   #upper > #left es un flex de fila con align-items:stretch por defecto y
+   height:100%, asi que el boton crecia hasta ocupar toda la altura. Ahora la
+   columna se ajusta a su contenido y la insignia se coloca al lado del logo,
+   centrada con el, sin estirarse. */
+#landingContainer > #upper > #left {
+    width: auto !important;
+    flex: 0 0 auto !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    gap: 12px;
+    padding-left: 28px;
+    box-sizing: border-box;
+}
+#sc_version_badge {
+    align-self: flex-start !important;
+    flex: 0 0 auto !important;
+    width: fit-content !important;
+    height: fit-content !important;
+    /* El sello arranca a 28px y mide 70px: su centro cae en 63px.
+       Con la insignia de ~26px de alto, su borde superior va a 50px. */
+    margin-top: 50px !important;
+}
+@media (max-height: 660px) {
+    /* Con el sello compactado (12px de margen y 54px de alto) el centro baja a 39px. */
+    #sc_version_badge { margin-top: 27px !important; }
+}
+
+/* ============================================================================
+   LEGIBILIDAD DEL DOCK
+   El cristal era demasiado transparente y el artwork se colaba por detras:
+   el texto gris del selector y de la pista no se leia. Se opaca el panel y se
+   sube el contraste del texto.
+   ========================================================================= */
+#landingContainer > #lower > #right #launch_content,
+#launch_details {
+    background: rgba(6, 12, 20, 0.88) !important;
+    border-color: rgba(255, 255, 255, 0.16) !important;
+}
+#server_selection_button {
+    background: rgba(255, 255, 255, 0.10) !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+#profile_hint {
+    color: #cfe0ee !important;
+    font-size: 12px;
+}
+#profile_hint strong {
+    color: #ffffff;
+    font-weight: 700;
+}
+.profile_hint_link {
+    color: #7fd0ff !important;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(127, 208, 255, 0.55);
+}
+#profile_hint:hover .profile_hint_link { border-bottom-color: #7fd0ff; }
+
+/* ============================================================================
+   RAIL LATERAL: iconos grandes con etiqueta
+   Antes eran glifos de 12px sin texto que ademas CRECIAN a 20px en hover y
+   empujaban la maquetacion. Ahora son filas con icono fijo + nombre.
+   ========================================================================= */
+#mediaContent {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px;
+    width: 100%;
+}
+#internalMedia, #externalMedia {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px;
+    width: 100%;
+}
+.mediaContainer {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+}
+.mediaDivider {
+    width: 100% !important;
+    height: 1px !important;
+    background: var(--sc-line) !important;
+    margin: 4px 0 !important;
+    transform: none !important;
+}
+
+/* Fila comun: icono + etiqueta */
+.mediaURL, .mediaButton {
+    display: flex !important;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 11px 16px !important;
+    border-radius: 14px;
+    border: 1px solid var(--sc-line);
+    background: rgba(6, 12, 20, 0.72);
+    color: var(--sc-ink);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s var(--sc-ease), border-color 0.2s var(--sc-ease),
+                color 0.2s var(--sc-ease), transform 0.18s var(--sc-ease);
+}
+.mediaURL:hover, .mediaButton:hover { transform: translateY(-2px); }
+.mediaURL:active, .mediaButton:active { transform: scale(0.98); }
+.mediaURL:focus-visible, .mediaButton:focus-visible {
+    outline: 2px solid var(--sc-accent);
+    outline-offset: 3px;
+}
+
+/* Icono: tamano FIJO, no crece en hover (antes descolocaba la maquetacion) */
+.mediaSVG {
+    width: 22px !important;
+    height: 22px !important;
+    flex-shrink: 0;
+    fill: currentColor !important;
+    transition: none !important;
+}
+.mediaButton:hover .mediaSVG, .mediaURL:hover .mediaSVG {
+    width: 22px !important;
+    height: 22px !important;
+    filter: none !important;
+}
+/* El icono de la tienda es de trazo, no de relleno */
+#tiendaSVG {
+    fill: none !important;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.mediaLabel {
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+/* El tooltip de ajustes sobra: ahora hay etiqueta permanente */
+#settingsTooltip { display: none !important; }
+
+/* ---- Tienda: la accion comercial, con el naranja de la marca ---- */
+#tiendaURL {
+    background: linear-gradient(180deg, #f0a14a, #e8862a) !important;
+    border-color: transparent !important;
+    color: #17110a !important;
+    font-weight: 700;
+    box-shadow: 0 10px 26px -14px rgba(232, 134, 42, 0.95);
+}
+#tiendaURL:hover {
+    filter: brightness(1.07);
+    box-shadow: 0 14px 32px -14px rgba(232, 134, 42, 1);
+}
+#tiendaURL .mediaLabel { font-weight: 700; }
+
+/* ---- Marcas: cada una toma su color al pasar por encima ---- */
+#discordURL:hover { background: #5865f2 !important; border-color: #5865f2 !important; color: #ffffff !important; }
+#tiktokURL:hover  { background: #ff0050 !important; border-color: #ff0050 !important; color: #ffffff !important; }
+#settingsMediaButton:hover {
+    background: rgba(79, 169, 222, 0.20) !important;
+    border-color: var(--sc-accent) !important;
+    color: #ffffff !important;
+}
+
+/* ---- Ventanas bajas: se compacta sin perder la etiqueta ---- */
+@media (max-height: 660px) {
+    .mediaURL, .mediaButton { padding: 8px 13px !important; gap: 10px; }
+    .mediaSVG, .mediaButton:hover .mediaSVG, .mediaURL:hover .mediaSVG { width: 19px !important; height: 19px !important; }
+    .mediaLabel { font-size: 12px; }
+    #mediaContent, #internalMedia, #externalMedia { gap: 6px; }
+}
+
+/* ---- FIX del rail: el contenedor venia con medidas del diseno de iconos ----
+   #mediaContent tenia width:70px y height:calc(100% - 95px), y .mediaContainer
+   height:27px. Con pastillas de icono + texto (mas anchas y mas altas) el
+   contenido se salia de su caja. Ahora el rail se adapta a su contenido. */
+#mediaContent {
+    width: 100% !important;
+    height: auto !important;
+    margin-top: 20px !important;
+    align-items: stretch !important;
+}
+.mediaContainer {
+    height: auto !important;
+    justify-content: stretch !important;
+}
+/* La columna derecha debe dar cabida al rail con etiquetas */
+#landingContainer > #upper > #right {
+    min-width: 190px !important;
+}
+#rightContainer {
+    width: 100% !important;
+    align-items: stretch !important;
+}
+/* El chip de cuenta se mantiene alineado a la derecha, no estirado */
+#user_content {
+    align-self: flex-end !important;
+}
+
+/* ============================================================================
+   FIX RESPONSIVE DE LA FILA SUPERIOR
+   Causa de la barra de desplazamiento horizontal: #content tenia un 70% FIJO
+   mientras #left y #right crecen con su contenido (insignia de version y
+   etiquetas del rail). 70% + auto + auto se pasa del 100%.
+   Ahora la columna central absorbe el espacio sobrante y los laterales se
+   ajustan a su contenido, con lo que encaja en cualquier resolucion.
+   ========================================================================= */
+#landingContainer,
+#landingContainer > #upper {
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+#landingContainer > #upper > #content {
+    width: auto !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+}
+#landingContainer > #upper > #left {
+    flex: 0 0 auto !important;
+    min-width: 0 !important;
+}
+#landingContainer > #upper > #right {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: 42vw;
+    padding-right: 22px;
+    box-sizing: border-box;
+}
+#rightContainer {
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box;
+}
+
+/* Las pastillas suman su relleno DENTRO del 100%, no fuera: sin esto se
+   desbordaban por la derecha y cada bloque quedaba de un ancho distinto. */
+.mediaURL, .mediaButton {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    justify-content: flex-start;
+}
+.mediaLabel {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#mediaContent, #internalMedia, #externalMedia {
+    box-sizing: border-box;
+    min-width: 0 !important;
+}
+
+/* El chip de cuenta comparte ancho con el rail y no lo desborda */
+#user_content {
+    box-sizing: border-box !important;
+    max-width: 100% !important;
+}
+
+/* Ventanas estrechas: el rail se queda solo con los iconos, sin etiquetas,
+   en vez de robarle sitio al centro de la pantalla. */
+@media (max-width: 900px) {
+    #landingContainer > #upper > #right { max-width: 96px; padding-right: 14px; }
+    .mediaLabel { display: none; }
+    .mediaURL, .mediaButton { justify-content: center; padding: 10px !important; }
+}
+
+/* ============================================================================
+   AJUSTES FINALES DEL LANDING
+   1) Separacion entre JUGAR y el selector de version: iban demasiado juntos y
+      el borde del panel cortaba visualmente la pastilla.
+   2) Solapamiento en ventanas pequenas: el dock central esta centrado con
+      posicionamiento propio, asi que no "ve" a las columnas laterales y se
+      metia debajo del rail. Se le pone un ancho maximo que reserva ese sitio.
+   ========================================================================= */
+
+/* ---- 1. Aire entre el boton y la pastilla de version ---- */
+#landingContainer > #lower > #right #launch_content {
+    gap: 18px !important;
+    padding: 26px 44px 24px !important;
+}
+#server_selection_button { margin-top: 2px !important; }
+#profile_hint { margin-top: -4px !important; }
+
+/* ---- 2. El dock nunca invade las columnas laterales ---- */
+#landingContainer > #lower > #right #launch_content,
+#launch_details {
+    max-width: min(620px, calc(100vw - 300px)) !important;
+    box-sizing: border-box !important;
+}
+
+/* ---- 3. Ventanas bajas: el rail se queda en iconos y todo se compacta ----
+   A partir de aqui manda la ALTURA: con poca altura el dock sube y se cruza
+   con el rail, asi que ahi las etiquetas sobran. */
+@media (max-height: 620px) {
+    .mediaLabel { display: none; }
+    .mediaURL, .mediaButton {
+        justify-content: center !important;
+        padding: 8px !important;
+        gap: 0 !important;
+    }
+    #landingContainer > #upper > #right { max-width: 92px; padding-right: 12px; }
+    #mediaContent, #internalMedia, #externalMedia { gap: 5px !important; }
+    #mediaContent { margin-top: 12px !important; }
+    #landingContainer > #lower > #right #launch_content {
+        gap: 10px !important;
+        padding: 14px 26px 12px !important;
+        max-width: min(520px, calc(100vw - 220px)) !important;
+    }
+    #launch_button { font-size: 26px !important; padding: 10px 40px !important; letter-spacing: 4px !important; text-indent: 4px; }
+    #server_selection_button { font-size: 11.5px !important; padding: 6px 14px !important; }
+    #profile_hint { font-size: 10.5px; }
+}
+
+/* ---- 4. Ventanas estrechas: mismo criterio por ANCHURA ---- */
+@media (max-width: 1100px) {
+    #landingContainer > #lower > #right #launch_content,
+    #launch_details { max-width: calc(100vw - 250px) !important; }
+}
+@media (max-width: 950px) {
+    .mediaLabel { display: none; }
+    .mediaURL, .mediaButton { justify-content: center !important; padding: 9px !important; gap: 0 !important; }
+    #landingContainer > #upper > #right { max-width: 88px; padding-right: 12px; }
+    #landingContainer > #lower > #right #launch_content,
+    #launch_details { max-width: calc(100vw - 190px) !important; }
+    #launch_button { font-size: 28px !important; padding: 12px 34px !important; }
+}
+
+/* ---- FIX: el resplandor de JUGAR caia sobre la pastilla de version ----
+   No bastaba con separar mas: la sombra azul del boton se proyecta hacia abajo
+   y "manchaba" el selector. Se recoge la sombra y se amplia el hueco. */
+#launch_button {
+    box-shadow:
+        0 8px 22px -14px rgba(79, 169, 222, 0.85),
+        0 2px 0 rgba(255, 255, 255, 0.35) inset,
+        0 -2px 0 rgba(0, 0, 0, 0.18) inset !important;
+}
+#launch_button:hover:not(:disabled) {
+    box-shadow:
+        0 12px 28px -14px rgba(79, 169, 222, 0.95),
+        0 2px 0 rgba(255, 255, 255, 0.45) inset,
+        0 -2px 0 rgba(0, 0, 0, 0.18) inset !important;
+}
+#landingContainer > #lower > #right #launch_content {
+    gap: 26px !important;
+}
+#server_selection_button { margin-top: 0 !important; }
+#profile_hint { margin-top: -10px !important; }
+@media (max-height: 620px) {
+    #landingContainer > #lower > #right #launch_content { gap: 16px !important; }
+    #profile_hint { margin-top: -6px !important; }
+}
+
+/* ---- FIX: el aviso de actualizacion se salia de la pantalla ----
+   La pildora bajo el sello estaba centrada con translateX(-50%) sobre un logo
+   pegado al borde izquierdo, asi que en ventanas pequenas se cortaba. Ademas
+   repetia lo que ya dice la insignia de version, que es clicable y tiene
+   estados. Se elimina la pildora y se queda solo la insignia. */
+#updateAvailableTooltip { display: none !important; }
+
+/* La insignia nunca desborda: se recorta con puntos suspensivos */
+#sc_version_badge {
+    max-width: min(240px, 34vw);
+    overflow: hidden;
+}
+#sc_version_text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+@media (max-width: 1050px) {
+    #sc_version_badge { max-width: 150px; font-size: 10.5px; padding: 5px 11px; }
+}
+@media (max-width: 950px) {
+    #sc_version_badge { max-width: 120px; }
+}
+
+/* ---- Estado de Mojang: compacto y legible ----
+   Salia sin fondo (el texto flotaba sobre el artwork), enorme, y listaba
+   servicios "no esenciales" que al jugador no le dicen nada. */
+#mojangStatusNEContainer,
+#mojangStatusNonEssentialContainer { display: none !important; }
+
+#mojangStatusTooltip {
+    background: rgba(6, 12, 20, 0.96) !important;
+    border: 1px solid var(--sc-line) !important;
+    border-radius: 14px !important;
+    padding: 12px 16px !important;
+    box-shadow: var(--sc-shadow);
+    width: max-content !important;
+    max-width: 260px;
+    box-sizing: border-box;
+}
+#mojangStatusTooltipTitle {
+    font-size: 10.5px !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--sc-accent) !important;
+    margin-bottom: 8px !important;
+    text-align: left !important;
+}
+.mojangStatusContainer {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    padding: 2px 0 !important;
+    height: auto !important;
+}
+.mojangStatusIcon { font-size: 14px !important; line-height: 1 !important; }
+.mojangStatusName {
+    font-size: 11.5px !important;
+    color: var(--sc-ink-dim) !important;
+    white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------------------
+   Salida de la pantalla de espera (1.5.4)
+   Antes solo había un spinner: si la ventana de Microsoft se abría detrás del
+   launcher o el jugador volvía sin cerrarla, se quedaba encerrado sin un solo
+   botón que pulsar.
+   --------------------------------------------------------------------------- */
+#waitingCancelButton {
+    margin-top: 26px;
+    padding: 10px 26px;
+    border: 1px solid var(--sc-line, rgba(255, 255, 255, 0.18));
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--sc-ink-dim, #cfe0ee);
+    font-family: 'Avenir Book', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.4px;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+#waitingCancelButton:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+#waitingCancelButton:active {
+    transform: scale(0.98);
+}
+
+#waitingCancelButton:focus-visible {
+    outline: 2px solid var(--sc-accent, #7fd0ff);
+    outline-offset: 3px;
+}
+
+/* ---------------------------------------------------------------------------
+   Avisos largos: que nunca empujen los botones fuera de la ventana (1.5.8)
+   #overlayContent era 300px de ancho SIN tope de alto ni scroll, asi que un
+   mensaje largo (el de drivers de graficos SC-12, o el de fallo de conexion)
+   crecia hasta sacar los botones de la pantalla y dejaba al jugador sin poder
+   pulsar nada. Con 540 de alto de ventana minima pasaba enseguida.
+   --------------------------------------------------------------------------- */
+#overlayContent {
+    width: min(460px, calc(100vw - 80px)) !important;
+    max-height: calc(100vh - 80px);
+    overflow: hidden;
+}
+
+#overlayDesc {
+    max-height: calc(100vh - 300px);
+    overflow-y: auto;
+    line-height: 1.55;
+    /* Deja aire para la barra de desplazamiento cuando aparece. */
+    padding-right: 4px;
+}
+
+/* El codigo de error, discreto y monoespaciado para que se copie bien. */
+#overlayDesc .sc-cod-error {
+    display: inline-block;
+    margin-top: 2px;
+    font-family: 'Consolas', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--sc-ink-dim, #cfe0ee);
+    opacity: 0.75;
 }

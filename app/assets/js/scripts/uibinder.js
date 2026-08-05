@@ -40,10 +40,39 @@ let currentView
  */
 function switchView(current, next, currentFadeTime = 500, nextFadeTime = 500, onCurrentFade = () => {}, onNextFade = () => {}){
     currentView = next
-    $(`${current}`).fadeOut(currentFadeTime, async () => {
-        await onCurrentFade()
-        $(`${next}`).fadeIn(nextFadeTime, async () => {
-            await onNextFade()
+
+    // Los seis contenedores son hermanos en flujo normal con height:100%, así que
+    // si dos quedan visibles a la vez se APILAN: el primero del DOM ocupa toda la
+    // ventana y el otro cae un viewport por debajo, fuera de la vista. Pasaba al
+    // pulsar dos botones seguidos (el de salida sigue siendo clicable mientras se
+    // desvanece), y el jugador se quedaba mirando una pantalla sin un solo botón.
+    // Por eso no nos fiamos de que 'current' sea lo que de verdad se ve: se cortan
+    // todos los fundidos a medias y se ocultan todos los contenedores menos el
+    // destino. Así la transición es idempotente y no depende del orden de llegada.
+    const cerrar = () => {
+        for(const v of Object.values(VIEWS)){
+            if(v !== next){
+                $(v).stop(true, false).hide()
+            }
+        }
+    }
+
+    $(`${current}`).stop(true, false).fadeOut(currentFadeTime, async () => {
+        // Un fallo en el callback no puede impedir que aparezca la pantalla
+        // siguiente: el contenedor de salida ya está oculto, así que sin este
+        // try/catch el launcher se quedaba con TODO oculto y sin salida.
+        try {
+            await onCurrentFade()
+        } catch(err) {
+            console.error('[switchView] falló onCurrentFade', err)
+        }
+        cerrar()
+        $(`${next}`).stop(true, false).fadeIn(nextFadeTime, async () => {
+            try {
+                await onNextFade()
+            } catch(err) {
+                console.error('[switchView] falló onNextFade', err)
+            }
         })
     })
 }
@@ -100,6 +129,16 @@ async function showMainUI(data){
     vistaInicial.style.display = 'block'
     vistaInicial.classList.add('sc-view-in')
 
+    // Primer arranque: en vez de asignarle PRO en silencio, se le pregunta qué
+    // versión quiere. La elección queda guardada y no se vuelve a preguntar.
+    if(currentView === VIEWS.landing && !ConfigManager.getPerfilElegido()){
+        setTimeout(() => {
+            if(typeof toggleServerSelection === 'function'){
+                toggleServerSelection(true, true)
+            }
+        }, 700)
+    }
+
     // Detener el giro ANTES de ocultar, para dejar de animar cuanto antes.
     $('#loadSpinnerImage').removeClass('rotating')
     const loading = document.getElementById('loadingContainer')
@@ -119,13 +158,19 @@ function showFatalStartupError(){
             setOverlayContent(
                 Lang.queryJS('uibinder.startup.fatalErrorTitle'),
                 Lang.queryJS('uibinder.startup.fatalErrorMessage'),
+                // Reintentar es lo primero que hay que ofrecer: la causa mas
+                // habitual es un corte pasajero de conexion, y antes la unica
+                // salida era cerrar el launcher y volver a abrirlo a mano.
+                Lang.queryJS('uibinder.startup.retryButton'),
                 Lang.queryJS('uibinder.startup.closeButton')
             )
             setOverlayHandler(() => {
-                const window = remote.getCurrentWindow()
-                window.close()
+                remote.getCurrentWindow().reload()
             })
-            toggleOverlay(true)
+            setDismissHandler(() => {
+                remote.getCurrentWindow().close()
+            })
+            toggleOverlay(true, true)
         })
     }, 750)
 }
@@ -468,6 +513,13 @@ setTimeout(async () => {
         console.log('[UIBinder] Evento de distribución perdido por carrera — arrancando manualmente.')
         try {
             const data = await DistroAPI.getDistribution()
+            // Volver a mirarlo: mientras se esperaba la distribución, el evento
+            // de verdad ha podido llegar y arrancar la interfaz. Sin esta
+            // segunda comprobación showMainUI corría dos veces en cualquier
+            // arranque que pasara de 3 s, y las vistas quedaban descuadradas.
+            if(mainUIStarted || fatalStartupError){
+                return
+            }
             if(data != null){
                 syncModConfigurations(data)
                 ensureJavaSettings(data)

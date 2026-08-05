@@ -105,6 +105,9 @@ document.getElementById('launch_button').addEventListener('click', async e => {
         return
     }
     loggerLanding.info('Launching game..')
+    if(!scComprobacionesPrevias()){
+        return
+    }
     try {
         const server = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
         const jExe = ConfigManager.getJavaExecutable(ConfigManager.getSelectedServer())
@@ -126,8 +129,7 @@ document.getElementById('launch_button').addEventListener('click', async e => {
             }
         }
     } catch(err) {
-        loggerLanding.error('Unhandled error in during launch process.', err)
-        showLaunchFailure(Lang.queryJS('landing.launch.failureTitle'), Lang.queryJS('landing.launch.failureText'))
+        scFalloArranque(SC_ERR.JVM, Lang.queryJS('landing.launch.errGenerico'), err)
     }
 })
 
@@ -250,7 +252,8 @@ const refreshServerStatus = async (fade = false) => {
 
         const servStat = await getServerStatus(47, serv.hostname, serv.port)
         pLabel = Lang.queryJS('landing.serverStatus.players')
-        pVal = servStat.players.online + '/' + servStat.players.max
+        // Solo los conectados: el maximo (5000) no aporta nada al jugador.
+        pVal = servStat.players.online
 
     } catch (err) {
         loggerLanding.warn('Unable to refresh server status, assuming offline.')
@@ -275,7 +278,7 @@ refreshMojangStatuses()
 // Refresh statuses every hour. The status page itself refreshes every day so...
 let mojangStatusListener = setInterval(() => refreshMojangStatuses(true), 60*60*1000)
 // Set refresh rate to once every 5 minutes.
-let serverStatusListener = setInterval(() => refreshServerStatus(true), 300000)
+let serverStatusListener = setInterval(() => refreshServerStatus(false), 30000)
 
 /**
  * Shows an error overlay, toggles off the launch area.
@@ -292,6 +295,422 @@ function showLaunchFailure(title, desc){
     setOverlayHandler(null)
     toggleOverlay(true)
     toggleLaunchArea(false)
+}
+
+/* ---------------------------------------------------------------------------
+ * Diagnóstico de errores de arranque
+ *
+ * Cada punto donde el arranque puede fallar tiene un código propio. El jugador
+ * ve el código y una explicación en cristiano, y con un botón se copia un
+ * informe completo (sistema, RAM, Java, error real) para pegarlo en un ticket.
+ * El informe se guarda además en un archivo, junto a los registros.
+ * ------------------------------------------------------------------------- */
+const SC_ERR = {
+    DISTRO:         'SC-01', // no se pudo leer la lista de archivos del servidor
+    JAVA:           'SC-02', // fallo al descargar o instalar Java
+    VERIFICACION:   'SC-03', // fallo verificando los archivos ya descargados
+    DESCARGA:       'SC-04', // fallo descargando mods / recursos
+    REPARACION:     'SC-05', // el proceso de reparación murió
+    JVM:            'SC-06', // el juego no llegó a arrancar
+    LAUNCHWRAPPER:  'SC-07', // faltan librerías de arranque
+    RAM:            'SC-08', // memoria asignada imposible para este equipo
+    CUENTA:         'SC-09', // problema con la cuenta seleccionada
+    JAVA_ROTO:      'SC-10', // la instalación de Java está incompleta o dañada
+    MEMORIA:        'SC-11', // el juego se quedó sin memoria
+    GRAFICOS:       'SC-12'  // tarjeta gráfica o drivers: no se pudo crear la ventana
+}
+
+/**
+ * Lee el último informe de fallo que escribe Minecraft. Muchos cierres (sobre
+ * todo los de gráficos) van ahí y no a la salida de error del proceso.
+ *
+ * @returns {string} Texto del informe, o cadena vacía.
+ */
+function scUltimoCrashReport(){
+    const nodeFs = require('fs')
+    const nodePath = require('path')
+    try {
+        const dir = nodePath.join(ConfigManager.getInstanceDirectory(), ConfigManager.getSelectedServer() || '', 'crash-reports')
+        if(!nodeFs.existsSync(dir)){
+            return ''
+        }
+        const archivos = nodeFs.readdirSync(dir)
+            .filter(f => f.endsWith('.txt'))
+            .map(f => ({ f, t: nodeFs.statSync(nodePath.join(dir, f)).mtimeMs }))
+            .sort((a, b) => b.t - a.t)
+        if(archivos.length === 0){
+            return ''
+        }
+        // Solo si es reciente (5 min): si no, es de otra partida.
+        if(Date.now() - archivos[0].t > 300000){
+            return ''
+        }
+        return nodeFs.readFileSync(nodePath.join(dir, archivos[0].f), 'utf8')
+    } catch(e){
+        return ''
+    }
+}
+
+/**
+ * Borra la instalación de Java y la marca como no configurada, de modo que el
+ * launcher la vuelva a descargar entera en el siguiente intento.
+ */
+function scRepararJava(){
+    const nodeFs = require('fs')
+    const nodePath = require('path')
+    try {
+        const runtime = nodePath.join(ConfigManager.getDataDirectory(), 'runtime')
+        nodeFs.rmSync(runtime, { recursive: true, force: true })
+        ConfigManager.setJavaExecutable(ConfigManager.getSelectedServer(), null)
+        ConfigManager.save()
+        return true
+    } catch(e){
+        loggerLanding.error('No se pudo reparar la instalación de Java', e)
+        return false
+    }
+}
+
+/**
+ * El juego se cerró con error antes de llegar a conectar. Traduce la salida a
+ * una causa concreta en vez de dejar al jugador sin información.
+ *
+ * @param {number} code Código de salida del proceso.
+ * @param {string} salida Salida de error acumulada del juego.
+ */
+function scAnalizarCierreDelJuego(code, salida){
+    // El informe de fallo de Minecraft suele contener la causa real cuando el
+    // problema es de gráficos, porque ahí no llega nada por la salida de error.
+    const crash = scUltimoCrashReport()
+    const txt = (salida || '') + (crash ? '\n\n--- INFORME DE FALLO DE MINECRAFT ---\n' + crash : '')
+
+    // Tarjeta gráfica o drivers. Minecraft 1.21 necesita OpenGL 3.2 y Sodium 4.3;
+    // con drivers viejos, ausentes o los genéricos de Windows, el juego ni
+    // siquiera llega a crear la ventana.
+    const PATRONES_GRAFICOS = [
+        // Fallos al crear la ventana o el contexto (cualquier fabricante)
+        /GLFW error|GLFWErrorCallback|glfwInit|Failed to (create|initialize) (the )?(window|GLFW|OpenGL)/i,
+        /Pixel format not accelerated|Couldn't set pixel format|No OpenGL context|OpenGL context could not be created/i,
+        /WGL: Driver does not support|GLX[^\n]{0,40}(not|failed)|does not support OpenGL/i,
+        /OpenGL[^\n]{0,60}(is required|not supported|too old)|Requires OpenGL|OpenGL 3\.2|OpenGL 4\.3/i,
+        // Sin driver real: Windows cae al renderizador genérico por software
+        /GDI Generic|Microsoft Basic Display|llvmpipe|swiftshader|software renderer/i,
+        // NVIDIA: OpenGL, Direct3D, CUDA y capa de compatibilidad
+        /nvoglv(32|64)|nvoglshim|nvd3dum|nvwgf2um|nvapi(64)?|nvcuda|NVIDIA[^\n]{0,60}(crash|error|fail)/i,
+        // AMD / ATI: OpenGL, Vulkan y capas Direct3D de todas las generaciones
+        /atio(gl|6a)[0-9a-z]*\.dll|aticfx[0-9]*|atiumd[0-9a-z]*|amdvlk(64)?|amdocl[0-9a-z]*|amdxc[0-9]*|Radeon[^\n]{0,60}(crash|error|fail)/i,
+        // Intel: ICD de OpenGL por generación (ig4/ig7/ig9/ig11/igxelp...) y Arc/Xe
+        /ig[0-9]{1,2}icd(32|64)?|igxelpicd|igdumd[0-9a-z]*|igd10iumd[0-9a-z]*|igdrcl[0-9a-z]*|igvk(64)?|Intel[^\n]{0,60}(HD|UHD|Iris|Arc)[^\n]{0,60}(crash|error|fail)/i,
+        // Caída del proceso dentro de una biblioteca gráfica
+        /EXCEPTION_ACCESS_VIOLATION[\s\S]{0,600}(opengl32|vulkan-1|d3d(9|11|12)|dxgi|nvogl|atio|ig[0-9]{1,2}icd|amdvlk)/i,
+        // El propio Sodium/Iris avisando de hardware o driver insuficiente
+        /(sodium|iris)[^\n]{0,140}(OpenGL|driver|unsupported|no compatible|not supported|incompatible)/i
+    ]
+    const graficos = PATRONES_GRAFICOS.some(p => p.test(txt))
+
+    if(graficos){
+        // Si se puede identificar el fabricante, se le da su enlace concreto
+        // en vez de la lista de los tres.
+        let marca = ''
+        if(/nvidia|geforce|nvogl|nvd3d|nvwgf|nvapi|quadro/i.test(txt)){
+            marca = Lang.queryJS('landing.launch.errGraficosNvidia')
+        } else if(/\bamd\b|radeon|\bati\b|atio|amdvlk|aticfx|amdocl/i.test(txt)){
+            marca = Lang.queryJS('landing.launch.errGraficosAmd')
+        } else if(/intel|ig[0-9]{1,2}icd|igdumd|igdrcl|igxelp|iris xe|\barc\b/i.test(txt)){
+            marca = Lang.queryJS('landing.launch.errGraficosIntel')
+        }
+        const mensaje = Lang.queryJS('landing.launch.errGraficos') + (marca ? '<br><br>' + marca : '')
+        scFalloArranque(SC_ERR.GRAFICOS, mensaje, new Error(txt.slice(-4000)))
+        return
+    }
+
+    // Java incompleto: falta algún archivo del propio JDK (tzdb.dat y compañía).
+    // Suele ser el antivirus poniendo ficheros en cuarentena o una extracción
+    // interrumpida.
+    const javaRoto = /tzdb\.dat|Error occurred during initialization of VM|ExceptionInInitializerError[\s\S]{0,200}(runtime|jdk-)|java\.lang\.NoClassDefFoundError: java\//i.test(txt)
+        || /FileNotFoundException:[^\n]*(runtime|jdk-)[^\n]*/i.test(txt)
+
+    if(javaRoto){
+        scFalloArranque(SC_ERR.JAVA_ROTO, Lang.queryJS('landing.launch.errJavaRoto'), new Error(txt.slice(-3000)))
+        // Se ofrece la reparación como acción principal del diálogo.
+        setOverlayContent(
+            Lang.queryJS('landing.launch.failureTitle'),
+            `${Lang.queryJS('landing.launch.errJavaRoto')}<br><br>
+             <span class="sc-cod-error">${SC_ERR.JAVA_ROTO}</span>
+             <span class="sc-cod-ayuda">${Lang.queryJS('landing.launch.codigoAyuda')}</span>`,
+            Lang.queryJS('landing.launch.repararJava'),
+            Lang.queryJS('landing.launch.okay')
+        )
+        setOverlayHandler(() => {
+            const ok = scRepararJava()
+            setOverlayContent(
+                Lang.queryJS('landing.launch.failureTitle'),
+                Lang.queryJS(ok ? 'landing.launch.javaReparado' : 'landing.launch.javaNoReparado'),
+                Lang.queryJS('landing.launch.okay')
+            )
+            setOverlayHandler(() => toggleOverlay(false))
+            setDismissHandler(null)
+            toggleOverlay(true)
+        })
+        setDismissHandler(() => toggleOverlay(false))
+        toggleOverlay(true, true)
+        return
+    }
+
+    if(/OutOfMemoryError|Could not reserve enough space|Failed to allocate/i.test(txt)){
+        scFalloArranque(SC_ERR.MEMORIA, Lang.queryJS('landing.launch.errMemoria'), new Error(txt.slice(-3000)))
+        return
+    }
+
+    scFalloArranque(SC_ERR.JVM, Lang.queryJS('landing.launch.errJvm'), new Error(`Código de salida ${code}\n\n${txt.slice(-3000)}`))
+}
+
+function scInformeDiagnostico(codigo, err){
+    const os = require('os')
+    const gb = b => (b / 1073741824).toFixed(1) + ' GB'
+    const serv = ConfigManager.getSelectedServer()
+    let javaExe = 'desconocido'
+    let ramMin = '?'
+    let ramMax = '?'
+    try {
+        javaExe = ConfigManager.getJavaExecutable(serv) || 'no configurado'
+        ramMin = ConfigManager.getMinRAM(serv)
+        ramMax = ConfigManager.getMaxRAM(serv)
+    } catch(e){ /* configuración incompleta: se refleja como desconocido */ }
+
+    const lineas = [
+        '=== INFORME SC LAUNCHER ===',
+        `Codigo:    ${codigo}`,
+        `Fecha:     ${new Date().toISOString()}`,
+        `Launcher:  ${remote.app.getVersion()}`,
+        `Version:   ${serv}`,
+        `SO:        ${os.platform()} ${os.release()} (${os.arch()})`,
+        `CPU:       ${(os.cpus()[0] || {}).model || '?'} x${os.cpus().length}`,
+        `RAM total: ${gb(os.totalmem())} (libre ${gb(os.freemem())})`,
+        `RAM juego: min ${ramMin} / max ${ramMax}`,
+        `Java:      ${javaExe}`,
+        `Datos:     ${ConfigManager.getDataDirectory()}`,
+        '',
+        '--- ERROR ---',
+        err == null ? '(sin detalle)' : (err.stack || err.message || String(err))
+    ]
+    return lineas.join('\n')
+}
+
+function scGuardarInforme(codigo, texto){
+    try {
+        const nodeFs = require('fs')
+        const nodePath = require('path')
+        const dir = nodePath.join(ConfigManager.getDataDirectory(), 'informes')
+        nodeFs.mkdirSync(dir, { recursive: true })
+        const ruta = nodePath.join(dir, `${codigo}-${Date.now()}.txt`)
+        nodeFs.writeFileSync(ruta, texto)
+        return ruta
+    } catch(e){
+        loggerLanding.warn('No se pudo guardar el informe de diagnóstico', e)
+        return null
+    }
+}
+
+/**
+ * Muestra un fallo de arranque con código, explicación y botón para copiar el
+ * informe completo.
+ *
+ * @param {string} codigo Uno de SC_ERR.
+ * @param {string} explicacion Qué le pasa y qué puede intentar, en cristiano.
+ * @param {Error|string} err Error real, para el informe.
+ */
+function scFalloArranque(codigo, explicacion, err){
+    const informe = scInformeDiagnostico(codigo, err)
+    const ruta = scGuardarInforme(codigo, informe)
+    loggerLanding.error(`[${codigo}]`, err)
+
+    const desc = `${explicacion}<br><br>
+        <span class="sc-cod-error">${codigo}</span>
+        <span class="sc-cod-ayuda">${Lang.queryJS('landing.launch.codigoAyuda')}</span>`
+
+    setOverlayContent(
+        Lang.queryJS('landing.launch.failureTitle'),
+        desc,
+        Lang.queryJS('landing.launch.copiarInforme'),
+        Lang.queryJS('landing.launch.okay')
+    )
+    setOverlayHandler(() => {
+        try {
+            require('electron').clipboard.writeText(informe)
+        } catch(e){
+            loggerLanding.warn('No se pudo copiar el informe', e)
+        }
+        if(ruta != null){
+            shell.showItemInFolder(ruta)
+        }
+        toggleOverlay(false)
+    })
+    setDismissHandler(() => toggleOverlay(false))
+    toggleOverlay(true, true)
+    toggleLaunchArea(false)
+}
+
+/**
+ * Hace que la opción de pantalla completa del launcher mande de verdad.
+ *
+ * El launcher solo pasaba "--fullscreen" cuando estaba ACTIVADA; al desactivarla
+ * no forzaba nada, así que si el jugador había pulsado F11 alguna vez, Minecraft
+ * guardaba fullscreen:true en su configuración y seguía abriendo a pantalla
+ * completa ignorando el ajuste. Aquí se escribe el valor correcto antes de
+ * lanzar (el juego está cerrado, así que es el momento seguro).
+ */
+function scAplicarPantallaCompleta(){
+    const nodeFs = require('fs')
+    const nodePath = require('path')
+    try {
+        const ruta = nodePath.join(ConfigManager.getInstanceDirectory(), ConfigManager.getSelectedServer() || '', 'options.txt')
+        if(!nodeFs.existsSync(ruta)){
+            return // primera partida: lo creará el juego con los argumentos de lanzamiento
+        }
+        const deseado = 'fullscreen:' + (ConfigManager.getFullscreen() ? 'true' : 'false')
+        const raw = nodeFs.readFileSync(ruta, 'utf8')
+        const eol = raw.includes('\r\n') ? '\r\n' : '\n'
+        const lineas = raw.split(/\r?\n/)
+        // Fuera los saltos finales antes de tocar nada: si no, cada cambio
+        // dejaría una línea en blanco más en el archivo.
+        while(lineas.length > 0 && lineas[lineas.length - 1].trim() === ''){
+            lineas.pop()
+        }
+        const i = lineas.findIndex(l => l.startsWith('fullscreen:'))
+        if(i >= 0){
+            if(lineas[i].trim() === deseado){
+                return // ya coincide, no tocamos el archivo
+            }
+            lineas[i] = deseado
+        } else {
+            lineas.push(deseado)
+        }
+        nodeFs.writeFileSync(ruta, lineas.join(eol) + eol)
+        loggerLanding.info('Pantalla completa ajustada a', deseado)
+    } catch(e){
+        loggerLanding.warn('No se pudo ajustar la pantalla completa', e)
+    }
+}
+
+/**
+ * Teclas de Cobblemon Extended Battle UI que vienen pisadas de fábrica.
+ *
+ * El mod registra V, ] y [ sin comprobar si están libres, y en nuestro pack:
+ *   - V  la usa Simple Voice Chat (hablar), así que abrir el panel cortaba la voz
+ *   - ]  la usan los ajustes de Xaero (en teclado español se ve como "+")
+ *   - [  no choca, pero se mueve junto a la otra para que la pareja de tamaño
+ *        de fuente quede en dos teclas contiguas y con el mismo sentido (< >)
+ *
+ * Las nuevas están libres en PRO y en LITE: se comprobaron contra los 145
+ * keybinds que Minecraft escribe en options.txt con todos los mods cargados.
+ * En teclado español ";" es la Ñ.
+ */
+const SC_TECLAS_EN_CONFLICTO = [
+    { opcion: 'key_key.cobblemonextendedbattleui.toggle_panel',  porDefecto: 'key.keyboard.v',             nueva: 'key.keyboard.semicolon' },
+    { opcion: 'key_key.cobblemonextendedbattleui.increase_font', porDefecto: 'key.keyboard.right.bracket', nueva: 'key.keyboard.period' },
+    { opcion: 'key_key.cobblemonextendedbattleui.decrease_font', porDefecto: 'key.keyboard.left.bracket',  nueva: 'key.keyboard.comma' },
+    // Crafting Tweaks: la K la usa Iris para encender los shaders y el TAB es la
+    // lista de jugadores de vanilla. Sus otras 13 teclas vienen sin asignar y no
+    // molestan a nadie.
+    { opcion: 'key_key.craftingtweaks.compress_stack',           porDefecto: 'key.keyboard.k',             nueva: 'key.keyboard.grave.accent' },
+    { opcion: 'key_key.craftingtweaks.refill_last_stack',        porDefecto: 'key.keyboard.tab',           nueva: 'key.keyboard.insert' }
+]
+
+/**
+ * Reasigna esas teclas en instalaciones que ya existen.
+ *
+ * options.txt se descarga de la distribución SIN hash, o sea que solo se
+ * instala la primera vez y nunca se sobrescribe. Cambiar el valor que enviamos
+ * arregla a los jugadores nuevos, pero quien ya haya arrancado el juego tiene
+ * la V guardada para siempre. Esto lo corrige una única vez, y solo si la
+ * tecla sigue siendo la de fábrica: si el jugador la había cambiado él, no se
+ * le toca. El marcador evita volver a corregir a quien decida ponerla de vuelta.
+ */
+function scCorregirTeclasEnConflicto(){
+    const nodeFs = require('fs')
+    const nodePath = require('path')
+    try {
+        const dir = nodePath.join(ConfigManager.getInstanceDirectory(), ConfigManager.getSelectedServer() || '')
+        const ruta = nodePath.join(dir, 'options.txt')
+        if(!nodeFs.existsSync(ruta)){
+            return // instalación nueva: ya le llegan bien desde la distribución
+        }
+
+        const marcador = nodePath.join(dir, '.sc-teclas-auto.json')
+        let yaHechas = []
+        if(nodeFs.existsSync(marcador)){
+            yaHechas = JSON.parse(nodeFs.readFileSync(marcador, 'utf8'))
+        }
+        const pendientes = SC_TECLAS_EN_CONFLICTO.filter(t => !yaHechas.includes(t.opcion))
+        if(pendientes.length === 0){
+            return
+        }
+
+        const raw = nodeFs.readFileSync(ruta, 'utf8')
+        const eol = raw.includes('\r\n') ? '\r\n' : '\n'
+        const lineas = raw.split(/\r?\n/)
+        while(lineas.length > 0 && lineas[lineas.length - 1].trim() === ''){
+            lineas.pop()
+        }
+
+        let cambios = false
+        for(const t of pendientes){
+            const i = lineas.findIndex(l => l.startsWith(t.opcion + ':'))
+            if(i < 0){
+                // Aún no ha arrancado con el mod: se deja puesta ya la buena.
+                lineas.push(t.opcion + ':' + t.nueva)
+            } else if(lineas[i].slice(t.opcion.length + 1).trim() === t.porDefecto){
+                lineas[i] = t.opcion + ':' + t.nueva
+            } else {
+                yaHechas.push(t.opcion) // la eligió el jugador, se respeta
+                cambios = true
+                continue
+            }
+            yaHechas.push(t.opcion)
+            cambios = true
+            loggerLanding.info('Tecla reasignada:', t.opcion, '->', t.nueva)
+        }
+
+        if(cambios){
+            nodeFs.writeFileSync(ruta, lineas.join(eol) + eol)
+            nodeFs.writeFileSync(marcador, JSON.stringify(yaHechas))
+        }
+    } catch(e){
+        loggerLanding.warn('No se pudieron corregir las teclas en conflicto', e)
+    }
+}
+
+/**
+ * Comprobaciones previas al arranque. Detectan las causas más habituales antes
+ * de que el juego falle con un error incomprensible.
+ *
+ * @returns {boolean} true si se puede continuar.
+ */
+function scComprobacionesPrevias(){
+    const os = require('os')
+    const serv = ConfigManager.getSelectedServer()
+    try {
+        const maxRAM = ConfigManager.getMaxRAM(serv)
+        const m = /^(\d+(?:\.\d+)?)([MG])$/i.exec(String(maxRAM).trim())
+        if(m != null){
+            const bytes = parseFloat(m[1]) * (m[2].toUpperCase() === 'G' ? 1073741824 : 1048576)
+            // La JVM no arranca si pide más memoria de la que hay físicamente.
+            if(bytes > os.totalmem() * 0.92){
+                const gb = b => (b / 1073741824).toFixed(1)
+                scFalloArranque(
+                    SC_ERR.RAM,
+                    Lang.queryJS('landing.launch.errRam')
+                        .replace('{asignada}', gb(bytes))
+                        .replace('{total}', gb(os.totalmem())),
+                    new Error(`maxRAM=${maxRAM} totalmem=${os.totalmem()}`)
+                )
+                return false
+            }
+        }
+    } catch(e){
+        loggerLanding.warn('No se pudieron hacer las comprobaciones previas', e)
+    }
+    return true
 }
 
 /* System (Java) Scan */
@@ -321,15 +740,20 @@ async function asyncSystemScan(effectiveJavaOptions, launchAfter = true){
             Lang.queryJS('landing.systemScan.installJava'),
             Lang.queryJS('landing.systemScan.installJavaManually')
         )
-        setOverlayHandler(() => {
+        setOverlayHandler(async () => {
             setLaunchDetails(Lang.queryJS('landing.systemScan.javaDownloadPrepare'))
             toggleOverlay(false)
-            
+
+            // downloadJava es asíncrona: el try/catch síncrono que había aquí NO
+            // veía su rechazo. Si fallaba la red o la API de Adoptium, el aviso
+            // ya se había cerrado, no salía ninguno nuevo y el jugador se
+            // quedaba con la barra de progreso puesta y sin botón de JUGAR.
             try {
-                downloadJava(effectiveJavaOptions, launchAfter)
+                await downloadJava(effectiveJavaOptions, launchAfter)
             } catch(err) {
                 loggerLanding.error('Unhandled error in Java Download', err)
-                showLaunchFailure(Lang.queryJS('landing.systemScan.javaDownloadFailureTitle'), Lang.queryJS('landing.systemScan.javaDownloadFailureText'))
+                toggleLaunchArea(false)
+                scFalloArranque(SC_ERR.JAVA, Lang.queryJS('landing.launch.errJava'), err)
             }
         })
         setDismissHandler(() => {
@@ -464,7 +888,7 @@ async function dlAsync(login = true) {
         onDistroRefresh(distro)
     } catch(err) {
         loggerLaunchSuite.error('Unable to refresh distribution index.', err)
-        showLaunchFailure(Lang.queryJS('landing.dlAsync.fatalError'), Lang.queryJS('landing.dlAsync.unableToLoadDistributionIndex'))
+        scFalloArranque(SC_ERR.DISTRO, Lang.queryJS('landing.launch.errDistro'), new Error('No distribution index'))
         return
     }
 
@@ -473,6 +897,9 @@ async function dlAsync(login = true) {
     if(login) {
         if(ConfigManager.getSelectedAccount() == null){
             loggerLanding.error('You must be logged into an account.')
+            // Sin esto el jugador volvía a la pantalla principal SIN botón de
+            // JUGAR: la barra de progreso ya estaba puesta y nadie la quitaba.
+            scFalloArranque(SC_ERR.CUENTA, Lang.queryJS('landing.launch.errCuenta'), new Error('No account selected'))
             return
         }
     }
@@ -493,12 +920,12 @@ async function dlAsync(login = true) {
 
     fullRepairModule.childProcess.on('error', (err) => {
         loggerLaunchSuite.error('Error during launch', err)
-        showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringLaunchTitle'), err.message || Lang.queryJS('landing.dlAsync.errorDuringLaunchText'))
+        scFalloArranque(SC_ERR.REPARACION, Lang.queryJS('landing.launch.errReparacion'), err)
     })
     fullRepairModule.childProcess.on('close', (code, _signal) => {
         if(code !== 0){
             loggerLaunchSuite.error(`Full Repair Module exited with code ${code}, assuming error.`)
-            showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringLaunchTitle'), Lang.queryJS('landing.dlAsync.seeConsoleForDetails'))
+            scFalloArranque(SC_ERR.REPARACION, Lang.queryJS('landing.launch.errReparacion'), new Error(`Full Repair Module exited with code ${code}`))
         }
     })
 
@@ -512,7 +939,7 @@ async function dlAsync(login = true) {
         setLaunchPercentage(100)
     } catch (err) {
         loggerLaunchSuite.error('Error during file validation.')
-        showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringFileVerificationTitle'), err.displayable || Lang.queryJS('landing.dlAsync.seeConsoleForDetails'))
+        scFalloArranque(SC_ERR.VERIFICACION, Lang.queryJS('landing.launch.errVerificacion'), err)
         return
     }
     
@@ -528,7 +955,7 @@ async function dlAsync(login = true) {
             setDownloadPercentage(100)
         } catch(err) {
             loggerLaunchSuite.error('Error during file download.')
-            showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringFileDownloadTitle'), err.displayable || Lang.queryJS('landing.dlAsync.seeConsoleForDetails'))
+            scFalloArranque(SC_ERR.DESCARGA, Lang.queryJS('landing.launch.errDescarga'), err)
             return
         }
     } else {
@@ -567,6 +994,7 @@ async function dlAsync(login = true) {
         // juego (antes volvía al botón JUGAR a los pocos segundos y parecía
         // que no pasaba nada → la gente pulsaba JUGAR varias veces).
         const onLoadComplete = () => {
+            scJuegoArranco = true
             setLaunchDetails(Lang.queryJS('landing.dlAsync.doneEnjoyServer'))
             setTimeout(() => toggleLaunchArea(false), 3000)
             if(hasRPC){
@@ -597,15 +1025,29 @@ async function dlAsync(login = true) {
             }
         }
 
+        // Se guarda la salida de error del juego para poder explicar por qué
+        // se cerró: sin esto, un fallo temprano solo devolvía al botón JUGAR
+        // sin decir nada.
+        let scSalidaError = []
+        let scJuegoArranco = false
+
         const gameErrorListener = function(data){
             data = data.trim()
+            scSalidaError.push(data)
+            if(scSalidaError.length > 120){
+                scSalidaError = scSalidaError.slice(-120)
+            }
             if(data.indexOf('Could not find or load main class net.minecraft.launchwrapper.Launch') > -1){
                 loggerLaunchSuite.error('Game launch failed, LaunchWrapper was not downloaded properly.')
-                showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringLaunchTitle'), Lang.queryJS('landing.dlAsync.launchWrapperNotDownloaded'))
+                scFalloArranque(SC_ERR.LAUNCHWRAPPER, Lang.queryJS('landing.launch.errLibrerias'), new Error('LaunchWrapper missing'))
             }
         }
 
         try {
+            // La opción del launcher manda sobre lo que el juego tenga guardado.
+            scAplicarPantallaCompleta()
+            scCorregirTeclasEnConflicto()
+
             // Build Minecraft process.
             proc = pb.build()
 
@@ -615,10 +1057,28 @@ async function dlAsync(login = true) {
 
             setLaunchDetails('Abriendo Minecraft..')
 
-            // Si el juego muere o se cierra, restaurar el botón JUGAR.
-            proc.on('close', () => {
+            // Si el proceso ni siquiera llega a nacer (ejecutable de Java
+            // borrado por el antivirus, permisos, ruta rota), Node avisa por
+            // 'error' y NUNCA emite 'close'. Sin este listener el botón de
+            // JUGAR no volvía nunca y la guarda anti doble clic bloqueaba
+            // todos los intentos siguientes: el launcher quedaba inservible.
+            proc.on('error', (err) => {
+                loggerLaunchSuite.error('El proceso del juego no pudo arrancar.', err)
                 toggleLaunchArea(false)
                 proc = null
+                scFalloArranque(SC_ERR.JAVA_ROTO, Lang.queryJS('landing.launch.errJavaRoto'), err)
+            })
+
+            // Si el juego muere o se cierra, restaurar el botón JUGAR.
+            proc.on('close', (code) => {
+                toggleLaunchArea(false)
+                proc = null
+                // Si el juego murió ANTES de llegar a conectar y con error,
+                // hay que explicarlo: antes simplemente volvía el botón JUGAR
+                // y el jugador se quedaba sin saber qué había pasado.
+                if(code !== 0 && !scJuegoArranco){
+                    scAnalizarCierreDelJuego(code, scSalidaError.join('\n'))
+                }
             })
 
             // Init Discord Hook
@@ -636,7 +1096,7 @@ async function dlAsync(login = true) {
         } catch(err) {
 
             loggerLaunchSuite.error('Error during launch', err)
-            showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringLaunchTitle'), Lang.queryJS('landing.dlAsync.checkConsoleForDetails'))
+            scFalloArranque(SC_ERR.JVM, Lang.queryJS('landing.launch.errJvm'), err)
 
         }
     }
@@ -1042,9 +1502,9 @@ if(profileHint != null){
     const refreshProfileHint = () => {
         const sel = ConfigManager.getSelectedServer() || ''
         if(sel.includes('Lite')){
-            profileHint.innerHTML = 'Juegas la versión <strong>LITE</strong> (gama baja) — ¿PC potente? <span class="profile_hint_link">Cambia a PRO aquí</span>'
+            profileHint.innerHTML = 'Juegas la versión <strong>LITE</strong> (gama baja). ¿PC potente? <span class="profile_hint_link">Cambia a PRO aquí</span>'
         } else {
-            profileHint.innerHTML = 'Juegas la versión <strong>PRO</strong> — ¿tu PC es de gama baja? <span class="profile_hint_link">Cambia a LITE aquí</span>'
+            profileHint.innerHTML = 'Juegas la versión <strong>PRO</strong>. ¿Tu PC es de gama baja? <span class="profile_hint_link">Cambia a LITE aquí</span>'
         }
     }
     refreshProfileHint()

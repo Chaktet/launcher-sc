@@ -51,5 +51,14 @@ export default defineConfig(
       'no-unused-vars': 'off',
       'no-undef': 'off'
     }
+  },
+  {
+    // Estos módulos los carga el preloader, así que corren en el renderer y
+    // tienen disponibles tanto los globales de Node como los del navegador.
+    // Sin esto, `window` (aunque se use tras comprobar `typeof`) da no-undef.
+    files: ['app/assets/js/*.js'],
+    languageOptions: {
+      globals: { ...globals.node, ...globals.browser }
+    }
   }
 );

@@ -352,6 +352,18 @@ document.getElementById('settingsNavViewLogs').onclick = () => {
     }
 }
 
+/* Registro del propio launcher. Es lo que hay que pedir cuando lo que falla es
+   el launcher y no el juego: cuelgues, errores de login, actualizaciones. */
+document.getElementById('settingsNavViewLauncherLogs').onclick = () => {
+    const nodeFs = require('fs')
+    const Registro = require('./assets/js/registro')
+    if(nodeFs.existsSync(Registro.rutaFichero)){
+        shell.showItemInFolder(Registro.rutaFichero)
+    } else {
+        shell.openPath(ConfigManager.getLauncherDirectory())
+    }
+}
+
 /**
  * Account Management Tab
  */
@@ -370,9 +382,53 @@ document.getElementById('settingsAddMojangAccount').onclick = (e) => {
 
 // Bind the add microsoft account button.
 document.getElementById('settingsAddMicrosoftAccount').onclick = (e) => {
+    scVistaVueltaEspera = VIEWS.settings
     switchView(getCurrentView(), VIEWS.waiting, 500, 500, () => {
         ipcRenderer.send(MSFT_OPCODE.OPEN_LOGIN, VIEWS.settings, VIEWS.settings)
     })
+}
+
+/**
+ * Salida de emergencia de la pantalla de espera.
+ *
+ * Esa pantalla solo tenía un spinner: la única forma de salir era que el proceso
+ * principal respondiera al cerrarse la ventana de Microsoft. Si esa ventana se
+ * abría detrás del launcher, en el otro monitor, o el jugador volvía con alt+tab
+ * sin cerrarla, se quedaba encerrado ahí sin un solo botón que pulsar.
+ */
+let scVistaVueltaEspera = VIEWS.loginOptions
+
+/**
+ * Le pone un tiempo límite a una promesa que no lo trae de fábrica.
+ *
+ * Una petición HTTP cortada devuelve error enseguida, pero una COLGADA (el
+ * servidor acepta la conexión y nunca contesta, típico de wifis de colegio,
+ * portales cautivos y algunos antivirus con inspección SSL) no devuelve nunca.
+ * Sin esto, la pantalla de espera era definitiva.
+ */
+function scConTiempoLimite(promesa, ms, queEs){
+    let temporizador
+    const limite = new Promise((_, rechazar) => {
+        temporizador = setTimeout(() => {
+            rechazar({
+                title: Lang.queryJS('settings.msftLogin.tiempoAgotadoTitulo'),
+                desc: Lang.queryJS('settings.msftLogin.tiempoAgotadoTexto')
+            })
+        }, ms)
+    })
+    return Promise.race([promesa, limite]).finally(() => clearTimeout(temporizador))
+}
+
+document.getElementById('waitingCancelButton').onclick = () => {
+    // Cerrar la ventana dispara su evento 'close', que ya devuelve al launcher a
+    // la pantalla anterior. Se prefiere ese camino para no tener dos salidas.
+    ipcRenderer.send(MSFT_OPCODE.CANCEL)
+    // Red de seguridad: si la ventana ya no existía, nadie va a responder.
+    setTimeout(() => {
+        if(getCurrentView() === VIEWS.waiting){
+            switchView(VIEWS.waiting, scVistaVueltaEspera)
+        }
+    }, 1500)
 }
 
 // Bind reply for Microsoft Login.
@@ -411,10 +467,10 @@ ipcRenderer.on(MSFT_OPCODE.REPLY_LOGIN, (_, ...arguments_) => {
                 // This is probably if you messed up the app registration with Azure.      
                 let error = queryMap.error // Error might be 'access_denied' ?
                 let errorDesc = queryMap.error_description
-                console.log('Error getting authCode, is Azure application registered correctly?')
-                console.log(error)
-                console.log(errorDesc)
-                console.log('Full query map: ', queryMap)
+                // Al registro, no solo a la consola: si no, el jugador no tiene
+                // nada que adjuntar cuando abre un ticket por no poder entrar.
+                msftLoginLogger.error(`Microsoft devolvió un error en el login: ${error} — ${errorDesc}`)
+                msftLoginLogger.error(`Parámetros completos: ${JSON.stringify(queryMap)}`)
                 setOverlayContent(
                     error,
                     errorDesc,
@@ -431,7 +487,11 @@ ipcRenderer.on(MSFT_OPCODE.REPLY_LOGIN, (_, ...arguments_) => {
             msftLoginLogger.info('Acquired authCode, proceeding with authentication.')
 
             const authCode = queryMap.code
-            AuthManager.addMicrosoftAccount(authCode).then(value => {
+            // El intercambio de tokens (Microsoft → Xbox → XSTS → Minecraft) son
+            // cuatro peticiones encadenadas sin ningún tiempo límite. Una conexión
+            // COLGADA (no cortada: colgada) dejaba la pantalla de espera puesta
+            // para siempre. Con esto el jugador recibe un error y vuelve atrás.
+            scConTiempoLimite(AuthManager.addMicrosoftAccount(authCode), 60000, 'login de Microsoft').then(value => {
                 updateSelectedAccount(value)
                 switchView(getCurrentView(), viewOnClose, 500, 500, async () => {
                     await prepareSettings()
@@ -532,6 +592,7 @@ function processLogOut(val, isLastAccount){
     const targetAcc = ConfigManager.getAuthAccount(uuid)
     if(targetAcc.type === 'microsoft') {
         msAccDomElementCache = parent
+        scVistaVueltaEspera = VIEWS.settings
         switchView(getCurrentView(), VIEWS.waiting, 500, 500, () => {
             ipcRenderer.send(MSFT_OPCODE.OPEN_LOGOUT, uuid, isLastAccount)
         })

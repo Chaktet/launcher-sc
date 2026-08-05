@@ -96,6 +96,9 @@ const DEFAULT_CONFIG = {
     },
     clientToken: null,
     selectedServer: null, // Resolved
+    // ¿El jugador ha elegido versión (PRO/LITE) alguna vez? Si no, el launcher
+    // se la pregunta en el primer arranque en vez de asignarle PRO en silencio.
+    perfilElegido: false,
     selectedAccount: null,
     authenticationDatabase: {},
     modConfigurations: [],
@@ -282,6 +285,24 @@ exports.setClientToken = function(clientToken){
  */
 exports.getSelectedServer = function(def = false){
     return !def ? config.selectedServer : DEFAULT_CONFIG.clientToken
+}
+
+/**
+ * ¿Ha elegido ya el jugador su versión (PRO o LITE)?
+ *
+ * @returns {boolean}
+ */
+exports.getPerfilElegido = function(){
+    return config.perfilElegido === true
+}
+
+/**
+ * Marca que el jugador ya ha elegido versión, para no volver a preguntárselo.
+ *
+ * @param {boolean} v
+ */
+exports.setPerfilElegido = function(v){
+    config.perfilElegido = v === true
 }
 
 /**

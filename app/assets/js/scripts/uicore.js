@@ -72,6 +72,7 @@ if(!isDev){
                     tooltip.innerHTML = `${Lang.queryJS('uicore.autoUpdate.downloadingProgress')} ${pct}%`
                 }
                 settingsUpdateButtonStatus(`${Lang.queryJS('uicore.autoUpdate.downloadingProgress')} ${pct}%`, true)
+                scInsigniaVersion('descargando', `${Lang.queryJS('uicore.autoUpdate.downloadingProgress')} ${pct}%`)
                 break
             }
             case 'update-downloaded':
@@ -82,10 +83,13 @@ if(!isDev){
                     }
                 })
                 showUpdateUI(info, true)
+                scInsigniaLista(info != null ? info.version : '')
+                scAutoInstalarSiProcede(info)
                 break
             case 'update-not-available':
                 loggerAutoUpdater.info('No new update found.')
                 settingsUpdateButtonStatus(Lang.queryJS('uicore.autoUpdate.checkForUpdatesButton'))
+                scInsigniaAlDia()
                 break
             case 'ready':
                 updateCheckListener = setInterval(() => {
@@ -107,6 +111,7 @@ if(!isDev){
                 // Sin esto, si la descarga fallaba el botón se quedaba bloqueado
                 // en "Descargando X%" para siempre.
                 document.getElementById('image_seal_container').removeAttribute('update')
+                scInsigniaAlDia()
                 settingsUpdateButtonStatus(Lang.queryJS('uicore.autoUpdate.checkForUpdatesButton'), false, () => {
                     ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
                     settingsUpdateButtonStatus(Lang.queryJS('uicore.autoUpdate.checkingForUpdateButton'), true)
@@ -129,6 +134,118 @@ if(!isDev){
  */
 function changeAllowPrerelease(val){
     ipcRenderer.send('autoUpdateAction', 'allowPrereleaseChange', val)
+}
+
+/**
+ * Insignia de versión junto al logo. Muestra si estás al día y, cuando hay
+ * actualización, permite instalarla ahí mismo sin entrar en Ajustes.
+ *
+ * @param {'aldia'|'buscando'|'descargando'|'lista'} estado
+ * @param {string} texto Texto visible.
+ * @param {Function} alPulsar Acción al hacer clic, o null.
+ */
+function scInsigniaVersion(estado, texto, alPulsar = null){
+    const badge = document.getElementById('sc_version_badge')
+    const span = document.getElementById('sc_version_text')
+    if(badge == null || span == null){
+        return
+    }
+    badge.setAttribute('estado', estado)
+    span.innerHTML = texto
+    badge.onclick = alPulsar
+    badge.disabled = alPulsar == null
+}
+
+/** Estado normal: versión instalada y todo al día. */
+function scInsigniaAlDia(){
+    scInsigniaVersion(
+        'aldia',
+        `v${remote.app.getVersion()} ${Lang.queryJS('uicore.autoUpdate.insigniaAlDia')}`,
+        () => {
+            scInsigniaVersion('buscando', Lang.queryJS('uicore.autoUpdate.insigniaBuscando'))
+            ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
+        }
+    )
+}
+
+/** Hay actualización descargada: se ofrece instalar con una confirmación. */
+function scInsigniaLista(version){
+    scInsigniaVersion(
+        'lista',
+        Lang.queryJS('uicore.autoUpdate.insigniaLista').replace('{v}', version || ''),
+        () => {
+            setOverlayContent(
+                Lang.queryJS('uicore.autoUpdate.instalarTitulo'),
+                Lang.queryJS('uicore.autoUpdate.instalarDesc'),
+                Lang.queryJS('uicore.autoUpdate.instalarConfirmar'),
+                Lang.queryJS('uicore.autoUpdate.instalarCancelar')
+            )
+            setOverlayHandler(() => {
+                toggleOverlay(false)
+                ipcRenderer.send('autoUpdateAction', 'installUpdateNow')
+            })
+            setDismissHandler(() => toggleOverlay(false))
+            toggleOverlay(true, true)
+        }
+    )
+}
+
+/**
+ * Instala la actualización sola cuando no molesta a nadie.
+ *
+ * El instalador público está congelado en una versión concreta para que Windows
+ * le vaya cogiendo confianza, así que quien acaba de instalar arranca con una
+ * versión antigua. En vez de obligarle a pulsar nada, si el launcher está
+ * ocioso se actualiza y se reinicia solo.
+ *
+ * NO se hace si el jugador está haciendo algo: con el juego abierto, fuera de la
+ * pantalla principal, o con una descarga en marcha.
+ *
+ * Ojo con lo de la descarga: 'proc' no existe hasta DESPUÉS de bajar y verificar
+ * los 300 MB del pack, así que mirarlo a él solo daba por ocioso un launcher que
+ * llevaba diez minutos descargando, y se reiniciaba a media faena.
+ */
+function scOcupado(){
+    if(typeof proc !== 'undefined' && proc != null){
+        return true // el juego está abierto
+    }
+    // La barra de progreso visible significa que hay descarga o arranque en curso.
+    const detalles = document.getElementById('launch_details')
+    if(detalles != null && detalles.style.display !== 'none' && detalles.style.display !== ''){
+        return true
+    }
+    return false
+}
+
+function scAutoInstalarSiProcede(info){
+    const enAjustes = typeof getCurrentView === 'function' && typeof VIEWS !== 'undefined'
+        && getCurrentView() !== VIEWS.landing
+    if(scOcupado() || enAjustes){
+        return // se queda la insignia; la instala cuando el jugador quiera
+    }
+
+    let restantes = 5
+    const pinta = () => scInsigniaVersion(
+        'lista',
+        Lang.queryJS('uicore.autoUpdate.insigniaAutoInstalando').replace('{s}', restantes)
+    )
+    pinta()
+
+    const cuenta = setInterval(() => {
+        restantes--
+        if(scOcupado()){
+            // Le ha dado a JUGAR mientras contaba: se cancela y no se toca nada.
+            clearInterval(cuenta)
+            scInsigniaLista(info != null ? info.version : '')
+            return
+        }
+        if(restantes <= 0){
+            clearInterval(cuenta)
+            ipcRenderer.send('autoUpdateAction', 'installUpdateNow')
+            return
+        }
+        pinta()
+    }, 1000)
 }
 
 function showUpdateUI(info, downloaded = false){
@@ -161,6 +278,11 @@ $(function(){
 document.addEventListener('readystatechange', function () {
     if (document.readyState === 'interactive'){
         loggerUICore.info('UICore Initializing..')
+
+        // Insignia de version junto al logo: por defecto, al dia.
+        if(typeof scInsigniaAlDia === 'function'){
+            scInsigniaAlDia()
+        }
 
         // Bind close button.
         Array.from(document.getElementsByClassName('fCb')).map((val) => {
