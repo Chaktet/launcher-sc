@@ -317,7 +317,9 @@ const SC_ERR = {
     CUENTA:         'SC-09', // problema con la cuenta seleccionada
     JAVA_ROTO:      'SC-10', // la instalación de Java está incompleta o dañada
     MEMORIA:        'SC-11', // el juego se quedó sin memoria
-    GRAFICOS:       'SC-12'  // tarjeta gráfica o drivers: no se pudo crear la ventana
+    GRAFICOS:       'SC-12', // tarjeta gráfica o drivers: no se pudo crear la ventana
+    DRIVER_SODIUM:  'SC-13', // Sodium rechaza el driver: hay UNA versión concreta que instalar
+    JAVA_BLOQUEADO: 'SC-14'  // Java se instaló pero el sistema no le deja ejecutarse
 }
 
 /**
@@ -382,6 +384,24 @@ function scAnalizarCierreDelJuego(code, salida){
     // problema es de gráficos, porque ahí no llega nada por la salida de error.
     const crash = scUltimoCrashReport()
     const txt = (salida || '') + (crash ? '\n\n--- INFORME DE FALLO DE MINECRAFT ---\n' + crash : '')
+
+    // Sodium comprueba el driver ANTES de arrancar y se niega a seguir con los
+    // que sabe que cuelgan o corrompen el juego. Va antes que el bloque genérico
+    // de gráficos a propósito: aquí la solución no es "actualiza los drivers",
+    // sino UNA versión concreta que además Windows Update no entrega — hay que
+    // bajarla a mano del fabricante. Decirle a este jugador que actualice por
+    // Windows Update es mandarlo a un callejón sin salida.
+    const driverSodium = /The game failed to start because the currently installed (Intel|NVIDIA) Graphics Driver is not compatible/i.exec(txt)
+    if(driverSodium != null){
+        const esIntel = driverSodium[1].toUpperCase() === 'INTEL'
+        const instalada = (/Installed version:\s*([0-9][0-9.]*)/i.exec(txt) || [])[1] || '?'
+        const requerida = (/Required version:\s*([0-9][0-9.]*)/i.exec(txt) || [])[1] || '?'
+        const mensaje = Lang.queryJS(esIntel ? 'landing.launch.errDriverIntel' : 'landing.launch.errDriverNvidia')
+            .replace('{instalada}', instalada)
+            .replace('{requerida}', requerida)
+        scFalloArranque(SC_ERR.DRIVER_SODIUM, mensaje, new Error(txt.slice(-4000)))
+        return
+    }
 
     // Tarjeta gráfica o drivers. Minecraft 1.21 necesita OpenGL 3.2 y Sodium 4.3;
     // con drivers viejos, ausentes o los genéricos de Windows, el juego ni
@@ -848,12 +868,31 @@ async function downloadJava(effectiveJavaOptions, launchAfter = true) {
 
     // Extraction complete, remove the loading from the OS progress bar.
     remote.getCurrentWindow().setProgressBar(-1)
+    clearInterval(extractListener)
+
+    // ⚠ Comprobar que el Java recién instalado ARRANCA de verdad, antes de volver
+    // a escanear. discoverBestJvmInstallation no mira los ficheros: EJECUTA cada
+    // candidato y descarta en silencio el que no responde, devolviendo null igual
+    // que si no hubiera Java. Resultado: se ofrecía otra vez "Instalar Java", el
+    // jugador aceptaba, se instalaba bien, y vuelta a empezar — un bucle sin
+    // ningún mensaje ni código de error. Pasa cuando el antivirus pone en
+    // cuarentena el java.exe recién extraído, que es lo habitual.
+    const validado = await validateSelectedJvm(ensureJavaDirIsRoot(newJavaExec), effectiveJavaOptions.supported)
+    if(validado == null){
+        loggerLanding.error(`Java instalado en ${newJavaExec} pero no se puede ejecutar.`)
+        toggleLaunchArea(false)
+        scFalloArranque(
+            SC_ERR.JAVA_BLOQUEADO,
+            Lang.queryJS('landing.launch.errJavaBloqueado').replace('{ruta}', newJavaExec),
+            new Error(`JVM extraído pero no validable: ${newJavaExec}`)
+        )
+        return
+    }
 
     // Extraction completed successfully.
     ConfigManager.setJavaExecutable(ConfigManager.getSelectedServer(), newJavaExec)
     ConfigManager.save()
 
-    clearInterval(extractListener)
     setLaunchDetails(Lang.queryJS('landing.downloadJava.javaInstalled'))
 
     // TODO Callback hell
@@ -990,6 +1029,28 @@ async function dlAsync(login = true) {
         // const SERVER_JOINED_REGEX = /\[.+\]: \[CHAT\] [a-zA-Z0-9_]{1,16} joined the game/
         const SERVER_JOINED_REGEX = new RegExp(`\\[.+\\]: \\[CHAT\\] ${authUser.displayName} joined the game`)
 
+        // Se guarda la salida del juego para poder explicar por qué se cerró: sin
+        // esto, un fallo temprano solo devolvía al botón JUGAR sin decir nada.
+        //
+        // ⚠ Se recoge de stdout Y de stderr. Minecraft manda su registro (log4j)
+        // por STDOUT, así que escuchando solo stderr esto llegaba casi siempre
+        // vacío y todo acababa en el SC-06 genérico aunque el mod hubiera dicho
+        // el motivo con todas las letras. Sodium es el caso claro: avisa de que
+        // el driver es incompatible, lo registra, y se cierra limpiamente sin
+        // generar informe de fallo — esa línea del registro era la única pista y
+        // la estábamos tirando.
+        let scSalidaError = []
+        let scJuegoArranco = false
+
+        const scAnotarSalida = function(data){
+            scSalidaError.push(data)
+            // stdout es mucho más hablador que stderr, así que se guarda más
+            // margen; lo que importa siempre está al final.
+            if(scSalidaError.length > 200){
+                scSalidaError = scSalidaError.slice(-200)
+            }
+        }
+
         // La barra de estado se mantiene visible durante TODO el arranque del
         // juego (antes volvía al botón JUGAR a los pocos segundos y parecía
         // que no pasaba nada → la gente pulsaba JUGAR varias veces).
@@ -1008,6 +1069,7 @@ async function dlAsync(login = true) {
         // Hitos reales del arranque leídos del log del juego.
         const tempListener = function(data){
             data = data.trim()
+            scAnotarSalida(data)
             if(GAME_LAUNCH_REGEX.test(data)){
                 setLaunchDetails('Cargando los mods..')
             } else if(GAME_JOINED_REGEX.test(data) || data.includes('Connecting to')){
@@ -1025,18 +1087,9 @@ async function dlAsync(login = true) {
             }
         }
 
-        // Se guarda la salida de error del juego para poder explicar por qué
-        // se cerró: sin esto, un fallo temprano solo devolvía al botón JUGAR
-        // sin decir nada.
-        let scSalidaError = []
-        let scJuegoArranco = false
-
         const gameErrorListener = function(data){
             data = data.trim()
-            scSalidaError.push(data)
-            if(scSalidaError.length > 120){
-                scSalidaError = scSalidaError.slice(-120)
-            }
+            scAnotarSalida(data)
             if(data.indexOf('Could not find or load main class net.minecraft.launchwrapper.Launch') > -1){
                 loggerLaunchSuite.error('Game launch failed, LaunchWrapper was not downloaded properly.')
                 scFalloArranque(SC_ERR.LAUNCHWRAPPER, Lang.queryJS('landing.launch.errLibrerias'), new Error('LaunchWrapper missing'))

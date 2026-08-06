@@ -5545,6 +5545,25 @@ input:disabled + .toggleSwitchSlider { opacity: 0.45; cursor: not-allowed; }
     color: var(--sc-ink-dim);
 }
 
+/* ---- Ruta de carpeta dentro de un mensaje de error ----
+   El jugador tiene que copiarla para pegarla en su antivirus, asi que va
+   seleccionable y en monoespaciada. Las rutas de Windows son largas y no tienen
+   espacios donde cortar: sin overflow-wrap se salen del dialogo. Se parte por
+   donde sea antes que recortarla, porque una ruta a medias no sirve de nada. */
+.sc-ruta {
+    display: block;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 12px;
+    color: var(--sc-ink-dim);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-top: 8px;
+    overflow-wrap: anywhere;
+    user-select: text;
+}
+
 /* ---- Pista de la primera eleccion de version ---- */
 #serverSelectPista {
     font-size: 13px;
