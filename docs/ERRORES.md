@@ -113,9 +113,37 @@ cuadro sin mensaje ni código**. Se podía repetir indefinidamente.
 Ahora `downloadJava()` valida con `validateSelectedJvm()` **antes** de volver a escanear. Si el Java
 recién instalado no arranca, corta y muestra SC-14 con la ruta.
 
-La causa es casi siempre el **antivirus**, que bloquea lo recién descargado en `AppData`. Dos
-salidas: añadir esa carpeta a las excepciones, o instalar Java 21 x64 a mano desde `adoptium.net`
-con el **`.msi`** — al quedar en Archivos de programa, los antivirus no suelen molestarlo.
+La causa es casi siempre el **antivirus**, que bloquea lo recién descargado en `AppData`.
+
+### El diálogo lo resuelve solo (desde 1.5.11)
+
+Pedirle a un jugador que "añada una excepción en su antivirus" es pedirle demasiado. El diálogo
+ahora se adapta al equipo:
+
+1. `scDetectarAntivirus()` pregunta a Windows qué antivirus hay (WMI, `root\SecurityCenter2`). Es
+   solo lectura y devuelve además **la ruta del ejecutable** del antivirus.
+2. Según lo que encuentre, el botón principal cambia:
+
+| Antivirus detectado | Botón | Qué hace |
+|---|---|---|
+| **Windows Defender** | *Arreglarlo por mí* | Añade la exclusión y reinstala Java. Un clic |
+| Uno de terceros conocido | *Abrir mi antivirus* | Le abre su app y le enseña la ruta de clics de **ese** producto |
+| Nada identificable | *Copiar la ruta* | Copia y abre la carpeta en el explorador |
+
+Hay pasos concretos escritos para Avast, AVG, Kaspersky, Bitdefender, Norton, McAfee, ESET,
+Malwarebytes y Panda (`landing.launch.av*` en `_custom.toml`).
+
+> **Sobre la exclusión automática.** Solo ocurre si el jugador pulsa el botón, y **el aviso de
+> administrador de Windows (UAC) es la confirmación**: si lo cancela, no se toca nada. Se excluye
+> únicamente `<dataDir>/runtime`, la carpeta de Java del propio launcher — nunca una unidad entera.
+> Se hace con `Add-MpPreference -ExclusionPath` lanzado con `-Verb RunAs`.
+>
+> ⚠ **Tras excluir hay que reinstalar Java, y por eso el botón hace las dos cosas.** La exclusión
+> evita bloqueos futuros pero **no devuelve lo que ya esté en cuarentena**: si solo se excluyera, el
+> jugador seguiría sin poder jugar y creería que no ha servido de nada.
+
+Alternativa que siempre funciona: instalar Java 21 x64 a mano desde `adoptium.net` con el **`.msi`**
+— al quedar en Archivos de programa, los antivirus no suelen molestarlo.
 
 No confundir con **SC-10** (`JAVA_ROTO`): ahí Java arranca pero le faltan ficheros; aquí no llega ni
 a ejecutarse.

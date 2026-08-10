@@ -372,6 +372,214 @@ function scRepararJava(){
     }
 }
 
+// Antivirus con pasos conocidos. La clave apunta a una cadena de idioma con la
+// ruta de clics exacta de ese producto; sin esto el jugador recibe "añádelo a
+// las excepciones" y no sabe por dónde empezar.
+const SC_ANTIVIRUS_CONOCIDOS = [
+    { re: /avast/i,                 clave: 'avAvast' },
+    { re: /\bavg\b/i,               clave: 'avAvg' },
+    { re: /kaspersky/i,             clave: 'avKaspersky' },
+    { re: /bitdefender/i,           clave: 'avBitdefender' },
+    { re: /norton/i,                clave: 'avNorton' },
+    { re: /mcafee/i,                clave: 'avMcafee' },
+    { re: /eset|nod32/i,            clave: 'avEset' },
+    { re: /malwarebytes/i,          clave: 'avMalwarebytes' },
+    { re: /panda/i,                 clave: 'avPanda' }
+]
+
+const SC_ES_DEFENDER = /windows defender|microsoft defender/i
+
+/**
+ * Pregunta a Windows qué antivirus hay instalado. Solo lectura.
+ *
+ * Windows lleva su propio registro en WMI (`root\SecurityCenter2`), que además
+ * da la ruta del ejecutable del antivirus: con eso se le puede ABRIR su propia
+ * aplicación al jugador en vez de describírsela.
+ *
+ * @returns {Promise<{nombre: string, exe: string, esDefender: boolean}|null>}
+ */
+function scDetectarAntivirus(){
+    return new Promise(resolve => {
+        if(process.platform !== 'win32'){
+            return resolve(null)
+        }
+        const { execFile } = require('child_process')
+        const ps = 'Get-CimInstance -Namespace \'root\\SecurityCenter2\' -ClassName AntiVirusProduct'
+            + ' | Select-Object displayName,productState,pathToSignedProductExe | ConvertTo-Json -Compress'
+        execFile('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', ps],
+            { timeout: 8000, windowsHide: true },
+            (err, stdout) => {
+                if(err || !stdout){
+                    return resolve(null)
+                }
+                try {
+                    let lista = JSON.parse(stdout)
+                    if(!Array.isArray(lista)){
+                        lista = [lista]
+                    }
+                    // El segundo byte de productState indica si la protección en
+                    // tiempo real está activa (0x10 / 0x11).
+                    const activos = lista.filter(a => {
+                        const b = (a.productState >> 8) & 0xFF
+                        return b === 0x10 || b === 0x11
+                    })
+                    const candidatos = activos.length ? activos : lista
+                    // Si hay uno de terceros, ese manda: cuando se instala uno,
+                    // Defender se aparta pero sigue figurando en la lista.
+                    const tercero = candidatos.find(a => !SC_ES_DEFENDER.test(a.displayName || ''))
+                    const el = tercero || candidatos[0]
+                    if(el == null){
+                        return resolve(null)
+                    }
+                    resolve({
+                        nombre: (el.displayName || '').trim(),
+                        exe: (el.pathToSignedProductExe || '').trim(),
+                        esDefender: SC_ES_DEFENDER.test(el.displayName || '')
+                    })
+                } catch(_e){
+                    resolve(null)
+                }
+            })
+    })
+}
+
+/**
+ * Añade la carpeta del launcher a las exclusiones de Windows Defender.
+ *
+ * Requiere permisos de administrador, así que se lanza con `-Verb RunAs` y es
+ * el propio aviso del UAC de Windows el que hace de confirmación: no se toca
+ * nada sin que el jugador acepte. Si cancela, `Start-Process` falla y se
+ * devuelve false.
+ *
+ * Se excluye SOLO la carpeta del launcher, nunca una unidad entera.
+ * `-EncodedCommand` evita problemas de comillas: la ruta lleva espacios y
+ * puede llevar tildes o apóstrofos según el nombre de usuario de Windows.
+ *
+ * @param {string} carpeta Carpeta a excluir.
+ * @returns {Promise<boolean>}
+ */
+function scExcluirEnDefender(carpeta){
+    return new Promise(resolve => {
+        if(process.platform !== 'win32'){
+            return resolve(false)
+        }
+        const { execFile } = require('child_process')
+        const interno = `Add-MpPreference -ExclusionPath '${String(carpeta).replace(/'/g, '\'\'')}'`
+        const b64 = Buffer.from(interno, 'utf16le').toString('base64')
+        const externo = 'Start-Process powershell -Verb RunAs -WindowStyle Hidden -Wait'
+            + ` -ArgumentList '-NoProfile','-ExecutionPolicy','Bypass','-EncodedCommand','${b64}'`
+        execFile('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', externo],
+            { timeout: 120000, windowsHide: true },
+            err => {
+                if(err){
+                    loggerLanding.warn('No se pudo añadir la exclusión en Defender', err)
+                }
+                resolve(!err)
+            })
+    })
+}
+
+/**
+ * Mejora el diálogo del SC-14 con lo que se pueda averiguar del equipo.
+ *
+ * Se llama DESPUÉS de haber mostrado ya el diálogo básico, y lo reemplaza
+ * cuando la detección termina. Así, si la consulta tarda o falla, el jugador ya
+ * tiene delante un aviso útil en vez de una pantalla en blanco.
+ *
+ * @param {string} rutaExe Ruta del javaw.exe que no arranca.
+ */
+async function scOfrecerArreglarAntivirus(rutaExe){
+    const nodePath = require('path')
+    // Se excluye la carpeta 'runtime' entera, no el .exe: al reinstalar Java se
+    // borra y se recrea, y una exclusión sobre un fichero que ya no existe no
+    // sirve de nada.
+    const carpeta = nodePath.join(ConfigManager.getDataDirectory(), 'runtime')
+
+    let av = null
+    try {
+        av = await scDetectarAntivirus()
+    } catch(e){
+        loggerLanding.warn('No se pudo detectar el antivirus', e)
+    }
+
+    const rutaSegura = sc$escapeHtml(carpeta)
+    let cuerpo = Lang.queryJS('landing.launch.avIntro')
+
+    if(av != null && av.nombre){
+        cuerpo += '<br><br>' + Lang.queryJS('landing.launch.avDetectado')
+            .replace('{nombre}', `<b>${sc$escapeHtml(av.nombre)}</b>`)
+        const conocido = SC_ANTIVIRUS_CONOCIDOS.find(a => a.re.test(av.nombre))
+        if(conocido != null && !av.esDefender){
+            cuerpo += '<br><br>' + Lang.queryJS('landing.launch.' + conocido.clave)
+        }
+    }
+
+    cuerpo += `<br><br>${Lang.queryJS('landing.launch.avCarpeta')}<span class="sc-ruta">${rutaSegura}</span>`
+    cuerpo += `<br><br><span class="sc-cod-error">${SC_ERR.JAVA_BLOQUEADO}</span>`
+        + `<span class="sc-cod-ayuda">${Lang.queryJS('landing.launch.codigoAyuda')}</span>`
+
+    // El botón principal se adapta a lo que REALMENTE se puede hacer en este
+    // equipo. Prometer "lo arreglo por ti" y luego no poder es peor que no
+    // ofrecerlo.
+    const puedeAuto = av != null && av.esDefender
+    const textoAccion = puedeAuto
+        ? Lang.queryJS('landing.launch.avArreglar')
+        : (av != null && av.exe && av.exe !== 'windowsdefender://'
+            ? Lang.queryJS('landing.launch.avAbrirAntivirus')
+            : Lang.queryJS('landing.launch.avCopiarRuta'))
+
+    setOverlayContent(
+        Lang.queryJS('landing.launch.failureTitle'),
+        cuerpo,
+        textoAccion,
+        Lang.queryJS('landing.launch.okay')
+    )
+
+    setOverlayHandler(async () => {
+        try {
+            require('electron').clipboard.writeText(carpeta)
+        } catch(e){
+            loggerLanding.warn('No se pudo copiar la ruta', e)
+        }
+
+        if(puedeAuto){
+            setOverlayContent(
+                Lang.queryJS('landing.launch.failureTitle'),
+                Lang.queryJS('landing.launch.avAplicando'),
+                Lang.queryJS('landing.launch.okay')
+            )
+            const ok = await scExcluirEnDefender(carpeta)
+            // Añadir la exclusión no devuelve lo que ya esté en cuarentena, así
+            // que hay que reinstalar Java después. Sin esto el jugador excluye
+            // la carpeta y sigue sin poder jugar.
+            const reparado = ok ? scRepararJava() : false
+            setOverlayContent(
+                Lang.queryJS('landing.launch.failureTitle'),
+                Lang.queryJS(ok && reparado ? 'landing.launch.avHecho' : 'landing.launch.avNoHecho'),
+                Lang.queryJS('landing.launch.okay')
+            )
+            setOverlayHandler(() => toggleOverlay(false))
+            setDismissHandler(null)
+            return
+        }
+
+        if(av != null && av.exe && av.exe !== 'windowsdefender://'){
+            try {
+                shell.openPath(av.exe)
+            } catch(e){
+                loggerLanding.warn('No se pudo abrir el antivirus', e)
+            }
+        }
+        try {
+            shell.openPath(carpeta)
+        } catch(e){
+            loggerLanding.warn('No se pudo abrir la carpeta', e)
+        }
+        toggleOverlay(false)
+    })
+    setDismissHandler(() => toggleOverlay(false))
+}
+
 /**
  * El juego se cerró con error antes de llegar a conectar. Traduce la salida a
  * una causa concreta en vez de dejar al jugador sin información.
@@ -881,11 +1089,16 @@ async function downloadJava(effectiveJavaOptions, launchAfter = true) {
     if(validado == null){
         loggerLanding.error(`Java instalado en ${newJavaExec} pero no se puede ejecutar.`)
         toggleLaunchArea(false)
+        // Primero el diálogo básico, que además guarda el informe de soporte...
         scFalloArranque(
             SC_ERR.JAVA_BLOQUEADO,
             Lang.queryJS('landing.launch.errJavaBloqueado').replace('{ruta}', newJavaExec),
             new Error(`JVM extraído pero no validable: ${newJavaExec}`)
         )
+        // ...y encima, cuando termine de mirar qué antivirus hay, se sustituye
+        // por uno que ofrece hacerlo por él. Sin await: si la detección tarda,
+        // el jugador ya tiene delante el aviso útil.
+        scOfrecerArreglarAntivirus(newJavaExec)
         return
     }
 
