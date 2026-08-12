@@ -1,4 +1,4 @@
-# Códigos de error de arranque (SC-01 … SC-14)
+# Códigos de error de arranque (SC-01 … SC-15)
 
 > Estado verificado: 2026-08-06. Definidos en [landing.js](../app/assets/js/scripts/landing.js),
 > constante `SC_ERR`.
@@ -25,6 +25,7 @@ una explicación en cristiano y un botón que copia un informe completo al porta
 | **SC-12** | `GRAFICOS` | Tarjeta gráfica o drivers: no se pudo crear la ventana | Actualizar drivers |
 | **SC-13** | `DRIVER_SODIUM` | Sodium rechaza el driver por incompatible | Una versión **concreta**. Ver abajo |
 | **SC-14** | `JAVA_BLOQUEADO` | Java se instaló pero no puede ejecutarse | **Antivirus.** Ver abajo |
+| **SC-15** | `MOD_ILEGIBLE` | El juego no pudo abrir un archivo del pack | Que **reintente**. Ver abajo |
 
 ## El informe de diagnóstico
 
@@ -188,3 +189,79 @@ dejar que falle con un error incomprensible.
 
 `scFalloArranque()` ya se encarga de generar el informe, guardarlo, escribir en el registro, montar
 el diálogo con el botón de copiar y devolver el botón JUGAR (`toggleLaunchArea(false)`).
+
+### SC-15 · El juego no pudo abrir un archivo del pack
+
+Fabric muere en el descubrimiento de mods porque **un `.jar` está pero no se deja leer**:
+
+```
+ModResolutionException: Mod discovery failed!
+Error analyzing [...\common\mods\fabric\generated\fabricmod\fullscreenfix\2.4.1\fullscreenfix-2.4.1.jar]
+java.io.FileNotFoundException: ... (Access is denied)
+```
+
+Antes esto salía como **SC-06**, y ese mensaje es *activamente dañino*: le dice al jugador que baje
+la RAM cuando la JVM había arrancado perfectamente. Volvería a fallar igual.
+
+> ⛔ **La detección NO se ancla en `Access is denied`.** Ese texto lo escribe Windows en el **idioma
+> del sistema**: en español es `Acceso denegado`. Un patrón sobre él fallaría en silencio para la
+> mayor parte de nuestra base de jugadores. Se ancla en `ModResolutionException` / `Mod discovery
+> failed` más la clase de excepción de Java, que son invariantes de idioma. **No lo cambies.**
+
+Va **antes** del bloque de gráficos: `scUltimoCrashReport()` pega cualquier informe de los últimos
+5 minutos, y un cierre gráfico anterior desviaría este caso a SC-12. Y si la ruta ilegible cae dentro
+de `runtime/` o contiene `jdk-`, se cede a **SC-10** con una marca explícita, no confiando en el orden.
+
+#### La escalera de acciones
+
+Lo más probable es que el antivirus estuviera **escaneando** el archivo justo cuando el juego lo
+abrió — un bloqueo momentáneo, típico del primer arranque tras instalar. Eso se arregla reintentando.
+Por eso **no se pide administrador de entrada**: mandar a alguien a bajar defensas para un problema
+que se resolvía solo es el peor desenlace posible.
+
+| Intento | Botón | Qué hace | ¿Permisos? |
+|---|---|---|---|
+| 1º | *Reintentar* | Relanza sin más | No |
+| 2º | *Descargarlo de nuevo* | Borra la carpeta de versión y redescarga | No |
+| 3º | *Revisar el antivirus* | Detecta el antivirus y ofrece la exclusión | UAC |
+
+`scIntentosPorFichero` (un `Map` por ruta) lleva la cuenta. **Máximo un reintento y una reparación
+por archivo y sesión**: sin ese tope la escalera es un bucle — borrar, redescargar, el antivirus
+vuelve a escanear el archivo recién escrito, mismo fallo.
+
+Las sondas (`lstatSync`) sirven **solo para descartar, nunca para confirmar**: bajo la hipótesis
+principal el launcher abre el archivo sin problema mientras `javaw.exe` no puede, así que un "todo
+correcto" no significa nada y no condiciona el diálogo. Detectan tres casos que el launcher sí
+arregla solo y sin permisos: que sea una carpeta, que esté vacío, o que haya desaparecido.
+
+> No copies el archivo a `%TEMP%` para "comprobar si se puede leer". Es el patrón de dropper de
+> manual y puedes provocar la detección que intentabas descartar.
+
+El mensaje es **factual, no causal**: el mismo error de Windows lo producen el antivirus, un borrado
+a medias y unos permisos rotos. Solo se nombra al antivirus si `scDetectarAntivirus()` devolvió algo
+**y** ya fallaron los pasos anteriores. Enseñar a añadir exclusiones para problemas que no son del
+antivirus es a la vez un arreglo incorrecto y una rebaja de seguridad.
+
+#### Alcance de la exclusión
+
+Cuando se llega al tercer escalón se excluye `<commonDir>\mods`, **no** el directorio de datos
+entero. Ahí es donde aterrizan los `.jar` que sirve nuestro CDN, así que cuanto más estrecha sea la
+exclusión, menos superficie se abre si algún día la distribución se compromete.
+
+Y si la carpeta **ya estaba excluida**, `scExclusionYaPuesta()` lo detecta (lectura, sin elevación) y
+el diálogo lo dice en vez de volver a pedir UAC: si ya está excluida y sigue fallando, el antivirus
+no es el culpable.
+
+#### Lo que el launcher no puede hacer
+
+- **Sacar un archivo de cuarentena.** Excluir no devuelve lo ya secuestrado; por eso toda exclusión
+  va seguida de redescarga, y aun así puede hacer falta restaurarlo desde el propio antivirus.
+- **Leer el historial de detecciones de Defender.** `Get-MpThreat` exige elevación, y devuelve vacío
+  sin distinguirse de "no hay detecciones". Eso lo tiene que mirar el jugador.
+- **Poner exclusiones en antivirus de terceros.** Solo Defender es automatizable.
+
+#### Atajo para soporte
+
+Si el archivo que falla es un mod **opcional**, el jugador puede desactivarlo en **Ajustes → Mods** y
+jugar de inmediato: `resolveModConfiguration()` lo saca de la lista `--fabric.addMods` y Fabric ni lo
+abre. No es reparación —el launcher lo sigue descargando— pero desbloquea al momento.

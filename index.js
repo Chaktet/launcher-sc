@@ -375,8 +375,27 @@ function getPlatformIcon(filename){
     return path.join(__dirname, 'app', 'assets', 'images', `${filename}.${ext}`)
 }
 
-app.on('ready', createWindow)
-app.on('ready', createMenu)
+// Una sola instancia. Dos launchers abiertos comparten el mismo directorio de
+// datos, así que pueden estar descargando y validando LOS MISMOS ficheros a la
+// vez: el segundo se encuentra archivos a medio escribir por el primero y el
+// juego revienta al abrirlos. Si ya hay una abierta, se trae al frente en vez
+// de arrancar otra.
+if(!app.requestSingleInstanceLock()){
+    app.quit()
+} else {
+    app.on('second-instance', () => {
+        const [ventana] = require('electron').BrowserWindow.getAllWindows()
+        if(ventana != null){
+            if(ventana.isMinimized()){
+                ventana.restore()
+            }
+            ventana.focus()
+        }
+    })
+
+    app.on('ready', createWindow)
+    app.on('ready', createMenu)
+}
 
 app.on('window-all-closed', () => {
     // On macOS it is common for applications and their menu bar

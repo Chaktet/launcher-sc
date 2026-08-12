@@ -319,8 +319,14 @@ const SC_ERR = {
     MEMORIA:        'SC-11', // el juego se quedó sin memoria
     GRAFICOS:       'SC-12', // tarjeta gráfica o drivers: no se pudo crear la ventana
     DRIVER_SODIUM:  'SC-13', // Sodium rechaza el driver: hay UNA versión concreta que instalar
-    JAVA_BLOQUEADO: 'SC-14'  // Java se instaló pero el sistema no le deja ejecutarse
+    JAVA_BLOQUEADO: 'SC-14', // Java se instaló pero el sistema no le deja ejecutarse
+    MOD_ILEGIBLE:   'SC-15'  // el juego no ha podido abrir un archivo del pack
 }
+
+// Cuántas veces se ha intentado ya arreglar cada fichero en ESTA sesión.
+// Sin este contador la escalera de acciones es un bucle: borrar → redescargar →
+// el antivirus vuelve a escanear el fichero recién escrito → mismo fallo.
+const scIntentosPorFichero = new Map()
 
 /**
  * Lee el último informe de fallo que escribe Minecraft. Muchos cierres (sobre
@@ -389,6 +395,10 @@ const SC_ANTIVIRUS_CONOCIDOS = [
 
 const SC_ES_DEFENDER = /windows defender|microsoft defender/i
 
+// Último antivirus detectado. scInformeDiagnostico() es síncrona y la detección
+// no, así que se cachea aquí para poder incluirlo en el informe de soporte.
+let scAvCache = null
+
 /**
  * Pregunta a Windows qué antivirus hay instalado. Solo lectura.
  *
@@ -431,11 +441,12 @@ function scDetectarAntivirus(){
                     if(el == null){
                         return resolve(null)
                     }
-                    resolve({
+                    scAvCache = {
                         nombre: (el.displayName || '').trim(),
                         exe: (el.pathToSignedProductExe || '').trim(),
                         esDefender: SC_ES_DEFENDER.test(el.displayName || '')
-                    })
+                    }
+                    resolve(scAvCache)
                 } catch(_e){
                     resolve(null)
                 }
@@ -480,20 +491,79 @@ function scExcluirEnDefender(carpeta){
 }
 
 /**
- * Mejora el diálogo del SC-14 con lo que se pueda averiguar del equipo.
+ * ¿Está ya esa carpeta en las exclusiones de Defender?
+ *
+ * Solo lectura, SIN elevación. Sirve para no volver a lanzarle un UAC a alguien
+ * que ya excluyó la carpeta en un incidente anterior: si la exclusión está
+ * puesta y aun así falla, el antivirus no es el culpable y pedir permisos otra
+ * vez solo lo despista.
+ *
+ * @param {string} carpeta
+ * @returns {Promise<boolean|null>} null si no se pudo averiguar.
+ */
+function scExclusionYaPuesta(carpeta){
+    return new Promise(resolve => {
+        if(process.platform !== 'win32'){
+            return resolve(null)
+        }
+        const { execFile } = require('child_process')
+        const ps = 'try { (Get-MpPreference).ExclusionPath -join "`n" } catch { "" }'
+        execFile('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', ps],
+            { timeout: 8000, windowsHide: true },
+            (err, stdout) => {
+                if(err || stdout == null){
+                    return resolve(null)
+                }
+                const objetivo = String(carpeta).replace(/\\+$/, '').toLowerCase()
+                const puesta = String(stdout).split(/\r?\n/)
+                    .map(s => s.trim().replace(/\\+$/, '').toLowerCase())
+                    .filter(Boolean)
+                    .some(e => objetivo === e || objetivo.startsWith(e + '\\'))
+                resolve(puesta)
+            })
+    })
+}
+
+/**
+ * Borra un módulo del almacén común para que el launcher lo vuelva a descargar.
+ *
+ * Se borra la carpeta de la VERSIÓN entera, no solo el fichero: helios-core
+ * deriva la ruta del id maven y volverá a escribir ahí dentro.
+ *
+ * @param {string} rutaFichero Ruta del .jar que no se puede leer.
+ * @returns {{ok: boolean, denegado: boolean}}
+ */
+function scRepararModulo(rutaFichero){
+    const nodeFs = require('fs')
+    const nodePath = require('path')
+    try {
+        nodeFs.rmSync(nodePath.dirname(rutaFichero), { recursive: true, force: true })
+        return { ok: true, denegado: false }
+    } catch(e){
+        loggerLanding.error('No se pudo reparar el módulo', e)
+        // Si el antivirus está negando TODO acceso, el borrado también falla.
+        // Merece un mensaje propio: "no se pudo reparar" a secas deja al
+        // jugador sin saber que el problema es de permisos.
+        const denegado = e && (e.code === 'EACCES' || e.code === 'EPERM' || e.code === 'EBUSY')
+        return { ok: false, denegado: !!denegado }
+    }
+}
+
+/**
+ * Mejora un diálogo de fallo con lo que se pueda averiguar del antivirus.
  *
  * Se llama DESPUÉS de haber mostrado ya el diálogo básico, y lo reemplaza
  * cuando la detección termina. Así, si la consulta tarda o falla, el jugador ya
  * tiene delante un aviso útil en vez de una pantalla en blanco.
  *
- * @param {string} rutaExe Ruta del javaw.exe que no arranca.
+ * @param {Object} opts
+ * @param {string} opts.carpeta Carpeta a excluir y a enseñar.
+ * @param {string} opts.intro Texto de cabecera (clave ya resuelta).
+ * @param {string} opts.codigo Código SC que se muestra.
+ * @param {function(): boolean} opts.reparar Qué reparar tras excluir.
  */
-async function scOfrecerArreglarAntivirus(rutaExe){
-    const nodePath = require('path')
-    // Se excluye la carpeta 'runtime' entera, no el .exe: al reinstalar Java se
-    // borra y se recrea, y una exclusión sobre un fichero que ya no existe no
-    // sirve de nada.
-    const carpeta = nodePath.join(ConfigManager.getDataDirectory(), 'runtime')
+async function scOfrecerArreglarAntivirus(opts){
+    const carpeta = opts.carpeta
 
     let av = null
     try {
@@ -502,8 +572,19 @@ async function scOfrecerArreglarAntivirus(rutaExe){
         loggerLanding.warn('No se pudo detectar el antivirus', e)
     }
 
+    // Si ya está excluida y sigue fallando, el antivirus no es el culpable:
+    // ofrecerle otro UAC sería mandarlo por un camino que ya recorrió.
+    let yaExcluida = null
+    if(av != null && av.esDefender){
+        try {
+            yaExcluida = await scExclusionYaPuesta(carpeta)
+        } catch(e){
+            loggerLanding.warn('No se pudo leer las exclusiones', e)
+        }
+    }
+
     const rutaSegura = sc$escapeHtml(carpeta)
-    let cuerpo = Lang.queryJS('landing.launch.avIntro')
+    let cuerpo = opts.intro
 
     if(av != null && av.nombre){
         cuerpo += '<br><br>' + Lang.queryJS('landing.launch.avDetectado')
@@ -514,14 +595,18 @@ async function scOfrecerArreglarAntivirus(rutaExe){
         }
     }
 
+    if(yaExcluida === true){
+        cuerpo += '<br><br>' + Lang.queryJS('landing.launch.avYaExcluida')
+    }
+
     cuerpo += `<br><br>${Lang.queryJS('landing.launch.avCarpeta')}<span class="sc-ruta">${rutaSegura}</span>`
-    cuerpo += `<br><br><span class="sc-cod-error">${SC_ERR.JAVA_BLOQUEADO}</span>`
+    cuerpo += `<br><br><span class="sc-cod-error">${opts.codigo}</span>`
         + `<span class="sc-cod-ayuda">${Lang.queryJS('landing.launch.codigoAyuda')}</span>`
 
     // El botón principal se adapta a lo que REALMENTE se puede hacer en este
     // equipo. Prometer "lo arreglo por ti" y luego no poder es peor que no
-    // ofrecerlo.
-    const puedeAuto = av != null && av.esDefender
+    // ofrecerlo. Y si la carpeta YA está excluida, no se vuelve a pedir UAC.
+    const puedeAuto = av != null && av.esDefender && yaExcluida !== true
     const textoAccion = puedeAuto
         ? Lang.queryJS('landing.launch.avArreglar')
         : (av != null && av.exe && av.exe !== 'windowsdefender://'
@@ -550,9 +635,9 @@ async function scOfrecerArreglarAntivirus(rutaExe){
             )
             const ok = await scExcluirEnDefender(carpeta)
             // Añadir la exclusión no devuelve lo que ya esté en cuarentena, así
-            // que hay que reinstalar Java después. Sin esto el jugador excluye
-            // la carpeta y sigue sin poder jugar.
-            const reparado = ok ? scRepararJava() : false
+            // que hay que reparar después. Sin esto el jugador excluye la
+            // carpeta y sigue sin poder jugar.
+            const reparado = ok ? opts.reparar() : false
             setOverlayContent(
                 Lang.queryJS('landing.launch.failureTitle'),
                 Lang.queryJS(ok && reparado ? 'landing.launch.avHecho' : 'landing.launch.avNoHecho'),
@@ -578,6 +663,139 @@ async function scOfrecerArreglarAntivirus(rutaExe){
         toggleOverlay(false)
     })
     setDismissHandler(() => toggleOverlay(false))
+}
+
+/**
+ * El juego no ha podido abrir un archivo del pack (SC-15).
+ *
+ * ESCALERA DE ACCIONES, y el orden importa mucho:
+ *
+ *   1º Reintentar          — sin permisos, sin UAC, sin tocar el antivirus.
+ *   2º Reparar y reintentar — borra el archivo y lo vuelve a descargar.
+ *   3º Antivirus            — solo aquí, y solo si lo anterior no bastó.
+ *
+ * El motivo de no empezar por el antivirus: la causa más probable es que el
+ * antivirus estuviera ESCANEANDO el archivo justo cuando el juego intentó
+ * abrirlo (bloqueo momentáneo, típico del primer arranque tras instalar). Eso
+ * se arregla reintentando, y pedirle permisos de administrador a alguien cuyo
+ * problema se resolvía solo es el peor error posible aquí: le enseñas a bajar
+ * defensas para nada.
+ *
+ * El mensaje es FACTUAL, no causal: el mismo error de Windows lo produce el
+ * antivirus, un borrado a medias o unos permisos rotos. Solo se nombra al
+ * antivirus cuando de verdad se ha detectado uno Y ya han fallado los pasos
+ * anteriores.
+ *
+ * @param {string|null} rutaMod Ruta del archivo que no se pudo abrir.
+ * @param {string} txt Salida completa, para el informe.
+ */
+function scDialogoModIlegible(rutaMod, txt){
+    const nodeFs = require('fs')
+    const nodePath = require('path')
+
+    const intentos = rutaMod != null ? (scIntentosPorFichero.get(rutaMod) || 0) : 0
+
+    // Sondas: SOLO sirven para descartar, nunca para confirmar. Bajo la
+    // hipótesis principal, Electron abre el archivo sin problema mientras
+    // javaw.exe no puede — así que un "todo correcto" aquí no significa nada y
+    // no debe condicionar el diálogo.
+    let detalle = ''
+    let arreglable = false
+    if(rutaMod != null){
+        try {
+            const st = nodeFs.lstatSync(rutaMod)
+            if(st.isDirectory()){
+                // Es una carpeta donde debería haber un .jar: el launcher lo
+                // arregla solo, sin permisos de nada.
+                detalle = Lang.queryJS('landing.launch.modEsCarpeta')
+                arreglable = true
+            } else if(st.size === 0){
+                detalle = Lang.queryJS('landing.launch.modVacio')
+                arreglable = true
+            }
+        } catch(e){
+            if(e && e.code === 'ENOENT'){
+                detalle = Lang.queryJS('landing.launch.modNoEsta')
+                arreglable = true
+            }
+        }
+    }
+
+    const nombre = rutaMod != null ? nodePath.basename(rutaMod) : '?'
+    let cuerpo = Lang.queryJS('landing.launch.errModIlegible')
+        .replace('{archivo}', `<b>${sc$escapeHtml(nombre)}</b>`)
+    if(detalle){
+        cuerpo += '<br><br>' + detalle
+    }
+    if(rutaMod != null){
+        cuerpo += `<span class="sc-ruta">${sc$escapeHtml(rutaMod)}</span>`
+    }
+
+    // Qué se ofrece depende de en qué escalón estemos.
+    let clave, accion
+    if(arreglable || intentos >= 1){
+        clave = 'modRepararReintentar'
+        accion = 'reparar'
+    } else {
+        clave = 'modReintentar'
+        accion = 'reintentar'
+    }
+    if(intentos >= 2){
+        clave = 'modAntivirus'
+        accion = 'antivirus'
+    }
+
+    cuerpo += `<br><br><span class="sc-cod-error">${SC_ERR.MOD_ILEGIBLE}</span>`
+        + `<span class="sc-cod-ayuda">${Lang.queryJS('landing.launch.codigoAyuda')}</span>`
+
+    const informe = scInformeDiagnostico(SC_ERR.MOD_ILEGIBLE, new Error(`${rutaMod || 'ruta desconocida'}\n\n${txt.slice(-3000)}`))
+    scGuardarInforme(SC_ERR.MOD_ILEGIBLE, informe)
+    loggerLanding.error(`[${SC_ERR.MOD_ILEGIBLE}] no se puede abrir ${rutaMod}`)
+
+    setOverlayContent(
+        Lang.queryJS('landing.launch.failureTitle'),
+        cuerpo,
+        Lang.queryJS('landing.launch.' + clave),
+        Lang.queryJS('landing.launch.okay')
+    )
+    setOverlayHandler(async () => {
+        if(rutaMod != null){
+            scIntentosPorFichero.set(rutaMod, intentos + 1)
+        }
+
+        if(accion === 'antivirus'){
+            toggleOverlay(false)
+            // Se excluye la carpeta de mods, NO el directorio de datos entero:
+            // cuanto más estrecha sea la exclusión, menos superficie se abre.
+            scOfrecerArreglarAntivirus({
+                carpeta: nodePath.join(ConfigManager.getCommonDirectory(), 'mods'),
+                intro: Lang.queryJS('landing.launch.avIntroMod'),
+                codigo: SC_ERR.MOD_ILEGIBLE,
+                reparar: () => rutaMod != null ? scRepararModulo(rutaMod).ok : false
+            })
+            return
+        }
+
+        if(accion === 'reparar' && rutaMod != null){
+            const r = scRepararModulo(rutaMod)
+            if(!r.ok){
+                setOverlayContent(
+                    Lang.queryJS('landing.launch.failureTitle'),
+                    Lang.queryJS(r.denegado ? 'landing.launch.modNoBorrable' : 'landing.launch.modNoReparado'),
+                    Lang.queryJS('landing.launch.okay')
+                )
+                setOverlayHandler(() => toggleOverlay(false))
+                setDismissHandler(null)
+                return
+            }
+        }
+
+        toggleOverlay(false)
+        dlAsync()
+    })
+    setDismissHandler(() => toggleOverlay(false))
+    toggleOverlay(true, true)
+    toggleLaunchArea(false)
 }
 
 /**
@@ -609,6 +827,36 @@ function scAnalizarCierreDelJuego(code, salida){
             .replace('{requerida}', requerida)
         scFalloArranque(SC_ERR.DRIVER_SODIUM, mensaje, new Error(txt.slice(-4000)))
         return
+    }
+
+    // Fabric no ha podido ABRIR un archivo del pack. Nada que ver con la RAM ni
+    // con la JVM: el juego arrancó, es un .jar concreto el que no se deja leer.
+    //
+    // ⚠ Se ancla en las cadenas de FABRIC, nunca en "Access is denied": ese texto
+    // lo escribe Windows en el IDIOMA DEL SISTEMA (en español, "Acceso
+    // denegado"), así que un patrón sobre él fallaría en silencio para la mayor
+    // parte de nuestros jugadores. Las clases de excepción de Java sí son
+    // invariantes.
+    //
+    // Va ANTES del bloque de gráficos porque scUltimoCrashReport() concatena
+    // cualquier informe de los últimos 5 minutos: si el jugador venía de un
+    // cierre gráfico, esto saldría como SC-12 siendo otra cosa.
+    const modIlegible = /ModResolutionException|Mod discovery failed/i.test(txt)
+        && /FileNotFoundException|AccessDeniedException|NoSuchFileException|ZipException|ZipError/i.test(txt)
+    // Si el fichero ilegible cae dentro de la instalación de Java, el remedio es
+    // el de SC-10 (reinstalarla), no el de aquí. Se marca explícitamente en vez
+    // de dejar que caiga al bloque de abajo: el patrón de SC-10 mira la línea
+    // del FileNotFoundException, y si Fabric no repitiera ahí la ruta el caso se
+    // perdería hasta el SC-06 genérico.
+    let forzarJavaRoto = false
+    if(modIlegible){
+        const rutaMod = (/Error analyzing \[([^\]]+)\]/.exec(txt) || [])[1] || null
+        if(rutaMod != null && /[\\/]runtime[\\/]|jdk-/i.test(rutaMod)){
+            forzarJavaRoto = true
+        } else {
+            scDialogoModIlegible(rutaMod, txt)
+            return
+        }
     }
 
     // Tarjeta gráfica o drivers. Minecraft 1.21 necesita OpenGL 3.2 y Sodium 4.3;
@@ -654,7 +902,8 @@ function scAnalizarCierreDelJuego(code, salida){
     // Java incompleto: falta algún archivo del propio JDK (tzdb.dat y compañía).
     // Suele ser el antivirus poniendo ficheros en cuarentena o una extracción
     // interrumpida.
-    const javaRoto = /tzdb\.dat|Error occurred during initialization of VM|ExceptionInInitializerError[\s\S]{0,200}(runtime|jdk-)|java\.lang\.NoClassDefFoundError: java\//i.test(txt)
+    const javaRoto = forzarJavaRoto
+        || /tzdb\.dat|Error occurred during initialization of VM|ExceptionInInitializerError[\s\S]{0,200}(runtime|jdk-)|java\.lang\.NoClassDefFoundError: java\//i.test(txt)
         || /FileNotFoundException:[^\n]*(runtime|jdk-)[^\n]*/i.test(txt)
 
     if(javaRoto){
@@ -717,6 +966,11 @@ function scInformeDiagnostico(codigo, err){
         `RAM juego: min ${ramMin} / max ${ramMax}`,
         `Java:      ${javaExe}`,
         `Datos:     ${ConfigManager.getDataDirectory()}`,
+        // El antivirus es la primera sospecha en SC-10, SC-14 y SC-15, y hasta
+        // ahora el informe no lo decía: soporte tenía que preguntarlo siempre.
+        // Se pinta de una caché porque scDetectarAntivirus() es asíncrona y esto
+        // no; si aún no ha resuelto, sale "sin comprobar" en vez de mentir.
+        `Antivirus: ${scAvCache == null ? '(sin comprobar)' : (scAvCache.nombre || '(ninguno registrado)')}`,
         '',
         '--- ERROR ---',
         err == null ? '(sin detalle)' : (err.stack || err.message || String(err))
@@ -1098,7 +1352,15 @@ async function downloadJava(effectiveJavaOptions, launchAfter = true) {
         // ...y encima, cuando termine de mirar qué antivirus hay, se sustituye
         // por uno que ofrece hacerlo por él. Sin await: si la detección tarda,
         // el jugador ya tiene delante el aviso útil.
-        scOfrecerArreglarAntivirus(newJavaExec)
+        scOfrecerArreglarAntivirus({
+            // Se excluye la carpeta 'runtime' entera, no el .exe: al reinstalar
+            // Java se borra y se recrea, y una exclusión sobre un fichero que ya
+            // no existe no sirve de nada.
+            carpeta: require('path').join(ConfigManager.getDataDirectory(), 'runtime'),
+            intro: Lang.queryJS('landing.launch.avIntro'),
+            codigo: SC_ERR.JAVA_BLOQUEADO,
+            reparar: scRepararJava
+        })
         return
     }
 
