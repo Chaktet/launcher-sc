@@ -424,19 +424,28 @@ Desplegada y verificada:
 
 | Comprobación | Resultado |
 |---|---|
-| Certificado | Let's Encrypt, , hasta el 14/11/2026 |
-| TLS | Valida sin  — el launcher lo acepta |
-| Contenido | MD5 idéntico al de la ruta normal |
-| ¿Esquiva Cloudflare? | 0 cabeceras , responde Apache directamente |
-| Renovación |  activo,  correcto |
+| Certificado | Let's Encrypt para `directo.servidorcobblemon.es`, hasta el 14/11/2026 |
+| TLS | Valida sin `-k` — el launcher lo acepta |
+| Contenido | MD5 del `distribution.json` idéntico al de la ruta normal |
+| ¿Esquiva Cloudflare? | 0 cabeceras `cf-*`; responde `Server: Apache/2.4.52` |
+| Renovación | `certbot.timer` activo, `certbot renew --dry-run` correcto |
 | Ruta normal | Intacta, sigue sirviendo 200 |
 
-Se desplegó con  (, sin que certbot tocara
-ningún vhost) y el vhost de , en  para no alterar el default server
-de . Se aplicó con  graceful: el proceso maestro de Apache conservó sus 15 días de
-uptime, así que no se cortó ninguna descarga ni se tocó Velocity, el Lobby ni Hoenn.
+Se desplegó con [tools/desplegar-ruta-directa.sh](../tools/desplegar-ruta-directa.sh) y el vhost de
+[tools/directo-vhost.conf](../tools/directo-vhost.conf). Tres decisiones que conviene no revertir:
 
-El cortafuegos no hizo falta tocarlo:  tiene .
+- **`certbot certonly --webroot`, nunca `--apache`.** Con `--apache`, certbot reescribe vhosts, y
+  `packs.conf` es el *default server* de `*:80` del que depende que `descargas.servidorcobblemon.es`
+  siga sirviendo. Así no se toca ninguno.
+- **El vhost va en `:443`**, otro socket, para no alterar el orden del default server de `:80`.
+- **`reload` graceful, nunca `restart`.** El proceso maestro de Apache conservó sus 15 días de uptime,
+  así que no se cortó ninguna descarga ni se tocó Velocity, el Lobby ni Hoenn.
+
+El cortafuegos no hizo falta tocarlo: `ufw` tiene `Default: allow (incoming)`.
+
+El vhost escribe su propio `packs_directo.log` (con `%a`, porque aquí no hay `CF-Connecting-IP`), que
+es la forma de medir cuánta gente está usando el escape. ⚠️ `sc-launcher-stats.sh` **no lo cuenta**:
+sigue leyendo solo `packs_cf.log`.
 
 Contrapartidas que hay que aceptar antes de hacerlo:
 
