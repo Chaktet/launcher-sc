@@ -941,6 +941,46 @@ function scAnalizarCierreDelJuego(code, salida){
     scFalloArranque(SC_ERR.JVM, Lang.queryJS('landing.launch.errJvm'), new Error(`Código de salida ${code}\n\n${txt.slice(-3000)}`))
 }
 
+/**
+ * Convierte a texto CUALQUIER cosa que llegue como error.
+ *
+ * ⚠ No todo lo que rechaza es un Error. FullRepair corre en un proceso hijo y su
+ * transmisor hace `reject(message)` con el mensaje IPC crudo
+ * (AssetGaurdTransmitter.js), que es un objeto plano sin `stack` ni `message`:
+ * el informe salía con "[object Object]" y perdíamos EXACTAMENTE el dato que
+ * hacía falta — la URL que falló y su código HTTP. Eso dejó ciego el
+ * diagnóstico de una tanda de SC-04.
+ *
+ * @param {*} err
+ * @returns {string}
+ */
+function scErrorLegible(err){
+    if(err == null){
+        return '(sin detalle)'
+    }
+    if(err.stack){
+        return err.stack
+    }
+    if(err instanceof Error && err.message){
+        return err.message
+    }
+    if(typeof err === 'object'){
+        try {
+            // Los Error anidados tampoco sobreviven a JSON.stringify por sí
+            // solos: hay que sacarles las propiedades a mano.
+            return JSON.stringify(err, (_k, v) => {
+                if(v instanceof Error){
+                    return { name: v.name, message: v.message, code: v.code, stack: v.stack }
+                }
+                return v
+            }, 2)
+        } catch(_e){
+            return Object.prototype.toString.call(err)
+        }
+    }
+    return String(err)
+}
+
 function scInformeDiagnostico(codigo, err){
     const os = require('os')
     const gb = b => (b / 1073741824).toFixed(1) + ' GB'
@@ -973,7 +1013,7 @@ function scInformeDiagnostico(codigo, err){
         `Antivirus: ${scAvCache == null ? '(sin comprobar)' : (scAvCache.nombre || '(ninguno registrado)')}`,
         '',
         '--- ERROR ---',
-        err == null ? '(sin detalle)' : (err.stack || err.message || String(err))
+        scErrorLegible(err)
     ]
     return lineas.join('\n')
 }
@@ -1001,7 +1041,7 @@ function scGuardarInforme(codigo, texto){
  * @param {string} explicacion Qué le pasa y qué puede intentar, en cristiano.
  * @param {Error|string} err Error real, para el informe.
  */
-function scFalloArranque(codigo, explicacion, err){
+function scFalloArranque(codigo, explicacion, err, reintentable = false){
     const informe = scInformeDiagnostico(codigo, err)
     const ruta = scGuardarInforme(codigo, informe)
     loggerLanding.error(`[${codigo}]`, err)
@@ -1010,13 +1050,7 @@ function scFalloArranque(codigo, explicacion, err){
         <span class="sc-cod-error">${codigo}</span>
         <span class="sc-cod-ayuda">${Lang.queryJS('landing.launch.codigoAyuda')}</span>`
 
-    setOverlayContent(
-        Lang.queryJS('landing.launch.failureTitle'),
-        desc,
-        Lang.queryJS('landing.launch.copiarInforme'),
-        Lang.queryJS('landing.launch.okay')
-    )
-    setOverlayHandler(() => {
+    const copiar = () => {
         try {
             require('electron').clipboard.writeText(informe)
         } catch(e){
@@ -1026,8 +1060,35 @@ function scFalloArranque(codigo, explicacion, err){
             shell.showItemInFolder(ruta)
         }
         toggleOverlay(false)
-    })
-    setDismissHandler(() => toggleOverlay(false))
+    }
+
+    // Los fallos de red y de descarga son casi siempre pasajeros, y hasta ahora
+    // dejaban al jugador en un callejón sin salida: helios-core NO reintenta los
+    // errores de estado HTTP (solo los de "el servidor no responde"), así que un
+    // 503 de un segundo bastaba para tumbar el arranque sin salida posible.
+    if(reintentable){
+        setOverlayContent(
+            Lang.queryJS('landing.launch.failureTitle'),
+            desc,
+            Lang.queryJS('landing.launch.reintentar'),
+            Lang.queryJS('landing.launch.copiarInforme')
+        )
+        setOverlayHandler(() => {
+            toggleOverlay(false)
+            dlAsync()
+        })
+        setDismissHandler(copiar)
+    } else {
+        setOverlayContent(
+            Lang.queryJS('landing.launch.failureTitle'),
+            desc,
+            Lang.queryJS('landing.launch.copiarInforme'),
+            Lang.queryJS('landing.launch.okay')
+        )
+        setOverlayHandler(copiar)
+        setDismissHandler(() => toggleOverlay(false))
+    }
+
     toggleOverlay(true, true)
     toggleLaunchArea(false)
 }
@@ -1453,7 +1514,7 @@ async function dlAsync(login = true) {
         setLaunchPercentage(100)
     } catch (err) {
         loggerLaunchSuite.error('Error during file validation.')
-        scFalloArranque(SC_ERR.VERIFICACION, Lang.queryJS('landing.launch.errVerificacion'), err)
+        scFalloArranque(SC_ERR.VERIFICACION, Lang.queryJS('landing.launch.errVerificacion'), err, true)
         return
     }
     
@@ -1469,7 +1530,7 @@ async function dlAsync(login = true) {
             setDownloadPercentage(100)
         } catch(err) {
             loggerLaunchSuite.error('Error during file download.')
-            scFalloArranque(SC_ERR.DESCARGA, Lang.queryJS('landing.launch.errDescarga'), err)
+            scFalloArranque(SC_ERR.DESCARGA, Lang.queryJS('landing.launch.errDescarga'), err, true)
             return
         }
     } else {
