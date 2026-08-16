@@ -25,12 +25,13 @@ from datetime import datetime, timezone, timedelta
 LOG_GLOB = '/var/log/apache2/packs_access.log*'
 LOG_DIRECTO = '/var/log/apache2/packs_directo.log*'
 LOG_CF = '/var/log/apache2/packs_cf.log'
+LOG_CF_GLOB = '/var/log/apache2/packs_cf.log*'
 LOG_DIRECTO_HOY = '/var/log/apache2/packs_directo.log'
 HIST = '/var/www/packs/launcher/historico.json'
 OUT = '/var/www/packs/launcher/stats.json'
 OUT_MOVIL = '/var/www/packs/movil/stats.json'
 
-CAMPOS = ('exe', 'movil', 'arranques', 'directo')
+CAMPOS = ('exe', 'movil', 'arranques', 'directo', 'unicos')
 
 MESES = {'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
          'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'}
@@ -102,7 +103,45 @@ def contar():
     for ruta in glob.glob(LOG_DIRECTO):
         procesar(ruta, True)
 
+    for d, n in contar_unicos().items():
+        dias.setdefault(d, vacio())['unicos'] = n
+
     return dias
+
+
+def contar_unicos():
+    """Jugadores distintos por dia, contando IPs SIN GUARDARLAS.
+
+    ⚠ PRIVACIDAD: las IPs viven solo en memoria durante esta funcion y se tiran
+    al salir. Al historico va UNICAMENTE el numero. Nunca escribas las IPs a
+    disco: son datos personales y el registro de Apache del que salen ya se
+    borra solo a los 14 dias.
+
+    Se leen packs_cf.log* y packs_directo.log*, NO packs_access.log: en ese
+    ultimo la IP que aparece es la de Cloudflare, no la del jugador — todos
+    saldrian como el mismo. El formato `sccf` existe justamente para eso, porque
+    guarda la cabecera CF-Connecting-IP con la IP real.
+
+    Una IP no es una persona: dos hermanos en casa son una, y un movil que salta
+    de wifi a datos son dos. Sirve para ver tendencias, no como censo.
+    """
+    por_dia = {}
+    for patron in (LOG_CF_GLOB, LOG_DIRECTO):
+        for ruta in glob.glob(patron):
+            try:
+                with abrir(ruta) as f:
+                    for linea in f:
+                        if 'GET /launcher/distribution.json' not in linea:
+                            continue
+                        d = fecha_de(linea)
+                        if d is None:
+                            continue
+                        ip = linea.split(' ', 1)[0].strip()
+                        if ip:
+                            por_dia.setdefault(d, set()).add(ip)
+            except Exception:
+                continue
+    return {d: len(ips) for d, ips in por_dia.items()}
 
 
 def fusionar(hist, nuevos):
@@ -168,7 +207,14 @@ def main():
             'exe': v.get('exe', 0),
             'movil': v.get('movil', 0),
             'directo': v.get('directo', 0),
+            'unicos': v.get('unicos', 0),
         })
+
+    # Media de los 7 dias ANTERIORES a hoy: incluir el dia en curso la hunde,
+    # porque va a medias.
+    ult7 = [hist.get((datetime.now(timezone.utc) - timedelta(days=i)).strftime('%Y-%m-%d'), {}).get('unicos', 0)
+            for i in range(1, 8)]
+    ayer = (datetime.now(timezone.utc) - timedelta(days=1)).strftime('%Y-%m-%d')
 
     datos = {
         'generado': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
@@ -196,6 +242,15 @@ def main():
             'mes': suma('directo', limite_mes),
             'semana': suma('directo', limite_sem),
             'hoy': hist.get(hoy, {}).get('directo', 0),
+        },
+        # Jugadores distintos por dia. NO se da un "total": sumar unicos diarios
+        # no significa nada, porque la misma persona cuenta una vez por cada dia
+        # que juega. Lo comparable es dia contra dia y contra la media.
+        'unicos': {
+            'hoy': hist.get(hoy, {}).get('unicos', 0),
+            'ayer': hist.get(ayer, {}).get('unicos', 0),
+            'media7': round(sum(ult7) / 7, 1),
+            'maximo': max((v.get('unicos', 0) for v in hist.values()), default=0),
         },
         'activos_2h': launchers_activos(),
         'serie': serie,
