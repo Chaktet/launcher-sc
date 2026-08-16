@@ -981,6 +981,38 @@ function scErrorLegible(err){
     return String(err)
 }
 
+/**
+ * Traduce un fallo de descarga al problema REAL del jugador.
+ *
+ * helios-core resume la causa en `displayable`, y ahí está la diferencia entre
+ * problemas que no tienen nada que ver. Visto en logs reales de dos jugadores
+ * el 2026-08-16, con el mismo SC-04 y causas distintas:
+ *   - ETIMEDOUT                  -> los paquetes no llegan (ISP, DNS, corte)
+ *   - DEPTH_ZERO_SELF_SIGNED_CERT-> alguien le está interceptando el HTTPS
+ * Darles a los dos el mismo "revisa tu conexión y el disco" no ayuda a ninguno.
+ *
+ * @param {*} err
+ * @returns {string} Clave de idioma con el mensaje concreto.
+ */
+function scMensajeDescarga(err){
+    const t = err == null ? '' : String(err.displayable || err.message || scErrorLegible(err))
+
+    // Certificado que no valida: no es la conexión, es que algo en medio está
+    // abriendo el HTTPS. Antivirus con "análisis de HTTPS/SSL", un proxy de
+    // colegio o trabajo, o el wifi de un sitio público.
+    if(/SELF_SIGNED_CERT|UNABLE_TO_VERIFY_LEAF_SIGNATURE|CERT_HAS_EXPIRED|ERR_TLS|CERT_UNTRUSTED|CERT_SIGNATURE_FAILURE/i.test(t)){
+        return 'landing.launch.errDescargaCertificado'
+    }
+    // No hay respuesta: los paquetes no llegan al servidor.
+    if(/ETIMEDOUT|ENOTFOUND|ECONNREFUSED|ECONNRESET|EAI_AGAIN|ENETUNREACH|EHOSTUNREACH/i.test(t)){
+        return 'landing.launch.errDescargaSinRespuesta'
+    }
+    if(/ENOSPC|no space left/i.test(t)){
+        return 'landing.launch.errDescargaDisco'
+    }
+    return 'landing.launch.errDescarga'
+}
+
 function scInformeDiagnostico(codigo, err){
     const os = require('os')
     const gb = b => (b / 1073741824).toFixed(1) + ' GB'
@@ -1530,7 +1562,7 @@ async function dlAsync(login = true) {
             setDownloadPercentage(100)
         } catch(err) {
             loggerLaunchSuite.error('Error during file download.')
-            scFalloArranque(SC_ERR.DESCARGA, Lang.queryJS('landing.launch.errDescarga'), err, true)
+            scFalloArranque(SC_ERR.DESCARGA, Lang.queryJS(scMensajeDescarga(err)), err, true)
             return
         }
     } else {
