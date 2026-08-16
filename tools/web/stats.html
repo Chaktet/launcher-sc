@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Estadísticas · SC Launcher</title>
+<style>
+    :root {
+        --accent: #4fa9de;
+        --accent-soft: rgba(79, 169, 222, 0.35);
+        --ink: #eef4f9;
+        --ink-dim: #9db4c6;
+        --line: rgba(255, 255, 255, 0.12);
+        --glass: rgba(13, 24, 39, 0.72);
+        --unicos: #5fd08a;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        min-height: 100dvh;
+        padding: 28px 18px 60px;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        color: var(--ink);
+        background:
+            radial-gradient(900px 500px at 15% -10%, rgba(79, 169, 222, 0.16), transparent 60%),
+            radial-gradient(700px 480px at 95% 110%, rgba(232, 134, 42, 0.10), transparent 55%),
+            linear-gradient(180deg, #070d16, #0a1420 55%, #081019);
+    }
+    main { width: min(900px, 100%); margin: 0 auto; }
+    header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .kicker { font-size: 11px; font-weight: 700; letter-spacing: 2.2px; text-transform: uppercase; color: var(--accent); }
+    h1 { font-size: clamp(24px, 5vw, 32px); letter-spacing: -0.4px; margin-top: 4px; }
+    .live {
+        display: inline-flex; align-items: center; gap: 8px;
+        font-size: 12px; color: var(--ink-dim);
+        border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; white-space: nowrap;
+    }
+    .live::before {
+        content: ''; width: 7px; height: 7px; border-radius: 50%;
+        background: #46c46a; box-shadow: 0 0 8px rgba(70, 196, 106, 0.9);
+        animation: late 2.2s ease-out infinite;
+    }
+    @keyframes late { 0%, 100% { opacity: 1 } 50% { opacity: 0.35 } }
+
+    h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 1.6px; color: var(--ink-dim); margin: 30px 0 12px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+    .card {
+        background: var(--glass); border: 1px solid var(--line); border-radius: 18px;
+        padding: 18px 20px 16px; transition: border-color 0.25s ease, transform 0.25s ease;
+    }
+    .card:hover { border-color: var(--accent-soft); transform: translateY(-2px); }
+    .card.destacada { border-color: var(--accent-soft); background: rgba(79, 169, 222, 0.08); }
+    .num {
+        font-size: 38px; font-weight: 800; line-height: 1; letter-spacing: -1px;
+        font-variant-numeric: tabular-nums;
+        background: linear-gradient(180deg, #cfe8f8, var(--accent));
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .lbl { font-size: 12px; color: var(--ink-dim); margin-top: 8px; line-height: 1.4; }
+
+    .gráfica { background: var(--glass); border: 1px solid var(--line); border-radius: 18px; padding: 20px 22px 14px; }
+    /* La zona del gráfico se posiciona para poder superponer la línea de únicos
+       sobre las barras sin desplazarlas. */
+    /* El hueco de arriba es para la etiqueta del tope de la escala de únicos.
+       Si se pone dentro del área del gráfico choca con la línea justo en el día
+       del máximo, que es precisamente donde hay que poder leerla. */
+    .lienzo { position: relative; padding-top: 17px; }
+    .barras { display: flex; align-items: flex-end; gap: 3px; height: 130px; }
+    /* Únicos: van de 250 a 330 al día y las descargas de 0 a 25. En la misma
+       escala las barras desaparecerían, así que la línea lleva SU PROPIO eje y
+       se dice en la leyenda. Mezclar escalas sin avisar sería engañar. */
+    .linea { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 130px; pointer-events: none; overflow: visible; }
+    .linea polyline { fill: none; stroke: var(--unicos); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+    .tope {
+        position: absolute; top: 0; right: 0;
+        font-size: 10.5px; line-height: 1; color: var(--unicos); opacity: 0.85;
+        font-variant-numeric: tabular-nums;
+    }
+    .barra { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; min-width: 0; }
+    .barra i { display: block; border-radius: 3px 3px 0 0; min-height: 2px; }
+    .barra .pc { background: linear-gradient(180deg, #7fd0ff, var(--accent)); }
+    .barra .mv { background: linear-gradient(180deg, #f0c47a, #d9963c); }
+    .barra:hover i { filter: brightness(1.25); }
+    .ejes { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--ink-dim); margin-top: 8px; }
+    .leyenda { display: flex; gap: 18px; font-size: 12px; color: var(--ink-dim); margin-top: 14px; }
+    .leyenda span { display: inline-flex; align-items: center; gap: 7px; }
+    .punto { width: 10px; height: 10px; border-radius: 3px; }
+    .punto.pc { background: var(--accent); }
+    .punto.mv { background: #d9963c; }
+    .punto.un { background: var(--unicos); border-radius: 999px; height: 3px; width: 14px; }
+
+    footer { margin-top: 26px; font-size: 12px; color: var(--ink-dim); display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .err { color: #e08f8f; font-size: 14px; }
+</style>
+</head>
+<body>
+<main>
+    <header>
+        <div>
+            <div class="kicker">Servidor Cobblemon</div>
+            <h1>Estadísticas del launcher</h1>
+        </div>
+        <span class="live" id="activos">cargando</span>
+    </header>
+
+    <h2>Instalador de PC</h2>
+    <div class="grid" id="pc"></div>
+
+    <h2>Versión móvil</h2>
+    <div class="grid" id="mv"></div>
+
+    <h2>Jugadores por día</h2>
+    <div class="grid" id="un"></div>
+
+    <h2>Últimos 30 días</h2>
+    <div class="gráfica">
+        <div class="lienzo">
+            <div class="barras" id="barras"></div>
+            <svg class="linea" id="linea" viewBox="0 0 30 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+            <span class="tope" id="tope"></span>
+        </div>
+        <div class="ejes"><span id="eje-ini"></span><span id="eje-fin">hoy</span></div>
+        <div class="leyenda">
+            <span><i class="punto pc"></i> Instalador PC</span>
+            <span><i class="punto mv"></i> Pack móvil</span>
+            <span><i class="punto un"></i> Jugadores únicos <em style="font-style:normal;opacity:.7">(escala propia)</em></span>
+        </div>
+    </div>
+
+    <footer>
+        <span id="desde"></span>
+        <span id="actualizado"></span>
+    </footer>
+</main>
+<script>
+    const n = v => Number(v || 0).toLocaleString('es-ES')
+    const tarjeta = (valor, etiqueta, destacada) =>
+        `<div class="card${destacada ? ' destacada' : ''}"><div class="num">${n(valor)}</div><div class="lbl">${etiqueta}</div></div>`
+
+    async function cargar(){
+        try {
+            const r = await fetch('stats.json?t=' + Date.now(), { cache: 'no-store' })
+            if(!r.ok) throw new Error()
+            const s = await r.json()
+
+            document.getElementById('pc').innerHTML =
+                tarjeta(s.instalador.total, 'Descargas totales', true) +
+                tarjeta(s.instalador.mes, 'Últimos 30 días') +
+                tarjeta(s.instalador.semana, 'Últimos 7 días') +
+                tarjeta(s.instalador.hoy, 'Hoy')
+
+            document.getElementById('mv').innerHTML =
+                tarjeta(s.movil.total, 'Descargas totales', true) +
+                tarjeta(s.movil.mes, 'Últimos 30 días') +
+                tarjeta(s.movil.hoy, 'Hoy') +
+                tarjeta(s.arranques.total, 'Arranques del launcher')
+
+            // Sin "total" a proposito: sumar unicos diarios no significa nada,
+            // porque la misma persona cuenta una vez por cada dia que juega.
+            const u = s.unicos || {}
+            document.getElementById('un').innerHTML =
+                tarjeta(u.hoy, 'Hoy', true) +
+                tarjeta(u.ayer, 'Ayer') +
+                tarjeta(u.media7, 'Media de 7 días') +
+                tarjeta(u.maximo, 'Máximo histórico')
+
+            document.getElementById('activos').textContent =
+                n(s.activos_2h) + ' launchers activos ahora'
+
+            const serie = s.serie || []
+            const max = Math.max(1, ...serie.map(d => d.exe + d.movil))
+            document.getElementById('barras').innerHTML = serie.map(d => {
+                const alturaPc = Math.round((d.exe / max) * 118)
+                const alturaMv = Math.round((d.movil / max) * 118)
+                const fecha = new Date(d.d + 'T12:00:00Z').toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })
+                const jug = d.unicos ? `${n(d.unicos)} jugadores` : 'sin dato de jugadores'
+                return `<div class="barra" title="${fecha}: ${d.exe} PC, ${d.movil} móvil, ${jug}">
+                    ${alturaMv ? `<i class="mv" style="height:${alturaMv}px"></i>` : ''}
+                    ${alturaPc ? `<i class="pc" style="height:${alturaPc}px"></i>` : ''}
+                </div>`
+            }).join('')
+
+            // Linea de jugadores unicos, con SU PROPIA escala. El viewBox es
+            // 0..30 en X y 0..100 en Y con preserveAspectRatio="none", asi que
+            // cada punto cae en el centro de su barra (i + 0.5) y la Y se estira
+            // sola al alto real del contenedor.
+            // ⚠ La linea arranca en el PRIMER dia con dato, no en el borde.
+            // El contador de unicos es reciente y los dias anteriores valen 0
+            // porque no hay registro, no porque no hubiera jugadores. Trazar
+            // esos ceros dibujaria una subida de 0 a 280 que nunca ocurrio.
+            // Sin linea = sin dato, que es lo que de verdad pasa.
+            const topeU = Math.max(1, ...serie.map(d => d.unicos || 0))
+            const desdeU = serie.findIndex(d => d.unicos > 0)
+            const linea = document.getElementById('linea')
+            if(desdeU >= 0){
+                const puntos = serie.slice(desdeU).map((d, k) =>
+                    `${desdeU + k + 0.5},${(100 - ((d.unicos || 0) / topeU) * 92).toFixed(2)}`).join(' ')
+                linea.innerHTML = `<polyline points="${puntos}"></polyline>`
+                document.getElementById('tope').textContent = n(topeU)
+            } else {
+                linea.innerHTML = ''
+                document.getElementById('tope').textContent = ''
+            }
+
+            if(serie.length){
+                document.getElementById('eje-ini').textContent =
+                    new Date(serie[0].d + 'T12:00:00Z').toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })
+            }
+
+            const desde = new Date(s.desde + 'T12:00:00Z')
+            document.getElementById('desde').textContent =
+                'Datos desde el ' + desde.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' })
+            const g = new Date(s.generado)
+            document.getElementById('actualizado').textContent =
+                'Actualizado: ' + g.toLocaleString('es-ES', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short' })
+        } catch(e){
+            document.getElementById('pc').innerHTML = '<div class="err">No se pudieron cargar las estadísticas. Reintentando…</div>'
+        }
+    }
+    cargar()
+    setInterval(cargar, 60000)
+</script>
+</body>
+</html>
