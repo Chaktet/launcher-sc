@@ -30,6 +30,7 @@ const {
 // Internal Requirements
 const DiscordWrapper          = require('./assets/js/discordwrapper')
 const ProcessBuilder          = require('./assets/js/processbuilder')
+const distroManager           = require('./assets/js/distromanager')
 
 // Launch Elements
 const launch_content          = document.getElementById('launch_content')
@@ -981,6 +982,96 @@ function scErrorLegible(err){
     return String(err)
 }
 
+// ---------------------------------------------------------------------------
+// Ruta directa · escape al bloqueo de Cloudflare en España
+// ---------------------------------------------------------------------------
+
+// ¿Se ha reescrito ya la distribución a la ruta directa en esta sesión? Evita
+// repetir el trabajo y, sobre todo, evita reescribir en bucle.
+let scRutaDirectaActiva = false
+
+/**
+ * ¿Responde el host directo?
+ *
+ * Se comprueba SIEMPRE antes de tocar nada. Mientras el host no exista —hoy no
+ * existe— esto devuelve false y el launcher se comporta exactamente igual que
+ * siempre. El plazo es corto a propósito: si el jugador ya viene de un fallo de
+ * red, no vamos a tenerlo otro minuto esperando.
+ *
+ * @returns {Promise<boolean>}
+ */
+function scProbarRutaDirecta(){
+    return new Promise(resolve => {
+        let hecho = false
+        const fin = ok => { if(!hecho){ hecho = true; resolve(ok) } }
+        try {
+            const req = require('https').request({
+                method: 'HEAD',
+                hostname: distroManager.SC_HOST_DIRECTO,
+                path: '/launcher/distribution.json',
+                timeout: 8000
+            }, res => {
+                fin(res.statusCode === 200)
+                res.resume()
+            })
+            req.on('timeout', () => { req.destroy(); fin(false) })
+            req.on('error', () => fin(false))
+            req.end()
+        } catch(_e){
+            fin(false)
+        }
+    })
+}
+
+/**
+ * Reescribe la copia local de la distribución para que todo se descargue por el
+ * host directo en vez de por Cloudflare.
+ *
+ * Funciona porque helios-core cachea el distribution.json en el directorio del
+ * launcher y de AHÍ lo lee el proceso hijo que descarga: cambiando el host en
+ * esa copia se redirigen las 180 descargas de golpe, sin tocar helios-core.
+ *
+ * Es deliberadamente temporal: en cuanto Cloudflare vuelva a responder,
+ * `_loadDistributionNullable()` sobrescribe el fichero con las URLs normales y
+ * el jugador vuelve solo a la ruta con caché. No hay que deshacer nada.
+ *
+ * @returns {boolean} true si se reescribió algo.
+ */
+function scActivarRutaDirecta(){
+    const nodeFs = require('fs')
+    const nodePath = require('path')
+    try {
+        const ruta = nodePath.join(ConfigManager.getLauncherDirectory(), 'distribution.json')
+        if(!nodeFs.existsSync(ruta)){
+            return false
+        }
+        const d = JSON.parse(nodeFs.readFileSync(ruta, 'utf8'))
+        let tocadas = 0
+        const recorrer = m => {
+            if(m.artifact && typeof m.artifact.url === 'string'
+                && m.artifact.url.includes(distroManager.SC_HOST_PRINCIPAL)){
+                m.artifact.url = m.artifact.url.replace(
+                    distroManager.SC_HOST_PRINCIPAL, distroManager.SC_HOST_DIRECTO)
+                tocadas++
+            }
+            ;(m.subModules || []).forEach(recorrer)
+        }
+        for(const s of (d.servers || [])){
+            (s.modules || []).forEach(recorrer)
+        }
+        if(tocadas === 0){
+            return false
+        }
+        nodeFs.writeFileSync(ruta, JSON.stringify(d))
+        loggerLanding.info(`Ruta directa activada: ${tocadas} descargas redirigidas a ${distroManager.SC_HOST_DIRECTO}`)
+        scRutaDirectaActiva = true
+        return true
+    } catch(e){
+        loggerLanding.error('No se pudo activar la ruta directa', e)
+        return false
+    }
+}
+
 /**
  * Traduce un fallo de descarga al problema REAL del jugador.
  *
@@ -1105,7 +1196,23 @@ function scFalloArranque(codigo, explicacion, err, reintentable = false){
             Lang.queryJS('landing.launch.reintentar'),
             Lang.queryJS('landing.launch.copiarInforme')
         )
-        setOverlayHandler(() => {
+        setOverlayHandler(async () => {
+            // Si el fallo fue de red, antes de reintentar por el mismo camino se
+            // prueba la ruta directa. Reintentar por donde ya ha fallado no
+            // arregla un bloqueo del operador: hay que salir de Cloudflare.
+            const esDeRed = scMensajeDescarga(err) === 'landing.launch.errDescargaSinRespuesta'
+            if(esDeRed && !scRutaDirectaActiva){
+                setOverlayContent(
+                    Lang.queryJS('landing.launch.failureTitle'),
+                    Lang.queryJS('landing.launch.buscandoRutaAlternativa'),
+                    Lang.queryJS('landing.launch.okay')
+                )
+                setOverlayHandler(() => { /* sin acción mientras comprueba */ })
+                setDismissHandler(null)
+                if(await scProbarRutaDirecta()){
+                    scActivarRutaDirecta()
+                }
+            }
             toggleOverlay(false)
             dlAsync()
         })

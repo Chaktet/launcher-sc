@@ -371,3 +371,73 @@ curl -sI https://descargas.servidorcobblemon.es/SC-Launcher-setup.exe
 
 > ⛔ OVH-A no es solo el servidor de descargas: aloja también el proxy Velocity, el Lobby y la región
 > Hoenn. No reinicies nada ahí, ni Apache, sin un "sí, reinicia" explícito de Felix.
+
+---
+
+## 4. La ruta directa · escape al bloqueo de Cloudflare en España
+
+> Verificado el 2026-08-16 diagnosticando una caída masiva de jugadores españoles.
+
+### El problema
+
+Los operadores españoles (Movistar, Vodafone, Orange, DIGI, MasOrange) bloquean por orden judicial
+**rangos enteros de IPs** durante los partidos de fútbol, para cortar emisiones piratas. Los bloqueos
+van **por IP concreta, no por proveedor**, y Cloudflare se lleva la peor parte porque miles de
+dominios comparten cada IP. Nuestros dominios están detrás de Cloudflare, así que caen con ellos.
+
+El 16/08/2026, con la temporada recién empezada, media base española no podía descargar **ni abrir la
+web**, con la infraestructura intacta: los 180 artefactos sirviendo 200 con el tamaño correcto, DNS y
+certificado correctos, origen al 30% de disco y sin errores en Apache.
+
+Cómo se reconoce en un informe de soporte:
+
+| `displayable` en el informe | Qué es |
+|---|---|
+| `ETIMEDOUT`, `ENOTFOUND`, `ENETUNREACH` | **El bloqueo.** Los paquetes no llegan |
+| `DEPTH_ZERO_SELF_SIGNED_CERT` | Otra cosa: su antivirus o un proxy le abre el HTTPS |
+
+### Cómo lo esquiva el launcher (desde 1.5.15)
+
+Un host que apunta **directo al origen**, con la nube de Cloudflare desactivada y su propio
+certificado. El launcher solo lo usa cuando el camino normal ha fallado por red:
+
+1. Falla la descarga con un error de red → SC-04 con botón **Reintentar**.
+2. Al pulsarlo, `scProbarRutaDirecta()` hace un HEAD con 8 s de plazo contra
+   `directo.servidorcobblemon.es`. **Si no responde, no se toca nada.**
+3. Si responde, `scActivarRutaDirecta()` reescribe el host en las 180 `artifact.url` de la copia
+   local de `distribution.json`, y reintenta.
+
+Funciona porque helios-core **cachea el `distribution.json` en el directorio del launcher** y de ahí
+lo lee el proceso hijo que descarga: cambiando el host en esa copia se redirigen las 180 descargas de
+golpe, sin tocar helios-core.
+
+> **Se deshace solo.** En cuanto Cloudflare vuelva a responder, `_loadDistributionNullable()`
+> sobrescribe el fichero con las URLs normales y el jugador vuelve a la ruta con caché. No hay nada
+> que revertir a mano, y no hay cron ni horarios que mantener.
+>
+> ⚠ La reescritura toca **solo `artifact.url`**. El `path` NO se toca, igual que con el `?v=`: si
+> cambiara, a los jugadores ya instalados se les desactivaría el pack.
+
+### Qué falta para que se active (PENDIENTE)
+
+Hoy `directo.servidorcobblemon.es` **no existe**, así que la sonda devuelve false en ~70 ms y el
+launcher se comporta exactamente igual que siempre. Para activarlo hace falta, en OVH-A:
+
+1. Registro DNS `directo` → `51.79.83.226`, con el proxy de Cloudflare **desactivado** (nube gris).
+2. `a2enmod ssl` — hoy `mod_ssl` **no está habilitado**.
+3. Certificado Let's Encrypt para ese nombre.
+4. Un vhost `:443` sirviendo el mismo `/var/www/packs`. Apache **hoy solo escucha en :80**.
+5. Abrir el 443 en el cortafuegos.
+
+Contrapartidas que hay que aceptar antes de hacerlo:
+
+- **Se expone la IP real de OVH-A**, que además aloja Velocity, el Lobby y Hoenn. Pierde el escudo
+  DDoS de Cloudflare para ese nombre.
+- **Las descargas por la ruta directa no llevan caché**: el pack de 143 MB saldría íntegro de OVH.
+  Asumible, porque solo la usan los bloqueados y la mayoría ya tiene el pack.
+- OVH también aparece en las listas de bloqueo, aunque con muchas menos IPs y siempre por emisiones
+  concretas. Un dedicado nuestro tiene un riesgo de arrastre mucho menor que una IP compartida.
+
+> ⚠ Al añadir el vhost, cuidado con el orden: `packs.conf` es el **default server** de `*:80`. El
+> vhost nuevo va en `:443`, que es otro socket, pero conviene copiar la configuración antes y usar
+> `apache2ctl configtest` + `systemctl reload` (graceful, no corta descargas en curso).

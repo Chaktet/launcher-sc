@@ -231,6 +231,7 @@ avNoHecho = "No se ha podido hacer automáticamente. O has cancelado el aviso de
 avYaExcluida = "⚠ Esta carpeta <b>ya está</b> en las excepciones de tu antivirus, así que probablemente el problema sea otro. Pasa el informe al staff."
 avIntroMod = "Tu antivirus está impidiendo que el juego lea uno de los archivos del pack."
 errModIlegible = "El juego no ha podido abrir uno de los archivos del pack: {archivo}<br><br>El archivo está ahí, pero algo en tu sistema no deja leerlo. Lo más habitual es que sea el antivirus analizándolo justo en ese momento, y <b>suele arreglarse volviendo a intentarlo</b>."
+buscandoRutaAlternativa = "Buscando una ruta alternativa hasta el servidor..<br><br>Un momento."
 reintentar = "Reintentar"
 modReintentar = "Reintentar"
 modRepararReintentar = "Descargarlo de nuevo"
