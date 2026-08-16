@@ -418,16 +418,25 @@ golpe, sin tocar helios-core.
 > ⚠ La reescritura toca **solo `artifact.url`**. El `path` NO se toca, igual que con el `?v=`: si
 > cambiara, a los jugadores ya instalados se les desactivaría el pack.
 
-### Qué falta para que se active (PENDIENTE)
+### Estado: ACTIVA desde el 2026-08-16
 
-Hoy `directo.servidorcobblemon.es` **no existe**, así que la sonda devuelve false en ~70 ms y el
-launcher se comporta exactamente igual que siempre. Para activarlo hace falta, en OVH-A:
+Desplegada y verificada:
 
-1. Registro DNS `directo` → `51.79.83.226`, con el proxy de Cloudflare **desactivado** (nube gris).
-2. `a2enmod ssl` — hoy `mod_ssl` **no está habilitado**.
-3. Certificado Let's Encrypt para ese nombre.
-4. Un vhost `:443` sirviendo el mismo `/var/www/packs`. Apache **hoy solo escucha en :80**.
-5. Abrir el 443 en el cortafuegos.
+| Comprobación | Resultado |
+|---|---|
+| Certificado | Let's Encrypt, , hasta el 14/11/2026 |
+| TLS | Valida sin  — el launcher lo acepta |
+| Contenido | MD5 idéntico al de la ruta normal |
+| ¿Esquiva Cloudflare? | 0 cabeceras , responde Apache directamente |
+| Renovación |  activo,  correcto |
+| Ruta normal | Intacta, sigue sirviendo 200 |
+
+Se desplegó con  (, sin que certbot tocara
+ningún vhost) y el vhost de , en  para no alterar el default server
+de . Se aplicó con  graceful: el proceso maestro de Apache conservó sus 15 días de
+uptime, así que no se cortó ninguna descarga ni se tocó Velocity, el Lobby ni Hoenn.
+
+El cortafuegos no hizo falta tocarlo:  tiene .
 
 Contrapartidas que hay que aceptar antes de hacerlo:
 
