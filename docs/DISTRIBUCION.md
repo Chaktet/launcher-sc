@@ -394,26 +394,29 @@ Cómo se reconoce en un informe de soporte:
 | `displayable` en el informe | Qué es |
 |---|---|
 | `ETIMEDOUT`, `ENOTFOUND`, `ENETUNREACH` | **El bloqueo.** Los paquetes no llegan |
-| `DEPTH_ZERO_SELF_SIGNED_CERT` | Otra cosa: su antivirus o un proxy le abre el HTTPS |
+| `DEPTH_ZERO_SELF_SIGNED_CERT` y otros de certificado | **También el bloqueo**, en Digi: contesta por la IP bloqueada con su propio certificado. O un antivirus o proxy que abre el HTTPS. El launcher lo distingue (ver SC-04 en [ERRORES.md](ERRORES.md)) |
 
-### Cómo lo esquiva el launcher (desde 1.5.15)
+### Cómo lo esquiva el launcher (desde 1.5.15, automático desde 1.6.1)
 
 Un host que apunta **directo al origen**, con la nube de Cloudflare desactivada y su propio
-certificado. El launcher solo lo usa cuando el camino normal ha fallado por red:
+certificado. El launcher solo lo usa cuando el camino normal ha fallado:
 
-1. Falla la descarga con un error de red → SC-04 con botón **Reintentar**.
-2. Al pulsarlo, `scProbarRutaDirecta()` hace un HEAD con 8 s de plazo contra
-   `directo.servidorcobblemon.es`. **Si no responde, no se toca nada.**
-3. Si responde, `scActivarRutaDirecta()` reescribe el host en las 180 `artifact.url` de la copia
-   local de `distribution.json`, y reintenta.
+1. Falla la descarga con un error de red o de certificado. **Todavía no se enseña nada.**
+2. Con error de red, `scProbarRutaDirecta()` hace un HEAD con 8 s de plazo contra
+   `directo.servidorcobblemon.es`. Con error de certificado, `scDiagnosticarTls()` además compara
+   los certificados de las dos rutas. **Si la directa no valida, no se toca nada** y sale SC-04.
+3. Si valida, `scActivarRutaDirecta()` reescribe el host en las 180 `artifact.url` de la copia
+   local de `distribution.json`, apunta el refresco de la distribución a la directa, y reintenta.
 
 Funciona porque helios-core **cachea el `distribution.json` en el directorio del launcher** y de ahí
 lo lee el proceso hijo que descarga: cambiando el host en esa copia se redirigen las 180 descargas de
 golpe, sin tocar helios-core.
 
-> **Se deshace solo.** En cuanto Cloudflare vuelva a responder, `_loadDistributionNullable()`
-> sobrescribe el fichero con las URLs normales y el jugador vuelve a la ruta con caché. No hay nada
-> que revertir a mano, y no hay cron ni horarios que mantener.
+> **Dura hasta cerrar el launcher, y se deshace solo.** Mientras tanto `dlAsync()` vuelve a aplicar
+> la reescritura después de cada refresco. Hasta la 1.6.0 se dejaba que el siguiente refresco por
+> Cloudflare la deshiciera, pero con un bloqueo por IP que va y viene ese refresco colaba justo antes
+> de reintentar y las descargas volvían a la IP bloqueada. Al abrir el launcher otra vez, el refresco
+> normal escribe las URLs de Cloudflare: no hay nada que revertir a mano, ni cron ni horarios.
 >
 > ⚠ La reescritura toca **solo `artifact.url`**. El `path` NO se toca, igual que con el `?v=`: si
 > cambiara, a los jugadores ya instalados se les desactivaría el pack.

@@ -986,9 +986,13 @@ function scErrorLegible(err){
 // Ruta directa · escape al bloqueo de Cloudflare en España
 // ---------------------------------------------------------------------------
 
-// ¿Se ha reescrito ya la distribución a la ruta directa en esta sesión? Evita
-// repetir el trabajo y, sobre todo, evita reescribir en bucle.
+// ¿Se ha cambiado ya a la ruta directa en esta sesión? Una vez cambiada se
+// mantiene hasta cerrar el launcher: dlAsync la vuelve a aplicar después de cada
+// refresco de la distribución (ver scActivarRutaDirecta).
 let scRutaDirectaActiva = false
+// Plazo de cada comprobación de red del escape (sonda y lectura de certificado).
+// Corto a propósito: el jugador ya viene de un fallo y está esperando.
+const SC_PLAZO_SONDA = 8000
 
 /**
  * Prueba la ruta directa CON validación completa de TLS y dice por qué falla.
@@ -1003,19 +1007,26 @@ let scRutaDirectaActiva = false
 function scSondearRutaDirecta(){
     return new Promise(resolve => {
         let hecho = false
-        const fin = (ok, error = null) => { if(!hecho){ hecho = true; resolve({ ok, error }) } }
+        let guarda = null
+        const fin = (ok, error = null) => {
+            if(!hecho){ hecho = true; clearTimeout(guarda); resolve({ ok, error }) }
+        }
         try {
             const req = require('https').request({
                 method: 'HEAD',
                 hostname: distroManager.SC_HOST_DIRECTO,
                 path: '/launcher/distribution.json',
-                timeout: 8000
+                timeout: SC_PLAZO_SONDA
             }, res => {
                 fin(res.statusCode === 200, res.statusCode === 200 ? null : 'HTTP_' + res.statusCode)
                 res.resume()
             })
             req.on('timeout', () => { req.destroy(); fin(false, 'ETIMEDOUT') })
             req.on('error', e => fin(false, (e && (e.code || e.message)) || 'ERROR'))
+            // El timeout del socket es de inactividad: si el apretón TLS se queda
+            // colgado, el aviso de la petición llega tras DOS plazos y el jugador
+            // pasaba 16 s mirando "Buscando otra ruta". Este corte es el plazo real.
+            guarda = setTimeout(() => { req.destroy(); fin(false, 'ETIMEDOUT') }, SC_PLAZO_SONDA)
             req.end()
         } catch(e){
             fin(false, (e && e.message) || 'ERROR')
@@ -1036,7 +1047,11 @@ function scProbarRutaDirecta(){
 // no estaban en la lista original y caían al mensaje genérico.
 const SC_RE_TLS = /SELF_SIGNED_CERT|UNABLE_TO_VERIFY|UNABLE_TO_GET_ISSUER_CERT|CERT_HAS_EXPIRED|CERT_NOT_YET_VALID|ERR_TLS|CERT_UNTRUSTED|CERT_SIGNATURE_FAILURE/i
 const SC_RE_TLS_FECHA = /CERT_HAS_EXPIRED|CERT_NOT_YET_VALID/i
-const SC_RE_RED = /ETIMEDOUT|ENOTFOUND|ECONNREFUSED|ECONNRESET|EAI_AGAIN|ENETUNREACH|EHOSTUNREACH/i
+// ERR_SSL_WRONG_VERSION_NUMBER, ERR_SSL_PACKET_LENGTH_TOO_LONG y EPROTO son un HTTP
+// normal contestando en el puerto 443: un portal cautivo (wifi de hotel o de tren
+// antes de identificarse) o una página de bloqueo sin TLS. No es un certificado:
+// es que no llegamos, y caía al mensaje de "comprueba el disco".
+const SC_RE_RED = /ETIMEDOUT|ENOTFOUND|ECONNREFUSED|ECONNRESET|EAI_AGAIN|ENETUNREACH|EHOSTUNREACH|ERR_SSL_WRONG_VERSION_NUMBER|ERR_SSL_PACKET_LENGTH_TOO_LONG|EPROTO/i
 
 // Programas que abren el HTTPS del equipo firmándolo con su propia autoridad. Se
 // reconocen por una palabra del nombre del emisor y no por el nombre exacto,
@@ -1082,11 +1097,12 @@ const SC_MAX_CAMBIOS_RUTA = 2
 function scLeerCertificado(host){
     return new Promise(resolve => {
         let hecho = false
-        const fin = r => { if(!hecho){ hecho = true; resolve(r) } }
+        let guarda = null
+        const fin = r => { if(!hecho){ hecho = true; clearTimeout(guarda); resolve(r) } }
         const sinCert = fallo => ({ error: null, emisor: null, autofirmado: false, fallo })
         try {
             const s = require('tls').connect({
-                host, port: 443, servername: host, rejectUnauthorized: false, timeout: 8000
+                host, port: 443, servername: host, rejectUnauthorized: false, timeout: SC_PLAZO_SONDA
             }, () => {
                 const c = s.getPeerCertificate() || {}
                 const emisor = (c.issuer && (c.issuer.CN || c.issuer.O)) || null
@@ -1100,10 +1116,26 @@ function scLeerCertificado(host){
             })
             s.on('timeout', () => { s.destroy(); fin(sinCert('ETIMEDOUT')) })
             s.on('error', e => fin(sinCert((e && (e.code || e.message)) || 'ERROR')))
+            // Mismo corte duro que en scSondearRutaDirecta.
+            guarda = setTimeout(() => { s.destroy(); fin(sinCert('ETIMEDOUT')) }, SC_PLAZO_SONDA)
         } catch(e){
             fin(sinCert((e && e.message) || 'ERROR'))
         }
     })
+}
+
+/**
+ * ¿Qué programa conocido firma alguno de estos certificados? Solo se le deben
+ * pasar emisores de certificados que NO validan: el de uno bueno es una
+ * autoridad pública y no dice nada de quién intercepta.
+ *
+ * @param {...string} emisores
+ * @returns {string|null} Nombre del programa, o null.
+ */
+function scInterceptorDe(...emisores){
+    const texto = emisores.filter(Boolean).join(' ')
+    const i = SC_INTERCEPTORES.find(x => x.re.test(texto))
+    return i ? i.nombre : null
 }
 
 /**
@@ -1113,36 +1145,47 @@ function scLeerCertificado(host){
  * certificados de autoridades distintas (Google Trust Services en Cloudflare,
  * Let's Encrypt en la ruta directa):
  *
- *  - 'bloqueo': el normal falla y el directo valida. La interceptación depende de
- *    la IP de destino, así que es del operador. Es lo que hace Digi durante los
- *    partidos: responde por la IP bloqueada con SU certificado para enseñar una
- *    página de aviso (Movistar y O2, en cambio, tiran los paquetes). Se arregla
- *    cambiando de ruta, sin que el jugador haga nada.
+ *  - 'bloqueo': la directa valida y la normal no, con un certificado ajeno o sin
+ *    llegar a conectar. Depende de la IP de destino, así que es del operador. Es
+ *    lo que hace Digi durante los partidos: responde por la IP bloqueada con SU
+ *    certificado para enseñar una página de aviso, o corta. Se arregla cambiando
+ *    de ruta, sin que el jugador haga nada.
  *  - 'reloj': los dos fallan por fecha, con emisores distintos. Dos certificados
  *    reales de dos autoridades no caducan a la vez: lo que está mal es la hora
  *    del equipo.
- *  - 'local': el directo también falla por certificado. Algo abre TODO el HTTPS
- *    del equipo o de su red (antivirus, proxy de colegio o trabajo, software de
- *    anuncios). Cambiar de ruta no sirve.
+ *  - 'local': un programa abre el HTTPS del equipo o de su red. Solo con pruebas
+ *    de ese programa: su nombre en el emisor de un certificado que no valida
+ *    (Avast, Kaspersky...), o las dos rutas firmadas por el MISMO emisor. Un fallo
+ *    solo en la directa no basta: puede ser nuestro certificado (una renovación
+ *    fallida, un vhost mal puesto) y mandaría a un cliente de Digi a tocar el
+ *    antivirus, que es justo el error de la 1.6.0.
  *  - 'intermitente': ahora los dos funcionan. Los bloqueos van y vienen.
- *  - 'desconocido': cualquier otra combinación.
+ *  - 'desconocido': cualquier otra combinación. Incluye a Digi interceptando
+ *    también la ruta directa: las dos llegan con el mismo certificado
+ *    AUTOFIRMADO, que es una página de aviso; un antivirus firma con una
+ *    autoridad propia, no con un autofirmado.
  *
- * @param {{error, emisor, fallo}} normal  Certificado leído del host normal.
- * @param {{error, emisor, fallo}} directo Certificado leído del host directo.
+ * @param {{error, emisor, autofirmado, fallo}} normal  Certificado leído del host normal.
+ * @param {{error, emisor, autofirmado, fallo}} directo Certificado leído del host directo.
  * @param {boolean} directaValida Si la ruta directa pasó la validación completa.
  * @returns {string}
  */
 function scClasificarTls(normal, directo, directaValida){
     const nErr = normal && normal.error
     const dErr = directo && directo.error
-    if(directaValida && nErr){
+    if(directaValida && (nErr || (normal && normal.fallo))){
         return 'bloqueo'
     }
     if(nErr && dErr && SC_RE_TLS_FECHA.test(nErr) && SC_RE_TLS_FECHA.test(dErr)
         && normal.emisor !== directo.emisor){
         return 'reloj'
     }
-    if(dErr && SC_RE_TLS.test(dErr)){
+    if(scInterceptorDe(nErr ? normal.emisor : null, dErr ? directo.emisor : null)){
+        return 'local'
+    }
+    if(nErr && dErr && SC_RE_TLS.test(nErr) && SC_RE_TLS.test(dErr)
+        && normal.emisor && normal.emisor === directo.emisor
+        && !(normal.autofirmado && directo.autofirmado)){
         return 'local'
     }
     if(directaValida && !nErr && !(normal && normal.fallo)){
@@ -1163,11 +1206,10 @@ async function scDiagnosticarTls(){
         scSondearRutaDirecta()
     ])
     const tipo = scClasificarTls(normal, directo, sonda.ok)
-    const interceptor = SC_INTERCEPTORES.find(i =>
-        i.re.test(`${directo.emisor || ''} ${normal.emisor || ''}`))
     scTlsCache = {
         tipo, normal, directo, directaValida: sonda.ok,
-        interceptor: interceptor ? interceptor.nombre : null
+        interceptor: scInterceptorDe(
+            normal.error ? normal.emisor : null, directo.error ? directo.emisor : null)
     }
     loggerLanding.info(`Diagnóstico TLS: ${tipo}`
         + ` · normal=${normal.error || normal.fallo || 'ok'} (${normal.emisor})`
@@ -1192,17 +1234,23 @@ async function scDiagnosticarTls(){
  * @returns {Promise<boolean>} true si ha cambiado de ruta y merece reintentar.
  */
 async function scIntentarRutaDirecta(err){
-    if(scCambiosRutaDirecta >= SC_MAX_CAMBIOS_RUTA){
-        return false
-    }
     const t = err == null ? '' : String(err.displayable || err.message || scErrorLegible(err))
     const esDeCertificado = SC_RE_TLS.test(t)
+    if(!esDeCertificado){
+        // El diagnóstico guardado sería de un fallo anterior: no debe colarse ni
+        // en el mensaje ni en la línea TLS del informe de este.
+        scTlsCache = null
+    }
     if(!esDeCertificado && !SC_RE_RED.test(t)){
         return false
     }
-    const valida = esDeCertificado
-        ? (await scDiagnosticarTls()).tipo === 'bloqueo'
-        : await scProbarRutaDirecta()
+    // Con certificado se diagnostica SIEMPRE, también con el tope agotado: el
+    // mensaje que va a ver el jugador sale de este diagnóstico.
+    const tipo = esDeCertificado ? (await scDiagnosticarTls()).tipo : null
+    if(scCambiosRutaDirecta >= SC_MAX_CAMBIOS_RUTA){
+        return false
+    }
+    const valida = esDeCertificado ? tipo === 'bloqueo' : await scProbarRutaDirecta()
     // scActivarRutaDirecta devuelve false si la copia ya apuntaba a la directa:
     // en ese caso la descarga ya fue por ahí y falló, y reintentar no ayuda.
     if(!valida || !scActivarRutaDirecta()){
@@ -1233,8 +1281,13 @@ function scExplicacionDescarga(err){
         return Lang.queryJS('landing.launch.errDescargaReloj').replace('{hora}', () => hora)
     }
     if(d.tipo === 'local'){
-        const emisor = sc$escapeHtml(String(
-            (d.directo && d.directo.emisor) || (d.normal && d.normal.emisor) || '?').slice(0, 80))
+        // Se enseña el emisor de un certificado que falla, y antes que ninguno el
+        // que delata al programa. El de uno que valida es nuestra autoridad y el
+        // jugador lo tomaría por el culpable.
+        const emisores = [d.normal, d.directo]
+            .filter(c => c && c.error && c.emisor).map(c => c.emisor)
+        const delator = emisores.find(e => scInterceptorDe(e))
+        const emisor = sc$escapeHtml(String(delator || emisores[0] || '?').slice(0, 80))
         const quien = d.interceptor
             ? Lang.queryJS('landing.launch.errDescargaInterceptorConocido')
                 .replace('{nombre}', () => sc$escapeHtml(d.interceptor))
@@ -1254,9 +1307,13 @@ function scExplicacionDescarga(err){
  * launcher y de AHÍ lo lee el proceso hijo que descarga: cambiando el host en
  * esa copia se redirigen las 180 descargas de golpe, sin tocar helios-core.
  *
- * Es deliberadamente temporal: en cuanto Cloudflare vuelva a responder,
- * `_loadDistributionNullable()` sobrescribe el fichero con las URLs normales y
- * el jugador vuelve solo a la ruta con caché. No hay que deshacer nada.
+ * Dura hasta cerrar el launcher. Hasta la 1.6.0 se dejaba que el siguiente
+ * refresco por Cloudflare sobrescribiera la copia con las URLs normales, pero con
+ * un bloqueo por IP que va y viene ese refresco colaba justo antes de reintentar,
+ * las descargas volvían a la IP bloqueada y se gastaban los cambios de ruta sin
+ * efecto. Ahora el refresco también va por la directa (remoteUrl) y dlAsync
+ * vuelve a aplicar la reescritura después de cada uno. Al abrir el launcher de
+ * nuevo todo vuelve a Cloudflare: no hay nada que deshacer.
  *
  * @returns {boolean} true si se reescribió algo.
  */
@@ -1288,6 +1345,7 @@ function scActivarRutaDirecta(){
         nodeFs.writeFileSync(ruta, JSON.stringify(d))
         loggerLanding.info(`Ruta directa activada: ${tocadas} descargas redirigidas a ${distroManager.SC_HOST_DIRECTO}`)
         scRutaDirectaActiva = true
+        DistroAPI.remoteUrl = distroManager.SC_DISTRO_URL_DIRECTA
         return true
     } catch(e){
         loggerLanding.error('No se pudo activar la ruta directa', e)
@@ -1443,6 +1501,11 @@ function scFalloArranque(codigo, explicacion, err, reintentable = false){
             Lang.queryJS('landing.launch.copiarInforme')
         )
         setOverlayHandler(async () => {
+            // La espera va en la barra de progreso y no en un diálogo: el diálogo
+            // se podía cerrar, dejaba JUGAR a la vista y un clic arrancaba una
+            // segunda descarga encima de la primera.
+            toggleOverlay(false)
+            toggleLaunchArea(true)
             // Antes de reintentar por el mismo camino se prueba la ruta directa,
             // tanto si el fallo fue de red como de certificado: reintentar por
             // donde ya ha fallado no arregla un bloqueo del operador.
@@ -1450,16 +1513,9 @@ function scFalloArranque(codigo, explicacion, err, reintentable = false){
             const candidato = clave === 'landing.launch.errDescargaSinRespuesta'
                 || clave === 'landing.launch.errDescargaCertificado'
             if(candidato && scCambiosRutaDirecta < SC_MAX_CAMBIOS_RUTA){
-                setOverlayContent(
-                    Lang.queryJS('landing.launch.failureTitle'),
-                    Lang.queryJS('landing.launch.buscandoRutaAlternativa'),
-                    Lang.queryJS('landing.launch.okay')
-                )
-                setOverlayHandler(() => { /* sin acción mientras comprueba */ })
-                setDismissHandler(null)
+                setLaunchDetails(Lang.queryJS('landing.dlAsync.rutaAlternativa'))
                 await scIntentarRutaDirecta(err)
             }
-            toggleOverlay(false)
             dlAsync()
         })
         setDismissHandler(copiar)
@@ -1845,6 +1901,12 @@ async function dlAsync(login = true) {
 
     try {
         distro = await DistroAPI.refreshDistributionOrFallback()
+        // Si en esta sesión ya se cambió a la ruta directa, se mantiene: el
+        // refresco acaba de escribir la copia con las URLs normales, y el proceso
+        // que descarga la lee de disco. Ver scActivarRutaDirecta.
+        if(scRutaDirectaActiva){
+            scActivarRutaDirecta()
+        }
         onDistroRefresh(distro)
     } catch(err) {
         loggerLaunchSuite.error('Unable to refresh distribution index.', err)
@@ -1878,12 +1940,19 @@ async function dlAsync(login = true) {
 
     fullRepairModule.spawnReceiver()
 
+    // Cuando falla la verificación o la descarga, helios-core avisa por IPC y el
+    // proceso hijo sale con código 1 justo después. Ese fallo ya lo gestiona su
+    // catch, que además puede estar buscando otra ruta: pintar aquí SC-05 tapaba
+    // el reintento con un falso "antivirus o disco lleno" y dejaba JUGAR a la
+    // vista mientras la descarga seguía por detrás.
+    let scFalloGestionado = false
+
     fullRepairModule.childProcess.on('error', (err) => {
         loggerLaunchSuite.error('Error during launch', err)
         scFalloArranque(SC_ERR.REPARACION, Lang.queryJS('landing.launch.errReparacion'), err)
     })
     fullRepairModule.childProcess.on('close', (code, _signal) => {
-        if(code !== 0){
+        if(code !== 0 && !scFalloGestionado){
             loggerLaunchSuite.error(`Full Repair Module exited with code ${code}, assuming error.`)
             scFalloArranque(SC_ERR.REPARACION, Lang.queryJS('landing.launch.errReparacion'), new Error(`Full Repair Module exited with code ${code}`))
         }
@@ -1898,6 +1967,7 @@ async function dlAsync(login = true) {
         })
         setLaunchPercentage(100)
     } catch (err) {
+        scFalloGestionado = true
         loggerLaunchSuite.error('Error during file validation.')
         scFalloArranque(SC_ERR.VERIFICACION, Lang.queryJS('landing.launch.errVerificacion'), err, true)
         return
@@ -1914,6 +1984,7 @@ async function dlAsync(login = true) {
             })
             setDownloadPercentage(100)
         } catch(err) {
+            scFalloGestionado = true
             loggerLaunchSuite.error('Error during file download.')
             // Antes de ensenar nada se intenta salir sola por la ruta directa: si
             // es un bloqueo del operador (paquetes tirados o certificado
@@ -1922,6 +1993,10 @@ async function dlAsync(login = true) {
             setLaunchDetails(Lang.queryJS('landing.dlAsync.rutaAlternativa'))
             if(await scIntentarRutaDirecta(err)){
                 loggerLaunchSuite.info('Reintentando la descarga por la ruta directa.')
+                // Por si el aviso del proceso hijo se adelantó a este catch.
+                if(document.getElementById('main').hasAttribute('overlay')){
+                    toggleOverlay(false)
+                }
                 dlAsync(login)
                 return
             }
