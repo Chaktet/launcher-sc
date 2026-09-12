@@ -988,8 +988,11 @@ function scErrorLegible(err){
 
 // ¿Vamos ahora por la ruta directa? Mientras funcione se mantiene: dlAsync la
 // vuelve a aplicar después de cada refresco de la distribución. Si es ella la
-// que falla, scDesactivarRutaDirecta lo devuelve todo a la normal.
+// que falla y la normal ya responde, scDesactivarRutaDirecta lo devuelve todo.
 let scRutaDirectaActiva = false
+// Por qué ruta fue el último intento de descarga, para el informe: cuando se
+// escribe, la ruta puede haber cambiado ya por culpa de ese mismo fallo.
+let scRutaUltimoIntento = 'normal'
 // Plazo de cada comprobación de red del escape (sonda y lectura de certificado).
 // Corto a propósito: el jugador ya viene de un fallo y está esperando.
 const SC_PLAZO_SONDA = 8000
@@ -1002,9 +1005,13 @@ const SC_PLAZO_SONDA = 8000
  * no se toca nada. El plazo es corto a propósito: si el jugador ya viene de un
  * fallo de red, no vamos a tenerlo otro minuto esperando.
  *
+ * Sirve para los dos hosts: por defecto la directa, y la normal para confirmar
+ * que ha vuelto antes de soltar la directa.
+ *
+ * @param {string} host
  * @returns {Promise<{ok: boolean, error: string|null}>}
  */
-function scSondearRutaDirecta(){
+function scSondearRutaDirecta(host = distroManager.SC_HOST_DIRECTO){
     return new Promise(resolve => {
         let hecho = false
         let guarda = null
@@ -1014,7 +1021,7 @@ function scSondearRutaDirecta(){
         try {
             const req = require('https').request({
                 method: 'HEAD',
-                hostname: distroManager.SC_HOST_DIRECTO,
+                hostname: host,
                 path: '/launcher/distribution.json',
                 timeout: SC_PLAZO_SONDA
             }, res => {
@@ -1041,6 +1048,15 @@ function scSondearRutaDirecta(){
  */
 function scProbarRutaDirecta(){
     return scSondearRutaDirecta().then(r => r.ok)
+}
+
+/**
+ * ¿Responde ya la ruta normal (Cloudflare), con TLS validado?
+ *
+ * @returns {Promise<boolean>}
+ */
+function scProbarRutaNormal(){
+    return scSondearRutaDirecta(distroManager.SC_HOST_PRINCIPAL).then(r => r.ok)
 }
 
 // Errores de certificado de Node. CERT_NOT_YET_VALID y UNABLE_TO_GET_ISSUER_CERT
@@ -1255,12 +1271,16 @@ async function scIntentarRutaDirecta(err){
     const diagnostico = esDeCertificado ? await scDiagnosticarTls() : null
     if(scRutaDirectaActiva){
         // Ya íbamos por la directa. Si es ELLA la que ahora no valida (su IP
-        // también bloqueada, su certificado, el origen caído), se vuelve a la
-        // normal para que Reintentar no choque contra lo mismo hasta cerrar el
-        // launcher. No cuenta como cambio: es volver a lo de siempre, y si la
-        // normal sigue bloqueada el siguiente fallo pasa por aquí con el tope.
-        const directaViva = esDeCertificado ? diagnostico.directaValida : await scProbarRutaDirecta()
-        if(!directaViva){
+        // también bloqueada, su certificado, el origen caído) Y la normal ya
+        // responde, se vuelve a la normal para que Reintentar no choque contra lo
+        // mismo hasta cerrar el launcher. La normal se mira en el mismo momento:
+        // si el que se ha quedado sin conexión es el jugador fallan las dos, y
+        // soltar la directa lo devolvería a la IP bloqueada y le gastaría un
+        // cambio al volver. Volver no cuenta como cambio.
+        const [directaViva, normalViva] = esDeCertificado
+            ? [diagnostico.directaValida, !diagnostico.normal.error && !diagnostico.normal.fallo]
+            : await Promise.all([scProbarRutaDirecta(), scProbarRutaNormal()])
+        if(!directaViva && normalViva){
             scDesactivarRutaDirecta()
         }
         return false
@@ -1483,7 +1503,7 @@ function scInformeDiagnostico(codigo, err){
         // no; si aún no ha resuelto, sale "sin comprobar" en vez de mentir.
         `Antivirus: ${scAvCache == null ? '(sin comprobar)' : (scAvCache.nombre || '(ninguno registrado)')}`,
         `TLS:       ${scLineaTls()}`,
-        `Ruta:      ${scRutaDirectaActiva ? 'directa' : 'normal'} · cambios automaticos ${scCambiosRutaDirecta}/${SC_MAX_CAMBIOS_RUTA}`,
+        `Ruta:      ${scRutaUltimoIntento} en el ultimo intento · ahora ${scRutaDirectaActiva ? 'directa' : 'normal'} · cambios automaticos ${scCambiosRutaDirecta}/${SC_MAX_CAMBIOS_RUTA}`,
         '',
         '--- ERROR ---',
         scErrorLegible(err)
@@ -1956,6 +1976,7 @@ async function dlAsync(login = true) {
         if(scRutaDirectaActiva){
             scActivarRutaDirecta()
         }
+        scRutaUltimoIntento = scRutaDirectaActiva ? 'directa' : 'normal'
         onDistroRefresh(distro)
     } catch(err) {
         loggerLaunchSuite.error('Unable to refresh distribution index.', err)

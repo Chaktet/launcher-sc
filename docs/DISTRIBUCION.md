@@ -416,7 +416,7 @@ golpe, sin tocar helios-core.
 > la reescritura después de cada refresco. Hasta la 1.6.0 se dejaba que el siguiente refresco por
 > Cloudflare la deshiciera, pero con un bloqueo por IP que va y viene ese refresco colaba justo antes
 > de reintentar y las descargas volvían a la IP bloqueada. Si después es **la directa** la que falla
-> (su IP también bloqueada, el certificado, el origen caído), `scDesactivarRutaDirecta()` devuelve la
+> (su IP también bloqueada, el certificado, el origen caído) **y Cloudflare ya responde**, `scDesactivarRutaDirecta()` devuelve la
 > copia y el refresco a Cloudflare para el siguiente intento, sin gastar cambios. Al abrir el launcher
 > otra vez todo vuelve a Cloudflare igualmente: no hay nada que revertir a mano, ni cron ni horarios.
 >
