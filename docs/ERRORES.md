@@ -14,7 +14,7 @@ una explicación en cristiano y un botón que copia un informe completo al porta
 | **SC-01** | `DISTRO` | No se pudo leer la lista de archivos del servidor | ¿Responde `descargas.servidorcobblemon.es`? |
 | **SC-02** | `JAVA` | Fallo descargando o instalando Java | Red, o la API de Adoptium caída |
 | **SC-03** | `VERIFICACION` | Fallo verificando archivos ya descargados | Disco lleno o antivirus |
-| **SC-04** | `DESCARGA` | Fallo descargando mods o recursos | Red, o el servidor de descargas |
+| **SC-04** | `DESCARGA` | Fallo descargando mods o recursos | La línea `TLS:` del informe. Ver abajo |
 | **SC-05** | `REPARACION` | El proceso de reparación murió | Permisos sobre el directorio de datos |
 | **SC-06** | `JVM` | El juego no llegó a arrancar (genérico) | El informe adjunto |
 | **SC-07** | `LAUNCHWRAPPER` | Faltan librerías de arranque | Descarga incompleta; forzar reparación |
@@ -265,3 +265,32 @@ no es el culpable.
 Si el archivo que falla es un mod **opcional**, el jugador puede desactivarlo en **Ajustes → Mods** y
 jugar de inmediato: `resolveModConfiguration()` lo saca de la lista `--fabric.addMods` y Fabric ni lo
 abre. No es reparación —el launcher lo sigue descargando— pero desbloquea al momento.
+
+### SC-04 · Fallo de descarga, y el bloqueo de los operadores
+
+El texto de SC-04 depende de la causa que resume helios-core (`displayable` en el informe):
+
+| Causa | Qué es | Qué hace el launcher |
+|---|---|---|
+| `ETIMEDOUT` y familia | No llegan los paquetes. Movistar y O2 durante los partidos | Cambia solo a la ruta directa |
+| Error de certificado | Alguien contesta con un certificado que no es el nuestro | Diagnostica los dos caminos (abajo) |
+| `ENOSPC` | Disco lleno | Mensaje propio |
+
+El cambio a la ruta directa es **automático**: si se arregla solo, el jugador no llega a ver el error. Hasta la 1.6.0 había que pulsar Reintentar y **solo** se probaba con timeouts, así que a los clientes de Digi no les saltaba nunca.
+
+#### Diagnóstico de certificado
+
+Con un fallo de certificado, `scDiagnosticarTls()` lee el certificado que presenta cada una de nuestras dos rutas y prueba la directa con validación completa. Las dos rutas están en proveedores distintos con autoridades distintas (Google Trust Services en Cloudflare, Let's Encrypt en la directa), así que comparar dice dónde está el problema:
+
+| `TLS:` en el informe | Significa | Qué ve el jugador |
+|---|---|---|
+| `bloqueo` | El normal falla y el directo valida: depende de la IP, es el operador. **Digi** durante los partidos contesta por la IP bloqueada con su propio certificado para enseñar un aviso | Nada: cambia de ruta y sigue |
+| `local` | El directo también falla por certificado: algo abre todo el HTTPS del equipo o de su red | Qué programa es, por el emisor (Avast, Kaspersky, ESET, Bitdefender...) |
+| `reloj` | Los dos fallan por fecha, con emisores distintos | Que corrija la hora de Windows |
+| `intermitente` | Ahora funcionan los dos | Reintentar |
+
+> ⚠ Añadir el launcher a la **lista blanca** del antivirus no desactiva su análisis de HTTPS. Un jugador del 2026-09-12 lo hizo, siguió igual y el mensaje antiguo le había mandado ahí. Su caso era un bloqueo de operador, en casa, en sábado de partido.
+
+> 🔒 `scLeerCertificado()` usa `rejectUnauthorized: false` **solo para leer el emisor**: hace el apretón de manos TLS y cierra, sin enviar ninguna petición ni usar datos de esa conexión. La decisión de cambiar de ruta la toma `scSondearRutaDirecta()`, que valida de forma normal: si alguien intercepta también la ruta directa, no se cambia nada. **No relajes nunca esa sonda.** Y el nombre del emisor lo controla quien intercepta: se escapa, se recorta y se sustituye con función antes de pintarlo.
+
+Máximo dos cambios automáticos de ruta por sesión (`SC_MAX_CAMBIOS_RUTA`), para que un fallo que no se arregla así no se convierta en un bucle.
