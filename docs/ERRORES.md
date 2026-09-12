@@ -277,7 +277,7 @@ El texto de SC-04 depende de la causa que resume helios-core (`displayable` en e
 | Error de certificado | Alguien contesta con un certificado que no es el nuestro | Diagnostica los dos caminos (abajo) |
 | `ENOSPC` | Disco lleno | Mensaje propio |
 
-El cambio a la ruta directa es **automático**: si se arregla solo, el jugador no llega a ver el error, y si has recibido un informe SC-04 es que no se pudo. Una vez cambiada, la ruta directa **se mantiene hasta cerrar el launcher** (ver [DISTRIBUCION.md](DISTRIBUCION.md)). Hasta la 1.6.0 había que pulsar Reintentar y **solo** se probaba con timeouts, así que a los clientes de Digi no les saltaba nunca.
+El cambio a la ruta directa es **automático**: si se arregla solo, el jugador no llega a ver el error, y si has recibido un informe SC-04 es que no se pudo. Una vez cambiada, la ruta directa **se mantiene mientras funcione**; si es ella la que falla, el launcher vuelve a la normal para el siguiente intento (ver [DISTRIBUCION.md](DISTRIBUCION.md)). La línea `Ruta:` del informe dice por cuál iba y cuántos cambios automáticos lleva la sesión. Hasta la 1.6.0 había que pulsar Reintentar y **solo** se probaba con timeouts, así que a los clientes de Digi no les saltaba nunca.
 
 > Mientras falla la descarga, el proceso hijo sale con código 1. Ese cierre **ya no pinta SC-05**: el fallo lo gestiona SC-04. Si ves un SC-05 con `exited with code 1` justo después de un fallo de descarga en un informe de la 1.6.0, era eso.
 
@@ -288,11 +288,11 @@ Con un fallo de certificado, `scDiagnosticarTls()` lee el certificado que presen
 | `TLS:` en el informe | Significa | Qué ve el jugador |
 |---|---|---|
 | `bloqueo` | La directa valida y la normal no (certificado ajeno o sin conexión): depende de la IP, es el operador. **Digi** durante los partidos contesta por la IP bloqueada con su propio certificado para enseñar un aviso | Nada: cambia de ruta y sigue. Si llega un informe con `bloqueo`, es que ya iba por la directa y falló también, o se agotó el tope: el mensaje del operador |
-| `local` | Hay pruebas de un programa: su nombre en el emisor de un certificado que no valida, o las dos rutas firmadas por el **mismo** emisor | Qué programa es, por el emisor (Avast, Kaspersky, ESET, Bitdefender...), y qué opción desactivar |
+| `local` | Hay pruebas de un programa: su nombre en el emisor de un certificado que no valida, o las dos rutas re-firmadas (error de **cadena**) por el **mismo** emisor | Qué programa es, por el emisor (Avast, Kaspersky, ESET, Bitdefender...), y qué opción desactivar |
 | `reloj` | Los dos fallan por fecha, con emisores distintos | Que corrija la hora de Windows |
 | `intermitente` | Ahora funcionan los dos | El mensaje del operador, con Reintentar |
-| `desconocido` | Cualquier otra combinación. Incluye a Digi interceptando **también** la ruta directa (el mismo autofirmado en las dos) y un fallo de certificado de **nuestra** ruta directa (renovación caducada, vhost mal puesto) | El mensaje del operador |
-| `(sin comprobar)` | El último fallo no fue de certificado | Lo que diga su causa |
+| `desconocido` | Cualquier otra combinación. Incluye a Digi interceptando **también** la ruta directa (el mismo autofirmado en las dos) y un fallo de certificado de **nuestra** ruta directa (renovación caducada, vhost mal puesto), o un wifi con portal que da en las dos un certificado real de otro nombre | El mensaje del operador |
+| `(sin comprobar)` | El fallo de este intento no fue de certificado | Lo que diga su causa |
 
 > ⚠ Un fallo **solo** en la ruta directa no se da nunca por "antivirus". Si nuestro certificado de `directo` falla, a un cliente de Digi se le mandaría a tocar el antivirus: el mismo error de la 1.6.0. Si ves `desconocido` con `directo=` y un error de fecha o de nombre, **mira primero nuestro certificado** (`certbot certificates` en OVH-A).
 
@@ -300,4 +300,4 @@ Con un fallo de certificado, `scDiagnosticarTls()` lee el certificado que presen
 
 > 🔒 `scLeerCertificado()` usa `rejectUnauthorized: false` **solo para leer el emisor**: hace el apretón de manos TLS y cierra, sin enviar ninguna petición ni usar datos de esa conexión. La decisión de cambiar de ruta la toma `scSondearRutaDirecta()`, que valida de forma normal: si alguien intercepta también la ruta directa, no se cambia nada. **No relajes nunca esa sonda.** Y el nombre del emisor lo controla quien intercepta: se escapa, se recorta y se sustituye con función antes de pintarlo.
 
-Máximo dos cambios automáticos de ruta por sesión (`SC_MAX_CAMBIOS_RUTA`), para que un fallo que no se arregla así no se convierta en un bucle.
+Máximo dos cambios automáticos de ruta por sesión (`SC_MAX_CAMBIOS_RUTA`), para que un fallo que no se arregla así no se convierta en un bucle. Volver a la normal cuando falla la directa no cuenta como cambio, y con el tope agotado se sigue diagnosticando, para que el mensaje sea del fallo actual.

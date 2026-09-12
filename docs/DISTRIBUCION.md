@@ -412,11 +412,13 @@ Funciona porque helios-core **cachea el `distribution.json` en el directorio del
 lo lee el proceso hijo que descarga: cambiando el host en esa copia se redirigen las 180 descargas de
 golpe, sin tocar helios-core.
 
-> **Dura hasta cerrar el launcher, y se deshace solo.** Mientras tanto `dlAsync()` vuelve a aplicar
+> **Se mantiene mientras funcione, y se deshace sola.** Mientras tanto `dlAsync()` vuelve a aplicar
 > la reescritura después de cada refresco. Hasta la 1.6.0 se dejaba que el siguiente refresco por
 > Cloudflare la deshiciera, pero con un bloqueo por IP que va y viene ese refresco colaba justo antes
-> de reintentar y las descargas volvían a la IP bloqueada. Al abrir el launcher otra vez, el refresco
-> normal escribe las URLs de Cloudflare: no hay nada que revertir a mano, ni cron ni horarios.
+> de reintentar y las descargas volvían a la IP bloqueada. Si después es **la directa** la que falla
+> (su IP también bloqueada, el certificado, el origen caído), `scDesactivarRutaDirecta()` devuelve la
+> copia y el refresco a Cloudflare para el siguiente intento, sin gastar cambios. Al abrir el launcher
+> otra vez todo vuelve a Cloudflare igualmente: no hay nada que revertir a mano, ni cron ni horarios.
 >
 > ⚠ La reescritura toca **solo `artifact.url`**. El `path` NO se toca, igual que con el `?v=`: si
 > cambiara, a los jugadores ya instalados se les desactivaría el pack.
