@@ -1976,10 +1976,17 @@ async function sc$repararPacksBorradosPorElJuego(){
     const nodeFs = require('fs')
     const nodePath = require('path')
     try {
+        const d = sc$rpDirs()
+        // Sin options.txt no se toca NADA: escribirlo aquí crearía un fichero con
+        // solo la línea de paquetes, y como va sin hash en la distribución ya no
+        // se instalaría el de verdad. El jugador perdería teclas, vídeo y la
+        // lista de servidores.
+        if(!nodeFs.existsSync(d.options)){
+            return false
+        }
         if(sc$readOptionsPacks().enabled.length > 0){
             return false
         }
-        const d = sc$rpDirs()
         const apagados = sc$leerApagados()
         const oficiales = await sc$officialPackNames()
         const reponer = [...oficiales].filter(p => !apagados.includes(p)
