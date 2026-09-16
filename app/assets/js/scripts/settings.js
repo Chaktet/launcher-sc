@@ -1869,6 +1869,7 @@ function sc$togglePack(packName, activar){
         }
     }
     sc$writeOptionsPacks(base, lista)
+    sc$apuntarDecision(packName, activar)
 }
 
 /**
@@ -1915,9 +1916,92 @@ function sc$activarPacksOficialesNuevos(oficiales){
     }
 }
 
+/**
+ * Lo que el JUGADOR ha apagado a propósito. Va en un fichero aparte del
+ * marcador de automáticos para no cambiarle el formato a ese.
+ */
+function sc$rutaApagados(){
+    const nodePath = require('path')
+    return nodePath.join(nodePath.dirname(sc$rpDirs().options), '.sc-packs-apagados.json')
+}
+
+function sc$leerApagados(){
+    const nodeFs = require('fs')
+    try {
+        const r = sc$rutaApagados()
+        return nodeFs.existsSync(r) ? JSON.parse(nodeFs.readFileSync(r, 'utf8')) : []
+    } catch(e){
+        console.warn('No se pudo leer la lista de paquetes apagados', e)
+        return []
+    }
+}
+
+function sc$apuntarDecision(packName, activar){
+    try {
+        const lista = sc$leerApagados()
+        const i = lista.indexOf(packName)
+        if(activar && i >= 0){
+            lista.splice(i, 1)
+        } else if(!activar && i < 0){
+            lista.push(packName)
+        } else {
+            return
+        }
+        require('fs').writeFileSync(sc$rutaApagados(), JSON.stringify(lista))
+    } catch(e){
+        console.warn('No se pudo apuntar la decisión sobre el paquete', e)
+    }
+}
+
+/**
+ * Repone los paquetes que borró el JUEGO, no el jugador.
+ *
+ * Cuando un mod no sabe leer algo del pack, Minecraft escribe "Caught error
+ * loading resourcepacks, removing all selected resourcepacks" y deja
+ * options.txt SIN NINGÚN paquete. El jugador se queda sin texturas y no vuelven
+ * solas: sc$activarPacksOficialesNuevos ya dio el pack por aplicado y no lo
+ * enciende dos veces. Pasó el 2026-09-16 con la 3.2.17, por tres modelos de
+ * Cobblemon con UV por cara (ver SC-16 en docs/ERRORES.md).
+ *
+ * Se actúa SOLO si la lista quedó completamente vacía, que es la firma de ese
+ * borrado: apagar un pack suelto desde el juego no dispara nada. Y nunca se
+ * enciende uno que el jugador apagara a propósito desde Ajustes.
+ *
+ * @returns {Promise<boolean>} true si ha repuesto algo.
+ */
+async function sc$repararPacksBorradosPorElJuego(){
+    if(sc$juegoAbierto()){
+        return false
+    }
+    const nodeFs = require('fs')
+    const nodePath = require('path')
+    try {
+        if(sc$readOptionsPacks().enabled.length > 0){
+            return false
+        }
+        const d = sc$rpDirs()
+        const apagados = sc$leerApagados()
+        const oficiales = await sc$officialPackNames()
+        const reponer = [...oficiales].filter(p => !apagados.includes(p)
+            && nodeFs.existsSync(nodePath.join(d.packs, p)))
+        if(reponer.length === 0){
+            return false
+        }
+        for(const p of reponer){
+            sc$togglePack(p, true)
+        }
+        console.log('Paquetes repuestos tras el borrado del juego: ' + reponer.join(', '))
+        return true
+    } catch(e){
+        console.warn('No se pudieron reponer los paquetes borrados por el juego', e)
+        return false
+    }
+}
+
 async function populateResourcepacksTab(){
     const nodeFs = require('fs')
     const oficiales = await sc$officialPackNames()
+    await sc$repararPacksBorradosPorElJuego()
     sc$activarPacksOficialesNuevos(oficiales)
     const d = sc$rpDirs()
     let packs = []

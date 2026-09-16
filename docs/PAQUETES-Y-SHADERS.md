@@ -91,6 +91,32 @@ propósito.
 
 ---
 
+### Cuando el juego los borra todos · `sc$repararPacksBorradosPorElJuego()`
+
+Si un mod no sabe leer algo de un paquete, Minecraft no desactiva ese paquete: escribe
+
+```
+Caught error loading resourcepacks, removing all selected resourcepacks
+```
+
+y **vacía la lista entera** de `options.txt`. El jugador se queda sin texturas y no vuelven solas,
+porque `sc$activarPacksOficialesNuevos()` ya dio el pack por aplicado y no lo enciende dos veces.
+
+Pasó el 2026-09-16 con la SC-3.2.17: tres modelos de Cobblemon con UV por cara, que su lector no
+admite (comprobación 4 de [tools/validar_pack.js](../tools/validar_pack.js)).
+
+La reposición corre desde `onDistroRefresh()` — al abrir el launcher y antes de cada partida — y al
+abrir Ajustes → Paquetes. Las reglas importan:
+
+- Solo actúa si la lista quedó **completamente vacía**, que es la firma de ese borrado. Apagar un
+  paquete suelto desde el juego no dispara nada.
+- Nunca enciende uno que el jugador apagara desde Ajustes: `sc$togglePack()` apunta esa decisión en
+  `.sc-packs-apagados.json`, al lado de `options.txt`.
+- Nunca escribe con el juego abierto (`sc$juegoAbierto()`).
+
+⚠️ Un pack que **fuerce una región** desde `server.properties` gana al del launcher y puede provocar
+lo mismo con una versión vieja. Está en [DISTRIBUCION.md](DISTRIBUCION.md).
+
 ## Shaders
 
 Más simple, porque el estado es de un solo valor. Vive en `config/iris.properties`:

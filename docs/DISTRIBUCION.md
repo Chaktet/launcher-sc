@@ -125,13 +125,41 @@ explicados en [PAQUETES-Y-SHADERS.md](PAQUETES-Y-SHADERS.md).
 2. ¿Es un mod opcional? Decide `optionalon` u `optionaloff`.
 3. ¿Es un paquete de recursos oficial nuevo? No hay que tocar el launcher: se auto-activa solo.
 4. ¿Choca alguna tecla del mod nuevo? Revisa `SC_TECLAS_EN_CONFLICTO`.
-5. **Validar el pack**: `node tools/validar_pack.js <pack-descomprimido>`. Si sale NO APTO, comprueba
-   antes si el fallo ya venía en la versión publicada — un defecto heredado no bloquea, uno nuevo sí.
+5. **Validar el pack**: `node tools/validar_pack.js <pack-descomprimido> --mod <Cobblemon-fabric-*.jar>`.
+   Si sale NO APTO, comprueba antes si el fallo ya venía en la versión publicada — un defecto heredado
+   no bloquea, uno nuevo sí. Sin `--mod` no se comprueban las referencias de los resolvers.
 6. Regenerar con Nebula.
 7. **Reponer el `?v=`**: `node tools/romper_cache_pack.js <versión>`. Nebula lo borra siempre.
 8. Subir (⚠️ ver más abajo).
-7. Probar con un cliente limpio **y** con uno ya existente — los fallos de actualización solo salen
+9. Probar con un cliente limpio **y** con uno ya existente — los fallos de actualización solo salen
    en el segundo caso.
+10. ¿Alguna región **fuerza** el pack desde su `server.properties`? Ese gana al del launcher. Ver
+   abajo.
+
+### El pack que fuerza cada región (`server.properties`)
+
+Además del pack que instala el launcher, **cada región puede enviar el suyo al entrar**, con
+`resource-pack=` y `resource-pack-sha1=`. Ese manda mientras el jugador está conectado, y se sirve
+desde `packs.vertix.lat`, que no tiene nada que ver con `descargas.servidorcobblemon.es` ni con el
+`?v=` de la distribución.
+
+Lo que había el 2026-09-16, con el launcher instalando ya la 3.2.18:
+
+| Región | Servidor | Forzaba |
+|---|---|---|
+| Hub / Lobby | OVH-A `/home/ubuntu/Lobby/` | `SC-3.2.9.zip` |
+| Kanto | OVH-B `/home/ubuntu/Kanto/` | `SC-3.2.10.zip` |
+| Kalos | OVH-C `/home/ubuntu/KalosFabric/` | `SC-3.2.10.zip` |
+| Hoenn | OVH-A `/home/ubuntu/HoennFabric/` | `SC-3.2.9.zip` |
+
+Las tres primeras se vaciaron a petición del owner (`resource-pack=` y `resource-pack-sha1=` en
+blanco, con copia `.bak-sinpack-*` al lado). **`server.properties` solo se lee al arrancar: no hay
+efecto hasta que se reinicie esa región.**
+
+⚠️ Si se vuelve a usar, hay que actualizar URL y `sha1` en CADA región con CADA versión del pack
+(`herramientas/set_pack_region.py`, en RESOURCE-MC, lo hace con respaldo). Un `sha1` que no cuadre, o
+un zip que el juego no sepa cargar, deja al jugador sin ningún paquete: ver
+[PAQUETES-Y-SHADERS.md](PAQUETES-Y-SHADERS.md).
 
 ---
 

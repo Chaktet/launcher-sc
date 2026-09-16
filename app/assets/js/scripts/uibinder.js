@@ -186,6 +186,10 @@ function onDistroRefresh(data){
     initNews()
     syncModConfigurations(data)
     ensureJavaSettings(data)
+    // Si el juego vació la lista de paquetes porque uno le dio un error, se
+    // repone aquí: al abrir el launcher y antes de cada partida, que es cuando
+    // options.txt está quieto. Ver sc$repararPacksBorradosPorElJuego.
+    sc$repararPacksBorradosPorElJuego().catch(e => console.warn('No se pudieron reponer los paquetes', e))
 }
 
 /**

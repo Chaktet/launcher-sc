@@ -266,6 +266,33 @@ Si el archivo que falla es un mod **opcional**, el jugador puede desactivarlo en
 jugar de inmediato: `resolveModConfiguration()` lo saca de la lista `--fabric.addMods` y Fabric ni lo
 abre. No es reparación —el launcher lo sigue descargando— pero desbloquea al momento.
 
+### Al jugador se le desactivan los paquetes de recursos
+
+No lleva código SC: no es un fallo del launcher, y por eso conviene reconocerlo. En su `latest.log`:
+
+```
+Caught error loading resourcepacks, removing all selected resourcepacks
+```
+
+Minecraft, ante un error cargando CUALQUIER paquete, los desactiva **todos** y los borra de
+`options.txt`. Quién lo provocó está en las líneas de justo encima. El 2026-09-16 era Cobblemon:
+
+```
+java.lang.IllegalStateException: Unable to load model cobblemon:shedinja_Mahoraga.geo for cobblemon:shedinja
+```
+
+precedido de avisos `Expected BEGIN_ARRAY but was BEGIN_OBJECT ... .uv`: modelos con **UV por cara**,
+que el lector de Cobblemon no admite. Se corrigió sacando la SC-3.2.18, y `tools/validar_pack.js` ya
+no deja publicar un pack así.
+
+Dos cosas más que mirar cuando se repita:
+
+- **¿La región le fuerza un pack?** `resource-pack=` en su `server.properties` gana al del launcher, y
+  si apunta a una versión vieja el jugador carga esa. Ver [DISTRIBUCION.md](DISTRIBUCION.md).
+- **El launcher lo repone solo** al abrir, salvo que el jugador lo apagara a propósito desde Ajustes
+  (ver [PAQUETES-Y-SHADERS.md](PAQUETES-Y-SHADERS.md)). Con versiones anteriores hay que decirle:
+  **Ajustes → Paquetes** y activar SC-Pack.
+
 ### SC-04 · Fallo de descarga, y el bloqueo de los operadores
 
 El texto de SC-04 depende de la causa que resume helios-core (`displayable` en el informe):
