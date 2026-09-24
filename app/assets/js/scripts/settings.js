@@ -1873,6 +1873,76 @@ function sc$togglePack(packName, activar){
 }
 
 /**
+ * Paquetes que algunos mods traen DENTRO de su jar. Minecraft los ofrece en la
+ * lista de disponibles pero no los activa solo, así que el mod queda cargado y
+ * sin efecto: es lo que pasaba con Punchy, que mete sus animaciones en primera
+ * persona en punchy:punchy y sin activarlo no se ve ninguna.
+ *
+ * Van por mod para no activarle el paquete a quien tenga el mod desactivado, y
+ * solo en los perfiles donde ese mod existe (Punchy está en PRO, no en LITE).
+ */
+const SC_PACKS_INTERNOS = [
+    { pack: 'punchy:punchy', mod: 'punchy' }
+]
+
+/**
+ * Los activa una única vez. options.txt no se sobrescribe en instalaciones ya
+ * existentes, así que a los nuevos les llega en la distribución y a los de
+ * siempre hay que llegar desde aquí. El marcador evita volver a activarlo a
+ * quien lo quite a propósito.
+ */
+function scActivarPacksInternosDeMods(){
+    if(sc$juegoAbierto()){
+        return
+    }
+    const nodeFs = require('fs')
+    const nodePath = require('path')
+    try {
+        const serv = ConfigManager.getSelectedServer()
+        if(!serv){
+            return
+        }
+        const d = sc$rpDirs()
+        if(!nodeFs.existsSync(d.options)){
+            return // instalación nueva: ya le llega activado desde la distribución
+        }
+        const modCfg = ConfigManager.getModConfiguration(serv)
+        const mods = (modCfg && modCfg.mods) || {}
+        const marcador = nodePath.join(nodePath.dirname(d.options), '.sc-packs-internos.json')
+        let yaHechos = []
+        if(nodeFs.existsSync(marcador)){
+            yaHechos = JSON.parse(nodeFs.readFileSync(marcador, 'utf8'))
+        }
+        let cambios = false
+        for(const { pack, mod } of SC_PACKS_INTERNOS){
+            if(yaHechos.includes(pack)){
+                continue
+            }
+            // El mod tiene que estar en este perfil y activado por el jugador.
+            const clave = Object.keys(mods).find(k => k.split(':')[1] === mod)
+            if(clave == null){
+                continue
+            }
+            const v = mods[clave]
+            const activo = (typeof v === 'boolean') ? v : (v != null && v.value !== false)
+            if(!activo){
+                continue
+            }
+            if(!sc$readOptionsPacks().enabled.includes(pack)){
+                sc$togglePack(pack, true)
+            }
+            yaHechos.push(pack)
+            cambios = true
+        }
+        if(cambios){
+            nodeFs.writeFileSync(marcador, JSON.stringify(yaHechos))
+        }
+    } catch(e){
+        console.warn('No se pudieron activar los paquetes internos de los mods', e)
+    }
+}
+
+/**
  * Activa una sola vez los paquetes oficiales nuevos que llegan con una
  * actualización del servidor. options.txt no se sobrescribe en instalaciones
  * ya existentes, así que sin esto el jugador se descargaría el paquete pero no
