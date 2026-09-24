@@ -24,6 +24,13 @@ pulsar Jugar, `verifyFiles()` compara el MD5 de cada fichero contra esa lista y 
 lo que no cuadre ([landing.js](../app/assets/js/scripts/landing.js)). Así que un jugador con la 1.5.2
 instalada recibe el pack nuevo igual que uno con la última.
 
+Desde la 1.7.0 el hash no se recalcula en cada arranque: tras un hash correcto se guarda tamaño +
+fecha + hash esperado de cada fichero en `<userData>/sc-cache-validacion.json`, y un fichero que no
+ha cambiado se da por bueno sin leerlo. **Cambiar el MD5 de un módulo en la distribución sigue
+forzando la comprobación y la descarga**: el hash esperado forma parte de la clave. La caché se
+tira sola tras cualquier fallo del juego o del arranque y al reparar. El parche vive en
+[tools/parche-helios.js](../tools/parche-helios.js) y [tools/helios/ScCacheValidacion.js](../tools/helios/ScCacheValidacion.js).
+
 Lo que **sí** exige versión nueva es tocar el propio launcher — y eso incluye el fondo
 `app/assets/images/backgrounds/0.jpg`, que por convención es la portada del pack vigente.
 
@@ -70,9 +77,8 @@ sc-distribution/
    │  ├─ libraries/
    │  └─ files/                          ← se vuelca tal cual en la raíz de la instancia
    │     ├─ options.txt
-   │     ├─ servers.dat
+   │     ├─ servers.dat                 ← sin hash: solo se instala si falta
    │     ├─ config/
-   │     ├─ downloads/
    │     ├─ shaderpacks/                 ← se distribuye vacía
    │     └─ resourcepacks/               ← paquetes oficiales
    ├─ ServidorCobblemonLite-1.21.1/      ← LITE, misma estructura
@@ -100,15 +106,24 @@ npm run start -- generate distro distribution_dev --installLocal
 
 Nebula calcula los MD5 de cada fichero. **Ese hash es lo que hace que el launcher actualice.**
 
-### La excepción: `options.txt`
+### La excepción: `options.txt`, `servers.dat` y `config/sodium-options.json`
 
-`options.txt` está en `untrackedFiles` en los dos `servermeta.json`:
+Están en `untrackedFiles` de los `servermeta.json` (`config/sodium-options.json` solo en LITE, que es
+el único perfil que lo distribuye):
 
 ```json
 "untrackedFiles": [
-  { "appliesTo": ["files"], "patterns": ["options.txt", "downloads/**"] }
+  { "appliesTo": ["files"], "patterns": ["options.txt", "downloads/**", "servers.dat", "config/sodium-options.json"] }
 ]
 ```
+
+`servers.dat` y `sodium-options.json` los reescriben Minecraft y Sodium en cada partida: con MD5 no
+cuadraban nunca y el launcher los volvía a descargar en CADA arranque (hasta la 1.7.0). No metas en
+la distribución con hash ningún fichero que el juego reescriba.
+
+`files/downloads/` (el pack del servidor pre-sembrado, 132,6 MB) se retiró el 24-09-2026 a
+`servers/_retirados/`: el servidor ya no manda pack y sc-lockserver lo rechaza. Para aplicar estos
+cambios a un `distribution.json` sin regenerar con Nebula: `node tools/distro_arranque_rapido.js <json> --aplicar`.
 
 Sin hash → **se instala la primera vez y nunca se sobrescribe**. Es intencionado: si no, cada
 actualización le borraría al jugador sus ajustes de vídeo, sus teclas y sus paquetes activos.
