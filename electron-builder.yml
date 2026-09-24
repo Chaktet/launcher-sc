@@ -14,6 +14,12 @@ compression: 'maximum'
 
 files:
   - '!{dist,.gitignore,.vscode,docs,dev-app-update.yml,.nvmrc,eslint.config.mjs}'
+  # Material de desarrollo que se colaba en el app.asar hasta la 1.6.2: la carpeta
+  # .claude (con copias de trabajo enteras), los scripts de despliegue de tools/ y
+  # las guías para agentes. Nada de eso lo usa el launcher en el PC del jugador.
+  - '!.claude{,/**}'
+  - '!tools{,/**}'
+  - '!{CLAUDE.md,AGENTS.md,PRIVACY.md}'
 
 extraResources:
   - 'libraries'
