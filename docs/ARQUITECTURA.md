@@ -138,6 +138,22 @@ cerrarse la ventana de Microsoft. Si esa ventana se abría detrás del launcher 
 jugador se quedaba encerrado. Ahora hay un botón de cancelar que manda `MSFT_OPCODE.CANCEL`
 ([ipcconstants.js](../app/assets/js/ipcconstants.js)) y `scVistaVueltaEspera` recuerda a dónde volver.
 
+### Modo conexión lenta ([landing.js](../app/assets/js/scripts/landing.js) · [tools/parche-helios.js](../tools/parche-helios.js))
+
+`helios-core` descarga con 15 conexiones a la vez. En routers de operadora flojos, PLC o
+repetidores eso tumba la red entera: a un jugador se le caían el cable y el wifi cada vez que el
+launcher descargaba (1.6.3). Bajarlo para todos haría lenta la descarga de quien no tiene el
+problema, así que:
+
+- `tools/parche-helios.js` (se aplica en `postinstall`) hace que `DownloadEngine` lea
+  `SC_DESCARGAS_PARALELAS`, y con `SC_MODO_LENTO=1` reintenta también los cortes de red
+  (ECONNRESET, ETIMEDOUT, ENOTFOUND…) con 4 s de pausa. Si una versión nueva de `helios-core` no
+  casa con el parche, el `npm install` **falla**: mejor eso que un parche que no se aplica en silencio.
+- `dlAsync` pasa esas variables al proceso hijo con `spawnReceiver(env)`: 15 en modo normal, 3 en lento.
+- Si la descarga falla por un corte de red en modo normal, se activa el modo lento **solo en ese PC**
+  (`<launcher>/sc-conexion.json`), se espera 5 s y se reintenta sola, antes que la ruta directa.
+  Caduca a los 30 días para volver a probar a toda velocidad.
+
 ### Error fatal de arranque ofrece reintentar
 
 La causa más habitual es un corte pasajero de conexión. Antes la única salida era cerrar y volver a

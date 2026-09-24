@@ -1663,7 +1663,15 @@ const SC_TECLAS_EN_CONFLICTO = [
     // lista de jugadores de vanilla. Sus otras 13 teclas vienen sin asignar y no
     // molestan a nadie.
     { opcion: 'key_key.craftingtweaks.compress_stack',           porDefecto: 'key.keyboard.k',             nueva: 'key.keyboard.grave.accent' },
-    { opcion: 'key_key.craftingtweaks.refill_last_stack',        porDefecto: 'key.keyboard.tab',           nueva: 'key.keyboard.insert' }
+    { opcion: 'key_key.craftingtweaks.refill_last_stack',        porDefecto: 'key.keyboard.tab',           nueva: 'key.keyboard.insert' },
+    // Simple Voice Chat: el mute venía en la M, encima del resumen de Pokémon de
+    // Cobblemon y del mapa de Xaero; y el desconectar en la N, donde la distribución
+    // pone el mapa. Las dos se usan en mundo, así que chocaban de verdad.
+    { opcion: 'key_key.mute_microphone',                    porDefecto: 'key.keyboard.m',             nueva: 'key.keyboard.f6' },
+    { opcion: 'key_key.disable_voice_chat',                 porDefecto: 'key.keyboard.n',             nueva: 'key.keyboard.f7' },
+    // La O la compartían cuatro: ocultar party de Cobblemon se queda, el resto se van.
+    { opcion: 'key_key.jei.toggleOverlay',                  porDefecto: 'key.keyboard.o',             nueva: 'key.keyboard.f9' },
+    { opcion: 'key_key.too_many_entities.toggle_mod',       porDefecto: 'key.keyboard.o',             nueva: 'key.keyboard.f12' }
 ]
 
 /**
@@ -1954,6 +1962,55 @@ const GAME_JOINED_REGEX = /\[.+\]: Sound engine started/
 const GAME_LAUNCH_REGEX = /^\[.+\]: (?:MinecraftForge .+ Initialized|ModLauncher .+ starting: .+|Loading Minecraft .+ with Fabric Loader .+)$/
 const MIN_LINGER = 5000
 
+// ---------------------------------------------------------------------------
+// Modo conexión lenta · para redes que se caen al descargar
+// ---------------------------------------------------------------------------
+
+// Descargas a la vez. helios-core usa 15, y en routers de operadora flojos, PLC o
+// repetidores eso satura la red hasta tumbarla: a un jugador se le caían el cable Y
+// el wifi cada vez que el launcher descargaba (24-09-2026). Bajarlo a todos haría
+// lenta la descarga de quien no tiene el problema, así que el modo lento se activa
+// SOLO en el PC donde se detecta un corte, y se recuerda allí.
+// El número lo lee el parche de tools/parche-helios.js (postinstall).
+const SC_PARALELAS_NORMAL = 15
+const SC_PARALELAS_LENTO = 3
+// Pasado este tiempo sin cortes se vuelve a probar a toda velocidad: la red del
+// jugador puede haber cambiado (otro router, otra casa).
+const SC_MODO_LENTO_CADUCA_MS = 30 * 24 * 3600 * 1000
+
+function scRutaModoLento(){
+    return require('path').join(ConfigManager.getLauncherDirectory(), 'sc-conexion.json')
+}
+
+/** ¿Este PC descarga en modo lento? */
+function scModoLento(){
+    try {
+        const d = JSON.parse(require('fs').readFileSync(scRutaModoLento(), 'utf8'))
+        return d.lento === true && (Date.now() - (d.desde || 0)) < SC_MODO_LENTO_CADUCA_MS
+    } catch(_e){
+        return false
+    }
+}
+
+function scActivarModoLento(motivo){
+    try {
+        require('fs').writeFileSync(scRutaModoLento(),
+            JSON.stringify({ lento: true, desde: Date.now(), motivo: String(motivo).slice(0, 300) }))
+    } catch(e){
+        loggerLanding.warn('No se pudo guardar el modo conexión lenta', e)
+    }
+}
+
+/**
+ * ¿El fallo de descarga es un corte de la red del jugador (y no un 404, un disco
+ * lleno o un antivirus)? El rechazo de FullRepair es un objeto plano del proceso
+ * hijo, así que se mira el texto completo con scErrorLegible.
+ */
+function scEsCorteDeRed(err){
+    return /ECONNRESET|ETIMEDOUT|ENOTFOUND|EAI_AGAIN|ENETUNREACH|ENETDOWN|EHOSTUNREACH|ECONNABORTED|EPIPE|socket hang up|RequestError|ReadError|TimeoutError/i
+        .test(scErrorLegible(err))
+}
+
 async function dlAsync(login = true) {
 
     // Login parameter is temporary for debug purposes. Allows testing the validation/downloads without
@@ -2008,7 +2065,16 @@ async function dlAsync(login = true) {
         DistroAPI.isDevMode()
     )
 
-    fullRepairModule.spawnReceiver()
+    // El proceso hijo hereda estas variables: el parche de helios-core decide con
+    // ellas cuántas descargas abre a la vez y cuánto insiste tras un corte.
+    const scLento = scModoLento()
+    if(scLento){
+        loggerLaunchSuite.info(`Modo conexión lenta: ${SC_PARALELAS_LENTO} descargas a la vez.`)
+    }
+    fullRepairModule.spawnReceiver({
+        SC_DESCARGAS_PARALELAS: String(scLento ? SC_PARALELAS_LENTO : SC_PARALELAS_NORMAL),
+        SC_MODO_LENTO: scLento ? '1' : '0'
+    })
 
     // Cuando falla la verificación o la descarga, helios-core avisa por IPC y el
     // proceso hijo sale con código 1 justo después. Ese fallo ya lo gestiona su
@@ -2058,6 +2124,20 @@ async function dlAsync(login = true) {
         } catch(err) {
             scFalloGestionado = true
             loggerLaunchSuite.error('Error during file download.')
+            // Corte de la red del jugador en modo normal: se pasa a modo lento y se
+            // reintenta solo. Va ANTES que la ruta directa porque es lo más común
+            // (router saturado) y no requiere cambiar de host. Si en modo lento
+            // vuelve a fallar, sigue el camino de siempre.
+            if(!scModoLento() && scEsCorteDeRed(err)){
+                loggerLaunchSuite.warn('Corte de red durante la descarga: activo el modo conexión lenta y reintento.')
+                scActivarModoLento(scErrorLegible(err))
+                try { fullRepairModule.destroyReceiver() } catch(_e){ /* ya había salido */ }
+                setLaunchDetails(Lang.queryJS('landing.dlAsync.modoLento'))
+                // Unos segundos para que el router se recupere antes de volver a pedir.
+                await new Promise(r => setTimeout(r, 5000))
+                dlAsync(login)
+                return
+            }
             // Antes de ensenar nada se intenta salir sola por la ruta directa: si
             // es un bloqueo del operador (paquetes tirados o certificado
             // suplantado) el jugador ni se entera. Es el mismo camino que el
@@ -2174,6 +2254,7 @@ async function dlAsync(login = true) {
             // La opción del launcher manda sobre lo que el juego tenga guardado.
             scAplicarPantallaCompleta()
             scCorregirTeclasEnConflicto()
+            scActivarPacksInternosDeMods()
 
             // Build Minecraft process.
             proc = pb.build()

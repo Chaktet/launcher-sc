@@ -4,3 +4,5 @@
 /target/
 /logs/
 /dist/
+# Permisos personales de Claude Code (no se comparten)
+.claude/settings.local.json

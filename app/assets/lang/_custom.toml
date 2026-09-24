@@ -295,6 +295,7 @@ javaInstalled = "¡Java instalado!"
 
 [js.landing.dlAsync]
 rutaAlternativa = "Buscando otra ruta hasta el servidor.."
+modoLento = "Tu conexión se ha cortado. Seguimos descargando más despacio para no saturar tu red.."
 loadingServerInfo = "Cargando información del servidor.."
 fatalError = "Error fatal"
 unableToLoadDistributionIndex = "No se pudo cargar el índice de distribución. Mira la consola (CTRL + Shift + i) para más detalles."
