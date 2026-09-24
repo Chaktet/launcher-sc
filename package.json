@@ -1,6 +1,6 @@
 {
   "name": "sclauncher",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "productName": "SC Launcher",
   "description": "Launcher oficial de servidorcobblemon.es — servidor de Minecraft Java con Cobblemon",
   "author": "Daniel Scalzi (https://github.com/dscalzi/)",
@@ -17,7 +17,8 @@
     "dist:win": "npm run dist -- -w",
     "dist:mac": "npm run dist -- -m",
     "dist:linux": "npm run dist -- -l",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "postinstall": "node tools/parche-helios.js"
   },
   "engines": {
     "node": "22.x.x"
