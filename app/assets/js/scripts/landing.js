@@ -369,6 +369,7 @@ function scUltimoCrashReport(){
 function scRepararJava(){
     const nodeFs = require('fs')
     const nodePath = require('path')
+    scInvalidarCacheValidacion('reparar Java')
     try {
         const runtime = nodePath.join(ConfigManager.getDataDirectory(), 'runtime')
         nodeFs.rmSync(runtime, { recursive: true, force: true })
@@ -539,6 +540,7 @@ function scExclusionYaPuesta(carpeta){
 function scRepararModulo(rutaFichero){
     const nodeFs = require('fs')
     const nodePath = require('path')
+    scInvalidarCacheValidacion('reparar módulo')
     try {
         nodeFs.rmSync(nodePath.dirname(rutaFichero), { recursive: true, force: true })
         return { ok: true, denegado: false }
@@ -1537,6 +1539,9 @@ function scGuardarInforme(codigo, texto){
  * @param {Error|string} err Error real, para el informe.
  */
 function scFalloArranque(codigo, explicacion, err, reintentable = false){
+    // Tras cualquier fallo, el siguiente intento vuelve a comprobar TODOS los ficheros
+    // de verdad (sin fiarse de la caché de validación). Ver scInvalidarCacheValidacion.
+    scInvalidarCacheValidacion(codigo)
     const informe = scInformeDiagnostico(codigo, err)
     const ruta = scGuardarInforme(codigo, informe)
     // En launcher.log solo el resumen y dónde está el informe. Antes se escribía el
@@ -2020,6 +2025,88 @@ function scEsCorteDeRed(err){
         .test(scErrorLegible(err))
 }
 
+// ---------------------------------------------------------------------------
+// Arranque rápido · caché de validación (1.7.0)
+// ---------------------------------------------------------------------------
+
+// Cada arranque recalculaba el MD5/SHA1 de ~1,43 GB uno a uno: 20 s en frío en un
+// i9 y 29-72 s en los PC de los jugadores (medido el 24-09-2026), aunque no hubiera
+// cambiado nada. El parche de helios-core (tools/parche-helios.js) guarda, tras un
+// hash correcto, tamaño + fecha + hash esperado de cada fichero en este JSON, y en
+// el siguiente arranque da por bueno lo que no se ha tocado sin volver a leerlo.
+// Si la distribución cambia el hash esperado de un fichero, se vuelve a comprobar.
+const SC_HASH_PARALELOS = 6
+
+function scRutaCacheValidacion(){
+    return require('path').join(ConfigManager.getLauncherDirectory(), 'sc-cache-validacion.json')
+}
+
+/**
+ * Tira la caché para que el siguiente arranque compruebe todos los ficheros de
+ * verdad. Se llama tras cualquier fallo (del arranque o del juego) y al reparar:
+ * un fichero dañado sin cambiar de tamaño ni de fecha (disco, antivirus) solo lo
+ * caza un hash completo.
+ */
+function scInvalidarCacheValidacion(motivo){
+    try {
+        require('fs').rmSync(scRutaCacheValidacion(), { force: true })
+        loggerLanding.info(`Caché de validación descartada (${motivo}): el próximo arranque lo comprueba todo.`)
+    } catch(e){
+        loggerLanding.warn('No se pudo borrar la caché de validación', e)
+    }
+}
+
+// Hasta julio de 2026 se pre-sembraba en downloads/ una copia del pack que enviaba
+// el servidor (132,6 MB) para no descargarla al entrar. Ya no sirve: el servidor
+// no manda pack y sc-lockserver lo rechaza. La distribución ha dejado de incluirla;
+// aquí se borra la copia que quedó en las instalaciones existentes.
+const SC_PACK_PRESEMBRADO_VIEJO = 'downloads/ce0f53b6-1e61-3bde-976e-6a11df44e5f5'
+
+function scBorrarPackPresembradoViejo(serv){
+    try {
+        // Si la distribución publicada aún lo lista, NO se borra: se volvería a
+        // descargar en cada arranque (132 MB) hasta que se publique la nueva.
+        const listado = (function buscar(mods){
+            return mods.some(m => (m.rawModule.artifact.path || '').replace(/\\/g, '/').startsWith(SC_PACK_PRESEMBRADO_VIEJO)
+                || (m.hasSubModules() && buscar(m.subModules)))
+        })(serv.modules)
+        if(listado){
+            return
+        }
+        const dir = require('path').join(ConfigManager.getInstanceDirectory(), serv.rawServer.id, SC_PACK_PRESEMBRADO_VIEJO)
+        if(require('fs').existsSync(dir)){
+            require('fs').rmSync(dir, { recursive: true, force: true })
+            loggerLanding.info('Borrada la copia vieja pre-sembrada del pack del servidor: ' + dir)
+        }
+    } catch(e){
+        loggerLanding.warn('No se pudo borrar el pack pre-sembrado viejo', e)
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Progreso real mientras carga el juego (1.7.0)
+// ---------------------------------------------------------------------------
+
+// Entre pulsar JUGAR y entrar pasan 60-120 s y la ventana del juego está en negro
+// casi todo el rato (la pantalla de carga de Mojang, oscurecida). Estos hitos salen
+// del registro del juego y se pintan en la barra del launcher para que se vea que
+// avanza. Van en orden y solo se avanza: una línea que coincide con un hito ya
+// pasado (p. ej. "Loaded 72 berry models" después de los modelos) no hace retroceder.
+const SC_HITOS_CARGA = [
+    { re: /Loading Minecraft .+ with Fabric Loader/, clave: 'hitoMods', pct: 10 },
+    { re: /Reloading ResourceManager/, clave: 'hitoRecursos', pct: 35 },
+    { re: /Sound engine started/, clave: 'hitoTexturas', pct: 55 },
+    { re: /Loading animations/, clave: 'hitoAnimaciones', pct: 65 },
+    { re: /Loaded \d+ animations/, clave: 'hitoModelos', pct: 80 },
+    { re: /Loaded \d+ models/, clave: 'hitoPokemon', pct: 90 }
+]
+// "Connecting to <host>, <puerto>" es el final: el juego ya está en el menú y entra.
+// Se excluye el "Connecting to voice chat server" del chat de voz.
+const SC_HITO_CONECTANDO = /Connecting to (?!voice chat)\S+, ?\d+/
+// Si el juego llega a cargar recursos pero nunca se conecta (autoconnect apagado,
+// servidor caído), no se deja la barra puesta para siempre.
+const SC_HITO_MARGEN_MS = 180 * 1000
+
 async function dlAsync(login = true) {
 
     // Login parameter is temporary for debug purposes. Allows testing the validation/downloads without
@@ -2082,7 +2169,10 @@ async function dlAsync(login = true) {
     }
     fullRepairModule.spawnReceiver({
         SC_DESCARGAS_PARALELAS: String(scLento ? SC_PARALELAS_LENTO : SC_PARALELAS_NORMAL),
-        SC_MODO_LENTO: scLento ? '1' : '0'
+        SC_MODO_LENTO: scLento ? '1' : '0',
+        // Caché de validación y hash en paralelo (tools/parche-helios.js).
+        SC_CACHE_VALIDACION: scRutaCacheValidacion(),
+        SC_HASH_PARALELOS: String(SC_HASH_PARALELOS)
     })
 
     // Cuando falla la verificación o la descarga, helios-core avisa por IPC y el
@@ -2181,7 +2271,19 @@ async function dlAsync(login = true) {
     )
 
     const modLoaderData = await distributionIndexProcessor.loadModLoaderVersionJson(serv)
-    const versionData = await mojangIndexProcessor.getVersionJson()
+    // El proceso de verificación acaba de descargar el manifiesto de versiones de
+    // Mojang y de dejar el version.json comprobado en disco. getVersionJson() lo
+    // volvía a pedir a Mojang (segunda petición por arranque, sin tiempo máximo):
+    // se lee la copia local y solo si falta se hace lo de siempre.
+    let versionData
+    try {
+        versionData = await mojangIndexProcessor.loadVersionJson(serv.rawServer.minecraftVersion, null)
+    } catch(e){
+        loggerLaunchSuite.warn('Sin version.json local; se pide a Mojang.', e)
+        versionData = await mojangIndexProcessor.getVersionJson()
+    }
+
+    scBorrarPackPresembradoViejo(serv)
 
     if(login) {
         const authUser = ConfigManager.getSelectedAccount()
@@ -2217,8 +2319,15 @@ async function dlAsync(login = true) {
         // La barra de estado se mantiene visible durante TODO el arranque del
         // juego (antes volvía al botón JUGAR a los pocos segundos y parecía
         // que no pasaba nada → la gente pulsaba JUGAR varias veces).
+        let scHito = -1
+        let scMargenHitos = null
         const onLoadComplete = () => {
+            if(scJuegoArranco){
+                return
+            }
             scJuegoArranco = true
+            clearTimeout(scMargenHitos)
+            setLaunchPercentage(100)
             setLaunchDetails(Lang.queryJS('landing.dlAsync.doneEnjoyServer'))
             setTimeout(() => toggleLaunchArea(false), 3000)
             if(hasRPC){
@@ -2229,14 +2338,32 @@ async function dlAsync(login = true) {
             proc.stderr.removeListener('data', gameErrorListener)
         }
 
-        // Hitos reales del arranque leídos del log del juego.
+        // Hitos reales del arranque leídos del log del juego (SC_HITOS_CARGA). El
+        // final es "Connecting to": antes se daba por cargado en "Sound engine
+        // started", que sale a mitad de la recarga de recursos, y el launcher decía
+        // "¡Listo!" con 15-30 s de pantalla negra todavía por delante.
         const tempListener = function(data){
             data = data.trim()
             scAnotarSalida(data)
-            if(GAME_LAUNCH_REGEX.test(data)){
-                setLaunchDetails('Cargando los mods..')
-            } else if(GAME_JOINED_REGEX.test(data) || data.includes('Connecting to')){
+            if(SC_HITO_CONECTANDO.test(data)){
+                setLaunchDetails(Lang.queryJS('landing.dlAsync.hitoConectando'))
                 onLoadComplete()
+                return
+            }
+            let nuevo = scHito
+            for(let i = scHito + 1; i < SC_HITOS_CARGA.length; i++){
+                if(SC_HITOS_CARGA[i].re.test(data)){
+                    nuevo = i
+                }
+            }
+            if(nuevo > scHito){
+                scHito = nuevo
+                setLaunchPercentage(SC_HITOS_CARGA[nuevo].pct)
+                setLaunchDetails(Lang.queryJS('landing.dlAsync.' + SC_HITOS_CARGA[nuevo].clave))
+                // Red de seguridad: si tras el último hito no llega la conexión,
+                // se cierra la barra como hacía antes.
+                clearTimeout(scMargenHitos)
+                scMargenHitos = setTimeout(onLoadComplete, SC_HITO_MARGEN_MS)
             }
         }
 
@@ -2272,7 +2399,8 @@ async function dlAsync(login = true) {
             proc.stdout.on('data', tempListener)
             proc.stderr.on('data', gameErrorListener)
 
-            setLaunchDetails('Abriendo Minecraft..')
+            setLaunchPercentage(0)
+            setLaunchDetails(Lang.queryJS('landing.dlAsync.hitoAbriendo'))
 
             // Si el proceso ni siquiera llega a nacer (ejecutable de Java
             // borrado por el antivirus, permisos, ruta rota), Node avisa por
@@ -2288,8 +2416,15 @@ async function dlAsync(login = true) {
 
             // Si el juego muere o se cierra, restaurar el botón JUGAR.
             proc.on('close', (code) => {
+                clearTimeout(scMargenHitos)
                 toggleLaunchArea(false)
                 proc = null
+                // Juego cerrado con error (en el arranque o a media partida): el
+                // siguiente arranque hashea todo, por si el fallo es un fichero dañado
+                // que la caché de validación daría por bueno.
+                if(code !== 0){
+                    scInvalidarCacheValidacion('el juego se cerró con código ' + code)
+                }
                 // Si el juego murió ANTES de llegar a conectar y con error,
                 // hay que explicarlo: antes simplemente volvía el botón JUGAR
                 // y el jugador se quedaba sin saber qué había pasado.

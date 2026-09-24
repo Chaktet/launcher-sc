@@ -310,6 +310,15 @@ preparingToLaunch = "Preparando el lanzamiento.."
 launchingGame = "Iniciando el juego.."
 launchWrapperNotDownloaded = "El archivo principal, LaunchWrapper, no se descargó correctamente y el juego no puede iniciar.<br><br>Para arreglarlo, desactiva temporalmente tu antivirus y vuelve a iniciar el juego."
 doneEnjoyServer = "¡Listo! ¡Disfruta del servidor!"
+# Hitos de la carga del juego, leídos de su registro (landing.js · SC_HITOS_CARGA).
+hitoAbriendo = "Abriendo Minecraft.."
+hitoMods = "Cargando los mods.."
+hitoRecursos = "Cargando recursos (pack).."
+hitoTexturas = "Montando las texturas.."
+hitoAnimaciones = "Cargando animaciones de Cobblemon.."
+hitoModelos = "Cargando modelos de Cobblemon.."
+hitoPokemon = "Casi listo.."
+hitoConectando = "Conectando al servidor.."
 checkConsoleForDetails = "Mira la consola (CTRL + Shift + i) para más detalles."
 
 [js.landing.news]
