@@ -243,7 +243,9 @@ const refreshMojangStatuses = async function(){
 }
 
 const refreshServerStatus = async (fade = false) => {
-    loggerLanding.info('Refreshing Server Status')
+    // debug y no info: se repite cada 30 s y llenaba launcher.log (5.500 de 5.800 líneas),
+    // haciendo rotar el fichero y enterrando lo que sí sirve para un ticket (1.6.4).
+    loggerLanding.debug('Refreshing Server Status')
     const serv = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
 
     let pLabel = Lang.queryJS('landing.serverStatus.server')
@@ -1537,7 +1539,14 @@ function scGuardarInforme(codigo, texto){
 function scFalloArranque(codigo, explicacion, err, reintentable = false){
     const informe = scInformeDiagnostico(codigo, err)
     const ruta = scGuardarInforme(codigo, informe)
-    loggerLanding.error(`[${codigo}]`, err)
+    // En launcher.log solo el resumen y dónde está el informe. Antes se escribía el
+    // error entero, y en los fallos del juego ese error lleva dentro 3.000-4.000
+    // caracteres de la salida de Minecraft: el "registro del launcher" acababa
+    // siendo el crash del juego (reporte del 24-09-2026). El informe completo sigue
+    // en informes/, que es lo que abre "Copiar informe".
+    const resumen = scErrorLegible(err).split('\n').find(l => l.trim()) || '(sin detalle)'
+    loggerLanding.error(`[${codigo}] ${resumen.trim().slice(0, 300)}`
+        + (ruta != null ? ` · informe completo: ${ruta}` : ''))
 
     const desc = `${explicacion}<br><br>
         <span class="sc-cod-error">${codigo}</span>
