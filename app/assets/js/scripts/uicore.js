@@ -79,7 +79,7 @@ if(!isDev){
                 loggerAutoUpdater.info('Update ' + info.version + ' ready to be installed.')
                 settingsUpdateButtonStatus(Lang.queryJS('uicore.autoUpdate.installNowButton'), false, () => {
                     if(!isDev){
-                        ipcRenderer.send('autoUpdateAction', 'installUpdateNow')
+                        scInstalarAhora(info != null ? info.version : '')
                     }
                 })
                 showUpdateUI(info, true)
@@ -92,6 +92,7 @@ if(!isDev){
                 scInsigniaAlDia()
                 break
             case 'ready':
+                scComprobarActualizacionEnCurso()
                 updateCheckListener = setInterval(() => {
                     ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
                 }, 1800000)
@@ -180,10 +181,7 @@ function scInsigniaLista(version){
                 Lang.queryJS('uicore.autoUpdate.instalarConfirmar'),
                 Lang.queryJS('uicore.autoUpdate.instalarCancelar')
             )
-            setOverlayHandler(() => {
-                toggleOverlay(false)
-                ipcRenderer.send('autoUpdateAction', 'installUpdateNow')
-            })
+            setOverlayHandler(() => scInstalarAhora(version))
             setDismissHandler(() => toggleOverlay(false))
             toggleOverlay(true, true)
         }
@@ -224,28 +222,104 @@ function scAutoInstalarSiProcede(info){
         return // se queda la insignia; la instala cuando el jugador quiera
     }
 
-    let restantes = 5
-    const pinta = () => scInsigniaVersion(
-        'lista',
-        Lang.queryJS('uicore.autoUpdate.insigniaAutoInstalando').replace('{s}', restantes)
-    )
+    // 1.7.2: aviso a pantalla completa con la cuenta atrás (antes solo cambiaba la
+    // etiqueta de versión y nadie lo veía: el launcher "se cerraba solo", el jugador lo
+    // volvía a abrir a medio instalar y el instalador se lo cerraba otra vez a media partida).
+    const version = info != null ? info.version : ''
+    let restantes = 10
+    const pinta = () => {
+        scInsigniaVersion('lista', Lang.queryJS('uicore.autoUpdate.insigniaAutoInstalando').replace('{s}', restantes))
+        setOverlayContent(
+            Lang.queryJS('uicore.autoUpdate.autoTitulo').replace('{v}', version),
+            Lang.queryJS('uicore.autoUpdate.autoDesc').replace('{s}', restantes),
+            Lang.queryJS('uicore.autoUpdate.autoAhora'),
+            Lang.queryJS('uicore.autoUpdate.autoMasTarde')
+        )
+    }
     pinta()
 
-    const cuenta = setInterval(() => {
+    let cuenta = null
+    const cancela = () => {
+        clearInterval(cuenta)
+        toggleOverlay(false)
+        scInsigniaLista(version)
+    }
+    setOverlayHandler(() => {
+        clearInterval(cuenta)
+        scInstalarAhora(version)
+    })
+    setDismissHandler(cancela)
+    toggleOverlay(true, true)
+
+    cuenta = setInterval(() => {
         restantes--
         if(scOcupado()){
-            // Le ha dado a JUGAR mientras contaba: se cancela y no se toca nada.
-            clearInterval(cuenta)
-            scInsigniaLista(info != null ? info.version : '')
+            // Se ha puesto a jugar o a descargar: se cancela y no se toca nada.
+            cancela()
             return
         }
         if(restantes <= 0){
             clearInterval(cuenta)
-            ipcRenderer.send('autoUpdateAction', 'installUpdateNow')
+            scInstalarAhora(version)
             return
         }
         pinta()
     }, 1000)
+}
+
+// Marca en disco mientras se instala una actualización. Si alguien reabre el launcher
+// viejo antes de que el instalador acabe, ve "Terminando de actualizar…" y no puede
+// jugar (el instalador lo cerraría a los pocos segundos, con el juego ya abierto).
+function scRutaMarcaActualizando(){
+    return require('path').join(remote.app.getPath('userData'), 'sc-actualizando.json')
+}
+
+function scInstalarAhora(version){
+    try {
+        require('fs').writeFileSync(scRutaMarcaActualizando(), JSON.stringify({ version: version || '', ts: Date.now() }))
+    } catch(e) { /* sin marca: solo se pierde el aviso de reapertura */ }
+    setOverlayContent(
+        Lang.queryJS('uicore.autoUpdate.instalandoTitulo'),
+        Lang.queryJS('uicore.autoUpdate.instalandoDesc'),
+        Lang.queryJS('uicore.autoUpdate.instalandoTitulo'),
+        ''
+    )
+    setOverlayHandler(() => {})
+    toggleOverlay(true, false)
+    // Un instante para que se pinte el aviso antes de que la ventana se cierre.
+    setTimeout(() => ipcRenderer.send('autoUpdateAction', 'installUpdateNow'), 400)
+}
+
+/** Al arrancar: ¿hay una instalación a medias de una versión más nueva que esta? */
+function scComprobarActualizacionEnCurso(){
+    let marca = null
+    try {
+        marca = JSON.parse(require('fs').readFileSync(scRutaMarcaActualizando(), 'utf8'))
+    } catch(e) {
+        return
+    }
+    const actual = remote.app.getVersion()
+    const reciente = marca != null && typeof marca.ts === 'number' && Date.now() - marca.ts < 3 * 60 * 1000
+    const masNueva = marca != null && marca.version && marca.version !== actual
+    if(!reciente || !masNueva){
+        // Ya está instalada (o el intento es viejo y falló): se borra y arranque normal.
+        try { require('fs').unlinkSync(scRutaMarcaActualizando()) } catch(e) { /* nada */ }
+        return
+    }
+    setOverlayContent(
+        Lang.queryJS('uicore.autoUpdate.terminandoTitulo'),
+        Lang.queryJS('uicore.autoUpdate.terminandoDesc').replace('{v}', marca.version),
+        Lang.queryJS('uicore.autoUpdate.terminandoTitulo'),
+        ''
+    )
+    setOverlayHandler(() => {})
+    toggleOverlay(true, false)
+    // Si el instalador falló y no llega a cerrar este launcher, no se queda bloqueado:
+    // a los 3 minutos de empezar se quita el aviso y se sigue con esta versión.
+    setTimeout(() => {
+        try { require('fs').unlinkSync(scRutaMarcaActualizando()) } catch(e) { /* nada */ }
+        toggleOverlay(false)
+    }, Math.max(1000, marca.ts + 3 * 60 * 1000 - Date.now()))
 }
 
 function showUpdateUI(info, downloaded = false){
