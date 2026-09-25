@@ -3,7 +3,7 @@
 > Router slim. El detalle está en `docs/`. No cargues todo: lee solo lo que pida la tarea.
 
 Launcher oficial de `servidorcobblemon.es`. Fork de [Helios Launcher](https://github.com/dscalzi/HeliosLauncher)
-(MIT) en Electron. Versión actual: `1.7.0` ([package.json](package.json)).
+(MIT) en Electron. Versión actual: `1.7.1` ([package.json](package.json)).
 
 ## Orden de verdad
 

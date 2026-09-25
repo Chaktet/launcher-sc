@@ -2107,6 +2107,56 @@ const SC_HITO_CONECTANDO = /Connecting to (?!voice chat)\S+, ?\d+/
 // servidor caído), no se deja la barra puesta para siempre.
 const SC_HITO_MARGEN_MS = 180 * 1000
 
+// Barra progresiva entre hitos (1.7.1). Fase 0 = de abrir el juego al primer hito; la
+// fase k+1 empieza en el hito k. Cada fase va de SC_FASES_PCT[k] a SC_FASES_PCT[k+1].
+const SC_FASES_PCT = [0, 10, 35, 55, 65, 80, 90, 100]
+// Duración esperada de cada fase la primera vez (ms). Medida en PCs de jugadores
+// (i3-10105F, i3-4150) y en el i9 del owner: un punto intermedio realista.
+const SC_FASES_MS_DEFECTO = [8000, 25000, 30000, 12000, 18000, 6000, 8000]
+const SC_FASES_CLAVE = 'scDuracionesCarga'
+
+/** Duraciones aprendidas de las cargas anteriores de ESTE PC (o las de por defecto). */
+function scDuracionesFases(){
+    try {
+        const g = JSON.parse(localStorage.getItem(SC_FASES_CLAVE) || 'null')
+        if(Array.isArray(g) && g.length === SC_FASES_MS_DEFECTO.length && g.every(n => typeof n === 'number' && n > 0)){
+            return g
+        }
+    } catch(e) { /* sin almacenamiento: por defecto */ }
+    return SC_FASES_MS_DEFECTO.slice()
+}
+
+/** Media móvil con lo medido en esta carga (solo las fases que se midieron enteras). */
+function scGuardarDuracionesFases(medidas){
+    try {
+        const d = scDuracionesFases()
+        for(let k = 0; k < d.length; k++){
+            const m = medidas[k]
+            if(typeof m === 'number' && m > 500 && m < 10 * 60 * 1000){
+                d[k] = Math.round(d[k] * 0.4 + m * 0.6)
+            }
+        }
+        localStorage.setItem(SC_FASES_CLAVE, JSON.stringify(d))
+    } catch(e) { /* no es crítico */ }
+}
+
+/**
+ * Porcentaje dentro de la fase según el tiempo que lleva: avanza a ritmo constante
+ * hasta el 90 % del tramo en el tiempo esperado y después frena poco a poco sin llegar
+ * nunca al siguiente hito (ese solo lo marca el juego). Así no se para ni se adelanta.
+ */
+function scPctEnFase(fase, transcurridoMs, esperadoMs){
+    const desde = SC_FASES_PCT[fase], hasta = SC_FASES_PCT[fase + 1]
+    const e = Math.max(1000, esperadoMs)
+    let f
+    if(transcurridoMs <= e){
+        f = 0.9 * transcurridoMs / e
+    } else {
+        f = 0.9 + 0.09 * (1 - Math.exp(-(transcurridoMs - e) / e))
+    }
+    return desde + (hasta - desde) * f
+}
+
 async function dlAsync(login = true) {
 
     // Login parameter is temporary for debug purposes. Allows testing the validation/downloads without
@@ -2321,12 +2371,45 @@ async function dlAsync(login = true) {
         // que no pasaba nada → la gente pulsaba JUGAR varias veces).
         let scHito = -1
         let scMargenHitos = null
+        // Barra progresiva: fase actual, cuándo empezó, lo medido y el último % pintado.
+        const scEsperado = scDuracionesFases()
+        const scMedido = []
+        let scFase = 0
+        let scInicioFase = Date.now()
+        let scPctPintado = 0
+        let scAnimacion = null
+        const scPinta = (pct) => {
+            const p = Math.floor(pct)
+            if(p > scPctPintado){
+                scPctPintado = p
+                setLaunchPercentage(p)
+            }
+        }
+        const scPasaAFase = (fase) => {
+            const ahora = Date.now()
+            // Solo se aprende de una fase que termina en la siguiente (sin saltarse hitos).
+            if(fase === scFase + 1){
+                scMedido[scFase] = ahora - scInicioFase
+            }
+            scFase = fase
+            scInicioFase = ahora
+            scPinta(SC_FASES_PCT[fase])
+        }
+        const scParaAnimacion = () => {
+            clearInterval(scAnimacion)
+            scAnimacion = null
+        }
         const onLoadComplete = () => {
             if(scJuegoArranco){
                 return
             }
             scJuegoArranco = true
             clearTimeout(scMargenHitos)
+            scParaAnimacion()
+            if(scFase === SC_FASES_PCT.length - 2){
+                scMedido[scFase] = Date.now() - scInicioFase
+            }
+            scGuardarDuracionesFases(scMedido)
             setLaunchPercentage(100)
             setLaunchDetails(Lang.queryJS('landing.dlAsync.doneEnjoyServer'))
             setTimeout(() => toggleLaunchArea(false), 3000)
@@ -2358,7 +2441,7 @@ async function dlAsync(login = true) {
             }
             if(nuevo > scHito){
                 scHito = nuevo
-                setLaunchPercentage(SC_HITOS_CARGA[nuevo].pct)
+                scPasaAFase(nuevo + 1)
                 setLaunchDetails(Lang.queryJS('landing.dlAsync.' + SC_HITOS_CARGA[nuevo].clave))
                 // Red de seguridad: si tras el último hito no llega la conexión,
                 // se cierra la barra como hacía antes.
@@ -2401,6 +2484,19 @@ async function dlAsync(login = true) {
 
             setLaunchPercentage(0)
             setLaunchDetails(Lang.queryJS('landing.dlAsync.hitoAbriendo'))
+            // Entre hitos la barra avanza sola según lo que suele tardar cada fase en este PC.
+            scInicioFase = Date.now()
+            scAnimacion = setInterval(() => {
+                try {
+                    if(scJuegoArranco || scFase >= SC_FASES_PCT.length - 1){
+                        scParaAnimacion()
+                        return
+                    }
+                    scPinta(scPctEnFase(scFase, Date.now() - scInicioFase, scEsperado[scFase]))
+                } catch(e) {
+                    scParaAnimacion()
+                }
+            }, 250)
 
             // Si el proceso ni siquiera llega a nacer (ejecutable de Java
             // borrado por el antivirus, permisos, ruta rota), Node avisa por
@@ -2409,6 +2505,7 @@ async function dlAsync(login = true) {
             // todos los intentos siguientes: el launcher quedaba inservible.
             proc.on('error', (err) => {
                 loggerLaunchSuite.error('El proceso del juego no pudo arrancar.', err)
+                scParaAnimacion()
                 toggleLaunchArea(false)
                 proc = null
                 scFalloArranque(SC_ERR.JAVA_ROTO, Lang.queryJS('landing.launch.errJavaRoto'), err)
@@ -2417,6 +2514,7 @@ async function dlAsync(login = true) {
             // Si el juego muere o se cierra, restaurar el botón JUGAR.
             proc.on('close', (code) => {
                 clearTimeout(scMargenHitos)
+                scParaAnimacion()
                 toggleLaunchArea(false)
                 proc = null
                 // Juego cerrado con error (en el arranque o a media partida): el
