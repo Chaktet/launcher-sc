@@ -1685,7 +1685,11 @@ const SC_TECLAS_EN_CONFLICTO = [
     { opcion: 'key_key.disable_voice_chat',                 porDefecto: 'key.keyboard.n',             nueva: 'key.keyboard.f7' },
     // La O la compartían cuatro: ocultar party de Cobblemon se queda, el resto se van.
     { opcion: 'key_key.jei.toggleOverlay',                  porDefecto: 'key.keyboard.o',             nueva: 'key.keyboard.f9' },
-    { opcion: 'key_key.too_many_entities.toggle_mod',       porDefecto: 'key.keyboard.o',             nueva: 'key.keyboard.f12' }
+    { opcion: 'key_key.too_many_entities.toggle_mod',       porDefecto: 'key.keyboard.o',             nueva: 'key.keyboard.f12' },
+    // Emotecraft abre la rueda de emotes con la B, que Xaero usaba para crear un
+    // punto de ruta. La B se queda para los emotes; el punto de ruta va a Inicio,
+    // que no usa ningún mod del pack (ni como tecla ni leyendo el teclado).
+    { opcion: 'key_gui.xaero_new_waypoint',                 porDefecto: 'key.keyboard.b',             nueva: 'key.keyboard.home' }
 ]
 
 /**

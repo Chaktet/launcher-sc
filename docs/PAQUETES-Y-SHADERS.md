@@ -196,6 +196,7 @@ Algunos mods registran teclas sin comprobar si están libres. Las que chocan en 
 | `key_key.cobblemonextendedbattleui.decrease_font` | `left.bracket` | `comma` | No chocaba; se mueve para dejar la pareja en `,` `.` |
 | `key_key.craftingtweaks.compress_stack` | `k` | `grave.accent` | La `K` la usa Iris para encender los shaders |
 | `key_key.craftingtweaks.refill_last_stack` | `tab` | `insert` | El TAB es la lista de jugadores de vanilla |
+| `key_gui.xaero_new_waypoint` | `b` | `home` (Inicio) | La `B` abre la rueda de Emotecraft (desde la 1.7.3); Inicio no la usa ningún mod |
 
 Las teclas nuevas se comprobaron contra los 145 *keybinds* que Minecraft escribe en `options.txt`
 con todos los mods cargados, en PRO y en LITE.

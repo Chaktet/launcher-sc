@@ -1,0 +1,137 @@
+# bailes
+7.0_doodle
+7.0_konton_boogie
+7.0_squat_kick
+7.0_hungarian_folk_dance
+7.0_friend_round_dance
+blingbangbangborn
+brakedance
+# DEMASIADO GRANDE (>32KB en red): bye-bye-bye_deadpool_dance
+chainsawman_dance
+de_ankha
+de_bhangra_boogie
+# CUBIERTO POR SPEMOTES: de_boogie_down
+de_california_gurls
+de_crossing_arms
+de_dance_of_little_ducklings
+de_dancing_up
+de_disco_star
+de_drake
+de_engineer_dance
+de_fishyflourish
+# DEMASIADO GRANDE (>32KB en red): de_futterwacken
+de_gmod_default
+de_goatsimulator_party
+de_green_alien
+de_griddy
+de_gru_dance
+# CUBIERTO POR SPEMOTES: de_lezginka
+de_lilmoon
+de_macarena
+de_monkey
+de_octavia
+de_piglin
+de_pirouette
+de_piston_legs
+de_purple_cobras
+de_smooth_moves
+de_tf2_mannrobics
+de_trap_moves
+de_unreal_dvizh
+de_windmill_floss
+distraction_dance_remake
+dylan_dance
+hakaridance
+happy_bird_dance
+hypnodance
+ishakov_dance
+lethalcompanydance
+litle_big_skibidi
+skibididobdobyesyes
+not_responsible_dance
+ore_dance_remakee
+phantomimes
+pikuniku
+pumpkin_dance
+shikanoko
+slebyshdances
+walking_dance
+mettatonex
+lord_dripiez
+# gestos y emociones
+7.0_headache
+7.0_wipe_sweat_off_head
+7.0_victory_2
+7.0_ear_tease
+victory_1
+laughalot2
+rideonthefloorinhysteria
+think
+yawn
+cover_from_sun
+cool_take_off_glasses
+frighten
+# CUBIERTO POR SPEMOTES: shock
+# DEMASIADO GRANDE (>32KB en red): hopelessness
+twirl_finger_at_temple
+rummaging_pockets
+strokethestomach
+pat_on_head
+# CUBIERTO POR SPEMOTES: kowtow
+napoleon_stand_looks
+# poses (sentarse, tumbarse, dormir)
+sittingwithyourkneestothechest
+cowgirlsleep
+furryanimal_sit
+furryanimal_lay
+ciem_watching
+ciem_sleep
+# CUBIERTO POR SPEMOTES: napoleon
+meditation
+7.0_sunbathing
+# CUBIERTO POR SPEMOTES: emotewinter15
+emotewinter17
+emotewinter11
+read_a_book
+# acción y deporte
+cartwheel
+kip_up
+dropkick
+triplekickinair
+swinging_fists_in_a_fighting_stance
+ultimate_punch
+headbutt
+hadouken
+onearm_pullup
+push-upsinthehandonhand
+5x30_plank
+# CUBIERTO POR SPEMOTES: 5x30_sit_up
+skateboarding
+skateboarding_kickflip
+kick_football
+juggle
+march
+proud_walk
+jack_sparrow_walk
+zombie_walk
+# divertidos
+levitateinthesky
+smoothflight
+createaportal
+falllikeastatue
+getstuckintextures
+strongwind
+dig_up_something
+# DEMASIADO GRANDE (>32KB en red): spray_the_graffiti
+hold_a_videocam
+mecmdj
+mecmnormalbithed
+gp_piano_playing
+gp_counting_money
+emotewinter14
+knock_door
+return_alive
+happy_ore
+pickaxe_shoulder
+# DEMASIADO GRANDE (>32KB en red): panhandle_with_hat
+# CUBIERTO POR SPEMOTES: monoliths_prayer

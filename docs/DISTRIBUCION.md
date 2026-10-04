@@ -113,9 +113,15 @@ el único perfil que lo distribuye):
 
 ```json
 "untrackedFiles": [
-  { "appliesTo": ["files"], "patterns": ["options.txt", "downloads/**", "servers.dat", "config/sodium-options.json"] }
+  { "appliesTo": ["files"], "patterns": ["options.txt", "downloads/**", "servers.dat", "config/sodium-options.json", "config/emotecraft.json"] }
 ]
 ```
+
+`config/emotecraft.json` (los dos perfiles, desde el 2026-10-04) lleva la rueda de emotes ya rellena
+(10 páginas de 8). Va sin hash para que la rueda que se monte cada jugador no se le borre en cada
+arranque. Los emotes en sí van en `files/emotes/sc/` (formato binario `.emotecraft` + icono `.png`),
+**con** hash: son nuestros y se actualizan solos. No van en ningún resourcepack: Emotecraft 2.4.12 solo
+lee su carpeta `emotes/`. Cómo se montan: [tools/emotes/README.md](../tools/emotes/README.md).
 
 `servers.dat` y `sodium-options.json` los reescriben Minecraft y Sodium en cada partida: con MD5 no
 cuadraban nunca y el launcher los volvía a descargar en CADA arranque (hasta la 1.7.0). No metas en
@@ -145,6 +151,8 @@ explicados en [PAQUETES-Y-SHADERS.md](PAQUETES-Y-SHADERS.md).
    no bloquea, uno nuevo sí. Sin `--mod` no se comprueban las referencias de los resolvers.
 6. Regenerar con Nebula.
 7. **Reponer el `?v=`**: `node tools/romper_cache_pack.js <versión>`. Nebula lo borra siempre.
+   Para los que no cambian (Cobblemon, el pack si no se toca), copiarlos de lo publicado:
+   `node tools/reponer_v.js <distribution publicado> <distribution nuevo> --aplicar` (avisa si el MD5 cambió).
 8. Subir (⚠️ ver más abajo).
 9. Probar con un cliente limpio **y** con uno ya existente — los fallos de actualización solo salen
    en el segundo caso.
