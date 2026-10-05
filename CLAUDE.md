@@ -5,20 +5,9 @@
 Launcher oficial de `servidorcobblemon.es`. Fork de [Helios Launcher](https://github.com/dscalzi/HeliosLauncher)
 (MIT) en Electron. Versión actual: `1.7.2` ([package.json](package.json)).
 
-## Orden de verdad
+Infra del ecosistema: `E:\cobblemon-web\infra\INFRA-MAP.md` (del 22/05/2026, verifica antes de fiarte).
 
-1. Estado del repo · `git status` · `git log`
-2. `docs/*.md` de este repo
-3. Este `CLAUDE.md`
-4. `E:\cobblemon-web\infra\INFRA-MAP.md` — infra del ecosistema (⚠️ del 22/05/2026, verifica antes de fiarte)
-
-## Al empezar
-
-```bash
-git status && git log --oneline -10
-```
-
-Después, según la tarea:
+## Qué leer según la tarea
 
 | Tarea | Lee |
 |---|---|
@@ -36,7 +25,7 @@ Después, según la tarea:
 | `E:\PROYECTOS-MC\sc-distribution` | Los ficheros reales del modpack (root de Nebula) |
 | `E:\PROYECTOS-MC\sc-nebula` | Generador de `distribution.json` |
 | `E:\PROYECTOS-MC\rpacks` | Paquetes de recursos sueltos, antes de entrar en la distribución |
-| `E:\cobblemon-web` | Portal web + doc de infra. ⚠️ Es un worktree huérfano: `git` no funciona ahí |
+| `E:\cobblemon-web` | Portal web + doc de infra. Worktree (rama `cobblemon/main`) del repo principal `E:\PROYECTOS-VERTIX\SAAS-VERTIX` |
 
 ## Convenciones
 
@@ -48,16 +37,16 @@ Después, según la tarea:
   `Lang.queryJS()`.
 - **`sc$escapeHtml()` siempre** antes de meter algo en `innerHTML`: nombres de fichero elegidos por el
   jugador y datos remotos incluidos.
-- Commits en conventional commits, en español.
+- Commits en español.
 
 ## Reglas duras
 
-- ⛔ **`options.txt` no se toca con el juego abierto.** Minecraft lo reescribe entero al cerrarse y se
+- **No reiniciar ni tocar servidores de Minecraft de producción sin un "sí, reinicia" textual del usuario.**
+  Desconecta a los jugadores; OVH-A aloja además el proxy Velocity, el Lobby y Hoenn.
+- **`options.txt` no se toca con el juego abierto.** Minecraft lo reescribe entero al cerrarse y se
   pierde el cambio. Comprueba `sc$juegoAbierto()` antes de cualquier escritura. Ver
   [docs/PAQUETES-Y-SHADERS.md](docs/PAQUETES-Y-SHADERS.md).
-- ⛔ **Nada de reiniciar ni tocar servidores de Minecraft de producción** sin un "sí, reinicia" textual
-  del usuario. OVH-A aloja además el proxy Velocity, el Lobby y Hoenn.
-- ⛔ **Nunca reemplaces un `.zip` del pack conservando el nombre.** Apache los sirve `immutable` con
+- **No reemplaces un `.zip` del pack conservando el nombre.** Apache los sirve `immutable` con
   un año de caché: jugadores y Cloudflare seguirían dando el viejo. Versiona el nombre del fichero.
   Ver [docs/DISTRIBUCION.md](docs/DISTRIBUCION.md).
 - Al añadir un código de error nuevo, actualiza la tabla de [docs/ERRORES.md](docs/ERRORES.md): es la
@@ -71,7 +60,7 @@ Después, según la tarea:
   sitios; están listados en [docs/ARQUITECTURA.md](docs/ARQUITECTURA.md).
 - **`options.txt` va sin hash en la distribución**: cambiarlo solo afecta a instalaciones nuevas. A
   los jugadores existentes hay que llegar con un parche desde el launcher.
-- **Prueba siempre con dos clientes**, uno limpio y uno ya existente. Los fallos de actualización solo
+- **Prueba con dos clientes**, uno limpio y uno ya existente. Los fallos de actualización solo
   aparecen en el segundo.
 - **El vhost de descargas es el *default server* de Apache en OVH-A**, no tiene el `ServerName` real.
   Añadir otro vhost antes que `packs.conf` rompe las descargas sin tocar nada del launcher.
