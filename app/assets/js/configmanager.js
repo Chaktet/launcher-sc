@@ -43,7 +43,9 @@ const configPath = path.join(exports.getLauncherDirectory(), 'config.json')
 const configPathLEGACY = path.join(dataPath, 'config.json')
 // Copia de la última configuración válida (ver save()).
 const configPathBak = configPath + '.bak'
+// Con una copia válida no es un primer arranque: load() la recupera.
 const firstLaunch = !fs.existsSync(configPath) && !fs.existsSync(configPathLEGACY)
+    && scLeerConfig(configPathBak) == null
 
 exports.getAbsoluteMinRAM = function(ram){
     if(ram?.minimum != null) {
@@ -171,6 +173,12 @@ exports.load = function(){
         fs.ensureDirSync(path.join(configPath, '..'))
         if(fs.existsSync(configPathLEGACY)){
             fs.moveSync(configPathLEGACY, configPath)
+        } else if(scLeerConfig(configPathBak) != null){
+            // config.json ha desaparecido (borrado por un limpiador, un antivirus o un
+            // fallo a medio guardar) pero la copia es buena: se recupera en vez de
+            // empezar de cero sin cuentas.
+            logger.info('config.json missing: restoring from config.json.bak.')
+            fs.copyFileSync(configPathBak, configPath)
         } else {
             doLoad = false
             config = DEFAULT_CONFIG

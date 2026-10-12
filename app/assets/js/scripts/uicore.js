@@ -205,8 +205,22 @@ function scInsigniaLista(version){
  * los 300 MB del pack, así que mirarlo a él solo daba por ocioso un launcher que
  * llevaba diez minutos descargando, y se reiniciaba a media faena.
  */
-function scOcupado(){
+function scJuegoEnMarcha(){
     if(typeof proc !== 'undefined' && proc != null){
+        return true
+    }
+    // También el juego lanzado antes de reabrir el launcher: `proc` solo vive en
+    // memoria y, sin esto, reabrir el launcher en mitad de una partida instalaba la
+    // actualización y el instalador cerraba el juego. Ver scjuegoabierto.js.
+    try {
+        return require('./assets/js/scjuegoabierto').juegoPrevioAbierto() != null
+    } catch(e){
+        return false
+    }
+}
+
+function scOcupado(){
+    if(scJuegoEnMarcha()){
         return true // el juego está abierto
     }
     // La barra de progreso visible significa que hay descarga o arranque en curso.
@@ -227,6 +241,12 @@ function scAutoInstalarSiProcede(info){
     clearTimeout(scEsperaAutoInstalar)
     if(typeof isOverlayVisible === 'function' && isOverlayVisible()){
         scEsperaAutoInstalar = setTimeout(() => scAutoInstalarSiProcede(info), 2000)
+        return
+    }
+    // Con el juego abierto se espera a que se cierre (se sigue mirando cada 30 s) en
+    // vez de abandonar: así se instala sola en cuanto el jugador termina de jugar.
+    if(scJuegoEnMarcha()){
+        scEsperaAutoInstalar = setTimeout(() => scAutoInstalarSiProcede(info), 30000)
         return
     }
     const enAjustes = typeof getCurrentView === 'function' && typeof VIEWS !== 'undefined'

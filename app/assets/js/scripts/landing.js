@@ -1816,8 +1816,27 @@ function scComprobacionesPrevias(){
     } catch(e){
         loggerLanding.warn('No se pudieron hacer las comprobaciones previas', e)
     }
-    // Espacio en disco. Con el disco lleno la descarga moría a medias con un ENOSPC
-    // (o un fichero truncado que luego no pasaba el hash) y el jugador no sabía por qué.
+    return true
+}
+
+// Margen que se pide además de lo que hay que descargar: logs, cachés del juego,
+// mundos de un jugador y lo que Windows necesita para no ir ahogado.
+const SC_DISCO_MARGEN = 512 * 1048576
+
+/**
+ * Comprueba que caben `bytesPendientes` (más SC_DISCO_MARGEN) en el disco de datos.
+ * Con el disco lleno la descarga moría a medias con un ENOSPC, o con un fichero
+ * truncado que luego no pasaba el hash, y el jugador no sabía por qué. Solo se pide
+ * lo que de verdad falta por bajar: con todo descargado no se bloquea a nadie por
+ * tener el disco justo.
+ *
+ * @param {number} bytesPendientes Lo que se va a escribir.
+ * @returns {boolean} true si cabe (o si no se pudo medir).
+ */
+function scHayEspacioPara(bytesPendientes){
+    if(!(bytesPendientes > 0)){
+        return true
+    }
     try {
         const nodeFs = require('fs')
         const nodePath = require('path')
@@ -1829,16 +1848,17 @@ function scComprobacionesPrevias(){
         }
         const st = nodeFs.statfsSync(dir)
         const libre = st.bavail * st.bsize
-        if(libre < SC_DISCO_MINIMO){
-            const gb = b => (b / 1073741824).toFixed(1)
+        const necesario = bytesPendientes + SC_DISCO_MARGEN
+        if(libre < necesario){
+            const gb = b => (b / 1073741824).toFixed(2)
             scFalloArranque(
                 SC_ERR.DISCO,
                 Lang.queryJS('landing.launch.errDisco', {
                     libre: gb(libre),
-                    necesario: gb(SC_DISCO_MINIMO),
+                    necesario: gb(necesario),
                     ruta: sc$escapeHtml(dir)
                 }),
-                new Error(`libre=${libre} necesario=${SC_DISCO_MINIMO} dir=${dir}`)
+                new Error(`libre=${libre} necesario=${necesario} pendiente=${bytesPendientes} dir=${dir}`)
             )
             return false
         }
@@ -1847,10 +1867,6 @@ function scComprobacionesPrevias(){
     }
     return true
 }
-
-// Lo que ocupan juego, mods, Java y el pack de texturas, con margen para las
-// copias temporales de una actualización.
-const SC_DISCO_MINIMO = 3 * 1073741824
 
 /**
  * Si sigue abierto un Minecraft lanzado en una sesión anterior del launcher, lo
@@ -1972,6 +1988,11 @@ async function downloadJava(effectiveJavaOptions, launchAfter = true) {
 
     if(asset == null) {
         throw new Error(Lang.queryJS('landing.downloadJava.findJdkFailure'))
+    }
+
+    // El .zip y lo que ocupa extraído (unas 2,5 veces) conviven hasta terminar.
+    if(!scHayEspacioPara(asset.size * 3)){
+        return
     }
 
     let received = 0
@@ -2256,6 +2277,62 @@ function scPctEnFase(fase, transcurridoMs, esperadoMs){
 const SC_DISTRO_REFRESCO_MS = 15000
 
 /**
+ * Equivale a DistroAPI.refreshDistributionOrFallback(), pero con tiempo máximo y
+ * sin efectos tardíos. Con un Promise.race sobre el refresco de helios, la respuesta
+ * que llegaba DESPUÉS del límite seguía escribiendo distribution.json y la copia en
+ * memoria mientras el arranque seguía con la anterior: el proceso de reparación (que
+ * lee el disco) podía validar otra versión de la que se iba a lanzar. Aquí solo se
+ * descarga en la carrera; escribir en disco y en memoria se hace únicamente si la
+ * respuesta llega a tiempo. Una respuesta tardía se descarta.
+ *
+ * @returns {Promise<HeliosDistribution|null>}
+ */
+async function scRefrescarDistribucion(logger){
+    if(DistroAPI.isDevMode()){
+        // En desarrollo helios solo lee la copia local: no hay red que esperar.
+        return DistroAPI.refreshDistributionOrFallback()
+    }
+    const AGOTADO = Symbol('agotado')
+    let temporizador
+    const agotado = new Promise(resolve => {
+        temporizador = setTimeout(() => resolve(AGOTADO), SC_DISTRO_REFRESCO_MS)
+    })
+    const remota = await Promise.race([
+        DistroAPI.pullRemote().then(r => r.data).catch(() => null),
+        agotado
+    ])
+    clearTimeout(temporizador)
+
+    if(remota === AGOTADO){
+        logger.warn(`La distribución no responde en ${SC_DISTRO_REFRESCO_MS / 1000} s: se usa la que ya estaba cargada.`)
+        if(DistroAPI.distribution != null){
+            return DistroAPI.distribution
+        }
+        try {
+            return await DistroAPI.getDistributionLocalLoadOnly()
+        } catch(_e){
+            return null
+        }
+    }
+
+    // Lo mismo que hace helios: con respuesta se guarda en disco; sin ella, la copia local.
+    let raw = remota
+    if(raw != null){
+        await DistroAPI.writeDistributionToDisk(raw)
+    } else {
+        raw = await DistroAPI.pullLocal()
+        if(raw == null){
+            logger.warn('Failed to refresh distribution, falling back to current load (if exists).')
+            return DistroAPI.distribution
+        }
+    }
+    const { HeliosDistribution } = require('helios-core/common')
+    DistroAPI.rawDistribution = raw
+    DistroAPI.distribution = new HeliosDistribution(raw, DistroAPI.commonDir, DistroAPI.instanceDir)
+    return DistroAPI.distribution
+}
+
+/**
  * Prepara y lanza el juego. Es un envoltorio de scDlAsyncInterno: varios sitios
  * la llaman sin await (Reintentar, reparar un módulo, el reintento en modo lento o
  * por la ruta directa), y un rechazo ahí era un unhandledrejection con la barra de
@@ -2293,16 +2370,7 @@ async function scDlAsyncInterno(login = true) {
     try {
         // Una conexión colgada (no cortada) no devuelve nunca: sin límite el botón se
         // quedaba en "Cargando información del servidor" para siempre.
-        let scTemporizador
-        const scAgotado = new Promise(resolve => {
-            scTemporizador = setTimeout(() => resolve(null), SC_DISTRO_REFRESCO_MS)
-        })
-        distro = await Promise.race([DistroAPI.refreshDistributionOrFallback(), scAgotado])
-        clearTimeout(scTemporizador)
-        if(distro == null){
-            loggerLaunchSuite.warn(`La distribución no responde en ${SC_DISTRO_REFRESCO_MS / 1000} s: se usa la que ya estaba cargada.`)
-            distro = DistroAPI.distribution
-        }
+        distro = await scRefrescarDistribucion(loggerLaunchSuite)
         if(distro == null){
             throw new Error('No distribution loaded')
         }
@@ -2385,6 +2453,16 @@ async function scDlAsyncInterno(login = true) {
         }
     })
 
+    // Bytes que faltan por bajar: los manda el receptor parcheado (parche-helios.js, 5)
+    // en el mismo mensaje que el número de ficheros. Este listener va antes que el de
+    // verifyFiles, así que el valor ya está puesto cuando este resuelve.
+    let scBytesPendientes = null
+    fullRepairModule.childProcess.on('message', (m) => {
+        if(m != null && m.response === 'validateComplete' && typeof m.scBytesPendientes === 'number'){
+            scBytesPendientes = m.scBytesPendientes
+        }
+    })
+
     loggerLaunchSuite.info('Validating files.')
     setLaunchDetails(Lang.queryJS('landing.dlAsync.validatingFileIntegrity'))
     let invalidFileCount = 0
@@ -2400,6 +2478,12 @@ async function scDlAsyncInterno(login = true) {
         return
     }
     
+
+    if(invalidFileCount > 0 && !scHayEspacioPara(scBytesPendientes)) {
+        scFalloGestionado = true
+        try { fullRepairModule.destroyReceiver() } catch(_e){ /* ya había salido */ }
+        return
+    }
 
     if(invalidFileCount > 0) {
         loggerLaunchSuite.info('Downloading files.')

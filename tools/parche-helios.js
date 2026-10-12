@@ -30,10 +30,14 @@
 //
 // 4. Descargas y API de Java con tiempo máximo (1.7.4) · DownloadEngine + JavaGuard
 //    got.stream() sin timeout: con una conexión que se queda colgada (no cortada) una
-//    descarga no terminaba nunca y la barra se quedaba parada para siempre. Con 15 s
-//    para conectar y 30 s sin recibir nada se corta con TimeoutError, y ese error pasa
+//    descarga no terminaba nunca y la barra se quedaba parada para siempre. Con 10 s
+//    para el DNS, 15 s para conectar y 30 s sin recibir nada se corta con TimeoutError, y ese error pasa
 //    a ser reintentable para que actúe el reintento de helios (10 intentos). Lo mismo
 //    para la consulta a la API de Adoptium antes de bajar Java.
+//
+// 5. Bytes pendientes (1.7.4) · FullRepairReceiver
+//    validateComplete manda también cuántos bytes faltan por descargar, para que el
+//    launcher compruebe el espacio libre con lo que de verdad va a bajar.
 const fs = require('fs')
 const path = require('path')
 
@@ -241,10 +245,22 @@ parchear(path.join('dl', 'mojang', 'MojangIndexProcessor.js'), MARCA_CACHE, s =>
 
 // --- 4. Tiempos máximos en descargas y en la API de Adoptium --------------------------
 
-const MARCA_TIMEOUT = '/* sc-timeouts */'
-const SC_GOT_TIMEOUT = '{ connect: 15000, socket: 30000 }'
+// v2 añade `lookup`: `connect` empieza a contar DESPUÉS de resolver el DNS, así que un
+// DNS colgado (router, DNS del operador) seguía sin límite.
+const MARCA_TIMEOUT = '/* sc-timeouts-2 */'
+const SC_GOT_TIMEOUT = '{ lookup: 10000, connect: 15000, socket: 30000 }'
+// Instalaciones con la primera versión de este parche ya aplicada (node_modules sin
+// reinstalar): se actualiza en sitio en vez de fallar por no encontrar el original.
+const MARCA_TIMEOUT_V1 = '/* sc-timeouts */'
+const SC_GOT_TIMEOUT_V1 = '{ connect: 15000, socket: 30000 }'
+function migrarTimeoutsV1(s){
+    return s.split(MARCA_TIMEOUT_V1).join(MARCA_TIMEOUT).split(SC_GOT_TIMEOUT_V1).join(SC_GOT_TIMEOUT)
+}
 
 parchear(path.join('dl', 'DownloadEngine.js'), MARCA_TIMEOUT, s => {
+    if(s.includes(MARCA_TIMEOUT_V1)){
+        return migrarTimeoutsV1(s)
+    }
     s = reemplazarLiteral(s,
         'const downloadStream = got_1.default.stream(url);',
         MARCA_TIMEOUT + ' const downloadStream = got_1.default.stream(url, { timeout: ' + SC_GOT_TIMEOUT + ' });',
@@ -262,7 +278,7 @@ parchear(path.join('dl', 'DownloadEngine.js'), MARCA_TIMEOUT, s => {
     return s
 }, 'timeout de conexión y de inactividad en las descargas (reintentable)')
 
-parchear(path.join('java', 'JavaGuard.js'), MARCA_TIMEOUT, s => reemplazarLiteral(s,
+parchear(path.join('java', 'JavaGuard.js'), MARCA_TIMEOUT, s => s.includes(MARCA_TIMEOUT_V1) ? migrarTimeoutsV1(s) : reemplazarLiteral(s,
     'const res = await got_1.default.get(url, { responseType: \'json\' });',
     MARCA_TIMEOUT + ' const res = await got_1.default.get(url, { responseType: \'json\', timeout: ' + SC_GOT_TIMEOUT + ' });',
     'JavaGuard.js'), 'timeout en la consulta a la API de Adoptium')
@@ -278,3 +294,12 @@ parchear(path.join('dl', 'receivers', 'FullRepairReceiver.js'), MARCA_CACHE, s =
     + '        }\n'
     + '        process.send({ response: \'validateComplete\', invalidCount: this.assets.length });',
     'FullRepairReceiver.js'), 'guardar la caché de validación al terminar')
+
+// --- 5. Bytes pendientes de descargar (1.7.4) -------------------------------------------
+// El launcher comprueba el espacio libre con lo que de verdad falta por bajar, no con
+// una cifra fija: el receptor lo dice junto con el número de ficheros a descargar.
+const MARCA_ESPACIO = '/* sc-bytes-pendientes */'
+parchear(path.join('dl', 'receivers', 'FullRepairReceiver.js'), MARCA_ESPACIO, s => reemplazarLiteral(s,
+    'process.send({ response: \'validateComplete\', invalidCount: this.assets.length });',
+    MARCA_ESPACIO + ' process.send({ response: \'validateComplete\', invalidCount: this.assets.length, scBytesPendientes: (0, DownloadEngine_1.getExpectedDownloadSize)(this.assets) });',
+    'FullRepairReceiver.js'), 'bytes pendientes de descarga en validateComplete')

@@ -126,9 +126,9 @@ y la pantalla de carga es definitiva. Hay estos:
 | Dónde | Límite | Qué hace al agotarse |
 |---|---|---|
 | `preloader.js` · distribución | 30 s | Intenta la copia local; si no hay, error de arranque |
-| `landing.js` · refresco de la distribución al pulsar JUGAR (1.7.4) | 15 s | Sigue con la que ya está en memoria; si no hay, SC-01 |
-| `parche-helios.js` · cada descarga (`got.stream`) (1.7.4) | 15 s conectar, 30 s sin datos | `TimeoutError`, que ahora es reintentable: helios reintenta hasta 10 veces |
-| `parche-helios.js` · API de Adoptium (Java) (1.7.4) | 15 s conectar, 30 s sin datos | Sin Java que ofrecer: SC-02 |
+| `landing.js` · refresco de la distribución al pulsar JUGAR (1.7.4) | 15 s | Sigue con la que ya está en memoria; la respuesta tardía se descarta (ni disco ni memoria); si no hay, SC-01 |
+| `parche-helios.js` · cada descarga (`got.stream`) (1.7.4) | 10 s DNS, 15 s conectar, 30 s sin datos | `TimeoutError`, que ahora es reintentable: helios reintenta hasta 10 veces |
+| `parche-helios.js` · API de Adoptium (Java) (1.7.4) | 10 s DNS, 15 s conectar, 30 s sin datos | Sin Java que ofrecer: SC-02 |
 | `settings.js` · `scConTiempoLimite()` en el login de Microsoft | 60 s | Error y vuelta a la pantalla anterior |
 | `settings.js` · botón cancelar de la pantalla de espera | 1,5 s | Red de seguridad si la ventana OAuth ya no existía |
 
