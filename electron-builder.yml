@@ -19,6 +19,7 @@ files:
   # las guías para agentes. Nada de eso lo usa el launcher en el PC del jugador.
   - '!.claude{,/**}'
   - '!tools{,/**}'
+  - '!diseno*{,/**}'
   - '!{CLAUDE.md,AGENTS.md,PRIVACY.md}'
 
 extraResources:
