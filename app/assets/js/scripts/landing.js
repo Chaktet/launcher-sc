@@ -100,14 +100,31 @@ function setLaunchEnabled(val){
     document.getElementById('launch_button').disabled = !val
 }
 
+let scComprobandoJugar = false
+// Primera comprobación en segundo plano, para que los avisos pasivos (Ajustes, ping)
+// sepan cuanto antes si sigue abierto un juego de otra sesión.
+ScJuegoAbierto.juegoPrevioAbiertoAsync().catch(() => {})
+
 // Bind launch button
 document.getElementById('launch_button').addEventListener('click', async e => {
     if(proc != null){
         loggerLanding.info('El juego ya está en marcha — ignorando clic en JUGAR.')
         return
     }
+    // La comprobación del juego abierto es asíncrona (consulta a Windows en segundo
+    // plano): sin esta guarda, un doble clic en ese rato lanzaba dos arranques.
+    if(scComprobandoJugar){
+        return
+    }
     loggerLanding.info('Launching game..')
-    if(scAvisarJuegoPrevioAbierto() || !scComprobacionesPrevias()){
+    scComprobandoJugar = true
+    let seguir
+    try {
+        seguir = !(await scAvisarJuegoPrevioAbierto()) && scComprobacionesPrevias()
+    } finally {
+        scComprobandoJugar = false
+    }
+    if(!seguir){
         return
     }
     try {
@@ -386,11 +403,11 @@ function scUltimoCrashReport(){
  * Borra la instalación de Java y la marca como no configurada, de modo que el
  * launcher la vuelva a descargar entera en el siguiente intento.
  */
-function scRepararJava(){
+async function scRepararJava(){
     const nodeFs = require('fs')
     const nodePath = require('path')
     // Con un juego abierto el runtime está en uso: el borrado quedaría a medias.
-    if(ScJuegoAbierto.juegoPrevioAbierto() != null){
+    if(await ScJuegoAbierto.juegoPrevioAbiertoAsync() != null){
         loggerLanding.warn('No se repara Java: hay un juego abierto de una sesión anterior.')
         return false
     }
@@ -562,11 +579,11 @@ function scExclusionYaPuesta(carpeta){
  * @param {string} rutaFichero Ruta del .jar que no se puede leer.
  * @returns {{ok: boolean, denegado: boolean}}
  */
-function scRepararModulo(rutaFichero){
+async function scRepararModulo(rutaFichero){
     const nodeFs = require('fs')
     const nodePath = require('path')
     // Con un juego abierto el .jar está en uso: el borrado quedaría a medias.
-    if(ScJuegoAbierto.juegoPrevioAbierto() != null){
+    if(await ScJuegoAbierto.juegoPrevioAbiertoAsync() != null){
         loggerLanding.warn('No se repara el módulo: hay un juego abierto de una sesión anterior.')
         return { ok: false, denegado: false }
     }
@@ -595,7 +612,7 @@ function scRepararModulo(rutaFichero){
  * @param {string} opts.carpeta Carpeta a excluir y a enseñar.
  * @param {string} opts.intro Texto de cabecera (clave ya resuelta).
  * @param {string} opts.codigo Código SC que se muestra.
- * @param {function(): boolean} opts.reparar Qué reparar tras excluir.
+ * @param {function(): Promise<boolean>} opts.reparar Qué reparar tras excluir.
  */
 async function scOfrecerArreglarAntivirus(opts){
     const carpeta = opts.carpeta
@@ -672,7 +689,7 @@ async function scOfrecerArreglarAntivirus(opts){
             // Añadir la exclusión no devuelve lo que ya esté en cuarentena, así
             // que hay que reparar después. Sin esto el jugador excluye la
             // carpeta y sigue sin poder jugar.
-            const reparado = ok ? opts.reparar() : false
+            const reparado = ok ? await opts.reparar() : false
             setOverlayContent(
                 Lang.queryJS('landing.launch.failureTitle'),
                 Lang.queryJS(ok && reparado ? 'landing.launch.avHecho' : 'landing.launch.avNoHecho'),
@@ -806,13 +823,13 @@ function scDialogoModIlegible(rutaMod, txt){
                 carpeta: nodePath.join(ConfigManager.getCommonDirectory(), 'mods'),
                 intro: Lang.queryJS('landing.launch.avIntroMod'),
                 codigo: SC_ERR.MOD_ILEGIBLE,
-                reparar: () => rutaMod != null ? scRepararModulo(rutaMod).ok : false
+                reparar: async () => rutaMod != null ? (await scRepararModulo(rutaMod)).ok : false
             })
             return
         }
 
         if(accion === 'reparar' && rutaMod != null){
-            const r = scRepararModulo(rutaMod)
+            const r = await scRepararModulo(rutaMod)
             if(!r.ok){
                 setOverlayContent(
                     Lang.queryJS('landing.launch.failureTitle'),
@@ -952,8 +969,8 @@ function scAnalizarCierreDelJuego(code, salida){
             Lang.queryJS('landing.launch.repararJava'),
             Lang.queryJS('landing.launch.okay')
         )
-        setOverlayHandler(() => {
-            const ok = scRepararJava()
+        setOverlayHandler(async () => {
+            const ok = await scRepararJava()
             setOverlayContent(
                 Lang.queryJS('landing.launch.failureTitle'),
                 Lang.queryJS(ok ? 'landing.launch.javaReparado' : 'landing.launch.javaNoReparado'),
@@ -1872,8 +1889,8 @@ function scHayEspacioPara(bytesPendientes){
  * Si sigue abierto un Minecraft lanzado en una sesión anterior del launcher, lo
  * dice y devuelve true, en vez de lanzar un segundo juego. Ver scjuegoabierto.js.
  */
-function scAvisarJuegoPrevioAbierto(){
-    const pid = ScJuegoAbierto.juegoPrevioAbierto()
+async function scAvisarJuegoPrevioAbierto(){
+    const pid = await ScJuegoAbierto.juegoPrevioAbiertoAsync()
     if(pid == null){
         return false
     }
@@ -2342,7 +2359,7 @@ async function dlAsync(login = true) {
     try {
         // Los reintentos automáticos también pasan por aquí: si mientras tanto se ha
         // descubierto un juego abierto de otra sesión, no se lanza un segundo.
-        if(login && scAvisarJuegoPrevioAbierto()){
+        if(login && await scAvisarJuegoPrevioAbierto()){
             return
         }
         await scDlAsyncInterno(login)

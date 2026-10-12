@@ -1848,8 +1848,18 @@ function sc$juegoAbierto(){
         return true
     }
     // También el que se lanzó en una sesión anterior del launcher y sigue abierto:
-    // `proc` solo existe en memoria. Ver scjuegoabierto.js.
+    // `proc` solo existe en memoria. Ver scjuegoabierto.js. Esta versión es la PASIVA
+    // (último resultado conocido, sin esperar): vale para avisos de la interfaz y para
+    // el arranque, que acaba de hacer la comprobación completa.
     return require('./assets/js/scjuegoabierto').juegoPrevioAbierto() != null
+}
+
+/** Comprobación completa y fresca, sin bloquear la interfaz: antes de escribir options.txt. */
+async function sc$juegoAbiertoConfirmado(){
+    if(typeof proc !== 'undefined' && proc != null){
+        return true
+    }
+    return (await require('./assets/js/scjuegoabierto').juegoPrevioAbiertoAsync()) != null
 }
 
 async function sc$officialPackNames(){
@@ -1962,8 +1972,8 @@ function scActivarPacksInternosDeMods(){
  * lo vería. Se apunta lo ya aplicado para no volver a activar lo que el jugador
  * haya desactivado a propósito.
  */
-function sc$activarPacksOficialesNuevos(oficiales){
-    if(sc$juegoAbierto()){
+async function sc$activarPacksOficialesNuevos(oficiales){
+    if(await sc$juegoAbiertoConfirmado()){
         return
     }
     const nodeFs = require('fs')
@@ -2053,7 +2063,7 @@ function sc$apuntarDecision(packName, activar){
  * @returns {Promise<boolean>} true si ha repuesto algo.
  */
 async function sc$repararPacksBorradosPorElJuego(){
-    if(sc$juegoAbierto()){
+    if(await sc$juegoAbiertoConfirmado()){
         return false
     }
     const nodeFs = require('fs')
@@ -2092,7 +2102,7 @@ async function populateResourcepacksTab(){
     const nodeFs = require('fs')
     const oficiales = await sc$officialPackNames()
     await sc$repararPacksBorradosPorElJuego()
-    sc$activarPacksOficialesNuevos(oficiales)
+    await sc$activarPacksOficialesNuevos(oficiales)
     const d = sc$rpDirs()
     let packs = []
     try {
@@ -2125,11 +2135,17 @@ async function populateResourcepacksTab(){
         </div>`
     }
     list.innerHTML = html
-    const bloqueado = sc$juegoAbierto()
+    const bloqueado = await sc$juegoAbiertoConfirmado()
     document.getElementById('settingsRpGameNotice').style.display = bloqueado ? 'block' : 'none'
     Array.from(list.getElementsByClassName('settingsRpToggle')).forEach(inp => {
         inp.disabled = bloqueado
-        inp.onchange = () => {
+        inp.onchange = async () => {
+            // La pestaña pudo pintarse antes de abrir el juego: se confirma otra vez.
+            if(await sc$juegoAbiertoConfirmado()){
+                inp.checked = !inp.checked
+                await populateResourcepacksTab()
+                return
+            }
             try {
                 sc$togglePack(inp.getAttribute('packname'), inp.checked)
             } catch(e){
@@ -2153,7 +2169,7 @@ async function populateResourcepacksTab(){
                 toggleOverlay(false)
                 // A la papelera (recuperable), igual que hace el launcher con los mods.
                 const res = await ipcRenderer.invoke(SHELL_OPCODE.TRASH_ITEM, nodePath.join(d.packs, p))
-                if(res.result){
+                if(res.result && !(await sc$juegoAbiertoConfirmado())){
                     sc$togglePack(p, false)
                 } else {
                     console.warn('No se pudo mover el paquete a la papelera', res.error)
@@ -2179,10 +2195,15 @@ document.getElementById('settingsRpImport').onclick = async () => {
         return
     }
     nodeFs.mkdirSync(d.packs, { recursive: true })
+    // Con el juego abierto se copia el paquete pero no se toca options.txt: el juego
+    // lo reescribiría al cerrarse. El jugador lo activa después.
+    const activar = !(await sc$juegoAbiertoConfirmado())
     for(const fp of res.filePaths){
         const destino = nodePath.basename(fp)
         nodeFs.copyFileSync(fp, nodePath.join(d.packs, destino))
-        sc$togglePack(destino, true)
+        if(activar){
+            sc$togglePack(destino, true)
+        }
     }
     await populateResourcepacksTab()
 }
