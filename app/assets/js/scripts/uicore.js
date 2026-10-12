@@ -93,6 +93,8 @@ if(!isDev){
                 break
             case 'ready':
                 scComprobarActualizacionEnCurso()
+                // Un 'ready' repetido no debe sumar otro intervalo de comprobación.
+                clearInterval(updateCheckListener)
                 updateCheckListener = setInterval(() => {
                     ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
                 }, 1800000)
@@ -215,7 +217,18 @@ function scOcupado(){
     return false
 }
 
+// Reintento pendiente de la instalación automática mientras hay un diálogo abierto.
+let scEsperaAutoInstalar = null
+
 function scAutoInstalarSiProcede(info){
+    // Con un diálogo abierto (un error SC, el selector del primer arranque, el aviso de
+    // Java...) la cuenta atrás lo sustituía: el jugador perdía el error o la elección
+    // sin llegar a leerlo. Se espera a que lo cierre, sin perder la actualización.
+    clearTimeout(scEsperaAutoInstalar)
+    if(typeof isOverlayVisible === 'function' && isOverlayVisible()){
+        scEsperaAutoInstalar = setTimeout(() => scAutoInstalarSiProcede(info), 2000)
+        return
+    }
     const enAjustes = typeof getCurrentView === 'function' && typeof VIEWS !== 'undefined'
         && getCurrentView() !== VIEWS.landing
     if(scOcupado() || enAjustes){
@@ -419,7 +432,13 @@ document.addEventListener('readystatechange', function () {
  */
 $(document).on('click', 'a[href^="http"]', function(event) {
     event.preventDefault()
-    shell.openExternal(this.href)
+    // Solo https: openExternal le pasa la URL al sistema, y un enlace http (o con
+    // otro esquema colado en una noticia) no debe salir de aquí.
+    if(/^https:\/\//i.test(this.href)){
+        shell.openExternal(this.href)
+    } else {
+        loggerUICore.warn('Enlace no https ignorado:', this.href)
+    }
 })
 
 /**
