@@ -41,6 +41,8 @@ exports.setDataDirectory = function(dataDirectory){
 
 const configPath = path.join(exports.getLauncherDirectory(), 'config.json')
 const configPathLEGACY = path.join(dataPath, 'config.json')
+// Copia de la última configuración válida (ver save()).
+const configPathBak = configPath + '.bak'
 const firstLaunch = !fs.existsSync(configPath) && !fs.existsSync(configPathLEGACY)
 
 exports.getAbsoluteMinRAM = function(ram){
@@ -113,7 +115,46 @@ let config = null
  * Save the current configuration to a file.
  */
 exports.save = function(){
-    fs.writeFileSync(configPath, JSON.stringify(config, null, 4), 'UTF-8')
+    // Escritura atómica: fichero temporal + rename. Escribiendo encima, un apagón, un
+    // cierre a la fuerza o el antivirus a mitad dejaban config.json cortado, y al
+    // abrir el launcher se perdían cuentas, RAM, Java y la elección de versión.
+    const datos = JSON.stringify(config, null, 4)
+    const tmp = configPath + '.tmp'
+    const fd = fs.openSync(tmp, 'w')
+    try {
+        fs.writeSync(fd, datos, null, 'utf8')
+        fs.fsyncSync(fd)
+    } finally {
+        fs.closeSync(fd)
+    }
+    // La copia de seguridad es la versión anterior, solo si era válida: no se pisa
+    // una copia buena con un fichero dañado.
+    try {
+        if(fs.existsSync(configPath)){
+            JSON.parse(fs.readFileSync(configPath, 'UTF-8'))
+            fs.copyFileSync(configPath, configPathBak)
+        }
+    } catch(_e){
+        // El actual está dañado o no se puede leer: se conserva la copia que hubiera.
+    }
+    try {
+        fs.renameSync(tmp, configPath)
+    } catch(err){
+        // En Windows un antivirus o el indexador pueden tener config.json abierto y el
+        // rename falla (EPERM/EBUSY). Mejor una escritura directa que no guardar.
+        logger.warn('No se pudo reemplazar config.json de forma atómica; se escribe directamente.', err)
+        fs.writeFileSync(configPath, datos, 'UTF-8')
+        fs.rmSync(tmp, { force: true })
+    }
+}
+
+/** Lee un config.json y lo devuelve parseado, o null si no existe o está dañado. */
+function scLeerConfig(ruta){
+    try {
+        return JSON.parse(fs.readFileSync(ruta, 'UTF-8'))
+    } catch(_e){
+        return null
+    }
 }
 
 /**
@@ -144,10 +185,25 @@ exports.load = function(){
         } catch (err){
             logger.error(err)
             logger.info('Configuration file contains malformed JSON or is corrupt.')
-            logger.info('Generating a new configuration file.')
-            fs.ensureDirSync(path.join(configPath, '..'))
-            config = DEFAULT_CONFIG
-            exports.save()
+            // Antes se volvía a la configuración por defecto: el jugador perdía sus
+            // cuentas y ajustes. Se tira de la copia de la última vez que se guardó bien,
+            // y el fichero dañado se aparta para poder mirarlo en un ticket.
+            try {
+                fs.copyFileSync(configPath, configPath + '.danado')
+            } catch(_e){
+                // Sin copia del dañado: solo se pierde ese diagnóstico.
+            }
+            const copia = scLeerConfig(configPathBak)
+            if(copia != null){
+                logger.info('Restoring configuration from config.json.bak.')
+                config = copia
+                doValidate = true
+            } else {
+                logger.info('Generating a new configuration file.')
+                fs.ensureDirSync(path.join(configPath, '..'))
+                config = DEFAULT_CONFIG
+                exports.save()
+            }
         }
         if(doValidate){
             config = validateKeySet(DEFAULT_CONFIG, config)
