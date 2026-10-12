@@ -27,6 +27,13 @@
 //    Sin timeout, una conexión colgada (wifi de colegio, portal cautivo, antivirus con
 //    inspección SSL) dejaba el arranque parado sin fin. Si no responde en 15 s, helios
 //    ya sabe tirar del version.json local.
+//
+// 4. Descargas y API de Java con tiempo máximo (1.7.4) · DownloadEngine + JavaGuard
+//    got.stream() sin timeout: con una conexión que se queda colgada (no cortada) una
+//    descarga no terminaba nunca y la barra se quedaba parada para siempre. Con 15 s
+//    para conectar y 30 s sin recibir nada se corta con TimeoutError, y ese error pasa
+//    a ser reintentable para que actúe el reintento de helios (10 intentos). Lo mismo
+//    para la consulta a la API de Adoptium antes de bajar Java.
 const fs = require('fs')
 const path = require('path')
 
@@ -231,6 +238,34 @@ parchear(path.join('dl', 'mojang', 'MojangIndexProcessor.js'), MARCA_CACHE, s =>
         'MojangIndexProcessor.js')
     return s
 }, 'validación de assets y librerías en paralelo + timeouts de Mojang')
+
+// --- 4. Tiempos máximos en descargas y en la API de Adoptium --------------------------
+
+const MARCA_TIMEOUT = '/* sc-timeouts */'
+const SC_GOT_TIMEOUT = '{ connect: 15000, socket: 30000 }'
+
+parchear(path.join('dl', 'DownloadEngine.js'), MARCA_TIMEOUT, s => {
+    s = reemplazarLiteral(s,
+        'const downloadStream = got_1.default.stream(url);',
+        MARCA_TIMEOUT + ' const downloadStream = got_1.default.stream(url, { timeout: ' + SC_GOT_TIMEOUT + ' });',
+        'DownloadEngine.js')
+    // retryableError solo reintentaba error.name === 'RequestError'; el TimeoutError de
+    // got se llama distinto y sin esto el timeout cortaba la descarga sin reintentar.
+    s = reemplazarLiteral(s,
+        '    if (error instanceof got_1.RequestError) {\n',
+        '    ' + MARCA_TIMEOUT + '\n'
+        + '    if (error instanceof got_1.TimeoutError) {\n'
+        + '        return true;\n'
+        + '    }\n'
+        + '    if (error instanceof got_1.RequestError) {\n',
+        'DownloadEngine.js')
+    return s
+}, 'timeout de conexión y de inactividad en las descargas (reintentable)')
+
+parchear(path.join('java', 'JavaGuard.js'), MARCA_TIMEOUT, s => reemplazarLiteral(s,
+    'const res = await got_1.default.get(url, { responseType: \'json\' });',
+    MARCA_TIMEOUT + ' const res = await got_1.default.get(url, { responseType: \'json\', timeout: ' + SC_GOT_TIMEOUT + ' });',
+    'JavaGuard.js'), 'timeout en la consulta a la API de Adoptium')
 
 parchear(path.join('dl', 'receivers', 'FullRepairReceiver.js'), MARCA_CACHE, s => reemplazarLiteral(s,
     '        this.assets = assets;\n        process.send({ response: \'validateComplete\', invalidCount: this.assets.length });',
