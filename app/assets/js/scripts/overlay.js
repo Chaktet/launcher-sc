@@ -131,9 +131,11 @@ async function toggleServerSelection(toggleState, primeraVez = false){
     await prepareServerSelectionList()
     const cabecera = document.getElementById('serverSelectHeader')
     if(cabecera != null){
+        // Las cabeceras viven en [ejs.overlay], no en [js.overlay]: con queryJS el
+        // selector del primer arranque enseñaba "undefined".
         cabecera.innerHTML = primeraVez
-            ? Lang.queryJS('overlay.serverSelectHeaderPrimera')
-            : Lang.queryJS('overlay.serverSelectHeader')
+            ? Lang.queryEJS('overlay.serverSelectHeaderPrimera')
+            : Lang.queryEJS('overlay.serverSelectHeader')
     }
     const pista = document.getElementById('serverSelectPista')
     if(pista != null){

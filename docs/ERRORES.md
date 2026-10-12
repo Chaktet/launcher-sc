@@ -1,4 +1,4 @@
-# Códigos de error de arranque (SC-01 … SC-15)
+# Códigos de error de arranque (SC-01 … SC-16)
 
 > Estado verificado: 2026-08-06. Definidos en [landing.js](../app/assets/js/scripts/landing.js),
 > constante `SC_ERR`.
@@ -26,6 +26,7 @@ una explicación en cristiano y un botón que copia un informe completo al porta
 | **SC-13** | `DRIVER_SODIUM` | Sodium rechaza el driver por incompatible | Una versión **concreta**. Ver abajo |
 | **SC-14** | `JAVA_BLOQUEADO` | Java se instaló pero no puede ejecutarse | **Antivirus.** Ver abajo |
 | **SC-15** | `MOD_ILEGIBLE` | El juego no pudo abrir un archivo del pack | Que **reintente**. Ver abajo |
+| **SC-16** | `DISCO` | Menos de 3 GB libres en el disco de datos (comprobación previa) | Liberar espacio; el mensaje dice cuánto queda y la carpeta |
 
 ## El informe de diagnóstico
 
@@ -169,6 +170,15 @@ También se dispara desde `proc.on('error')`: si el proceso **ni siquiera llega 
 borrado por el antivirus, permisos, ruta rota), Node emite `error` y **nunca** emite `close`. Sin ese
 listener el botón JUGAR no volvía nunca y la guarda anti doble clic bloqueaba todos los intentos
 siguientes — el launcher quedaba inservible hasta reiniciarlo.
+
+### SC-16 · Disco casi lleno (comprobación previa, 1.7.4)
+
+`scComprobacionesPrevias()` mide con `fs.statfsSync` el disco de la carpeta de datos (o de la primera carpeta que exista hacia arriba, en una instalación nueva) y no deja pulsar JUGAR con menos de **3 GB** libres (`SC_DISCO_MINIMO`). Antes la descarga moría a medias con un `ENOSPC` o con ficheros truncados que luego no pasaban el hash.
+
+### Cosas que paran JUGAR sin código SC (1.7.4)
+
+- **Juego abierto de otra sesión.** Al lanzar se anota el PID en `<instancias>/sc-juego.pid`; si el launcher se reabre con ese Minecraft (un `javaw.exe`) aún abierto, JUGAR avisa en vez de lanzar otro, y no se tocan `options.txt` ni se repara nada. Ver `app/assets/js/scjuegoabierto.js`.
+- **Fallo inesperado preparando el arranque.** `dlAsync()` es un envoltorio con `try/catch`: cualquier excepción no prevista sale como **SC-06** con Reintentar, en vez de dejar la barra de progreso puesta para siempre.
 
 ### SC-08 · RAM imposible (comprobación previa)
 

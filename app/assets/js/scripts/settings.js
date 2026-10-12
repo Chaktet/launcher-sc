@@ -597,7 +597,13 @@ function processLogOut(val, isLastAccount){
             ipcRenderer.send(MSFT_OPCODE.OPEN_LOGOUT, uuid, isLastAccount)
         })
     } else {
-        AuthManager.removeMojangAccount(uuid).then(() => {
+        // Las cuentas no premium son locales: no hay token que invalidar. El upstream
+        // llamaba a removeMojangAccount, que exige un 204 de authserver.mojang.com (ya
+        // retirado), así que fallaba siempre y la cuenta reaparecía al reabrir.
+        Promise.resolve().then(() => {
+            ConfigManager.removeAuthAccount(uuid)
+            ConfigManager.save()
+        }).then(() => {
             if(!isLastAccount && uuid === prevSelAcc.uuid){
                 const selAcc = ConfigManager.getSelectedAccount()
                 refreshAuthAccountSelected(selAcc.uuid)
@@ -610,6 +616,8 @@ function processLogOut(val, isLastAccount){
                 loginOptionsViewOnLoginCancel = VIEWS.loginOptions
                 switchView(getCurrentView(), VIEWS.loginOptions)
             }
+        }).catch(err => {
+            console.error('No se pudo quitar la cuenta no premium', err)
         })
         $(parent).fadeOut(250, () => {
             parent.remove()
@@ -1836,7 +1844,12 @@ function sc$writeOptionsPacks(base, enabled){
 /* Minecraft reescribe options.txt al cerrarse, así que cualquier cambio hecho
    con el juego abierto se perdería. */
 function sc$juegoAbierto(){
-    return typeof proc !== 'undefined' && proc != null
+    if(typeof proc !== 'undefined' && proc != null){
+        return true
+    }
+    // También el que se lanzó en una sesión anterior del launcher y sigue abierto:
+    // `proc` solo existe en memoria. Ver scjuegoabierto.js.
+    return require('./assets/js/scjuegoabierto').juegoPrevioAbierto() != null
 }
 
 async function sc$officialPackNames(){
