@@ -31,6 +31,7 @@ const {
 const DiscordWrapper          = require('./assets/js/discordwrapper')
 const ProcessBuilder          = require('./assets/js/processbuilder')
 const distroManager           = require('./assets/js/distromanager')
+const ScJuegoAbierto          = require('./assets/js/scjuegoabierto')
 
 // Launch Elements
 const launch_content          = document.getElementById('launch_content')
@@ -99,14 +100,31 @@ function setLaunchEnabled(val){
     document.getElementById('launch_button').disabled = !val
 }
 
+let scComprobandoJugar = false
+// Primera comprobación en segundo plano, para que los avisos pasivos (Ajustes, ping)
+// sepan cuanto antes si sigue abierto un juego de otra sesión.
+ScJuegoAbierto.juegoPrevioAbiertoAsync().catch(() => {})
+
 // Bind launch button
 document.getElementById('launch_button').addEventListener('click', async e => {
     if(proc != null){
         loggerLanding.info('El juego ya está en marcha — ignorando clic en JUGAR.')
         return
     }
+    // La comprobación del juego abierto es asíncrona (consulta a Windows en segundo
+    // plano): sin esta guarda, un doble clic en ese rato lanzaba dos arranques.
+    if(scComprobandoJugar){
+        return
+    }
     loggerLanding.info('Launching game..')
-    if(!scComprobacionesPrevias()){
+    scComprobandoJugar = true
+    let seguir
+    try {
+        seguir = !(await scAvisarJuegoPrevioAbierto()) && scComprobacionesPrevias()
+    } finally {
+        scComprobandoJugar = false
+    }
+    if(!seguir){
         return
     }
     try {
@@ -170,7 +188,7 @@ function updateSelectedServer(serv){
     }
     ConfigManager.setSelectedServer(serv != null ? serv.rawServer.id : null)
     ConfigManager.save()
-    server_selection_button.innerHTML = '&#8226; ' + (serv != null ? serv.rawServer.name : Lang.queryJS('landing.noSelection'))
+    server_selection_button.innerHTML = '&#8226; ' + (serv != null ? serv.rawServer.name : Lang.queryJS('landing.selectedServer.noSelection'))
     if(getCurrentView() === VIEWS.settings){
         animateSettingsTabRefresh()
     }
@@ -242,6 +260,9 @@ const refreshMojangStatuses = async function(){
     document.getElementById('mojang_status_icon').style.color = MojangRestAPI.statusToHex(status)
 }
 
+// true mientras el ping al servidor siga fallando (para avisar una sola vez).
+let scPingFallando = false
+
 const refreshServerStatus = async (fade = false) => {
     // debug y no info: se repite cada 30 s y llenaba launcher.log (5.500 de 5.800 líneas),
     // haciendo rotar el fichero y enterrando lo que sí sirve para un ticket (1.6.4).
@@ -257,9 +278,18 @@ const refreshServerStatus = async (fade = false) => {
         pLabel = Lang.queryJS('landing.serverStatus.players')
         // Solo los conectados: el maximo (5000) no aporta nada al jugador.
         pVal = servStat.players.online
+        if(scPingFallando){
+            scPingFallando = false
+            loggerLanding.info('El servidor vuelve a responder al ping.')
+        }
 
     } catch (err) {
-        loggerLanding.warn('Unable to refresh server status, assuming offline.')
+        // Un aviso al empezar a fallar, no uno por minuto: con el servidor caído o la
+        // red cortada el registro se llenaba de la misma línea.
+        if(!scPingFallando){
+            scPingFallando = true
+            loggerLanding.warn('Unable to refresh server status, assuming offline.')
+        }
         loggerLanding.debug(err)
     }
     if(fade){
@@ -280,8 +310,14 @@ refreshMojangStatuses()
 
 // Refresh statuses every hour. The status page itself refreshes every day so...
 let mojangStatusListener = setInterval(() => refreshMojangStatuses(true), 60*60*1000)
-// Set refresh rate to once every 5 minutes.
-let serverStatusListener = setInterval(() => refreshServerStatus(false), 30000)
+// Cada minuto, y no con el juego abierto: nadie mira el contador mientras juega y
+// el ping compite con el juego por la red.
+let serverStatusListener = setInterval(() => {
+    if((typeof proc !== 'undefined' && proc != null) || ScJuegoAbierto.juegoPrevioAbierto() != null){
+        return
+    }
+    refreshServerStatus(false).catch(err => loggerLanding.debug('Ping del servidor', err))
+}, 60000)
 
 /**
  * Shows an error overlay, toggles off the launch area.
@@ -323,7 +359,8 @@ const SC_ERR = {
     GRAFICOS:       'SC-12', // tarjeta gráfica o drivers: no se pudo crear la ventana
     DRIVER_SODIUM:  'SC-13', // Sodium rechaza el driver: hay UNA versión concreta que instalar
     JAVA_BLOQUEADO: 'SC-14', // Java se instaló pero el sistema no le deja ejecutarse
-    MOD_ILEGIBLE:   'SC-15'  // el juego no ha podido abrir un archivo del pack
+    MOD_ILEGIBLE:   'SC-15', // el juego no ha podido abrir un archivo del pack
+    DISCO:          'SC-16'  // no queda espacio libre suficiente en el disco de datos
 }
 
 // Cuántas veces se ha intentado ya arreglar cada fichero en ESTA sesión.
@@ -366,9 +403,14 @@ function scUltimoCrashReport(){
  * Borra la instalación de Java y la marca como no configurada, de modo que el
  * launcher la vuelva a descargar entera en el siguiente intento.
  */
-function scRepararJava(){
+async function scRepararJava(){
     const nodeFs = require('fs')
     const nodePath = require('path')
+    // Con un juego abierto el runtime está en uso: el borrado quedaría a medias.
+    if(await ScJuegoAbierto.juegoPrevioAbiertoAsync() != null){
+        loggerLanding.warn('No se repara Java: hay un juego abierto de una sesión anterior.')
+        return false
+    }
     scInvalidarCacheValidacion('reparar Java')
     try {
         const runtime = nodePath.join(ConfigManager.getDataDirectory(), 'runtime')
@@ -537,9 +579,14 @@ function scExclusionYaPuesta(carpeta){
  * @param {string} rutaFichero Ruta del .jar que no se puede leer.
  * @returns {{ok: boolean, denegado: boolean}}
  */
-function scRepararModulo(rutaFichero){
+async function scRepararModulo(rutaFichero){
     const nodeFs = require('fs')
     const nodePath = require('path')
+    // Con un juego abierto el .jar está en uso: el borrado quedaría a medias.
+    if(await ScJuegoAbierto.juegoPrevioAbiertoAsync() != null){
+        loggerLanding.warn('No se repara el módulo: hay un juego abierto de una sesión anterior.')
+        return { ok: false, denegado: false }
+    }
     scInvalidarCacheValidacion('reparar módulo')
     try {
         nodeFs.rmSync(nodePath.dirname(rutaFichero), { recursive: true, force: true })
@@ -565,7 +612,7 @@ function scRepararModulo(rutaFichero){
  * @param {string} opts.carpeta Carpeta a excluir y a enseñar.
  * @param {string} opts.intro Texto de cabecera (clave ya resuelta).
  * @param {string} opts.codigo Código SC que se muestra.
- * @param {function(): boolean} opts.reparar Qué reparar tras excluir.
+ * @param {function(): Promise<boolean>} opts.reparar Qué reparar tras excluir.
  */
 async function scOfrecerArreglarAntivirus(opts){
     const carpeta = opts.carpeta
@@ -642,7 +689,7 @@ async function scOfrecerArreglarAntivirus(opts){
             // Añadir la exclusión no devuelve lo que ya esté en cuarentena, así
             // que hay que reparar después. Sin esto el jugador excluye la
             // carpeta y sigue sin poder jugar.
-            const reparado = ok ? opts.reparar() : false
+            const reparado = ok ? await opts.reparar() : false
             setOverlayContent(
                 Lang.queryJS('landing.launch.failureTitle'),
                 Lang.queryJS(ok && reparado ? 'landing.launch.avHecho' : 'landing.launch.avNoHecho'),
@@ -776,13 +823,13 @@ function scDialogoModIlegible(rutaMod, txt){
                 carpeta: nodePath.join(ConfigManager.getCommonDirectory(), 'mods'),
                 intro: Lang.queryJS('landing.launch.avIntroMod'),
                 codigo: SC_ERR.MOD_ILEGIBLE,
-                reparar: () => rutaMod != null ? scRepararModulo(rutaMod).ok : false
+                reparar: async () => rutaMod != null ? (await scRepararModulo(rutaMod)).ok : false
             })
             return
         }
 
         if(accion === 'reparar' && rutaMod != null){
-            const r = scRepararModulo(rutaMod)
+            const r = await scRepararModulo(rutaMod)
             if(!r.ok){
                 setOverlayContent(
                     Lang.queryJS('landing.launch.failureTitle'),
@@ -922,8 +969,8 @@ function scAnalizarCierreDelJuego(code, salida){
             Lang.queryJS('landing.launch.repararJava'),
             Lang.queryJS('landing.launch.okay')
         )
-        setOverlayHandler(() => {
-            const ok = scRepararJava()
+        setOverlayHandler(async () => {
+            const ok = await scRepararJava()
             setOverlayContent(
                 Lang.queryJS('landing.launch.failureTitle'),
                 Lang.queryJS(ok ? 'landing.launch.javaReparado' : 'landing.launch.javaNoReparado'),
@@ -1789,6 +1836,77 @@ function scComprobacionesPrevias(){
     return true
 }
 
+// Margen que se pide además de lo que hay que descargar: logs, cachés del juego,
+// mundos de un jugador y lo que Windows necesita para no ir ahogado.
+const SC_DISCO_MARGEN = 512 * 1048576
+
+/**
+ * Comprueba que caben `bytesPendientes` (más SC_DISCO_MARGEN) en el disco de datos.
+ * Con el disco lleno la descarga moría a medias con un ENOSPC, o con un fichero
+ * truncado que luego no pasaba el hash, y el jugador no sabía por qué. Solo se pide
+ * lo que de verdad falta por bajar: con todo descargado no se bloquea a nadie por
+ * tener el disco justo.
+ *
+ * @param {number} bytesPendientes Lo que se va a escribir.
+ * @returns {boolean} true si cabe (o si no se pudo medir).
+ */
+function scHayEspacioPara(bytesPendientes){
+    if(!(bytesPendientes > 0)){
+        return true
+    }
+    try {
+        const nodeFs = require('fs')
+        const nodePath = require('path')
+        // En una instalación nueva la carpeta de datos aún no existe: se mide la
+        // primera carpeta existente hacia arriba, que está en el mismo disco.
+        let dir = ConfigManager.getDataDirectory()
+        while(!nodeFs.existsSync(dir) && nodePath.dirname(dir) !== dir){
+            dir = nodePath.dirname(dir)
+        }
+        const st = nodeFs.statfsSync(dir)
+        const libre = st.bavail * st.bsize
+        const necesario = bytesPendientes + SC_DISCO_MARGEN
+        if(libre < necesario){
+            const gb = b => (b / 1073741824).toFixed(2)
+            scFalloArranque(
+                SC_ERR.DISCO,
+                Lang.queryJS('landing.launch.errDisco', {
+                    libre: gb(libre),
+                    necesario: gb(necesario),
+                    ruta: sc$escapeHtml(dir)
+                }),
+                new Error(`libre=${libre} necesario=${necesario} pendiente=${bytesPendientes} dir=${dir}`)
+            )
+            return false
+        }
+    } catch(e){
+        loggerLanding.warn('No se pudo comprobar el espacio libre en disco', e)
+    }
+    return true
+}
+
+/**
+ * Si sigue abierto un Minecraft lanzado en una sesión anterior del launcher, lo
+ * dice y devuelve true, en vez de lanzar un segundo juego. Ver scjuegoabierto.js.
+ */
+async function scAvisarJuegoPrevioAbierto(){
+    const pid = await ScJuegoAbierto.juegoPrevioAbiertoAsync()
+    if(pid == null){
+        return false
+    }
+    loggerLanding.info(`Hay un juego abierto de una sesión anterior (PID ${pid}): no se lanza otro.`)
+    setOverlayContent(
+        Lang.queryJS('landing.launch.juegoAbiertoTitulo'),
+        Lang.queryJS('landing.launch.juegoAbiertoTexto'),
+        Lang.queryJS('landing.launch.okay')
+    )
+    setOverlayHandler(() => toggleOverlay(false))
+    setDismissHandler(null)
+    toggleOverlay(true)
+    toggleLaunchArea(false)
+    return true
+}
+
 /* System (Java) Scan */
 
 /**
@@ -1848,7 +1966,9 @@ async function asyncSystemScan(effectiveJavaOptions, launchAfter = true){
                 setDismissHandler(() => {
                     toggleOverlay(false, true)
 
-                    asyncSystemScan(effectiveJavaOptions, launchAfter)
+                    asyncSystemScan(effectiveJavaOptions, launchAfter).catch(err => {
+                        scFalloArranque(SC_ERR.JAVA, Lang.queryJS('landing.launch.errJava'), err)
+                    })
                 })
                 $('#overlayContent').fadeIn(250)
             })
@@ -1887,6 +2007,11 @@ async function downloadJava(effectiveJavaOptions, launchAfter = true) {
         throw new Error(Lang.queryJS('landing.downloadJava.findJdkFailure'))
     }
 
+    // El .zip y lo que ocupa extraído (unas 2,5 veces) conviven hasta terminar.
+    if(!scHayEspacioPara(asset.size * 3)){
+        return
+    }
+
     let received = 0
     await downloadFile(asset.url, asset.path, ({ transferred }) => {
         received = transferred
@@ -1896,11 +2021,12 @@ async function downloadJava(effectiveJavaOptions, launchAfter = true) {
 
     if(received != asset.size) {
         loggerLanding.warn(`Java Download: Expected ${asset.size} bytes but received ${received}`)
-        if(!await validateLocalFile(asset.path, asset.algo, asset.hash)) {
-            log.error(`Hashes do not match, ${asset.id} may be corrupted.`)
-            // Don't know how this could happen, but report it.
-            throw new Error(Lang.queryJS('landing.downloadJava.javaDownloadCorruptedError'))
-        }
+    }
+    // El hash se comprueba SIEMPRE, no solo cuando no cuadra el tamaño: un JDK con el
+    // tamaño correcto pero dañado (disco, antivirus, proxy) se extraía igual.
+    if(!await validateLocalFile(asset.path, asset.algo, asset.hash)) {
+        loggerLanding.error(`Hashes do not match, ${asset.id} may be corrupted.`)
+        throw new Error(Lang.queryJS('landing.downloadJava.javaDownloadCorruptedError'))
     }
 
     // Extract
@@ -1966,7 +2092,9 @@ async function downloadJava(effectiveJavaOptions, launchAfter = true) {
 
     // TODO Callback hell
     // Refactor the launch functions
-    asyncSystemScan(effectiveJavaOptions, launchAfter)
+    // Con await: sin él, un fallo del escaneo era un rechazo que nadie recogía y la
+    // barra de progreso se quedaba puesta. Así lo recoge el catch de quien llamó.
+    await asyncSystemScan(effectiveJavaOptions, launchAfter)
 
 }
 
@@ -2161,7 +2289,88 @@ function scPctEnFase(fase, transcurridoMs, esperadoMs){
     return desde + (hasta - desde) * f
 }
 
+// Sin respuesta del servidor de descargas en este tiempo se arranca con la
+// distribución que ya hay en memoria (la que cargó el preloader).
+const SC_DISTRO_REFRESCO_MS = 15000
+
+/**
+ * Equivale a DistroAPI.refreshDistributionOrFallback(), pero con tiempo máximo y
+ * sin efectos tardíos. Con un Promise.race sobre el refresco de helios, la respuesta
+ * que llegaba DESPUÉS del límite seguía escribiendo distribution.json y la copia en
+ * memoria mientras el arranque seguía con la anterior: el proceso de reparación (que
+ * lee el disco) podía validar otra versión de la que se iba a lanzar. Aquí solo se
+ * descarga en la carrera; escribir en disco y en memoria se hace únicamente si la
+ * respuesta llega a tiempo. Una respuesta tardía se descarta.
+ *
+ * @returns {Promise<HeliosDistribution|null>}
+ */
+async function scRefrescarDistribucion(logger){
+    if(DistroAPI.isDevMode()){
+        // En desarrollo helios solo lee la copia local: no hay red que esperar.
+        return DistroAPI.refreshDistributionOrFallback()
+    }
+    const AGOTADO = Symbol('agotado')
+    let temporizador
+    const agotado = new Promise(resolve => {
+        temporizador = setTimeout(() => resolve(AGOTADO), SC_DISTRO_REFRESCO_MS)
+    })
+    const remota = await Promise.race([
+        DistroAPI.pullRemote().then(r => r.data).catch(() => null),
+        agotado
+    ])
+    clearTimeout(temporizador)
+
+    if(remota === AGOTADO){
+        logger.warn(`La distribución no responde en ${SC_DISTRO_REFRESCO_MS / 1000} s: se usa la que ya estaba cargada.`)
+        if(DistroAPI.distribution != null){
+            return DistroAPI.distribution
+        }
+        try {
+            return await DistroAPI.getDistributionLocalLoadOnly()
+        } catch(_e){
+            return null
+        }
+    }
+
+    // Lo mismo que hace helios: con respuesta se guarda en disco; sin ella, la copia local.
+    let raw = remota
+    if(raw != null){
+        await DistroAPI.writeDistributionToDisk(raw)
+    } else {
+        raw = await DistroAPI.pullLocal()
+        if(raw == null){
+            logger.warn('Failed to refresh distribution, falling back to current load (if exists).')
+            return DistroAPI.distribution
+        }
+    }
+    const { HeliosDistribution } = require('helios-core/common')
+    DistroAPI.rawDistribution = raw
+    DistroAPI.distribution = new HeliosDistribution(raw, DistroAPI.commonDir, DistroAPI.instanceDir)
+    return DistroAPI.distribution
+}
+
+/**
+ * Prepara y lanza el juego. Es un envoltorio de scDlAsyncInterno: varios sitios
+ * la llaman sin await (Reintentar, reparar un módulo, el reintento en modo lento o
+ * por la ruta directa), y un rechazo ahí era un unhandledrejection con la barra de
+ * progreso puesta para siempre y sin botón de JUGAR.
+ */
 async function dlAsync(login = true) {
+    try {
+        // Los reintentos automáticos también pasan por aquí: si mientras tanto se ha
+        // descubierto un juego abierto de otra sesión, no se lanza un segundo.
+        if(login && await scAvisarJuegoPrevioAbierto()){
+            return
+        }
+        await scDlAsyncInterno(login)
+    } catch(err) {
+        LoggerUtil.getLogger('LaunchSuite').error('Fallo no controlado preparando el arranque', err)
+        remote.getCurrentWindow().setProgressBar(-1)
+        scFalloArranque(SC_ERR.JVM, Lang.queryJS('landing.launch.errGenerico'), err, true)
+    }
+}
+
+async function scDlAsyncInterno(login = true) {
 
     // Login parameter is temporary for debug purposes. Allows testing the validation/downloads without
     // launching the game.
@@ -2176,7 +2385,12 @@ async function dlAsync(login = true) {
     let distro
 
     try {
-        distro = await DistroAPI.refreshDistributionOrFallback()
+        // Una conexión colgada (no cortada) no devuelve nunca: sin límite el botón se
+        // quedaba en "Cargando información del servidor" para siempre.
+        distro = await scRefrescarDistribucion(loggerLaunchSuite)
+        if(distro == null){
+            throw new Error('No distribution loaded')
+        }
         // Si en esta sesión ya se cambió a la ruta directa, se mantiene: el
         // refresco acaba de escribir la copia con las URLs normales, y el proceso
         // que descarga la lee de disco. Ver scActivarRutaDirecta.
@@ -2192,6 +2406,13 @@ async function dlAsync(login = true) {
     }
 
     const serv = distro.getServerById(ConfigManager.getSelectedServer())
+    if(serv == null){
+        // El servidor elegido ya no está en la distribución (id renombrado o lista
+        // vacía): sin esto reventaba más abajo con un TypeError sin explicación.
+        scFalloArranque(SC_ERR.DISTRO, Lang.queryJS('landing.launch.errDistro'),
+            new Error(`Server ${ConfigManager.getSelectedServer()} not in distribution`))
+        return
+    }
 
     if(login) {
         if(ConfigManager.getSelectedAccount() == null){
@@ -2249,6 +2470,16 @@ async function dlAsync(login = true) {
         }
     })
 
+    // Bytes que faltan por bajar: los manda el receptor parcheado (parche-helios.js, 5)
+    // en el mismo mensaje que el número de ficheros. Este listener va antes que el de
+    // verifyFiles, así que el valor ya está puesto cuando este resuelve.
+    let scBytesPendientes = null
+    fullRepairModule.childProcess.on('message', (m) => {
+        if(m != null && m.response === 'validateComplete' && typeof m.scBytesPendientes === 'number'){
+            scBytesPendientes = m.scBytesPendientes
+        }
+    })
+
     loggerLaunchSuite.info('Validating files.')
     setLaunchDetails(Lang.queryJS('landing.dlAsync.validatingFileIntegrity'))
     let invalidFileCount = 0
@@ -2264,6 +2495,12 @@ async function dlAsync(login = true) {
         return
     }
     
+
+    if(invalidFileCount > 0 && !scHayEspacioPara(scBytesPendientes)) {
+        scFalloGestionado = true
+        try { fullRepairModule.destroyReceiver() } catch(_e){ /* ya había salido */ }
+        return
+    }
 
     if(invalidFileCount > 0) {
         loggerLaunchSuite.info('Downloading files.')
@@ -2324,17 +2561,26 @@ async function dlAsync(login = true) {
         serv.rawServer.id
     )
 
-    const modLoaderData = await distributionIndexProcessor.loadModLoaderVersionJson(serv)
-    // El proceso de verificación acaba de descargar el manifiesto de versiones de
-    // Mojang y de dejar el version.json comprobado en disco. getVersionJson() lo
-    // volvía a pedir a Mojang (segunda petición por arranque, sin tiempo máximo):
-    // se lee la copia local y solo si falta se hace lo de siempre.
+    // Leer los JSON de versión ya descargados. Fuera de try/catch, un fichero que
+    // falta o está dañado dejaba la barra puesta sin diálogo ni código.
+    let modLoaderData
     let versionData
     try {
-        versionData = await mojangIndexProcessor.loadVersionJson(serv.rawServer.minecraftVersion, null)
-    } catch(e){
-        loggerLaunchSuite.warn('Sin version.json local; se pide a Mojang.', e)
-        versionData = await mojangIndexProcessor.getVersionJson()
+        modLoaderData = await distributionIndexProcessor.loadModLoaderVersionJson(serv)
+        // El proceso de verificación acaba de descargar el manifiesto de versiones de
+        // Mojang y de dejar el version.json comprobado en disco. getVersionJson() lo
+        // volvía a pedir a Mojang (segunda petición por arranque, sin tiempo máximo):
+        // se lee la copia local y solo si falta se hace lo de siempre.
+        try {
+            versionData = await mojangIndexProcessor.loadVersionJson(serv.rawServer.minecraftVersion, null)
+        } catch(e){
+            loggerLaunchSuite.warn('Sin version.json local; se pide a Mojang.', e)
+            versionData = await mojangIndexProcessor.getVersionJson()
+        }
+    } catch(err) {
+        loggerLaunchSuite.error('No se pudieron leer los datos de versión.', err)
+        scFalloArranque(SC_ERR.VERIFICACION, Lang.queryJS('landing.launch.errVerificacion'), err, true)
+        return
     }
 
     scBorrarPackPresembradoViejo(serv)
@@ -2481,6 +2727,11 @@ async function dlAsync(login = true) {
 
             // Build Minecraft process.
             proc = pb.build()
+            // El juego sobrevive al launcher (launchDetached): se anota en disco para
+            // reconocerlo si el launcher se reabre con él aún abierto.
+            const scPid = proc.pid
+            ScJuegoAbierto.anotar(scPid, serv.rawServer.id)
+            proc.on('exit', () => ScJuegoAbierto.borrar(scPid))
 
             // Bind listeners to stdout.
             proc.stdout.on('data', tempListener)
@@ -2849,6 +3100,78 @@ document.addEventListener('keydown', (e) => {
     }
 })
 
+// ---------------------------------------------------------------------------
+// Limpieza del HTML de las noticias
+// ---------------------------------------------------------------------------
+
+// El contenido de news.xml iba tal cual a innerHTML, y este renderer tiene Node
+// (nodeIntegration): un <img onerror> o un <script> colado en el feed (web
+// comprometida, error al publicar) ejecutaba código en el PC de cada jugador.
+// Lista blanca sin dependencias: lo que no está aquí se quita.
+const SC_NOTICIA_ETIQUETAS = new Set(['A', 'B', 'I', 'EM', 'STRONG', 'P', 'BR', 'UL', 'OL', 'LI',
+    'H1', 'H2', 'H3', 'H4', 'IMG', 'SPAN', 'DIV'])
+// Estas se quitan CON su contenido; el resto de etiquetas desconocidas se
+// desenvuelven (se queda su texto).
+const SC_NOTICIA_FUERA = new Set(['SCRIPT', 'STYLE', 'IFRAME', 'FRAME', 'FRAMESET', 'OBJECT', 'EMBED',
+    'FORM', 'INPUT', 'BUTTON', 'TEXTAREA', 'SELECT', 'META', 'BASE', 'LINK', 'TEMPLATE', 'SVG', 'MATH', 'NOSCRIPT'])
+const SC_NOTICIA_ATRIBUTOS = new Set(['href', 'src', 'alt', 'title', 'class', 'style', 'width', 'height'])
+
+/**
+ * Devuelve la URL si es http(s) (o data:image si `imagen`), y '#' si no.
+ * Bloquea javascript:, file:, data: de otro tipo y similares.
+ */
+function scUrlSegura(url, imagen){
+    const u = String(url == null ? '' : url).trim()
+    if(/^https?:\/\//i.test(u)){
+        return u
+    }
+    if(imagen && /^data:image\/(png|jpe?g|gif|webp);/i.test(u)){
+        return u
+    }
+    return '#'
+}
+
+function scLimpiarHtmlNoticia(html){
+    // <template>: el contenido se parsea inerte, sin cargar imágenes ni ejecutar nada.
+    const t = document.createElement('template')
+    t.innerHTML = String(html == null ? '' : html)
+    const limpiar = (padre) => {
+        for(const nodo of Array.from(padre.childNodes)){
+            if(nodo.nodeType === Node.COMMENT_NODE){
+                nodo.remove()
+                continue
+            }
+            if(nodo.nodeType !== Node.ELEMENT_NODE){
+                continue
+            }
+            const tag = nodo.tagName.toUpperCase()
+            if(SC_NOTICIA_FUERA.has(tag)){
+                nodo.remove()
+                continue
+            }
+            limpiar(nodo)
+            if(!SC_NOTICIA_ETIQUETAS.has(tag)){
+                nodo.replaceWith(...Array.from(nodo.childNodes))
+                continue
+            }
+            for(const at of Array.from(nodo.attributes)){
+                const nombre = at.name.toLowerCase()
+                if(!SC_NOTICIA_ATRIBUTOS.has(nombre)){
+                    nodo.removeAttribute(at.name)
+                } else if(nombre === 'href' || nombre === 'src'){
+                    nodo.setAttribute(at.name, scUrlSegura(at.value, nombre === 'src' && tag === 'IMG'))
+                } else if(nombre === 'style' && /url\s*\(|expression|@import|behavior/i.test(at.value)){
+                    nodo.removeAttribute(at.name)
+                }
+            }
+        }
+    }
+    limpiar(t.content)
+    const caja = document.createElement('div')
+    caja.appendChild(t.content)
+    return caja.innerHTML
+}
+
 /**
  * Display a news article on the UI.
  * 
@@ -2856,13 +3179,13 @@ document.addEventListener('keydown', (e) => {
  * @param {number} index The article index.
  */
 function displayArticle(articleObject, index){
-    newsArticleTitle.innerHTML = articleObject.title
-    newsArticleTitle.href = articleObject.link
-    newsArticleAuthor.innerHTML = 'by ' + articleObject.author
-    newsArticleDate.innerHTML = articleObject.date
-    newsArticleComments.innerHTML = articleObject.comments
-    newsArticleComments.href = articleObject.commentsLink
-    newsArticleContentScrollable.innerHTML = '<div id="newsArticleContentWrapper"><div class="newsArticleSpacerTop"></div>' + articleObject.content + '<div class="newsArticleSpacerBot"></div></div>'
+    newsArticleTitle.innerHTML = sc$escapeHtml(articleObject.title)
+    newsArticleTitle.href = scUrlSegura(articleObject.link, false)
+    newsArticleAuthor.innerHTML = 'by ' + sc$escapeHtml(articleObject.author)
+    newsArticleDate.innerHTML = sc$escapeHtml(articleObject.date)
+    newsArticleComments.innerHTML = sc$escapeHtml(articleObject.comments)
+    newsArticleComments.href = scUrlSegura(articleObject.commentsLink, false)
+    newsArticleContentScrollable.innerHTML = '<div id="newsArticleContentWrapper"><div class="newsArticleSpacerTop"></div>' + scLimpiarHtmlNoticia(articleObject.content) + '<div class="newsArticleSpacerBot"></div></div>'
     Array.from(newsArticleContentScrollable.getElementsByClassName('bbCodeSpoilerButton')).forEach(v => {
         v.onclick = () => {
             const text = v.parentElement.getElementsByClassName('bbCodeSpoilerText')[0]

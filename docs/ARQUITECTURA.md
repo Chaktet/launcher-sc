@@ -21,6 +21,7 @@ distinguir de un vistazo el código heredado del propio y hacer merges del upstr
 | [index.js](../index.js) | Proceso principal de Electron. Ventana, auto-updater, ventanas OAuth de Microsoft. |
 | [app/assets/js/preloader.js](../app/assets/js/preloader.js) | Se ejecuta antes que la UI: engancha el registro, carga la distribución con límite de tiempo, limpia el directorio de datos. |
 | [app/assets/js/registro.js](../app/assets/js/registro.js) | **Propio.** Registro a disco + captura de errores globales. |
+| [app/assets/js/scjuegoabierto.js](../app/assets/js/scjuegoabierto.js) | **Propio.** PID del juego en `<instancias>/sc-juego.pid`: reconoce un Minecraft abierto de una sesión anterior del launcher. |
 | [app/assets/js/distromanager.js](../app/assets/js/distromanager.js) | URL de la distribución remota. |
 | [app/assets/js/configmanager.js](../app/assets/js/configmanager.js) | Configuración del jugador en disco (RAM, cuentas, servidor elegido, `perfilElegido`). |
 | [app/assets/js/scripts/uibinder.js](../app/assets/js/scripts/uibinder.js) | `switchView()` — transiciones entre pantallas. Arranque de la UI. |
@@ -120,11 +121,14 @@ La solución no confía en que `current` sea lo que de verdad se ve: corta todos
 
 Una conexión **cortada** devuelve error enseguida; una **colgada** (wifi de colegio, portal cautivo,
 antivirus con inspección SSL) no devuelve nunca. Sin límite explícito, la promesa se queda pendiente
-y la pantalla de carga es definitiva. Hay tres:
+y la pantalla de carga es definitiva. Hay estos:
 
 | Dónde | Límite | Qué hace al agotarse |
 |---|---|---|
 | `preloader.js` · distribución | 30 s | Intenta la copia local; si no hay, error de arranque |
+| `landing.js` · refresco de la distribución al pulsar JUGAR (1.7.4) | 15 s | Sigue con la que ya está en memoria; la respuesta tardía se descarta (ni disco ni memoria); si no hay, SC-01 |
+| `parche-helios.js` · cada descarga (`got.stream`) (1.7.4) | 10 s DNS, 15 s conectar, 30 s sin datos | `TimeoutError`, que ahora es reintentable: helios reintenta hasta 10 veces |
+| `parche-helios.js` · API de Adoptium (Java) (1.7.4) | 10 s DNS, 15 s conectar, 30 s sin datos | Sin Java que ofrecer: SC-02 |
 | `settings.js` · `scConTiempoLimite()` en el login de Microsoft | 60 s | Error y vuelta a la pantalla anterior |
 | `settings.js` · botón cancelar de la pantalla de espera | 1,5 s | Red de seguridad si la ventana OAuth ya no existía |
 

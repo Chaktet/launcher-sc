@@ -259,6 +259,9 @@ javaReparado = "Listo. Se ha borrado la instalación de Java dañada.<br><br>Vue
 javaNoReparado = "No se han podido borrar los archivos de Java.<br><br>Ciérralo todo y bórralos a mano: son la carpeta <b>runtime</b> dentro de la carpeta de datos del launcher. Después vuelve a pulsar JUGAR."
 errMemoria = "El juego se ha quedado sin memoria.<br>Ve a <b>Ajustes → Java</b> y ajusta la memoria asignada: si tienes poca RAM, prueba a bajarla; si tienes de sobra, súbela un poco. Cierra también otros programas pesados como el navegador."
 errRam = "Tienes asignados <b>{asignada} GB</b> de memoria al juego, pero tu equipo solo tiene <b>{total} GB</b> en total.<br><br>Con esa configuración el juego no puede arrancar. Ve a <b>Ajustes → Java</b> y baja la memoria asignada (lo recomendable es dejar al menos 2 GB libres para Windows)."
+errDisco = "<b>No queda espacio suficiente en el disco.</b><br><br>Te quedan <b>{libre} GB</b> libres y el juego necesita al menos <b>{necesario} GB</b> para descargar y actualizar sus archivos.<br><br>El launcher guarda el juego en:<span class='sc-ruta'>{ruta}</span>Libera espacio en ese disco (vacía la papelera, borra descargas o programas que no uses) y vuelve a pulsar JUGAR."
+juegoAbiertoTitulo = "Minecraft ya está abierto"
+juegoAbiertoTexto = "Tienes el juego abierto desde antes de reabrir el launcher.<br><br>Búscalo en la barra de tareas. Si quieres volver a lanzarlo, ciérralo primero y después pulsa JUGAR."
 errCuenta = "No hay ninguna cuenta seleccionada.<br><br>Abre <b>Ajustes → Cuenta</b> y elige con cuál quieres jugar, o añade una nueva. Si no tienes el juego comprado, usa la opción <b>No Premium</b>."
 
 [js.landing.selectedAccount]
@@ -342,6 +345,13 @@ errorMessage = "La autenticación con Microsoft falló. Inténtalo de nuevo."
 okButton = "OK"
 
 [js.settings.mstfLogout]
+errorTitle = "Algo salió mal"
+errorMessage = "El cierre de sesión de Microsoft falló. Inténtalo de nuevo."
+okButton = "OK"
+
+# settings.js pide msftLogout (el upstream escribió mstfLogout aquí arriba): sin esta
+# sección langloader revienta al leer la clave y el error de cierre de sesión no sale.
+[js.settings.msftLogout]
 errorTitle = "Algo salió mal"
 errorMessage = "El cierre de sesión de Microsoft falló. Inténtalo de nuevo."
 okButton = "OK"

@@ -16,8 +16,23 @@ const LangLoader                        = require('./app/assets/js/langloader')
 // Setup Lang
 LangLoader.setupLanguage()
 
+// Los listeners del autoUpdater se registran UNA vez. initAutoUpdater se llama en
+// cada carga de la interfaz (y "Reintentar" recarga la página): antes cada llamada
+// añadía otra tanda y los eventos llegaban duplicados, con cuentas atrás e
+// intervalos repetidos. Los eventos van siempre a la ventana de la última llamada.
+let scUpdaterSender = null
+let scUpdaterListeners = false
+
+function scEnviarUpdate(...args){
+    if(scUpdaterSender != null && !scUpdaterSender.isDestroyed()){
+        scUpdaterSender.send('autoUpdateNotification', ...args)
+    }
+}
+
 // Setup auto updater.
 function initAutoUpdater(event, data) {
+
+    scUpdaterSender = event.sender
 
     if(data){
         autoUpdater.allowPrerelease = true
@@ -38,24 +53,28 @@ function initAutoUpdater(event, data) {
     if(process.platform === 'darwin'){
         autoUpdater.autoDownload = false
     }
+    if(scUpdaterListeners){
+        return
+    }
+    scUpdaterListeners = true
     autoUpdater.on('update-available', (info) => {
-        event.sender.send('autoUpdateNotification', 'update-available', info)
+        scEnviarUpdate('update-available', info)
     })
     autoUpdater.on('download-progress', (progress) => {
-        event.sender.send('autoUpdateNotification', 'download-progress', progress)
+        scEnviarUpdate('download-progress', progress)
     })
     autoUpdater.on('update-downloaded', (info) => {
-        event.sender.send('autoUpdateNotification', 'update-downloaded', info)
+        scEnviarUpdate('update-downloaded', info)
     })
     autoUpdater.on('update-not-available', (info) => {
-        event.sender.send('autoUpdateNotification', 'update-not-available', info)
+        scEnviarUpdate('update-not-available', info)
     })
     autoUpdater.on('checking-for-update', () => {
-        event.sender.send('autoUpdateNotification', 'checking-for-update')
+        scEnviarUpdate('checking-for-update')
     })
     autoUpdater.on('error', (err) => {
-        event.sender.send('autoUpdateNotification', 'realerror', err)
-    }) 
+        scEnviarUpdate('realerror', err)
+    })
 }
 
 // Open channel to listen for update actions.
@@ -241,6 +260,36 @@ ipcMain.on(MSFT_OPCODE.OPEN_LOGOUT, (ipcEvent, uuid, isLastAccount) => {
     msftLogoutWindow.loadURL('https://login.microsoftonline.com/common/oauth2/v2.0/logout')
 })
 
+// Webs que la interfaz puede abrir en el navegador del sistema: la nuestra y sus
+// subdominios (tienda incluida: servidorcobblemon.es/tienda), Discord, TikTok y las
+// releases del launcher. Cualquier otra URL se ignora.
+function scUrlPermitida(url){
+    let u
+    try {
+        u = new URL(url)
+    } catch(_e){
+        return false
+    }
+    if(u.protocol !== 'https:'){
+        return false
+    }
+    const h = u.hostname.toLowerCase()
+    const deDominio = (d) => h === d || h.endsWith('.' + d)
+    if(deDominio('servidorcobblemon.es') || deDominio('discord.gg') || deDominio('discord.com')
+        || deDominio('tiktok.com')){
+        return true
+    }
+    return h === 'github.com' && /^\/Chaktet(\/|$)/i.test(u.pathname)
+}
+
+function scAbrirFuera(url){
+    if(scUrlPermitida(url)){
+        shell.openExternal(url)
+    } else {
+        console.warn('[SC] URL externa bloqueada:', url)
+    }
+}
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
@@ -285,6 +334,34 @@ function createWindow() {
     /*win.once('ready-to-show', () => {
         win.show()
     })*/
+
+    // La ventana principal tiene Node (nodeIntegration): si algo la hiciera navegar a
+    // una web (un enlace de una noticia, un fallo en un handler), esa web tendría
+    // acceso al PC del jugador. No se navega nunca fuera de app.ejs; los enlaces de
+    // confianza se abren en el navegador del sistema.
+    win.webContents.on('will-navigate', (e, url) => {
+        if(url === win.webContents.getURL()){
+            return // recarga de la propia interfaz ("Reintentar")
+        }
+        e.preventDefault()
+        scAbrirFuera(url)
+    })
+    win.webContents.setWindowOpenHandler(({ url }) => {
+        scAbrirFuera(url)
+        return { action: 'deny' }
+    })
+    // Si el renderer muere (memoria, GPU, un fallo nativo) la ventana se quedaba en
+    // blanco sin salida: se registra y se recarga la interfaz.
+    win.webContents.on('render-process-gone', (_e, details) => {
+        console.error('[SC] El proceso de la interfaz ha muerto:', details.reason, details.exitCode)
+        if(details.reason !== 'clean-exit' && win != null && !win.isDestroyed()){
+            setTimeout(() => {
+                if(win != null && !win.isDestroyed()){
+                    win.reload()
+                }
+            }, 1000)
+        }
+    })
 
     win.removeMenu()
 

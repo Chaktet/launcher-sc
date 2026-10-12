@@ -93,6 +93,8 @@ if(!isDev){
                 break
             case 'ready':
                 scComprobarActualizacionEnCurso()
+                // Un 'ready' repetido no debe sumar otro intervalo de comprobación.
+                clearInterval(updateCheckListener)
                 updateCheckListener = setInterval(() => {
                     ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
                 }, 1800000)
@@ -203,8 +205,30 @@ function scInsigniaLista(version){
  * los 300 MB del pack, así que mirarlo a él solo daba por ocioso un launcher que
  * llevaba diez minutos descargando, y se reiniciaba a media faena.
  */
-function scOcupado(){
+/**
+ * ¿Hay juego abierto? Pasiva (último resultado conocido, sin esperar) salvo con
+ * `confirmar`, que hace la comprobación completa en segundo plano y la espera.
+ */
+function scJuegoEnMarcha(confirmar = false){
     if(typeof proc !== 'undefined' && proc != null){
+        return confirmar ? Promise.resolve(true) : true
+    }
+    // También el juego lanzado antes de reabrir el launcher: `proc` solo vive en
+    // memoria y, sin esto, reabrir el launcher en mitad de una partida instalaba la
+    // actualización y el instalador cerraba el juego. Ver scjuegoabierto.js.
+    try {
+        const J = require('./assets/js/scjuegoabierto')
+        if(confirmar){
+            return J.juegoPrevioAbiertoAsync().then(pid => pid != null).catch(() => false)
+        }
+        return J.juegoPrevioAbierto() != null
+    } catch(e){
+        return confirmar ? Promise.resolve(false) : false
+    }
+}
+
+function scOcupado(){
+    if(scJuegoEnMarcha()){
         return true // el juego está abierto
     }
     // La barra de progreso visible significa que hay descarga o arranque en curso.
@@ -215,7 +239,24 @@ function scOcupado(){
     return false
 }
 
-function scAutoInstalarSiProcede(info){
+// Reintento pendiente de la instalación automática mientras hay un diálogo abierto.
+let scEsperaAutoInstalar = null
+
+async function scAutoInstalarSiProcede(info){
+    // Con un diálogo abierto (un error SC, el selector del primer arranque, el aviso de
+    // Java...) la cuenta atrás lo sustituía: el jugador perdía el error o la elección
+    // sin llegar a leerlo. Se espera a que lo cierre, sin perder la actualización.
+    clearTimeout(scEsperaAutoInstalar)
+    if(typeof isOverlayVisible === 'function' && isOverlayVisible()){
+        scEsperaAutoInstalar = setTimeout(() => scAutoInstalarSiProcede(info), 2000)
+        return
+    }
+    // Con el juego abierto se espera a que se cierre (se sigue mirando cada 30 s) en
+    // vez de abandonar: así se instala sola en cuanto el jugador termina de jugar.
+    if(await scJuegoEnMarcha(true)){
+        scEsperaAutoInstalar = setTimeout(() => scAutoInstalarSiProcede(info), 30000)
+        return
+    }
     const enAjustes = typeof getCurrentView === 'function' && typeof VIEWS !== 'undefined'
         && getCurrentView() !== VIEWS.landing
     if(scOcupado() || enAjustes){
@@ -260,7 +301,17 @@ function scAutoInstalarSiProcede(info){
         }
         if(restantes <= 0){
             clearInterval(cuenta)
-            scInstalarAhora(version)
+            // Última comprobación completa antes de instalar (el instalador cierra el
+            // launcher): si entretanto aparece un juego abierto, se vuelve a esperar.
+            scJuegoEnMarcha(true).then(abierto => {
+                if(abierto){
+                    toggleOverlay(false)
+                    scInsigniaLista(version)
+                    scEsperaAutoInstalar = setTimeout(() => scAutoInstalarSiProcede(info), 30000)
+                } else {
+                    scInstalarAhora(version)
+                }
+            })
             return
         }
         pinta()
@@ -419,7 +470,13 @@ document.addEventListener('readystatechange', function () {
  */
 $(document).on('click', 'a[href^="http"]', function(event) {
     event.preventDefault()
-    shell.openExternal(this.href)
+    // Solo https: openExternal le pasa la URL al sistema, y un enlace http (o con
+    // otro esquema colado en una noticia) no debe salir de aquí.
+    if(/^https:\/\//i.test(this.href)){
+        shell.openExternal(this.href)
+    } else {
+        loggerUICore.warn('Enlace no https ignorado:', this.href)
+    }
 })
 
 /**

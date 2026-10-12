@@ -51,6 +51,26 @@ function microsoftErrorDisplayable(errorCode) {
     }
 }
 
+/**
+ * Rechazo de un paso del login de Microsoft, marcando si es un error de sesión de
+ * verdad (Microsoft dice que el token no vale: HTTP 400/401, invalid_grant) o solo
+ * que no se pudo hablar con Microsoft (sin red, timeout, 5xx). Antes los dos
+ * acababan en UNKNOWN y al abrir el launcher sin conexión se BORRABA la cuenta
+ * premium del jugador.
+ */
+function scRechazoMicrosoft(response){
+    const d = microsoftErrorDisplayable(response.microsoftErrorCode)
+        || microsoftErrorDisplayable(MicrosoftErrorCode.UNKNOWN)
+    const error = response.error
+    const status = error != null && error.response != null ? error.response.statusCode : null
+    const body = error != null && error.response != null ? error.response.body : null
+    const cuerpo = typeof body === 'string' ? body : JSON.stringify(body || '')
+    return {
+        ...d,
+        scErrorDeSesion: status === 400 || status === 401 || /invalid_grant/i.test(cuerpo)
+    }
+}
+
 function mojangErrorDisplayable(errorCode) {
     switch(errorCode) {
         case MojangErrorCode.ERROR_METHOD_NOT_ALLOWED:
@@ -185,7 +205,7 @@ async function fullMicrosoftAuthFlow(entryCode, authMode) {
         if(authMode !== AUTH_MODE.MC_REFRESH) {
             const accessTokenResponse = await MicrosoftAuth.getAccessToken(entryCode, authMode === AUTH_MODE.MS_REFRESH, AZURE_CLIENT_ID)
             if(accessTokenResponse.responseStatus === RestResponseStatus.ERROR) {
-                return Promise.reject(microsoftErrorDisplayable(accessTokenResponse.microsoftErrorCode))
+                return Promise.reject(scRechazoMicrosoft(accessTokenResponse))
             }
             accessToken = accessTokenResponse.data
             accessTokenRaw = accessToken.access_token
@@ -195,19 +215,19 @@ async function fullMicrosoftAuthFlow(entryCode, authMode) {
         
         const xblResponse = await MicrosoftAuth.getXBLToken(accessTokenRaw)
         if(xblResponse.responseStatus === RestResponseStatus.ERROR) {
-            return Promise.reject(microsoftErrorDisplayable(xblResponse.microsoftErrorCode))
+            return Promise.reject(scRechazoMicrosoft(xblResponse))
         }
         const xstsResonse = await MicrosoftAuth.getXSTSToken(xblResponse.data)
         if(xstsResonse.responseStatus === RestResponseStatus.ERROR) {
-            return Promise.reject(microsoftErrorDisplayable(xstsResonse.microsoftErrorCode))
+            return Promise.reject(scRechazoMicrosoft(xstsResonse))
         }
         const mcTokenResponse = await MicrosoftAuth.getMCAccessToken(xstsResonse.data)
         if(mcTokenResponse.responseStatus === RestResponseStatus.ERROR) {
-            return Promise.reject(microsoftErrorDisplayable(mcTokenResponse.microsoftErrorCode))
+            return Promise.reject(scRechazoMicrosoft(mcTokenResponse))
         }
         const mcProfileResponse = await MicrosoftAuth.getMCProfile(mcTokenResponse.data.access_token)
         if(mcProfileResponse.responseStatus === RestResponseStatus.ERROR) {
-            return Promise.reject(microsoftErrorDisplayable(mcProfileResponse.microsoftErrorCode))
+            return Promise.reject(scRechazoMicrosoft(mcProfileResponse))
         }
         return {
             accessToken,
@@ -219,7 +239,9 @@ async function fullMicrosoftAuthFlow(entryCode, authMode) {
         }
     } catch(err) {
         log.error(err)
-        return Promise.reject(microsoftErrorDisplayable(MicrosoftErrorCode.UNKNOWN))
+        // Fallo inesperado del propio código, no una respuesta de Microsoft: no es
+        // motivo para borrar la cuenta.
+        return Promise.reject({ ...microsoftErrorDisplayable(MicrosoftErrorCode.UNKNOWN), scErrorDeSesion: false })
     }
 }
 
@@ -327,6 +349,21 @@ async function validateSelectedMojangAccount(){
  * @returns {Promise.<boolean>} Promise which resolves to true if the access token is valid,
  * otherwise false.
  */
+/**
+ * Tras un fallo renovando la sesión: false (hay que volver a entrar, uibinder quita la
+ * cuenta) SOLO si Microsoft ha dicho que la sesión ya no vale. Sin conexión, con
+ * Microsoft caído o con un timeout se mantiene la cuenta y se sigue: el servidor no
+ * exige sesión premium para entrar y a la próxima con red se renueva sola.
+ */
+function scMantenerCuentaTrasFallo(err){
+    if(err != null && err.scErrorDeSesion === true){
+        log.warn('Microsoft rechaza la sesión guardada: hay que volver a iniciar sesión.')
+        return false
+    }
+    log.warn('No se pudo renovar la sesión de Microsoft (sin conexión o servicio caído); se mantiene la cuenta.')
+    return true
+}
+
 async function validateSelectedMicrosoftAccount(){
     const current = ConfigManager.getSelectedAccount()
     const now = new Date().getTime()
@@ -357,8 +394,8 @@ async function validateSelectedMicrosoftAccount(){
             )
             ConfigManager.save()
             return true
-        } catch(_err) {
-            return false
+        } catch(err) {
+            return scMantenerCuentaTrasFallo(err)
         }
     } else {
         // Only MC expired, use existing MS token.
@@ -376,8 +413,8 @@ async function validateSelectedMicrosoftAccount(){
             ConfigManager.save()
             return true
         }
-        catch(_err) {
-            return false
+        catch(err) {
+            return scMantenerCuentaTrasFallo(err)
         }
     }
 }
