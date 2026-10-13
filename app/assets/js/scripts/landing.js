@@ -32,6 +32,7 @@ const DiscordWrapper          = require('./assets/js/discordwrapper')
 const ProcessBuilder          = require('./assets/js/processbuilder')
 const distroManager           = require('./assets/js/distromanager')
 const ScJuegoAbierto          = require('./assets/js/scjuegoabierto')
+const ScRendimiento           = require('./assets/js/screndimiento')
 
 // Launch Elements
 const launch_content          = document.getElementById('launch_content')
@@ -1715,6 +1716,58 @@ function scAplicarPantallaCompleta(){
 }
 
 /**
+ * Writes the automatic memory into the config when the toggle is on. Runs
+ * before the pre-launch checks (they validate maxRAM against the PC) and again
+ * just before building the process.
+ *
+ * @param {Object} serv Servidor (perfil) que se va a lanzar.
+ */
+function scAplicarRamAutomatica(serv){
+    const id = serv?.rawServer?.id
+    try {
+        if(id != null && ConfigManager.getRamAuto(id)){
+            const jvm = ScRendimiento.formatoJvm(ScRendimiento.ramAutomatica(serv.rawServer.javaOptions?.ram))
+            if(ConfigManager.getMaxRAM(id) !== jvm || ConfigManager.getMinRAM(id) !== jvm){
+                ConfigManager.setMaxRAM(id, jvm)
+                ConfigManager.setMinRAM(id, jvm)
+                ConfigManager.save()
+                loggerLanding.info('RAM automática:', jvm)
+            }
+        }
+    } catch(e){
+        loggerLanding.warn('No se pudo calcular la RAM automática', e)
+    }
+}
+
+/**
+ * Justo antes de lanzar (juego cerrado): RAM automática y calidad pendiente.
+ *
+ * Con "RAM automática" la memoria se recalcula en cada arranque, así que se
+ * adapta si el jugador amplía la RAM del PC o cambia de perfil. La calidad
+ * elegida en Ajustes se queda pendiente si no se pudo escribir entonces
+ * (juego abierto o primera partida sin options.txt) y se aplica aquí.
+ *
+ * @param {Object} serv Servidor (perfil) que se va a lanzar.
+ */
+function scAplicarRendimiento(serv){
+    const id = serv.rawServer.id
+    scAplicarRamAutomatica(serv)
+    try {
+        const nivel = ConfigManager.getCalidadPendiente(id)
+        if(nivel != null){
+            const inst = require('path').join(ConfigManager.getInstanceDirectory(), id)
+            if(ScRendimiento.aplicarCalidad(inst, nivel)){
+                ConfigManager.setCalidadPendiente(id, null)
+                ConfigManager.save()
+                loggerLanding.info('Calidad aplicada al arrancar:', nivel)
+            }
+        }
+    } catch(e){
+        loggerLanding.warn('No se pudo aplicar la calidad gráfica', e)
+    }
+}
+
+/**
  * Teclas de Cobblemon Extended Battle UI que vienen pisadas de fábrica.
  *
  * El mod registra V, ] y [ sin comprobar si están libres, y en nuestro pack:
@@ -1823,6 +1876,8 @@ function scCorregirTeclasEnConflicto(){
 function scComprobacionesPrevias(){
     const os = require('os')
     const serv = ConfigManager.getSelectedServer()
+    // Validate the memory that will really be used.
+    scAplicarRamAutomatica(DistroAPI.distribution?.getServerById(serv))
     try {
         const maxRAM = ConfigManager.getMaxRAM(serv)
         const m = /^(\d+(?:\.\d+)?)([MG])$/i.exec(String(maxRAM).trim())
@@ -2739,6 +2794,7 @@ async function scDlAsyncInterno(login = true) {
         }
 
         try {
+            scAplicarRendimiento(serv)
             // La opción del launcher manda sobre lo que el juego tenga guardado.
             scAplicarPantallaCompleta()
             scCorregirTeclasEnConflicto()
@@ -3269,11 +3325,33 @@ async function loadNews(){
 // Pista de perfiles PRO/LITE: abre el mismo selector de servidor.
 const profileHint = document.getElementById('profile_hint')
 if(profileHint != null){
-    // Actualiza el texto segun el perfil seleccionado.
+    // Memoria que usará el juego y, si el PC pide el otro perfil, la recomendación.
     const refreshProfileHint = () => {
         const sel = ConfigManager.getSelectedServer() || ''
-        profileHint.textContent = Lang.queryJS(sel.includes('Lite') ? 'landing.sc2.profileLite' : 'landing.sc2.profilePro')
+        const esLite = sel.includes('Lite')
+        let texto = Lang.queryJS(esLite ? 'landing.sc2.profileLite' : 'landing.sc2.profilePro')
+        try {
+            // Already loaded by the time the profile is shown (DistroAPI caches it).
+            const serv = DistroAPI.distribution?.getServerById(sel)
+            const ram = serv?.rawServer?.javaOptions?.ram
+            if(ConfigManager.getRamAuto(sel)){
+                texto = Lang.queryJS('landing.sc2.ramAuto', { gb: ScRendimiento.formatoGb(ScRendimiento.ramAutomatica(ram)) })
+            } else {
+                const max = String(ConfigManager.getMaxRAM(sel) || '')
+                const gb = max.endsWith('M') ? Number(max.slice(0, -1)) / 1024 : Number.parseFloat(max)
+                if(gb > 0){
+                    texto = Lang.queryJS('landing.sc2.ramManual', { gb: ScRendimiento.formatoGb(gb) })
+                }
+            }
+            if(ScRendimiento.perfilRecomendado().lite !== esLite){
+                texto += ' · ' + Lang.queryJS(esLite ? 'landing.sc2.suggestPro' : 'landing.sc2.suggestLite')
+            }
+        } catch(e){
+            // Sin configuración de Java aún (primer arranque): se queda el texto del perfil.
+        }
+        profileHint.textContent = texto
     }
+    window.scRefrescarPistaPerfil = refreshProfileHint
     refreshProfileHint()
     // Reengancha cuando cambie la seleccion (el texto del boton selector cambia al elegir).
     const selObserver = new MutationObserver(refreshProfileHint)
