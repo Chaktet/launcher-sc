@@ -315,6 +315,11 @@ const refreshServerStatus = async (fade = false) => {
         }
         loggerLanding.debug(err)
     }
+    // With live per-region numbers (eventos.js) the single total is not shown.
+    if(typeof scRegionesEnVivo === 'function' && scRegionesEnVivo()){
+        document.getElementById('player_count').innerHTML = pVal
+        return
+    }
     if(fade){
         $('#server_status_wrapper').fadeOut(250, () => {
             document.getElementById('landingPlayerLabel').innerHTML = pLabel
@@ -2941,12 +2946,21 @@ function slide_(up){
     const newsContainer = document.getElementById('newsContainer')
     landingContainer.classList.toggle('sc2NewsOpen', up)
     newsContainer.setAttribute('aria-hidden', up ? 'false' : 'true')
-    if(up){
-        document.getElementById('sc2TabJugar').removeAttribute('aria-current')
-        document.getElementById('newsButton').setAttribute('aria-current', 'page')
-    } else {
-        document.getElementById('newsButton').removeAttribute('aria-current')
-        document.getElementById('sc2TabJugar').setAttribute('aria-current', 'page')
+    // Opening the news closes the events view (eventos.js).
+    if(up && typeof scCerrarEventos === 'function'){
+        scCerrarEventos()
+    }
+    scMarcarPestana(up ? 'newsButton' : 'sc2TabJugar')
+}
+
+/** Marks the section tab that is showing (header of the landing). */
+function scMarcarPestana(id){
+    for(const t of document.querySelectorAll('#sc2Nav .sc2Tab')){
+        if(t.id === id){
+            t.setAttribute('aria-current', 'page')
+        } else {
+            t.removeAttribute('aria-current')
+        }
     }
 }
 
@@ -3411,6 +3425,10 @@ document.getElementById('sc2TabJugar').addEventListener('click', () => {
     if(newsActive){
         document.getElementById('newsButton').click()
     }
+    if(typeof scCerrarEventos === 'function'){
+        scCerrarEventos()
+    }
+    scMarcarPestana('sc2TabJugar')
 })
 document.getElementById('sc2NewsCard').addEventListener('click', () => {
     if(!newsActive){

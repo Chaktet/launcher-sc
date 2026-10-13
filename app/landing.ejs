@@ -13,6 +13,7 @@
         </div>
         <nav id="sc2Nav" aria-label="<%- lang('landing.sc2.navLabel') %>">
             <button class="sc2Tab" id="sc2TabJugar" type="button" aria-current="page"><%- lang('landing.sc2.tabJugar') %></button>
+            <button class="sc2Tab" id="sc2TabEventos" type="button"><%- lang('landing.sc2.tabEventos') %></button>
             <button class="sc2Tab" id="newsButton" type="button">
                 <span id="newsButtonText"><%- lang('landing.sc2.tabNovedades') %></span>
                 <span id="newsButtonAlert" style="display: none;"></span>
@@ -40,6 +41,7 @@
                 <div id="server_status_wrapper">
                     <span id="landingPlayerLabel"><%- lang('landing.serverStatus') %></span>
                     <span id="player_count"><%- lang('landing.serverStatusPlaceholder') %></span>
+                    <div id="sc2Regiones" hidden></div>
                 </div>
                 <div class="sc2Rule"></div>
                 <div id="sc2Profile">
@@ -71,6 +73,13 @@
             </div>
         </div>
         <div id="center">
+            <div id="sc2EventCard" class="sc2Frame" hidden>
+                <span class="sc2CardKicker" id="sc2EventKicker"></span>
+                <span class="sc2EventTitle" id="sc2EventTitle"></span>
+                <span class="sc2CardSub" id="sc2EventWhen"></span>
+                <span class="sc2EventCount" id="sc2EventCount"></span>
+                <button id="sc2EventCalendar" type="button" aria-label="<%- lang('landing.sc2.openCalendar') %>"></button>
+            </div>
             <button id="sc2NewsCard" class="sc2Frame" type="button">
                 <span class="sc2CardKicker"><%- lang('landing.sc2.newsKicker') %></span>
                 <span class="sc2CardTitle"><%- lang('landing.sc2.newsTitle') %></span>
@@ -90,6 +99,25 @@
             <a href="<%- lang('landing.sc2.webURL') %>" class="sc2Link" id="sc2Web"><span class="sc2LinkIcon sc2IconWeb"></span><%- lang('landing.sc2.web') %></a>
             <a href="<%- lang('landing.mediaTiendaURL') %>" class="sc2Link" id="tiendaURL"><span class="sc2LinkIcon sc2IconShop"></span><%- lang('landing.mediaTienda') %></a>
             <a href="<%- lang('landing.mediaDiscordURL') %>" class="sc2Link" id="discordURL"><span class="sc2LinkIcon sc2IconDiscord"></span><%- lang('landing.mediaDiscord') %></a>
+        </div>
+    </div>
+
+    <!-- Events view: month calendar + the selected day's events. -->
+    <div id="sc2EventosView" aria-hidden="true">
+        <div id="sc2EventosFrame" class="sc2Frame">
+            <div id="sc2CalHeader">
+                <button id="sc2CalPrev" type="button" aria-label="<%- lang('landing.sc2.calPrev') %>"></button>
+                <span id="sc2CalMes"></span>
+                <button id="sc2CalNext" type="button" aria-label="<%- lang('landing.sc2.calNext') %>"></button>
+                <span id="sc2CalZona"><%- lang('landing.sc2.calZona') %></span>
+            </div>
+            <div id="sc2CalBody">
+                <div id="sc2CalGrid" role="grid"></div>
+                <div id="sc2CalDia">
+                    <span id="sc2CalDiaTitulo"></span>
+                    <div id="sc2CalLista"></div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -133,4 +161,5 @@
         </div>
     </div>
     <script src="./assets/js/scripts/landing.js"></script>
+    <script src="./assets/js/scripts/eventos.js"></script>
 </div>

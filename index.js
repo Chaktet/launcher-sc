@@ -492,6 +492,9 @@ ipcMain.on('sc-ventana-juego', (_event, accion) => {
         scOcultaPorJuego = true
     } else if(accion === 'restaurar' && scOcultaPorJuego){
         scMostrarVentana()
+    } else if(accion === 'mostrar'){
+        // Click on a desktop reminder (eventos.js).
+        scMostrarVentana()
     }
 })
 
