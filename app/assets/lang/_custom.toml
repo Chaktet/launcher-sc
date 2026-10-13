@@ -53,6 +53,8 @@ newsPrev = "Noticia anterior"
 newsNext = "Noticia siguiente"
 web = "Web"
 webURL = "https://servidorcobblemon.es"
+repair = "Reparar archivos"
+zip = "ZIP de soporte"
 
 [ejs.login]
 loginCancelText = "Cancelar"
@@ -308,6 +310,14 @@ ramManual = "RAM {gb} (manual)"
 suggestLite = "Para tu PC: LITE"
 suggestPro = "Tu PC puede con PRO"
 recommended = "Recomendado para tu PC"
+repairChecking = "Comprobando todos los archivos.."
+repairDone = "Archivos comprobados y reparados."
+busy = "Espera a que termine lo que está en marcha."
+zipTitle = "ZIP de soporte guardado"
+zipDesc = "Lo tienes en Descargas: <b>{nombre}</b>.<br><br>Adjúntalo en tu ticket de Discord. Lleva los registros del launcher y del juego, el último fallo y un resumen de tu PC, sin contraseñas ni tokens de tu cuenta."
+zipOpen = "Abrir la carpeta"
+zipClose = "Cerrar"
+zipError = "No se pudo crear el ZIP de soporte. Prueba otra vez o abre los registros desde Ajustes."
 
 [js.landing.systemScan]
 checking = "Comprobando el sistema.."
@@ -552,9 +562,14 @@ qualityMid = "Medio"
 qualityMidDesc = "Equilibrado"
 qualityHigh = "Alto"
 qualityHighDesc = "Más detalle"
+minimizeTitle = "Ocultar el launcher al jugar"
+minimizeDesc = "Cuando el juego termina de cargar, el launcher se queda en la bandeja (junto al reloj) y vuelve solo al cerrar Minecraft."
 
 [js.settings.sc2]
 ramAutoValue = "Usará {gb} con este perfil."
 qualityApplied = "Calidad {nivel} aplicada."
 qualityPending = "Calidad {nivel} elegida: se aplicará al abrir el juego."
 qualityError = "No se pudo cambiar la calidad. Prueba otra vez con el juego cerrado."
+[js.tray]
+open = "Abrir SC Launcher"
+quit = "Salir"

@@ -667,6 +667,22 @@ body {
 .sc2IconWeb { background-image: url('../images/ui/icon-web@2x.png'); }
 .sc2IconShop { background-image: url('../images/ui/icon-shop@2x.png'); }
 .sc2IconDiscord { background-image: url('../images/ui/icon-discord@2x.png'); }
+.sc2IconRepair { background-image: url('../images/ui/icon-repair@2x.png'); }
+.sc2IconZip { background-image: url('../images/ui/icon-zip@2x.png'); }
+
+/* Tools under the launch panel: Reparar archivos + ZIP de soporte (1.10.0). */
+#sc2Tools {
+    display: flex;
+    gap: calc(var(--px) * 10);
+    margin-top: calc(var(--px) * 14);
+}
+.sc2Tool {
+    height: calc(var(--px) * 32) !important;
+    padding: 0 calc(var(--px) * 10) !important;
+    color: var(--sc2-ink-2) !important;
+}
+.sc2Tool:hover { color: var(--sc2-ink) !important; }
+.sc2Tool:disabled { opacity: 0.5; cursor: default; }
 
 /* ---- News view ------------------------------------------------------------------ */
 #newsContainer {
