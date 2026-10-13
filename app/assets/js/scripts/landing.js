@@ -171,6 +171,13 @@ function setLaunchEnabled(val){
 }
 
 let scComprobandoJugar = false
+// Pending "hide to tray" after the game loads (cancelled if it closes first).
+let scTimerOcultar = null
+// True while "Reparar archivos" runs: its retries must not launch the game.
+let scModoReparacion = false
+// A UI reload while hidden for the game would never get the game's "close":
+// the main process only acts if it hid the window itself.
+ipcRenderer.send('sc-ventana-juego', 'restaurar')
 // Primera comprobación en segundo plano, para que los avisos pasivos (Ajustes, ping)
 // sepan cuanto antes si sigue abierto un juego de otra sesión.
 ScJuegoAbierto.juegoPrevioAbiertoAsync().catch(() => {})
@@ -187,6 +194,7 @@ document.getElementById('launch_button').addEventListener('click', async e => {
         return
     }
     loggerLanding.info('Launching game..')
+    scModoReparacion = false
     scComprobandoJugar = true
     let seguir
     try {
@@ -1655,7 +1663,7 @@ function scFalloArranque(codigo, explicacion, err, reintentable = false){
                 setLaunchDetails(Lang.queryJS('landing.dlAsync.rutaAlternativa'))
                 await scIntentarRutaDirecta(err)
             }
-            dlAsync()
+            dlAsync(!scModoReparacion)
         })
         setDismissHandler(copiar)
     } else {
@@ -2737,6 +2745,16 @@ async function scDlAsyncInterno(login = true) {
             setLaunchPercentage(100)
             setLaunchDetails(Lang.queryJS('landing.dlAsync.doneEnjoyServer'))
             setTimeout(() => toggleLaunchArea(false), 3000)
+            // The game window is up: out of the way until Minecraft closes.
+            if(ConfigManager.getMinimizarAlJugar()){
+                clearTimeout(scTimerOcultar)
+                const procCargado = proc
+                scTimerOcultar = setTimeout(() => {
+                    if(proc != null && proc === procCargado){
+                        ipcRenderer.send('sc-ventana-juego', 'ocultar')
+                    }
+                }, 1500)
+            }
             if(hasRPC){
                 DiscordWrapper.updateDetails(Lang.queryJS('landing.discord.loading'))
                 proc.stdout.on('data', gameStateChange)
@@ -2847,6 +2865,9 @@ async function scDlAsyncInterno(login = true) {
                 scParaAnimacion()
                 toggleLaunchArea(false)
                 proc = null
+                // Back from the tray if it was hidden for the game.
+                clearTimeout(scTimerOcultar)
+                ipcRenderer.send('sc-ventana-juego', 'restaurar')
                 // Juego cerrado con error (en el arranque o a media partida): el
                 // siguiente arranque hashea todo, por si el fallo es un fichero dañado
                 // que la caché de validación daría por bueno.
@@ -2879,6 +2900,14 @@ async function scDlAsyncInterno(login = true) {
             scFalloArranque(SC_ERR.JVM, Lang.queryJS('landing.launch.errJvm'), err)
 
         }
+    } else {
+        // "Reparar archivos": every file was hashed and the bad ones downloaded again.
+        loggerLaunchSuite.info('Reparación terminada.')
+        scModoReparacion = false
+        remote.getCurrentWindow().setProgressBar(-1)
+        setLaunchPercentage(100)
+        setLaunchDetails(Lang.queryJS('landing.sc2.repairDone'))
+        setTimeout(() => toggleLaunchArea(false), 2500)
     }
 
 }
@@ -3386,5 +3415,87 @@ document.getElementById('sc2TabJugar').addEventListener('click', () => {
 document.getElementById('sc2NewsCard').addEventListener('click', () => {
     if(!newsActive){
         document.getElementById('newsButton').click()
+    }
+})
+
+/* ---- Reparar archivos y ZIP de soporte (1.10.0) ---------------------------- */
+
+const ScSoporte = require('./assets/js/scsoporte')
+
+let scComprobandoReparar = false
+document.getElementById('sc2Repair').addEventListener('click', async e => {
+    e.currentTarget.blur()
+    if(scComprobandoReparar || scComprobandoJugar){
+        return
+    }
+    if(scOcupado()){
+        setOverlayContent(Lang.queryJS('landing.sc2.repair'), Lang.queryJS('landing.sc2.busy'), Lang.queryJS('landing.sc2.zipClose'))
+        setOverlayHandler(() => toggleOverlay(false))
+        toggleOverlay(true)
+        return
+    }
+    // A game from another launcher session would keep files locked and rewrite them.
+    scComprobandoReparar = true
+    try {
+        if(await scAvisarJuegoPrevioAbierto()){
+            return
+        }
+    } finally {
+        scComprobandoReparar = false
+    }
+    loggerLanding.info('Reparar archivos: comprobación completa pedida por el jugador.')
+    scModoReparacion = true
+    scInvalidarCacheValidacion('reparar archivos')
+    setLaunchDetails(Lang.queryJS('landing.sc2.repairChecking'))
+    toggleLaunchArea(true)
+    setLaunchPercentage(0)
+    dlAsync(false)
+})
+
+document.getElementById('sc2Zip').addEventListener('click', async e => {
+    const boton = e.currentTarget
+    boton.blur()
+    boton.disabled = true
+    try {
+        const nodePath = require('path')
+        const sel = ConfigManager.getSelectedServer() || ''
+        let extra = []
+        try {
+            extra = [
+                `RAM auto:  ${ConfigManager.getRamAuto(sel) ? 'si' : 'no'}`,
+                `Calidad:   ${ConfigManager.getCalidad(sel) || '(sin elegir)'}${ConfigManager.getCalidadPendiente(sel) ? ' (pendiente: ' + ConfigManager.getCalidadPendiente(sel) + ')' : ''}`,
+                `Ocultar al jugar: ${ConfigManager.getMinimizarAlJugar() ? 'si' : 'no'}`,
+                `Pantalla completa: ${ConfigManager.getFullscreen() ? 'si' : 'no'}`
+            ]
+        } catch(_e){ /* configuración incompleta */ }
+        const resumen = scInformeDiagnostico('SOPORTE', 'ZIP de soporte generado por el jugador (no es un error).')
+            .replace('--- ERROR ---', extra.join('\n') + '\n\n--- NOTA ---')
+        const { ruta, ficheros } = ScSoporte.crearZipSoporte({
+            instancia: nodePath.join(ConfigManager.getInstanceDirectory(), sel),
+            carpetaLogs: require('./assets/js/registro').rutaCarpeta,
+            carpetaInformes: nodePath.join(ConfigManager.getDataDirectory(), 'informes'),
+            resumen,
+            destino: remote.app.getPath('downloads')
+        })
+        loggerLanding.info(`ZIP de soporte: ${ruta} (${ficheros.length} ficheros)`)
+        setOverlayContent(
+            Lang.queryJS('landing.sc2.zipTitle'),
+            Lang.queryJS('landing.sc2.zipDesc', { nombre: sc$escapeHtml(nodePath.basename(ruta)) }),
+            Lang.queryJS('landing.sc2.zipOpen'),
+            Lang.queryJS('landing.sc2.zipClose')
+        )
+        setOverlayHandler(() => {
+            shell.showItemInFolder(ruta)
+            toggleOverlay(false)
+        })
+        setDismissHandler(() => toggleOverlay(false))
+        toggleOverlay(true, true)
+    } catch(err) {
+        loggerLanding.error('No se pudo crear el ZIP de soporte', err)
+        setOverlayContent(Lang.queryJS('landing.sc2.zip'), Lang.queryJS('landing.sc2.zipError'), Lang.queryJS('landing.sc2.zipClose'))
+        setOverlayHandler(() => toggleOverlay(false))
+        toggleOverlay(true)
+    } finally {
+        boton.disabled = false
     }
 })

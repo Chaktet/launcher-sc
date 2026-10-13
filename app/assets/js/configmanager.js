@@ -90,7 +90,9 @@ const DEFAULT_CONFIG = {
         },
         launcher: {
             allowPrerelease: false,
-            dataDirectory: dataPath
+            dataDirectory: dataPath,
+            // Hide the launcher to the tray once the game has loaded (1.10.0).
+            minimizarAlJugar: true
         }
     },
     newsCache: {
@@ -962,4 +964,18 @@ exports.getAllowPrerelease = function(def = false){
  */
 exports.setAllowPrerelease = function(allowPrerelease){
     config.settings.launcher.allowPrerelease = allowPrerelease
+}
+
+/**
+ * Whether the launcher hides to the tray once the game has loaded and comes
+ * back when it closes.
+ *
+ * @param {boolean} def Optional. If true, the default value will be returned.
+ */
+exports.getMinimizarAlJugar = function(def = false){
+    return !def ? config.settings.launcher.minimizarAlJugar !== false : DEFAULT_CONFIG.settings.launcher.minimizarAlJugar
+}
+
+exports.setMinimizarAlJugar = function(v){
+    config.settings.launcher.minimizarAlJugar = v === true
 }

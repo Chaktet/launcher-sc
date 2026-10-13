@@ -2,7 +2,7 @@ const remoteMain = require('@electron/remote/main')
 remoteMain.initialize()
 
 // Requirements
-const { app, BrowserWindow, ipcMain, Menu, shell } = require('electron')
+const { app, BrowserWindow, ipcMain, Menu, shell, Tray } = require('electron')
 const autoUpdater                       = require('electron-updater').autoUpdater
 const ejse                              = require('ejs-electron')
 const fs                                = require('fs')
@@ -355,6 +355,8 @@ function createWindow() {
     win.webContents.on('render-process-gone', (_e, details) => {
         console.error('[SC] El proceso de la interfaz ha muerto:', details.reason, details.exitCode)
         if(details.reason !== 'clean-exit' && win != null && !win.isDestroyed()){
+            // If it was hidden for the game, the reloaded UI loses the game's events.
+            scMostrarVentana()
             setTimeout(() => {
                 if(win != null && !win.isDestroyed()){
                     win.reload()
@@ -436,6 +438,63 @@ function createMenu() {
 
 }
 
+// Tray icon (1.10.0): always there while the launcher runs. While playing,
+// "Minimizar al jugar" hides the window here instead of the taskbar; clicking
+// the icon (or opening the launcher again) brings it back.
+let scTray = null
+let scOcultaPorJuego = false
+
+function scMostrarVentana(ventana = win){
+    if(ventana == null || ventana.isDestroyed()){
+        return
+    }
+    ventana.setSkipTaskbar(false)
+    ventana.show()
+    if(ventana.isMinimized()){
+        ventana.restore()
+    }
+    ventana.focus()
+    scOcultaPorJuego = false
+}
+
+function scCrearBandeja(){
+    if(scTray != null || process.platform !== 'win32'){
+        return
+    }
+    try {
+        scTray = new Tray(getPlatformIcon('SealCircle'))
+        scTray.setToolTip('SC Launcher')
+        scTray.setContextMenu(Menu.buildFromTemplate([
+            { label: LangLoader.queryJS('tray.open'), click: () => scMostrarVentana() },
+            { type: 'separator' },
+            { label: LangLoader.queryJS('tray.quit'), click: () => app.quit() }
+        ]))
+        scTray.on('click', () => scMostrarVentana())
+    } catch(err) {
+        console.error('[SC] No se pudo crear el icono de la bandeja', err)
+        scTray = null
+    }
+}
+
+// 'ocultar' when the game has finished loading, 'restaurar' when it closes
+// (only if it was hidden for the game: a window the player reopened stays).
+ipcMain.on('sc-ventana-juego', (_event, accion) => {
+    if(win == null || win.isDestroyed()){
+        return
+    }
+    if(accion === 'ocultar'){
+        if(scTray != null){
+            win.setSkipTaskbar(true)
+            win.hide()
+        } else {
+            win.minimize()
+        }
+        scOcultaPorJuego = true
+    } else if(accion === 'restaurar' && scOcultaPorJuego){
+        scMostrarVentana()
+    }
+})
+
 function getPlatformIcon(filename){
     let ext
     switch(process.platform) {
@@ -463,14 +522,12 @@ if(!app.requestSingleInstanceLock()){
     app.on('second-instance', () => {
         const [ventana] = require('electron').BrowserWindow.getAllWindows()
         if(ventana != null){
-            if(ventana.isMinimized()){
-                ventana.restore()
-            }
-            ventana.focus()
+            scMostrarVentana(ventana)
         }
     })
 
     app.on('ready', createWindow)
+    app.on('ready', scCrearBandeja)
     app.on('ready', createMenu)
 }
 
