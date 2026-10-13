@@ -2073,14 +2073,54 @@ async function asyncSystemScan(effectiveJavaOptions, launchAfter = true){
 
 }
 
+/**
+ * Java from our CDN (1.13.0): the same Temurin build Adoptium would give,
+ * mirrored on descargas.servidorcobblemon.es/java by servidor/sc-java-cdn.py
+ * with its SHA-256. Some players' networks block Adoptium or GitHub (where
+ * Adoptium's files live); this is tried first and Adoptium stays as fallback.
+ *
+ * @returns {Promise<Object|null>} Asset in helios-core's shape, or null.
+ */
+async function scJavaDesdeCdn(major, dataDir){
+    if(process.platform !== 'win32' || process.arch !== 'x64'){
+        return null
+    }
+    const ctrl = new AbortController()
+    const t = setTimeout(() => ctrl.abort(), 8000)
+    try {
+        const res = await fetch(`https://${distroManager.SC_HOST_PRINCIPAL}/java/manifest.json?t=${Date.now()}`, { signal: ctrl.signal, cache: 'no-store' })
+        if(!res.ok){
+            throw new Error('HTTP ' + res.status)
+        }
+        const info = (await res.json())?.[String(major)]?.['windows-x64']
+        if(info == null || !/^[\w.+-]+\.zip$/.test(info.name) || !/^[0-9a-f]{64}$/.test(info.sha256) || !(info.size > 0)){
+            return null
+        }
+        return {
+            url: `https://${distroManager.SC_HOST_PRINCIPAL}/java/${info.name}`,
+            size: info.size,
+            id: info.name,
+            hash: info.sha256,
+            algo: 'sha256',
+            path: require('path').join(dataDir, 'runtime', process.arch, info.name)
+        }
+    } catch(err){
+        loggerLanding.warn('Java desde nuestro servidor no disponible, se usará Adoptium.', err)
+        return null
+    } finally {
+        clearTimeout(t)
+    }
+}
+
 async function downloadJava(effectiveJavaOptions, launchAfter = true) {
 
-    // TODO Error handling.
-    // asset can be null.
-    const asset = await latestOpenJDK(
-        effectiveJavaOptions.suggestedMajor,
-        ConfigManager.getDataDirectory(),
-        effectiveJavaOptions.distribution)
+    const dataDir = ConfigManager.getDataDirectory()
+    const adoptium = () => latestOpenJDK(effectiveJavaOptions.suggestedMajor, dataDir, effectiveJavaOptions.distribution)
+    let asset = await scJavaDesdeCdn(effectiveJavaOptions.suggestedMajor, dataDir)
+    let desdeCdn = asset != null
+    if(asset == null){
+        asset = await adoptium()
+    }
 
     if(asset == null) {
         throw new Error(Lang.queryJS('landing.downloadJava.findJdkFailure'))
@@ -2092,15 +2132,38 @@ async function downloadJava(effectiveJavaOptions, launchAfter = true) {
     }
 
     let received = 0
-    scDlInicio(asset.size)
-    try {
-        await downloadFile(asset.url, asset.path, ({ transferred }) => {
-            received = transferred
-            setDownloadPercentage(Math.trunc((transferred/asset.size)*100))
-        })
-    } finally {
-        scDlFin()
+    const bajar = async a => {
+        received = 0
+        scDlInicio(a.size)
+        try {
+            await downloadFile(a.url, a.path, ({ transferred }) => {
+                received = transferred
+                setDownloadPercentage(Math.trunc((transferred/a.size)*100))
+            })
+        } finally {
+            scDlFin()
+        }
     }
+    try {
+        await bajar(asset)
+        // A truncated or corrupted copy from our mirror: Adoptium gets one chance.
+        if(desdeCdn && !await validateLocalFile(asset.path, asset.algo, asset.hash)){
+            throw new Error('El Java de nuestro servidor no pasó la comprobación SHA-256')
+        }
+    } catch(err){
+        if(!desdeCdn){
+            throw err
+        }
+        loggerLanding.warn('Falló el Java de nuestro servidor; se prueba con Adoptium.', err)
+        try { require('fs').rmSync(asset.path, { force: true }) } catch(_e){ /* se sobrescribe */ }
+        desdeCdn = false
+        asset = await adoptium()
+        if(asset == null){
+            throw err
+        }
+        await bajar(asset)
+    }
+    loggerLanding.info(`Java descargado desde ${desdeCdn ? 'nuestro servidor' : 'Adoptium'}: ${asset.id}`)
     setDownloadPercentage(100)
 
     if(received != asset.size) {
