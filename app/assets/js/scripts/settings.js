@@ -326,6 +326,10 @@ function fullSettingsSave() {
     saveModConfiguration()
     ConfigManager.save()
     saveDropinModConfiguration()
+    // The landing shows the memory the game will use.
+    if(typeof window.scRefrescarPistaPerfil === 'function'){
+        window.scRefrescarPistaPerfil()
+    }
     // saveShaderpackSettings() eliminado: escribía shaderPack=OFF en el formato de
     // OptiFine cada vez que se pulsaba "Listo", peleándose con la pestaña Shaders.
 }
@@ -1477,6 +1481,79 @@ async function prepareJavaTab(){
     populateMemoryStatus()
     populateJavaReqDesc(server)
     populateJvmOptsLink(server)
+    scSincronizarRamAuto(server)
+}
+
+/**
+ * Automatic RAM (1.9.0): with the toggle on, the sliders are locked and show
+ * the value the launcher will use (recalculated at every launch, see
+ * landing.js scAplicarRendimiento). Turning it off keeps that value as the
+ * starting point for the manual sliders.
+ */
+function scSincronizarRamAuto(server){
+    const toggle = document.getElementById('settingsRamAuto')
+    const desc = document.getElementById('settingsRamAutoDesc')
+    const auto = toggle.checked
+    for(const s of [settingsMaxRAMRange, settingsMinRAMRange]){
+        s.toggleAttribute('disabled', auto)
+    }
+    if(auto){
+        const gb = ScRendimiento.ramAutomatica(server.rawServer.javaOptions?.ram)
+        for(const [slider, label] of [[settingsMaxRAMRange, settingsMaxRAMLabel], [settingsMinRAMRange, settingsMinRAMLabel]]){
+            const meta = calculateRangeSliderMeta(slider)
+            const v = Math.min(meta.max, Math.max(meta.min, gb))
+            updateRangedSlider(slider, v, ((v - meta.min) / meta.step) * meta.inc)
+            label.innerHTML = v.toFixed(1) + 'G'
+        }
+        desc.textContent = Lang.queryEJS('settings.sc2.ramAutoDesc') + ' ' +
+            Lang.queryJS('settings.sc2.ramAutoValue', { gb: ScRendimiento.formatoGb(gb) })
+    } else {
+        desc.textContent = Lang.queryEJS('settings.sc2.ramAutoDesc')
+    }
+}
+document.getElementById('settingsRamAuto').addEventListener('change', async () => {
+    const server = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
+    scSincronizarRamAuto(server)
+})
+
+/**
+ * One-click graphics presets (1.9.0). Written to options.txt right away when
+ * the game is closed; with the game open (it rewrites options.txt on exit)
+ * or before the first launch, the choice waits and landing.js applies it just
+ * before the next launch.
+ */
+function scMarcarCalidad(){
+    const actual = ConfigManager.getCalidadPendiente(ConfigManager.getSelectedServer()) || ConfigManager.getCalidad(ConfigManager.getSelectedServer())
+    for(const b of document.querySelectorAll('.settingsCalidad')){
+        const sel = b.dataset.nivel === actual
+        b.toggleAttribute('selected', sel)
+        b.setAttribute('aria-checked', sel ? 'true' : 'false')
+    }
+}
+for(const boton of document.querySelectorAll('.settingsCalidad')){
+    boton.addEventListener('click', async () => {
+        const id = ConfigManager.getSelectedServer()
+        const nivel = boton.dataset.nivel
+        const nombre = boton.querySelector('span').textContent
+        const estado = document.getElementById('settingsCalidadEstado')
+        ConfigManager.setCalidad(id, nivel)
+        try {
+            let aplicada = false
+            // Confirmed check: right after reopening the launcher the cached answer can
+            // still say "closed" while Minecraft is running (it rewrites options.txt).
+            if(!(await sc$juegoAbiertoConfirmado())){
+                aplicada = ScRendimiento.aplicarCalidad(require('path').join(ConfigManager.getInstanceDirectory(), id), nivel)
+            }
+            ConfigManager.setCalidadPendiente(id, aplicada ? null : nivel)
+            estado.textContent = Lang.queryJS(aplicada ? 'settings.sc2.qualityApplied' : 'settings.sc2.qualityPending', { nivel: nombre })
+        } catch(e){
+            console.warn('No se pudo aplicar la calidad', e)
+            ConfigManager.setCalidadPendiente(id, nivel)
+            estado.textContent = Lang.queryJS('settings.sc2.qualityError')
+        }
+        ConfigManager.save()
+        scMarcarCalidad()
+    })
 }
 
 /**
@@ -2261,6 +2338,8 @@ async function prepareSettings(first = false) {
     prepareAccountsTab()
     await prepareJavaTab()
     prepareAboutTab()
+    scMarcarCalidad()
+    document.getElementById('settingsCalidadEstado').textContent = ''
 }
 
 // Prepare the settings UI on startup.

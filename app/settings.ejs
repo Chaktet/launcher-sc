@@ -78,8 +78,17 @@
                 <span class="settingsTabHeaderText"><%- lang('settings.minecraftTabHeaderText') %></span>
                 <span class="settingsTabHeaderDesc"><%- lang('settings.minecraftTabHeaderDesc') %></span>
             </div>
-            <div id="settingsGameResolutionContainer">
-                <span class="settingsFieldTitle"><%- lang('settings.gameResolutionTitle') %></span>
+            <div id="settingsCalidadContainer">
+                <span class="settingsFieldTitle"><%- lang('settings.sc2.qualityTitle') %></span>
+                <span class="settingsFieldDesc"><%- lang('settings.sc2.qualityDesc') %></span>
+                <div id="settingsCalidadBotones" role="radiogroup" aria-label="<%- lang('settings.sc2.qualityTitle') %>">
+                    <button type="button" class="settingsCalidad" data-nivel="bajo" role="radio"><span><%- lang('settings.sc2.qualityLow') %></span><small><%- lang('settings.sc2.qualityLowDesc') %></small></button>
+                    <button type="button" class="settingsCalidad" data-nivel="medio" role="radio"><span><%- lang('settings.sc2.qualityMid') %></span><small><%- lang('settings.sc2.qualityMidDesc') %></small></button>
+                    <button type="button" class="settingsCalidad" data-nivel="alto" role="radio"><span><%- lang('settings.sc2.qualityHigh') %></span><small><%- lang('settings.sc2.qualityHighDesc') %></small></button>
+                </div>
+                <span id="settingsCalidadEstado" aria-live="polite"></span>
+            </div>
+            <div id="settingsGameResolutionContainer">                <span class="settingsFieldTitle"><%- lang('settings.gameResolutionTitle') %></span>
                 <div id="settingsGameResolutionContent">
                     <input type="number" id="settingsGameWidth" min="0" cValue="GameWidth">
                     <div id="settingsGameResolutionCross">&#10006;</div>
@@ -212,7 +221,18 @@
             </div>
             <div id="settingsMemoryContainer">
                 <div id="settingsMemoryTitle"><%- lang('settings.memoryTitle') %></div>
-                <div id="settingsMemoryContent">
+                <div class="settingsFieldContainer" id="settingsRamAutoContainer">
+                    <div class="settingsFieldLeft">
+                        <span class="settingsFieldTitle"><%- lang('settings.sc2.ramAutoTitle') %></span>
+                        <span class="settingsFieldDesc" id="settingsRamAutoDesc"><%- lang('settings.sc2.ramAutoDesc') %></span>
+                    </div>
+                    <div class="settingsFieldRight">
+                        <label class="toggleSwitch">
+                            <input type="checkbox" id="settingsRamAuto" cValue="RamAuto" serverDependent>
+                            <span class="toggleSwitchSlider"></span>
+                        </label>
+                    </div>
+                </div>                <div id="settingsMemoryContent">
                     <div id="settingsMemoryContentLeft">
                         <div class="settingsMemoryContentItem">
                             <span class="settingsMemoryHeader"><%- lang('settings.maxRAM') %></span>

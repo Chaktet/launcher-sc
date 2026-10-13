@@ -654,7 +654,21 @@ function defaultJavaConfig17(ram) {
 exports.ensureJavaConfig = function(serverid, effectiveJavaOptions, ram) {
     if(!Object.prototype.hasOwnProperty.call(config.javaConfig, serverid)) {
         config.javaConfig[serverid] = defaultJavaConfig(effectiveJavaOptions, ram)
+        config.javaConfig[serverid].ramAuto = true
     } else {
+        // Automatic RAM (1.9.0): on for whoever never moved the sliders (still the
+        // profile default); a hand-picked value is kept as manual.
+        // Both sliders must still be at the default, compared in MB: pressing
+        // "Listo" in Settings rewrites the untouched '6144M' default as '6G'.
+        if(typeof config.javaConfig[serverid].ramAuto !== 'boolean') {
+            const mb = v => {
+                const s = String(v || '').trim().toUpperCase()
+                return s.endsWith('G') ? Number.parseFloat(s) * 1024 : Number.parseFloat(s)
+            }
+            const porDefecto = mb(resolveSelectedRAM(ram))
+            config.javaConfig[serverid].ramAuto = mb(config.javaConfig[serverid].maxRAM) === porDefecto
+                && mb(config.javaConfig[serverid].minRAM) === porDefecto
+        }
         // Migración: añade la ruta de extracción de LWJGL a configuraciones
         // creadas antes del fix (antivirus / rutas con tildes).
         const jvmOpts = config.javaConfig[serverid].jvmOptions
@@ -710,6 +724,57 @@ exports.getMaxRAM = function(serverid){
  */
 exports.setMaxRAM = function(serverid, maxRAM){
     config.javaConfig[serverid].maxRAM = maxRAM
+}
+
+/**
+ * Whether the launcher picks the memory itself (screndimiento.ramAutomatica)
+ * instead of the sliders.
+ *
+ * @param {string} serverid The server id.
+ * @returns {boolean}
+ */
+exports.getRamAuto = function(serverid){
+    return config.javaConfig[serverid]?.ramAuto !== false
+}
+
+/**
+ * @param {string} serverid The server id.
+ * @param {boolean} auto True to let the launcher pick the memory.
+ */
+exports.setRamAuto = function(serverid, auto){
+    config.javaConfig[serverid].ramAuto = auto === true
+}
+
+/**
+ * Graphics preset waiting to be written to options.txt ('bajo' | 'medio' |
+ * 'alto'), or null. It is applied with the game closed: right away from
+ * Settings when possible, otherwise just before the next launch.
+ *
+ * @param {string} serverid The server id.
+ */
+exports.getCalidadPendiente = function(serverid){
+    return config.javaConfig[serverid]?.calidadPendiente ?? null
+}
+
+exports.setCalidadPendiente = function(serverid, nivel){
+    if(config.javaConfig[serverid] != null){
+        config.javaConfig[serverid].calidadPendiente = nivel
+    }
+}
+
+/**
+ * Last graphics preset applied with the one-click buttons, to mark it in the UI.
+ *
+ * @param {string} serverid The server id.
+ */
+exports.getCalidad = function(serverid){
+    return config.javaConfig[serverid]?.calidad ?? null
+}
+
+exports.setCalidad = function(serverid, nivel){
+    if(config.javaConfig[serverid] != null){
+        config.javaConfig[serverid].calidad = nivel
+    }
 }
 
 /**

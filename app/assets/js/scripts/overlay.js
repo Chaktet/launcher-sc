@@ -311,14 +311,22 @@ function setAccountListingHandlers(){
 
 async function populateServerListings(){
     const distro = await DistroAPI.getDistribution()
-    const giaSel = ConfigManager.getSelectedServer()
     const servers = distro.servers
+    // PRO or LITE by this PC's RAM and cores (screndimiento.perfilRecomendado).
+    const recLite = ScRendimiento.perfilRecomendado().lite
+    const esRecomendado = serv => serv.rawServer.id.includes('Lite') === recLite
+    let giaSel = ConfigManager.getSelectedServer()
+    // First choice: start on the profile that suits the PC.
+    if(scEligiendoPorPrimeraVez){
+        giaSel = (servers.find(esRecomendado) || servers[0]).rawServer.id
+    }
     let htmlString = ''
     for(const serv of servers){
         htmlString += `<button class="serverListing" servid="${serv.rawServer.id}" ${serv.rawServer.id === giaSel ? 'selected' : ''}>
             <img class="serverListingImg" src="${serv.rawServer.icon}"/>
             <div class="serverListingDetails">
                 <span class="serverListingName">${serv.rawServer.name}</span>
+                ${esRecomendado(serv) ? `<span class="serverListingRecomendado">${Lang.queryJS('landing.sc2.recommended')}</span>` : ''}
                 <span class="serverListingDescription">${serv.rawServer.description}</span>
                 <div class="serverListingInfo">
                     <div class="serverListingVersion">${serv.rawServer.minecraftVersion}</div>

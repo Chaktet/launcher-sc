@@ -795,6 +795,65 @@ body {
     width: calc(var(--px) * 150);
 }
 
+/* ---- Profile picker: recommendation for this PC (1.9.0) --------------------- */
+.serverListingRecomendado {
+    display: inline-block;
+    align-self: flex-start;
+    margin: 4px 0 2px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 650;
+    color: #07141c;
+    background: var(--sc2-orange);
+    border-radius: 2px;
+}
+
+/* ---- Settings: automatic RAM + graphics presets (1.9.0) --------------------- */
+.rangeSlider[disabled] {
+    opacity: 0.45;
+    pointer-events: none;
+}
+#settingsRamAutoContainer {
+    margin: 4px 0 14px;
+}
+#settingsCalidadContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 6px 0 22px;
+}
+#settingsCalidadBotones {
+    display: flex;
+    gap: 10px;
+    margin-top: 6px;
+}
+.settingsCalidad {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    width: 170px;
+    height: 54px;
+    box-sizing: border-box;
+    border: 8px solid transparent !important;
+    border-image: url('../images/ui/tab-normal@2x.png') 16 fill / 8px !important;
+    background: none !important;
+    color: var(--sc2-ink-2) !important;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+}
+.settingsCalidad span { font-size: 14px; font-weight: 650; }
+.settingsCalidad small { font-size: 11px; opacity: 0.85; }
+.settingsCalidad:hover { border-image-source: url('../images/ui/tab-hover@2x.png') !important; color: var(--sc2-ink) !important; }
+.settingsCalidad:active { border-image-source: url('../images/ui/tab-pressed@2x.png') !important; }
+.settingsCalidad[selected] { border-image-source: url('../images/ui/tab-selected@2x.png') !important; color: var(--sc2-ink) !important; }
+#settingsCalidadEstado {
+    min-height: 16px;
+    font-size: 12px;
+    color: var(--sc2-blue);
+}
+
 @media (prefers-reduced-motion: reduce) {
     #landingContainer *, #newsContainer { transition: none !important; }
 }
