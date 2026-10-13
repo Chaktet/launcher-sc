@@ -103,8 +103,11 @@ async function showMainUI(data){
     // Antes había 1,75 s de esperas fijas (setTimeout 750 + fadeIn 1000 de jQuery)
     // que no hacían ningún trabajo útil y encima solapaban el fundido con el
     // spinner girando. Ahora se muestra en cuanto está listo, con transición CSS.
-    document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
-    document.body.style.backgroundImage = `url('assets/images/backgrounds/${document.body.getAttribute('bkid')}.jpg')`
+    // Key art of the v2 redesign (diseno-v4-fondo): the 1280 file is enough up to
+    // that width; bigger or high-density windows get the 1920 one.
+    document.body.style.backgroundImage = window.innerWidth * window.devicePixelRatio > 1400
+        ? 'url(\'assets/images/ui/fondo-1920.webp\')'
+        : 'url(\'assets/images/ui/fondo-1280.webp\')'
     $('#main').show()
 
     const isLoggedIn = Object.keys(ConfigManager.getAuthAccounts()).length > 0

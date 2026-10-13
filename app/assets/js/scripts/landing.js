@@ -72,23 +72,92 @@ function setLaunchDetails(details){
 
 /**
  * Set the value of the loading progress bar and display that value.
- * 
+ *
  * @param {number} percent Percentage (0-100)
  */
 function setLaunchPercentage(percent){
     launch_progress.setAttribute('max', 100)
     launch_progress.setAttribute('value', percent)
     launch_progress_label.innerHTML = percent + '%'
+    document.getElementById('sc2ProgressFill').style.width = Math.max(0, Math.min(100, percent)) + '%'
+}
+
+/* Download speed and time left, from real bytes.
+ *
+ * The download modules only report a percentage, so the total size of the
+ * pending files (scBytesPendientes, or the Java asset size) is passed to
+ * scDlInicio and the bytes done are derived from the percentage. Speed is an
+ * exponential moving average over samples at least 1 s apart, so the number
+ * does not jump with every chunk. Without a known total it says "Calculando…".
+ */
+const scDl = { total: null, t0: 0, ultT: 0, ultBytes: 0, vel: null }
+
+function scFormatoBytes(b){
+    if(b >= 1073741824){
+        return (b / 1073741824).toFixed(2).replace('.', ',') + ' GB'
+    }
+    return Math.round(b / 1048576) + ' MB'
+}
+
+function scFormatoTiempo(s){
+    if(s < 60){
+        return Math.max(1, Math.round(s)) + ' s'
+    }
+    const min = Math.floor(s / 60)
+    if(min < 60){
+        return min + ' min ' + String(Math.round(s % 60)).padStart(2, '0') + ' s'
+    }
+    return Math.floor(min / 60) + ' h ' + (min % 60) + ' min'
+}
+
+function scDlInicio(totalBytes){
+    scDl.total = totalBytes > 0 ? totalBytes : null
+    scDl.t0 = scDl.ultT = Date.now()
+    scDl.ultBytes = 0
+    scDl.vel = null
+    document.getElementById('sc2DlBytes').textContent = scDl.total != null ? '0 MB / ' + scFormatoBytes(scDl.total) : ''
+    document.getElementById('sc2DlSpeed').textContent = Lang.queryJS('landing.sc2.calculating')
+}
+
+function scDlFin(){
+    scDl.total = null
+    document.getElementById('sc2DlBytes').textContent = ''
+    document.getElementById('sc2DlSpeed').textContent = ''
+}
+
+function scDlProgreso(percent){
+    if(scDl.total == null){
+        return
+    }
+    const ahora = Date.now()
+    const hechos = scDl.total * Math.max(0, Math.min(100, percent)) / 100
+    document.getElementById('sc2DlBytes').textContent = scFormatoBytes(hechos) + ' / ' + scFormatoBytes(scDl.total)
+    const dt = (ahora - scDl.ultT) / 1000
+    if(dt < 1){
+        return
+    }
+    const muestra = Math.max(0, hechos - scDl.ultBytes) / dt
+    scDl.vel = scDl.vel == null ? muestra : scDl.vel * 0.7 + muestra * 0.3
+    scDl.ultT = ahora
+    scDl.ultBytes = hechos
+    // The first seconds are mostly connection setup: wait for a stable figure.
+    if(ahora - scDl.t0 < 3000 || !(scDl.vel > 0)){
+        return
+    }
+    const restante = (scDl.total - hechos) / scDl.vel
+    document.getElementById('sc2DlSpeed').textContent = (scDl.vel / 1048576).toFixed(1).replace('.', ',') + ' MB/s · ' +
+        Lang.queryJS('landing.sc2.remaining', { t: scFormatoTiempo(restante) })
 }
 
 /**
  * Set the value of the OS progress bar and display that on the UI.
- * 
+ *
  * @param {number} percent Percentage (0-100)
  */
 function setDownloadPercentage(percent){
     remote.getCurrentWindow().setProgressBar(percent/100)
     setLaunchPercentage(percent)
+    scDlProgreso(percent)
 }
 
 /**
@@ -188,76 +257,21 @@ function updateSelectedServer(serv){
     }
     ConfigManager.setSelectedServer(serv != null ? serv.rawServer.id : null)
     ConfigManager.save()
-    server_selection_button.innerHTML = '&#8226; ' + (serv != null ? serv.rawServer.name : Lang.queryJS('landing.selectedServer.noSelection'))
+    server_selection_button.textContent = serv != null ? serv.rawServer.name : Lang.queryJS('landing.selectedServer.noSelection')
     if(getCurrentView() === VIEWS.settings){
         animateSettingsTabRefresh()
     }
     setLaunchEnabled(serv != null)
 }
 // Real text is set in uibinder.js on distributionIndexDone.
-server_selection_button.innerHTML = '&#8226; ' + Lang.queryJS('landing.selectedServer.loading')
+server_selection_button.textContent = Lang.queryJS('landing.selectedServer.loading')
 server_selection_button.onclick = async e => {
-    e.target.blur()
+    e.currentTarget.blur()
     await toggleServerSelection(true)
 }
-
-// Update Mojang Status Color
-const refreshMojangStatuses = async function(){
-    loggerLanding.info('Refreshing Mojang Statuses..')
-
-    let status = 'grey'
-    let tooltipEssentialHTML = ''
-    let tooltipNonEssentialHTML = ''
-
-    const response = await MojangRestAPI.status()
-    let statuses
-    if(response.responseStatus === RestResponseStatus.SUCCESS) {
-        statuses = response.data
-    } else {
-        loggerLanding.warn('Unable to refresh Mojang service status.')
-        statuses = MojangRestAPI.getDefaultStatuses()
-    }
-    
-    greenCount = 0
-    greyCount = 0
-
-    for(let i=0; i<statuses.length; i++){
-        const service = statuses[i]
-
-        const tooltipHTML = `<div class="mojangStatusContainer">
-            <span class="mojangStatusIcon" style="color: ${MojangRestAPI.statusToHex(service.status)};">&#8226;</span>
-            <span class="mojangStatusName">${service.name}</span>
-        </div>`
-        if(service.essential){
-            tooltipEssentialHTML += tooltipHTML
-        } else {
-            tooltipNonEssentialHTML += tooltipHTML
-        }
-
-        if(service.status === 'yellow' && status !== 'red'){
-            status = 'yellow'
-        } else if(service.status === 'red'){
-            status = 'red'
-        } else {
-            if(service.status === 'grey'){
-                ++greyCount
-            }
-            ++greenCount
-        }
-
-    }
-
-    if(greenCount === statuses.length){
-        if(greyCount === statuses.length){
-            status = 'grey'
-        } else {
-            status = 'green'
-        }
-    }
-    
-    document.getElementById('mojangStatusEssentialContainer').innerHTML = tooltipEssentialHTML
-    document.getElementById('mojangStatusNonEssentialContainer').innerHTML = tooltipNonEssentialHTML
-    document.getElementById('mojang_status_icon').style.color = MojangRestAPI.statusToHex(status)
+document.getElementById('sc2ProfileChange').onclick = e => {
+    e.currentTarget.blur()
+    server_selection_button.click()
 }
 
 // true mientras el ping al servidor siga fallando (para avisar una sola vez).
@@ -277,7 +291,7 @@ const refreshServerStatus = async (fade = false) => {
         const servStat = await getServerStatus(47, serv.hostname, serv.port)
         pLabel = Lang.queryJS('landing.serverStatus.players')
         // Solo los conectados: el maximo (5000) no aporta nada al jugador.
-        pVal = servStat.players.online
+        pVal = Lang.queryJS('landing.serverStatus.playersValue', { n: Number(servStat.players.online).toLocaleString('es-ES') })
         if(scPingFallando){
             scPingFallando = false
             loggerLanding.info('El servidor vuelve a responder al ping.')
@@ -305,11 +319,8 @@ const refreshServerStatus = async (fade = false) => {
     
 }
 
-refreshMojangStatuses()
 // Server Status is refreshed in uibinder.js on distributionIndexDone.
 
-// Refresh statuses every hour. The status page itself refreshes every day so...
-let mojangStatusListener = setInterval(() => refreshMojangStatuses(true), 60*60*1000)
 // Cada minuto, y no con el juego abierto: nadie mira el contador mientras juega y
 // el ping compite con el juego por la red.
 let serverStatusListener = setInterval(() => {
@@ -2013,10 +2024,15 @@ async function downloadJava(effectiveJavaOptions, launchAfter = true) {
     }
 
     let received = 0
-    await downloadFile(asset.url, asset.path, ({ transferred }) => {
-        received = transferred
-        setDownloadPercentage(Math.trunc((transferred/asset.size)*100))
-    })
+    scDlInicio(asset.size)
+    try {
+        await downloadFile(asset.url, asset.path, ({ transferred }) => {
+            received = transferred
+            setDownloadPercentage(Math.trunc((transferred/asset.size)*100))
+        })
+    } finally {
+        scDlFin()
+    }
     setDownloadPercentage(100)
 
     if(received != asset.size) {
@@ -2506,12 +2522,15 @@ async function scDlAsyncInterno(login = true) {
         loggerLaunchSuite.info('Downloading files.')
         setLaunchDetails(Lang.queryJS('landing.dlAsync.downloadingFiles'))
         setLaunchPercentage(0)
+        scDlInicio(scBytesPendientes)
         try {
             await fullRepairModule.download(percent => {
                 setDownloadPercentage(percent)
             })
             setDownloadPercentage(100)
+            scDlFin()
         } catch(err) {
+            scDlFin()
             scFalloGestionado = true
             loggerLaunchSuite.error('Error during file download.')
             // Corte de la red del jugador en modo normal: se pasa a modo lento y se
@@ -2824,7 +2843,6 @@ const nELoadSpan                    = document.getElementById('nELoadSpan')
 
 // News slide caches.
 let newsActive = false
-let newsGlideCount = 0
 
 /**
  * Show the news UI via a slide animation.
@@ -2832,58 +2850,30 @@ let newsGlideCount = 0
  * @param {boolean} up True to slide up, otherwise false. 
  */
 function slide_(up){
-    const lCUpper = document.querySelector('#landingContainer > #upper')
-    const lCLLeft = document.querySelector('#landingContainer > #lower > #left')
-    const lCLCenter = document.querySelector('#landingContainer > #lower > #center')
-    const lCLRight = document.querySelector('#landingContainer > #lower > #right')
-    const newsBtn = document.querySelector('#landingContainer > #lower > #center #content')
+    // The news view opens over the body while the header and footer stay, so the
+    // section tabs keep working; CSS does the fade (see rediseno.css).
     const landingContainer = document.getElementById('landingContainer')
-    const newsContainer = document.querySelector('#landingContainer > #newsContainer')
-
-    newsGlideCount++
-
+    const newsContainer = document.getElementById('newsContainer')
+    landingContainer.classList.toggle('sc2NewsOpen', up)
+    newsContainer.setAttribute('aria-hidden', up ? 'false' : 'true')
     if(up){
-        lCUpper.style.top = '-200vh'
-        lCLLeft.style.top = '-200vh'
-        lCLCenter.style.top = '-200vh'
-        lCLRight.style.top = '-200vh'
-        newsBtn.style.top = '130vh'
-        newsContainer.style.top = '0px'
-        //date.toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric'})
-        //landingContainer.style.background = 'rgba(29, 29, 29, 0.55)'
-        landingContainer.style.background = 'rgba(0, 0, 0, 0.50)'
-        setTimeout(() => {
-            if(newsGlideCount === 1){
-                lCLCenter.style.transition = 'none'
-                newsBtn.style.transition = 'none'
-            }
-            newsGlideCount--
-        }, 2000)
+        document.getElementById('sc2TabJugar').removeAttribute('aria-current')
+        document.getElementById('newsButton').setAttribute('aria-current', 'page')
     } else {
-        setTimeout(() => {
-            newsGlideCount--
-        }, 2000)
-        landingContainer.style.background = null
-        lCLCenter.style.transition = null
-        newsBtn.style.transition = null
-        newsContainer.style.top = '100%'
-        lCUpper.style.top = '0px'
-        lCLLeft.style.top = '0px'
-        lCLCenter.style.top = '0px'
-        lCLRight.style.top = '0px'
-        newsBtn.style.top = '10px'
+        document.getElementById('newsButton').removeAttribute('aria-current')
+        document.getElementById('sc2TabJugar').setAttribute('aria-current', 'page')
     }
 }
 
 // Bind news button.
 document.getElementById('newsButton').onclick = () => {
-    // Toggle tabbing.
+    // Only the visible part of the landing is reachable with Tab.
     if(newsActive){
-        $('#landingContainer *').removeAttr('tabindex')
+        $('#lower *').removeAttr('tabindex')
         $('#newsContainer *').attr('tabindex', '-1')
     } else {
-        $('#landingContainer *').attr('tabindex', '-1')
-        $('#newsContainer, #newsContainer *, #lower, #lower #center *').removeAttr('tabindex')
+        $('#lower *').attr('tabindex', '-1')
+        $('#newsContainer, #newsContainer *').removeAttr('tabindex')
         if(newsAlertShown){
             $('#newsButtonAlert').fadeOut(2000)
             newsAlertShown = false
@@ -3022,7 +3012,7 @@ async function initNews(){
         const lN = newsArr[0]
         const cached = ConfigManager.getNewsCache()
         let newHash = await digestMessage(lN.content)
-        let newDate = new Date(lN.date)
+        let newDate = new Date(lN.pubDate)
         let isNew = false
 
         if(cached.date != null && cached.content != null){
@@ -3181,8 +3171,8 @@ function scLimpiarHtmlNoticia(html){
 function displayArticle(articleObject, index){
     newsArticleTitle.innerHTML = sc$escapeHtml(articleObject.title)
     newsArticleTitle.href = scUrlSegura(articleObject.link, false)
-    newsArticleAuthor.innerHTML = 'by ' + sc$escapeHtml(articleObject.author)
-    newsArticleDate.innerHTML = sc$escapeHtml(articleObject.date)
+    newsArticleAuthor.textContent = articleObject.author ? articleObject.author : ''
+    newsArticleDate.textContent = articleObject.date
     newsArticleComments.innerHTML = sc$escapeHtml(articleObject.comments)
     newsArticleComments.href = scUrlSegura(articleObject.commentsLink, false)
     newsArticleContentScrollable.innerHTML = '<div id="newsArticleContentWrapper"><div class="newsArticleSpacerTop"></div>' + scLimpiarHtmlNoticia(articleObject.content) + '<div class="newsArticleSpacerBot"></div></div>'
@@ -3222,15 +3212,20 @@ async function loadNews(){
                 // JQuery Element
                     const el = $(items[i])
 
-                    // Resolve date.
-                    const date = new Date(el.find('pubDate').text()).toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric'})
+                    // Resolve date. Our feed publishes the day at 00:00 UTC, so no time.
+                    const date = new Date(el.find('pubDate').text()).toLocaleDateString('es-ES', {day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC'})
 
-                    // Resolve comments.
-                    let comments = el.find('slash\\:comments').text() || '0'
-                    comments = comments + ' Comment' + (comments === '1' ? '' : 's')
+                    // Our feed has no comments; show the count only if a feed sends one.
+                    const nComments = el.find('slash\\:comments').text()
+                    const comments = nComments ? nComments + (nComments === '1' ? ' comentario' : ' comentarios') : ''
 
-                    // Fix relative links in content.
+                    // Fix relative links in content. Our feed (news.xml) only has a plain
+                    // <description>; without this fallback every article showed empty.
                     let content = el.find('content\\:encoded').text()
+                    if(!content.trim()){
+                        content = el.find('description').text().split(/\n\s*\n/)
+                            .map(p => '<p>' + sc$escapeHtml(p.trim()) + '</p>').join('')
+                    }
                     let regex = /src="(?!http:\/\/|https:\/\/)(.+?)"/g
                     let matches
                     while((matches = regex.exec(content))){
@@ -3247,6 +3242,8 @@ async function loadNews(){
                             link,
                             title,
                             date,
+                            // Raw RFC date: initNews compares it with the cache (the Spanish one does not parse).
+                            pubDate: el.find('pubDate').text(),
                             author,
                             content,
                             comments,
@@ -3272,17 +3269,10 @@ async function loadNews(){
 // Pista de perfiles PRO/LITE: abre el mismo selector de servidor.
 const profileHint = document.getElementById('profile_hint')
 if(profileHint != null){
-    profileHint.addEventListener('click', () => {
-        document.getElementById('server_selection_button').click()
-    })
     // Actualiza el texto segun el perfil seleccionado.
     const refreshProfileHint = () => {
         const sel = ConfigManager.getSelectedServer() || ''
-        if(sel.includes('Lite')){
-            profileHint.innerHTML = 'Juegas la versión <strong>LITE</strong> (gama baja). ¿PC potente? <span class="profile_hint_link">Cambia a PRO aquí</span>'
-        } else {
-            profileHint.innerHTML = 'Juegas la versión <strong>PRO</strong>. ¿Tu PC es de gama baja? <span class="profile_hint_link">Cambia a LITE aquí</span>'
-        }
+        profileHint.textContent = Lang.queryJS(sel.includes('Lite') ? 'landing.sc2.profileLite' : 'landing.sc2.profilePro')
     }
     refreshProfileHint()
     // Reengancha cuando cambie la seleccion (el texto del boton selector cambia al elegir).
@@ -3301,4 +3291,22 @@ if(userContentChip != null){
             settingsNavItemListener(document.getElementById('settingsNavAccount'), false)
         })
     })
+    userContentChip.addEventListener('keydown', e => {
+        if(e.key === 'Enter' || e.key === ' '){
+            e.preventDefault()
+            userContentChip.click()
+        }
+    })
 }
+
+// "Jugar" closes the news view; the news card opens it.
+document.getElementById('sc2TabJugar').addEventListener('click', () => {
+    if(newsActive){
+        document.getElementById('newsButton').click()
+    }
+})
+document.getElementById('sc2NewsCard').addEventListener('click', () => {
+    if(!newsActive){
+        document.getElementById('newsButton').click()
+    }
+})
