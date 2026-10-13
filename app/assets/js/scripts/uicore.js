@@ -440,27 +440,12 @@ document.addEventListener('readystatechange', function () {
         })
 
         // Remove focus from social media buttons once they're clicked.
-        Array.from(document.getElementsByClassName('mediaURL')).map(val => {
+        Array.from(document.getElementsByClassName('sc2Link')).map(val => {
             val.addEventListener('click', e => {
                 document.activeElement.blur()
             })
         })
 
-    } else if(document.readyState === 'complete'){
-
-        //266.01
-        //170.8
-        //53.21
-        // Bind progress bar length to length of bot wrapper
-        //const targetWidth = document.getElementById("launch_content").getBoundingClientRect().width
-        //const targetWidth2 = document.getElementById("server_selection").getBoundingClientRect().width
-        //const targetWidth3 = document.getElementById("launch_button").getBoundingClientRect().width
-
-        document.getElementById('launch_details').style.maxWidth = 266.01
-        document.getElementById('launch_progress').style.width = 170.8
-        document.getElementById('launch_details_right').style.maxWidth = 170.8
-        document.getElementById('launch_progress_label').style.width = 53.21
-        
     }
 
 }, false)

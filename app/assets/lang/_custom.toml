@@ -33,6 +33,27 @@ mediaInstagramURL = "#"
 mediaYouTubeURL = "#"
 mediaDiscordURL = "https://discord.gg/servidorcobblemon"
 
+[ejs.landing.sc2]
+brandKicker = "SERVIDOR"
+brandName = "Cobblemon"
+navLabel = "Secciones"
+tabJugar = "Jugar"
+tabNovedades = "Novedades"
+tabAjustes = "Ajustes"
+manageAccount = "Gestionar cuenta"
+kicker = "MINECRAFT × POKÉMON"
+heroLine1 = "Tu aventura,"
+heroLine2 = "a un clic."
+sub = "Elige tu perfil. Reúnete con tu comunidad."
+change = "Cambiar"
+newsKicker = "SERVIDOR · NOVEDADES"
+newsTitle = "Noticias y cambios"
+newsSub = "Ver novedades"
+newsPrev = "Noticia anterior"
+newsNext = "Noticia siguiente"
+web = "Web"
+webURL = "https://servidorcobblemon.es"
+
 [ejs.login]
 loginCancelText = "Cancelar"
 loginSubheader = "ACCESO NO PREMIUM"
@@ -273,8 +294,15 @@ loading = "Cargando.."
 
 [js.landing.serverStatus]
 server = "SERVIDOR"
-offline = "OFFLINE"
-players = "JUGADORES"
+offline = "Sin conexión"
+players = "JUGADORES EN LÍNEA"
+playersValue = "{n} jugadores"
+
+[js.landing.sc2]
+calculating = "Calculando…"
+remaining = "Quedan {t}"
+profileLite = "Perfil para PC de gama baja"
+profilePro = "Perfil completo · ¿PC modesto? Usa LITE"
 
 [js.landing.systemScan]
 checking = "Comprobando el sistema.."
