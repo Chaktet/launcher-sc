@@ -1110,6 +1110,140 @@ body {
     white-space: pre-line;
 }
 
+/* ---- Modpack changes + gallery (1.12.0) ------------------------------------ */
+#sc2NewsSwitch {
+    display: flex;
+    gap: calc(var(--px) * 10);
+    padding: calc(var(--px) * 4) calc(var(--px) * 14) calc(var(--px) * 12);
+}
+.sc2NewsSwitchBtn {
+    height: calc(var(--px) * 34);
+    padding: 0 calc(var(--px) * 16) !important;
+    box-sizing: border-box;
+    border: calc(var(--px) * 8) solid transparent !important;
+    border-image: url('../images/ui/tab-normal@2x.png') 16 fill / calc(var(--px) * 8) !important;
+    font-size: calc(var(--px) * 13) !important;
+    font-weight: 600;
+    color: var(--sc2-ink-2) !important;
+}
+.sc2NewsSwitchBtn:hover { border-image-source: url('../images/ui/tab-hover@2x.png') !important; color: var(--sc2-ink) !important; }
+.sc2NewsSwitchBtn[aria-selected="true"] { border-image-source: url('../images/ui/tab-selected@2x.png') !important; color: var(--sc2-ink) !important; }
+#sc2NewsFrame.sc2VerModpack > #newsContent,
+#sc2NewsFrame.sc2VerModpack > #newsErrorContainer { display: none !important; }
+#sc2ModpackPanel {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--px) * 6);
+    padding: calc(var(--px) * 10) calc(var(--px) * 14);
+    border-top: 1px solid rgba(166, 184, 188, 0.14);
+}
+#sc2ModpackPanel[hidden] { display: none; }
+#sc2ModpackTitulo {
+    font-size: calc(var(--px) * 22);
+    font-weight: 700;
+    color: var(--sc2-ink);
+}
+#sc2ModpackFecha {
+    font-size: calc(var(--px) * 12);
+    color: var(--sc2-ink-2);
+    margin-bottom: calc(var(--px) * 10);
+}
+#sc2ModpackLista {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--px) * 6);
+}
+.sc2ModpackItem {
+    padding: calc(var(--px) * 8) calc(var(--px) * 12);
+    font-size: calc(var(--px) * 13);
+    color: #d6dfe0;
+    background: rgba(16, 31, 40, 0.7);
+    border-left: 2px solid var(--sc2-ink-3);
+}
+.sc2Mp-nuevo { border-left-color: #7cc56f; }
+.sc2Mp-actualizado, .sc2Mp-pack { border-left-color: var(--sc2-blue); }
+.sc2Mp-quitado { border-left-color: #a65a52; }
+
+#sc2GaleriaView {
+    position: absolute;
+    left: calc(var(--px) * 40);
+    right: calc(var(--px) * 40);
+    top: calc(var(--px) * 96);
+    bottom: calc(var(--px) * 66);
+    z-index: 2;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 160ms ease, visibility 0s linear 160ms;
+}
+#landingContainer.sc2GaleriaOpen > #sc2GaleriaView {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 160ms ease;
+}
+#landingContainer.sc2GaleriaOpen > #lower {
+    opacity: 0;
+    visibility: hidden;
+}
+#sc2GaleriaFrame {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+#sc2GaleriaHeader {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--px) * 14);
+    padding: calc(var(--px) * 4) calc(var(--px) * 12) calc(var(--px) * 14);
+    border-bottom: 1px solid rgba(166, 184, 188, 0.14);
+}
+#sc2GaleriaTitulo {
+    font-size: calc(var(--px) * 22);
+    font-weight: 700;
+    color: var(--sc2-ink);
+}
+#sc2GaleriaCuenta {
+    font-size: calc(var(--px) * 12);
+    color: var(--sc2-ink-2);
+}
+#sc2GaleriaCarpeta {
+    margin-left: auto;
+    width: calc(var(--px) * 180);
+}
+#sc2GaleriaGrid {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(calc(var(--px) * 260), 1fr));
+    gap: calc(var(--px) * 16);
+    padding: calc(var(--px) * 16) calc(var(--px) * 12);
+    align-content: start;
+}
+.sc2GaleriaMsg { grid-column: 1 / -1; }
+.sc2Foto {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--px) * 6);
+    text-align: left;
+}
+.sc2Foto img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: rgba(16, 31, 40, 0.8);
+    outline: 1px solid rgba(166, 184, 188, 0.18);
+    transition: outline-color 120ms ease, filter 120ms ease;
+}
+.sc2Foto:hover img { outline-color: var(--sc2-blue); filter: brightness(1.08); }
+.sc2FotoPie {
+    font-size: calc(var(--px) * 12);
+    color: var(--sc2-ink-2);
+}
+
 @media (prefers-reduced-motion: reduce) {
     #landingContainer *, #newsContainer { transition: none !important; }
 }
