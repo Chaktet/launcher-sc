@@ -304,6 +304,9 @@ function scAbrirEventos(){
     if(typeof newsActive !== 'undefined' && newsActive){
         document.getElementById('newsButton').click()
     }
+    if(typeof scCerrarGaleria === 'function'){
+        scCerrarGaleria()
+    }
     scEventosAbierto = true
     scElem('landingContainer').classList.add('sc2EventosOpen')
     scElem('sc2EventosView').setAttribute('aria-hidden', 'false')

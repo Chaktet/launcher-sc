@@ -2483,6 +2483,10 @@ async function scDlAsyncInterno(login = true) {
         }
         scRutaUltimoIntento = scRutaDirectaActiva ? 'directa' : 'normal'
         onDistroRefresh(distro)
+        // New distribution: record what changed in the modpack (novedades.js).
+        if(typeof scRevisarModpack === 'function'){
+            scRevisarModpack()
+        }
     } catch(err) {
         loggerLaunchSuite.error('Unable to refresh distribution index.', err)
         scFalloArranque(SC_ERR.DISTRO, Lang.queryJS('landing.launch.errDistro'), new Error('No distribution index'))
@@ -2946,9 +2950,9 @@ function slide_(up){
     const newsContainer = document.getElementById('newsContainer')
     landingContainer.classList.toggle('sc2NewsOpen', up)
     newsContainer.setAttribute('aria-hidden', up ? 'false' : 'true')
-    // Opening the news closes the events view (eventos.js).
-    if(up && typeof scCerrarEventos === 'function'){
-        scCerrarEventos()
+    // Opening the news closes the events and gallery views (eventos.js, novedades.js).
+    if(up && typeof scCerrarVistasExtra === 'function'){
+        scCerrarVistasExtra()
     }
     scMarcarPestana(up ? 'newsButton' : 'sc2TabJugar')
 }
@@ -3425,8 +3429,8 @@ document.getElementById('sc2TabJugar').addEventListener('click', () => {
     if(newsActive){
         document.getElementById('newsButton').click()
     }
-    if(typeof scCerrarEventos === 'function'){
-        scCerrarEventos()
+    if(typeof scCerrarVistasExtra === 'function'){
+        scCerrarVistasExtra()
     }
     scMarcarPestana('sc2TabJugar')
 })

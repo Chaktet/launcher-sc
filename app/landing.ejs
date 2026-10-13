@@ -18,6 +18,7 @@
                 <span id="newsButtonText"><%- lang('landing.sc2.tabNovedades') %></span>
                 <span id="newsButtonAlert" style="display: none;"></span>
             </button>
+            <button class="sc2Tab" id="sc2TabGaleria" type="button"><%- lang('landing.sc2.tabGaleria') %></button>
             <button class="sc2Tab" id="settingsMediaButton" type="button"><%- lang('landing.sc2.tabAjustes') %></button>
         </nav>
         <div id="user_content" role="button" tabindex="0">
@@ -121,9 +122,30 @@
         </div>
     </div>
 
+    <!-- Gallery view: the player's own screenshots of the selected profile. -->
+    <div id="sc2GaleriaView" aria-hidden="true">
+        <div id="sc2GaleriaFrame" class="sc2Frame">
+            <div id="sc2GaleriaHeader">
+                <span id="sc2GaleriaTitulo"><%- lang('landing.sc2.galleryTitle') %></span>
+                <span id="sc2GaleriaCuenta"></span>
+                <button id="sc2GaleriaCarpeta" class="sc2Btn sc2BtnSecondary" type="button"><%- lang('landing.sc2.galleryFolder') %></button>
+            </div>
+            <div id="sc2GaleriaGrid"></div>
+        </div>
+    </div>
+
     <!-- News view: opens over the body, the header stays. -->
     <div id="newsContainer" aria-hidden="true">
         <div id="sc2NewsFrame" class="sc2Frame">
+            <div id="sc2NewsSwitch" role="tablist">
+                <button class="sc2NewsSwitchBtn" id="sc2NewsTabNoticias" type="button" role="tab" aria-selected="true"><%- lang('landing.sc2.newsTabNews') %></button>
+                <button class="sc2NewsSwitchBtn" id="sc2NewsTabModpack" type="button" role="tab" aria-selected="false"><%- lang('landing.sc2.newsTabModpack') %></button>
+            </div>
+            <div id="sc2ModpackPanel" hidden>
+                <span id="sc2ModpackTitulo"></span>
+                <span id="sc2ModpackFecha"></span>
+                <div id="sc2ModpackLista"></div>
+            </div>
             <div id="newsContent" article="-1" style="display: none;">
                 <div id="newsStatusContainer">
                     <div id="newsStatusContent">
@@ -162,4 +184,5 @@
     </div>
     <script src="./assets/js/scripts/landing.js"></script>
     <script src="./assets/js/scripts/eventos.js"></script>
+    <script src="./assets/js/scripts/novedades.js"></script>
 </div>
