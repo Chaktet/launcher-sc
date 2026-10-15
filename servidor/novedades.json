@@ -2,6 +2,15 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-15-servidor-Torneos-con-premios-propios",
+      "fecha": "2026-10-15",
+      "tipo": "servidor",
+      "titulo": "Torneos con premios propios",
+      "puntos": [
+        "Los torneos del staff pueden tener sus propios premios del podio, distintos de los juegos de siempre."
+      ]
+    },
+    {
       "id": "2026-10-15-servidor-Gimnasios-aviso-cuando-abre-un-lider",
       "fecha": "2026-10-15",
       "tipo": "servidor",
