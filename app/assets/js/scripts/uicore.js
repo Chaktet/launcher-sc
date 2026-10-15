@@ -260,7 +260,11 @@ async function scAutoInstalarSiProcede(info){
     const enAjustes = typeof getCurrentView === 'function' && typeof VIEWS !== 'undefined'
         && getCurrentView() !== VIEWS.landing
     if(scOcupado() || enAjustes){
-        return // se queda la insignia; la instala cuando el jugador quiera
+        // Se queda la insignia y un aviso visible (avisos.js) para instalarla cuando quiera.
+        if(typeof scAvisoLauncher === 'function'){
+            scAvisoLauncher(info != null ? info.version : '')
+        }
+        return
     }
 
     // 1.7.2: aviso a pantalla completa con la cuenta atrás (antes solo cambiaba la
@@ -291,6 +295,13 @@ async function scAutoInstalarSiProcede(info){
     })
     setDismissHandler(cancela)
     toggleOverlay(true, true)
+    if(typeof scCerrarAviso === 'function'){
+        scCerrarAviso('launcher')
+    }
+    // Con la ventana detrás nadie ve la cuenta atrás: aviso de Windows (avisos.js).
+    if(typeof scAvisoLauncherCuentaAtras === 'function'){
+        scAvisoLauncherCuentaAtras(version)
+    }
 
     cuenta = setInterval(() => {
         restantes--

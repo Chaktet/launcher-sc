@@ -1341,3 +1341,82 @@ body {
 @media (prefers-reduced-motion: reduce) {
     #landingContainer *, #newsContainer { transition: none !important; }
 }
+
+/* ---- Update notices while the launcher is open (1.15.0, avisos.js) -------- */
+#scAvisoUpd {
+    position: fixed;
+    left: 50%;
+    bottom: calc(var(--px) * 60);
+    z-index: 400; /* under the overlay (500) */
+    transform: translateX(-50%);
+    width: calc(var(--px) * 540);
+    display: flex;
+    align-items: center;
+    gap: calc(var(--px) * 14);
+    padding: calc(var(--px) * 4) calc(var(--px) * 6) !important;
+    border-style: solid !important;
+    animation: scAvisoEntra 200ms ease;
+}
+#scAvisoUpd[hidden] { display: none; }
+#scAvisoUpd::before {
+    content: '';
+    position: absolute;
+    top: calc(var(--px) * -12);
+    left: calc(var(--px) * -12);
+    width: calc(var(--px) * 130);
+    height: 2px;
+    background: var(--sc2-orange);
+}
+@keyframes scAvisoEntra {
+    from { opacity: 0; transform: translate(-50%, calc(var(--px) * 10)); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+}
+.scAvisoTextos {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--px) * 3);
+}
+.scAvisoKicker {
+    font-size: calc(var(--px) * 10);
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    color: var(--sc2-orange);
+}
+.scAvisoTitulo {
+    font-size: calc(var(--px) * 15);
+    font-weight: 700;
+    color: var(--sc2-ink);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.scAvisoTexto {
+    font-size: calc(var(--px) * 12);
+    color: var(--sc2-ink-2);
+}
+.scAvisoAccion {
+    flex-shrink: 0;
+    height: calc(var(--px) * 38) !important;
+    padding: 0 calc(var(--px) * 4) !important;
+    font-size: calc(var(--px) * 13) !important;
+    color: var(--sc2-ink) !important;
+}
+.scAvisoAccion[hidden] { display: none; }
+.scAvisoCerrar {
+    flex-shrink: 0;
+    width: calc(var(--px) * 26);
+    height: calc(var(--px) * 26);
+    border: none;
+    background: transparent;
+    color: var(--sc2-ink-2);
+    font-size: calc(var(--px) * 20);
+    line-height: 1;
+    cursor: pointer;
+}
+.scAvisoCerrar::before { content: '×'; }
+.scAvisoCerrar:hover { color: var(--sc2-ink); }
+@media (prefers-reduced-motion: reduce) {
+    #scAvisoUpd { animation: none; }
+}
