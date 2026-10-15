@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-15-servidor-Nucleo-de-cristal-en-la-tienda",
+      "fecha": "2026-10-15",
+      "tipo": "servidor",
+      "titulo": "Núcleo de cristal en la tienda",
+      "puntos": [
+        "Ya puedes comprar en /shop el Núcleo de Cristal de Pizarra, el bloque que necesitas para generar gemas de tipo.",
+        "Lo tienes el primero en «Materiales MTs» y en «Objetos varios»."
+      ]
+    },
+    {
       "id": "2026-10-15-servidor-Torneos-con-premios-propios",
       "fecha": "2026-10-15",
       "tipo": "servidor",
