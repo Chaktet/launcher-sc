@@ -136,10 +136,17 @@
 
     <!-- News view: opens over the body, the header stays. -->
     <div id="newsContainer" aria-hidden="true">
-        <div id="sc2NewsFrame" class="sc2Frame">
+        <div id="sc2NewsFrame" class="sc2Frame sc2VerServidor">
             <div id="sc2NewsSwitch" role="tablist">
-                <button class="sc2NewsSwitchBtn" id="sc2NewsTabNoticias" type="button" role="tab" aria-selected="true"><%- lang('landing.sc2.newsTabNews') %></button>
+                <button class="sc2NewsSwitchBtn" id="sc2NewsTabServidor" type="button" role="tab" aria-selected="true"><%- lang('landing.sc2.newsTabServer') %><span id="sc2NovServPunto" hidden></span></button>
+                <button class="sc2NewsSwitchBtn" id="sc2NewsTabNoticias" type="button" role="tab" aria-selected="false"><%- lang('landing.sc2.newsTabNews') %></button>
                 <button class="sc2NewsSwitchBtn" id="sc2NewsTabModpack" type="button" role="tab" aria-selected="false"><%- lang('landing.sc2.newsTabModpack') %></button>
+            </div>
+            <!-- Player-facing release notes from launcher/novedades.json (novedades.js). -->
+            <div id="sc2NovServPanel">
+                <span id="sc2NovServTitulo"><%- lang('landing.sc2.newsTabServer') %></span>
+                <span id="sc2NovServEstado"></span>
+                <div id="sc2NovServLista"></div>
             </div>
             <div id="sc2ModpackPanel" hidden>
                 <span id="sc2ModpackTitulo"></span>

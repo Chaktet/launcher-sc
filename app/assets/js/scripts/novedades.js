@@ -193,11 +193,28 @@ function scCambiosRecientes(){
 /** Landing card: modpack changes for 14 days, otherwise the server news. */
 function scPintarTarjetaNovedades(){
     const card = document.getElementById('sc2NewsCard')
-    const reg = scCambiosRecientes()
-    card.querySelector('.sc2CardKicker').textContent = reg ? Lang.queryJS('landing.sc2.modpackKicker') : Lang.queryEJS('landing.sc2.newsKicker')
-    card.querySelector('.sc2CardTitle').textContent = reg ? reg.resumen : Lang.queryEJS('landing.sc2.newsTitle')
-    card.querySelector('.sc2CardSub').textContent = reg ? Lang.queryJS('landing.sc2.modpackSee') : Lang.queryEJS('landing.sc2.newsSub')
-    card.toggleAttribute('data-modpack', reg != null)
+    const nueva = scNovServNuevas()[0]
+    const reg = nueva ? null : scCambiosRecientes()
+    let kicker = Lang.queryEJS('landing.sc2.newsKicker')
+    let titulo = Lang.queryEJS('landing.sc2.newsTitle')
+    let sub = Lang.queryEJS('landing.sc2.newsSub')
+    let abre = 'servidor'
+    if(nueva){
+        kicker = Lang.queryJS('landing.sc2.novServKicker')
+        titulo = nueva.titulo
+        sub = Lang.queryJS('landing.sc2.novServSee')
+    } else if(reg){
+        kicker = Lang.queryJS('landing.sc2.modpackKicker')
+        titulo = reg.resumen
+        sub = Lang.queryJS('landing.sc2.modpackSee')
+        abre = 'modpack'
+    }
+    card.querySelector('.sc2CardKicker').textContent = kicker
+    card.querySelector('.sc2CardTitle').textContent = titulo
+    card.querySelector('.sc2CardSub').textContent = sub
+    card.dataset.abre = abre
+    card.toggleAttribute('data-modpack', abre === 'modpack')
+    card.toggleAttribute('data-servidor', nueva != null)
 }
 
 function scPintarModpack(){
@@ -225,27 +242,322 @@ function scPintarModpack(){
     }
 }
 
-function scVerModpack(si){
-    document.getElementById('sc2NewsFrame').classList.toggle('sc2VerModpack', si)
-    document.getElementById('sc2ModpackPanel').hidden = !si
-    document.getElementById('sc2NewsTabNoticias').setAttribute('aria-selected', si ? 'false' : 'true')
-    document.getElementById('sc2NewsTabModpack').setAttribute('aria-selected', si ? 'true' : 'false')
-    if(si){
+/* ---- Tabs of the news view ------------------------------------------------- */
+
+const SC_PESTANAS_NOVEDADES = [
+    ['servidor', 'sc2NewsTabServidor'],
+    ['noticias', 'sc2NewsTabNoticias'],
+    ['modpack', 'sc2NewsTabModpack']
+]
+let scPestanaNovedades = 'servidor'
+let scPestanaPedida = null   // tab asked for by the landing card, used by the next newsButton click
+
+/** Shows one tab of the news view: 'servidor', 'noticias' or 'modpack'. */
+function scVerPestanaNovedades(cual){
+    scPestanaNovedades = cual
+    const frame = document.getElementById('sc2NewsFrame')
+    frame.classList.toggle('sc2VerModpack', cual === 'modpack')
+    frame.classList.toggle('sc2VerServidor', cual === 'servidor')
+    document.getElementById('sc2ModpackPanel').hidden = cual !== 'modpack'
+    document.getElementById('sc2NovServPanel').hidden = cual !== 'servidor'
+    for(const [c, id] of SC_PESTANAS_NOVEDADES){
+        document.getElementById(id).setAttribute('aria-selected', c === cual ? 'true' : 'false')
+    }
+    if(cual === 'modpack'){
         scPintarModpack()
+    }
+    scNovServRefrescarVista()
+}
+
+for(const [c, id] of SC_PESTANAS_NOVEDADES){
+    document.getElementById(id).addEventListener('click', () => scVerPestanaNovedades(c))
+}
+// The landing card opens the tab it talks about; the Novedades tab opens the server notes.
+document.getElementById('sc2NewsCard').addEventListener('click', () => {
+    scPestanaPedida = document.getElementById('sc2NewsCard').dataset.abre || 'servidor'
+}, true)
+document.getElementById('newsButton').addEventListener('click', () => {
+    const pedida = scPestanaPedida
+    scPestanaPedida = null
+    if(typeof newsActive !== 'undefined' && !newsActive){
+        // Pending RSS news and nothing new from the server: open the RSS tab.
+        const rss = typeof newsAlertShown !== 'undefined' && newsAlertShown && scNovServNuevas().length === 0
+        scVerPestanaNovedades(pedida || (rss ? 'noticias' : 'servidor'))
+        // landing.js opens the view after this listener: mark as seen once it is open.
+        setTimeout(scNovServRefrescarVista, 0)
+    }
+}, true)
+
+/* ---- Server release notes (1.14.0) -----------------------------------------
+ *
+ * launcher/novedades.json lists what each update brought, written for players
+ * (master copy: servidor/novedades.json in this repo, published with
+ * E:/RESOURCE-MC/herramientas/anade_novedad.js). The last good copy is kept in
+ * localStorage so the section still shows something offline. Entries the player
+ * has not opened yet get a "Nuevo" mark, a dot on the tabs and the landing card.
+ */
+const SC_NOVSERV_URL = `https://${require('./assets/js/distromanager').SC_HOST_PRINCIPAL}/launcher/novedades.json`
+const SC_NOVSERV_CADA = 10 * 60 * 1000
+const SC_NOVSERV_MAX = 40
+const SC_NOVSERV_MAX_BYTES = 512 * 1024
+const SC_NOVSERV_NUEVO_DIAS = 60      // older entries are never marked as new
+const SC_NOVSERV_PRIMERA_DIAS = 7     // first run: only the last week counts as new
+const SC_NOVSERV_TIPOS = {
+    pack: 'novServTipoPack',
+    launcher: 'novServTipoLauncher',
+    servidor: 'novServTipoServidor',
+    movil: 'novServTipoMovil',
+    modpack: 'novServTipoModpack'
+}
+
+let scNovServ = null              // { entradas, guardadas } (guardadas = copy from a previous run)
+let scNovServError = false
+let scNovServPidiendo = false
+const scNovServResaltadas = new Set() // shown as "Nuevo" until the launcher closes
+
+/** "2026-10-14" -> local midnight in ms, or NaN. */
+function scNovServDia(fecha){
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(fecha)
+    if(m == null){
+        return NaN
+    }
+    const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]))
+    return d.getMonth() === Number(m[2]) - 1 && d.getDate() === Number(m[3]) ? d.getTime() : NaN
+}
+
+/** Keeps only well-formed entries, newest first. Null if the file is not ours. */
+function scNovServLimpiar(datos){
+    if(datos == null || datos.version !== 1 || !Array.isArray(datos.entradas)){
+        return null
+    }
+    const ids = new Set()
+    const out = []
+    for(const e of datos.entradas){
+        if(e == null || typeof e !== 'object'){
+            continue
+        }
+        const id = typeof e.id === 'string' ? e.id.trim() : ''
+        const titulo = typeof e.titulo === 'string' ? e.titulo.trim().slice(0, 120) : ''
+        if(id === '' || id.length > 100 || ids.has(id) || titulo === '' || typeof e.fecha !== 'string' || Number.isNaN(scNovServDia(e.fecha))){
+            continue
+        }
+        const puntos = (Array.isArray(e.puntos) ? e.puntos : [])
+            .filter(p => typeof p === 'string' && p.trim() !== '')
+            .map(p => p.trim().slice(0, 300))
+            .slice(0, 8)
+        ids.add(id)
+        out.push({
+            id,
+            fecha: e.fecha,
+            tipo: Object.hasOwn(SC_NOVSERV_TIPOS, e.tipo) ? e.tipo : 'servidor',
+            version: typeof e.version === 'string' ? e.version.trim().slice(0, 40) : '',
+            titulo,
+            puntos
+        })
+    }
+    // Same day keeps the order of the file (the sort is stable).
+    out.sort((a, b) => b.fecha.localeCompare(a.fecha))
+    return out.slice(0, SC_NOVSERV_MAX)
+}
+
+function scNovServVistas(){
+    const v = scLeerJson('scNovServVistas')
+    return v != null && Array.isArray(v.ids) ? v : null
+}
+
+/** Entries the player has not opened yet (empty until the list is known). */
+function scNovServNuevas(){
+    const v = scNovServVistas()
+    if(scNovServ == null || v == null){
+        return []
+    }
+    const vistas = new Set(v.ids)
+    const limite = Date.now() - SC_NOVSERV_NUEVO_DIAS * 86400000
+    return scNovServ.entradas.filter(e => !vistas.has(e.id) && scNovServDia(e.fecha) >= limite)
+}
+
+/** First run: what is older than a week counts as already seen. */
+function scNovServPrimeraVez(){
+    if(scNovServ == null || scNovServVistas() != null){
+        return
+    }
+    const limite = Date.now() - SC_NOVSERV_PRIMERA_DIAS * 86400000
+    scGuardarJson('scNovServVistas', { ids: scNovServ.entradas.filter(e => scNovServDia(e.fecha) < limite).map(e => e.id) })
+}
+
+/** The news view is on screen (it stays "active" behind Ajustes) showing the given tab. */
+function scPestanaVisible(cual){
+    const enLanding = typeof getCurrentView !== 'function' || typeof VIEWS === 'undefined' || getCurrentView() === VIEWS.landing
+    return enLanding && typeof newsActive !== 'undefined' && newsActive && scPestanaNovedades === cual
+}
+
+function scNovServVisible(){
+    return scPestanaVisible('servidor')
+}
+
+/** The RSS news count as seen when their tab is on screen (landing.js no longer does it on open). */
+function scNoticiasVistas(){
+    if(scPestanaVisible('noticias') && typeof newsAlertShown !== 'undefined' && newsAlertShown){
+        newsAlertShown = false
+        ConfigManager.setNewsCacheDismissed(true)
+        ConfigManager.save()
     }
 }
 
-document.getElementById('sc2NewsTabNoticias').addEventListener('click', () => scVerModpack(false))
-document.getElementById('sc2NewsTabModpack').addEventListener('click', () => scVerModpack(true))
-// The landing card opens the tab it talks about.
-document.getElementById('sc2NewsCard').addEventListener('click', () => {
-    scVerModpack(document.getElementById('sc2NewsCard').hasAttribute('data-modpack'))
-}, true)
-document.getElementById('newsButton').addEventListener('click', () => {
-    if(!document.getElementById('sc2NewsCard').hasAttribute('data-modpack')){
-        scVerModpack(false)
+/** While the section is on screen, its new entries become seen (they keep the mark this session). */
+function scNovServMarcarVistas(){
+    if(scNovServ == null || !scNovServVisible()){
+        return
     }
-}, true)
+    const nuevas = scNovServNuevas()
+    if(nuevas.length === 0){
+        return
+    }
+    for(const e of nuevas){
+        scNovServResaltadas.add(e.id)
+    }
+    const v = scNovServVistas() || { ids: [] }
+    const actuales = new Set(scNovServ.entradas.map(e => e.id))
+    // Ids no longer in the file are dropped so the list does not grow forever.
+    const ids = new Set(v.ids.filter(id => actuales.has(id)))
+    for(const id of actuales){
+        ids.add(id)
+    }
+    scGuardarJson('scNovServVistas', { ids: [...ids] })
+}
+
+function scNovServAvisos(){
+    const hay = scNovServNuevas().length > 0
+    document.getElementById('sc2NovServPunto').hidden = !hay
+    // Stop any RSS fade first, or it would hide the dot again when it ends.
+    const alerta = $('#newsButtonAlert').stop(true).css('opacity', '')
+    if(hay || (typeof newsAlertShown !== 'undefined' && newsAlertShown)){
+        alerta.show()
+    } else {
+        alerta.hide()
+    }
+}
+
+function scPintarNovServ(){
+    const lista = document.getElementById('sc2NovServLista')
+    const estado = document.getElementById('sc2NovServEstado')
+    lista.replaceChildren()
+    const msg = texto => {
+        const p = document.createElement('p')
+        p.className = 'sc2CalMsg'
+        p.textContent = texto
+        lista.append(p)
+    }
+    if(scNovServ == null){
+        estado.textContent = ''
+        msg(Lang.queryJS(scNovServError ? 'landing.sc2.novServError' : 'landing.sc2.novServLoading'))
+        return
+    }
+    // The last refresh failed: whatever is shown is the last copy we had.
+    estado.textContent = scNovServError ? Lang.queryJS('landing.sc2.novServOffline') : ''
+    if(scNovServ.entradas.length === 0){
+        msg(Lang.queryJS('landing.sc2.novServNone'))
+        return
+    }
+    for(const e of scNovServ.entradas){
+        const item = document.createElement('article')
+        item.className = 'sc2NovServItem sc2NovServ-' + e.tipo
+        const cab = document.createElement('div')
+        cab.className = 'sc2NovServCab'
+        const tipo = document.createElement('span')
+        tipo.className = 'sc2NovServTipo'
+        tipo.textContent = Lang.queryJS('landing.sc2.' + SC_NOVSERV_TIPOS[e.tipo]) + (e.version ? ' · ' + e.version : '')
+        const fecha = document.createElement('span')
+        fecha.className = 'sc2NovServFecha'
+        fecha.textContent = new Date(scNovServDia(e.fecha)).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
+        cab.append(tipo, fecha)
+        if(scNovServResaltadas.has(e.id)){
+            item.classList.add('sc2NovServNueva')
+            const nuevo = document.createElement('span')
+            nuevo.className = 'sc2NovServNuevo'
+            nuevo.textContent = Lang.queryJS('landing.sc2.novServNew')
+            cab.append(nuevo)
+        }
+        const titulo = document.createElement('h3')
+        titulo.className = 'sc2NovServItemTitulo'
+        titulo.textContent = e.titulo
+        item.append(cab, titulo)
+        if(e.puntos.length > 0){
+            const ul = document.createElement('ul')
+            ul.className = 'sc2NovServPuntos'
+            for(const p of e.puntos){
+                const li = document.createElement('li')
+                li.textContent = p
+                ul.append(li)
+            }
+            item.append(ul)
+        }
+        lista.append(item)
+    }
+}
+
+/** Repaints the section, the dots and the landing card after any change. */
+function scNovServRefrescarVista(){
+    try {
+        scNoticiasVistas()
+        scNovServMarcarVistas()
+        scPintarNovServ()
+        scNovServAvisos()
+        scPintarTarjetaNovedades()
+    } catch(err){
+        loggerLanding.warn('No se pudieron pintar las novedades del servidor', err)
+    }
+}
+
+async function scNovServPedir(){
+    if(scNovServPidiendo){
+        return
+    }
+    scNovServPidiendo = true
+    try {
+        const ctrl = new AbortController()
+        const t = setTimeout(() => ctrl.abort(), 8000)
+        let texto
+        try {
+            const res = await fetch(SC_NOVSERV_URL + '?t=' + Date.now(), { signal: ctrl.signal, cache: 'no-store' })
+            if(!res.ok){
+                throw new Error('HTTP ' + res.status)
+            }
+            texto = await res.text()
+        } finally {
+            clearTimeout(t)
+        }
+        if(texto.length > SC_NOVSERV_MAX_BYTES){
+            throw new Error('fichero demasiado grande')
+        }
+        const entradas = scNovServLimpiar(JSON.parse(texto))
+        if(entradas == null){
+            throw new Error('formato desconocido')
+        }
+        scNovServ = { entradas, guardadas: false }
+        scNovServError = false
+        scGuardarJson('scNovServCopia', { version: 1, entradas })
+    } catch(err){
+        loggerLanding.debug('Novedades del servidor no disponibles', err)
+        scNovServError = true
+    } finally {
+        scNovServPidiendo = false
+    }
+    scNovServPrimeraVez()
+    scNovServRefrescarVista()
+}
+
+// The last copy shows at once (and offline); the server one replaces it when it arrives.
+{
+    const copia = scLeerJson('scNovServCopia')
+    const entradas = copia != null ? scNovServLimpiar(copia) : null
+    if(entradas != null){
+        scNovServ = { entradas, guardadas: true }
+    }
+}
+scVerPestanaNovedades('servidor')
+scNovServPedir()
+setInterval(scNovServPedir, SC_NOVSERV_CADA)
 
 /* ---- Gallery ------------------------------------------------------------------ */
 

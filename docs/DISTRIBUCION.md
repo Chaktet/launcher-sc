@@ -228,7 +228,15 @@ gh release create vX.Y.Z --repo Chaktet/launcher-sc \
   dist/latest.yml
 
 # 4. el .exe versionado al VPS — NUNCA el estable, que va congelado
+
+# 5. la entrada para jugadores en «Novedades del servidor» (launcher/novedades.json)
+node E:/RESOURCE-MC/herramientas/anade_novedad.js --tipo launcher --version X.Y.Z \
+  --titulo "..." --punto "..."
 ```
+
+`servidor/novedades.json` es la copia maestra de esas novedades (la publica y la comprueba el
+script; ver «Release notes for players» en `E:/PROYECTOS-MC/CLAUDE.md`). Cada actualización que
+notan los jugadores lleva su entrada: packs, móvil, mods y plugins, launcher.
 
 Comprobación de que el auto-update lo ve:
 
