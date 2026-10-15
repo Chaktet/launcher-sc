@@ -1,0 +1,172 @@
+{
+  "version": 1,
+  "entradas": [
+    {
+      "id": "2026-10-14-launcher-1.14.0",
+      "fecha": "2026-10-14",
+      "tipo": "launcher",
+      "version": "1.14.0",
+      "titulo": "Novedades del servidor en el launcher",
+      "puntos": [
+        "Nueva sección «Novedades del servidor»: cada vez que actualicemos algo te lo contamos aquí.",
+        "Lo que aún no has visto lleva la marca «Nuevo», y un punto naranja en la pestaña Novedades te avisa."
+      ]
+    },
+    {
+      "id": "2026-10-14-pack-SC-3.2.71",
+      "fecha": "2026-10-14",
+      "tipo": "pack",
+      "version": "SC-3.2.71",
+      "titulo": "Llegan las skins de gimnasio",
+      "puntos": [
+        "47 skins nuevas de gimnasio para 43 Pokémon, como Garchomp, Zapdos y Giratina.",
+        "Skins especiales: Diancie Rubí y Zafiro, Incineroar en pijama y Ursaluna Luna Sangrienta.",
+        "Retoques en las skins de 42 Pokémon para que se vean mejor."
+      ]
+    },
+    {
+      "id": "2026-10-13-launcher-1.13.0",
+      "fecha": "2026-10-13",
+      "tipo": "launcher",
+      "version": "1.13.0",
+      "titulo": "Java desde nuestros servidores",
+      "puntos": [
+        "La primera instalación descarga Java desde nuestros servidores: más rápida y sin cortes."
+      ]
+    },
+    {
+      "id": "2026-10-13-launcher-1.12.0",
+      "fecha": "2026-10-13",
+      "tipo": "launcher",
+      "version": "1.12.0",
+      "titulo": "Galería de capturas y cambios del modpack",
+      "puntos": [
+        "Nueva pestaña Galería: tus capturas del juego (tecla F2), de la más nueva a la más vieja.",
+        "En Novedades ves qué ha cambiado en tu modpack desde la última vez que jugaste."
+      ]
+    },
+    {
+      "id": "2026-10-13-launcher-1.11.0",
+      "fecha": "2026-10-13",
+      "tipo": "launcher",
+      "version": "1.11.0",
+      "titulo": "Eventos y jugadores en directo",
+      "puntos": [
+        "Ves cuánta gente hay conectada en Kanto y en Kalos.",
+        "El próximo evento del staff aparece en la pantalla principal con cuenta atrás.",
+        "Nueva pestaña Eventos con el calendario completo, y un aviso en el escritorio 15 minutos antes de empezar."
+      ]
+    },
+    {
+      "id": "2026-10-13-launcher-1.10.0",
+      "fecha": "2026-10-13",
+      "tipo": "launcher",
+      "version": "1.10.0",
+      "titulo": "Reparar archivos y ZIP de soporte",
+      "puntos": [
+        "Botón «Reparar archivos» por si el juego no arranca o le falta algo.",
+        "Botón «ZIP de soporte»: crea un archivo con los registros para mandárselo al staff si tienes un problema.",
+        "El launcher se esconde mientras juegas y vuelve al cerrar el juego (puedes desactivarlo en Ajustes)."
+      ]
+    },
+    {
+      "id": "2026-10-13-launcher-1.9.0",
+      "fecha": "2026-10-13",
+      "tipo": "launcher",
+      "version": "1.9.0",
+      "titulo": "El launcher se ajusta a tu PC",
+      "puntos": [
+        "La memoria del juego se ajusta sola según tu ordenador.",
+        "Te recomendamos el perfil PRO o LITE según tu equipo.",
+        "Calidad gráfica Baja, Media o Alta con un solo clic."
+      ]
+    },
+    {
+      "id": "2026-10-12-launcher-1.8.0",
+      "fecha": "2026-10-12",
+      "tipo": "launcher",
+      "version": "1.8.0",
+      "titulo": "Launcher renovado",
+      "puntos": [
+        "Pantalla principal nueva, más clara y con las secciones a mano.",
+        "Las noticias del servidor vuelven a verse."
+      ]
+    },
+    {
+      "id": "2026-10-07-pack-SC-3.2.70",
+      "fecha": "2026-10-07",
+      "tipo": "pack",
+      "version": "SC-3.2.70",
+      "titulo": "Pokémon con su diseño oficial",
+      "puntos": [
+        "Muchos Pokémon normales vuelven a verse con el modelo y las animaciones oficiales de Cobblemon: Meowscarada, Aurorus, Wurmple, Beautifly, Gengar, Clefable y más.",
+        "Braviary de Hisui ya sale con su diseño oficial.",
+        "Las skins siguen igual que antes."
+      ]
+    },
+    {
+      "id": "2026-10-06-pack-SC-3.2.68",
+      "fecha": "2026-10-06",
+      "tipo": "pack",
+      "version": "SC-3.2.68",
+      "titulo": "Minijuegos de pesca más cómodos",
+      "puntos": [
+        "Los minijuegos de pesca se ven más pequeños y ya caben bien en la pantalla.",
+        "El Magikarp del minijuego Carrete vuelve a su tamaño original."
+      ]
+    },
+    {
+      "id": "2026-10-06-servidor-eventos-rankeds",
+      "fecha": "2026-10-06",
+      "tipo": "servidor",
+      "titulo": "Calendario de eventos y rankeds más justas",
+      "puntos": [
+        "Nuevo /eventos: calendario con los eventos del staff, avisos antes de empezar y premios para el podio.",
+        "Rankeds: se acabaron los empates por tardar en cambiar de Pokémon, y hay reloj de turno.",
+        "/ruleta historial ahora muestra la rareza de cada premio."
+      ]
+    },
+    {
+      "id": "2026-10-06-servidor-clanes",
+      "fecha": "2026-10-06",
+      "tipo": "servidor",
+      "titulo": "Clanes mejorados",
+      "puntos": [
+        "Las mejoras de clan que compras ya tienen efecto: experiencia, amistad, EV, shiny y más.",
+        "Misiones PvP de clan nuevas, diarias y semanales.",
+        "Los clanes pueden crecer hasta 28 miembros."
+      ]
+    },
+    {
+      "id": "2026-10-05-pack-SC-3.2.64",
+      "fecha": "2026-10-05",
+      "tipo": "pack",
+      "version": "SC-3.2.64",
+      "titulo": "Monturas arregladas",
+      "puntos": [
+        "Ya puedes montar sin que el Pokémon se mueva solo: Pikachu, Raichu, Rayquaza, Lapras, Greninja, Poliwrath y más.",
+        "Cinccino ya no tiene el pelo de punta."
+      ]
+    },
+    {
+      "id": "2026-10-04-modpack-emotes",
+      "fecha": "2026-10-04",
+      "tipo": "modpack",
+      "titulo": "Más de 300 emotes",
+      "puntos": [
+        "Abraza, baila, saluda… más de 300 animaciones para tu personaje, con nombres en español.",
+        "Ábrelas con la rueda de emotes dentro del juego."
+      ]
+    },
+    {
+      "id": "2026-10-04-pack-SC-3.2.63",
+      "fecha": "2026-10-04",
+      "tipo": "pack",
+      "version": "SC-3.2.63",
+      "titulo": "Anillos de boda",
+      "puntos": [
+        "Los anillos de boda ya se ven en la mano, en oro y en oro rosa."
+      ]
+    }
+  ]
+}

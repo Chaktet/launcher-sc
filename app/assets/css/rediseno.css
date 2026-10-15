@@ -1129,7 +1129,101 @@ body {
 .sc2NewsSwitchBtn:hover { border-image-source: url('../images/ui/tab-hover@2x.png') !important; color: var(--sc2-ink) !important; }
 .sc2NewsSwitchBtn[aria-selected="true"] { border-image-source: url('../images/ui/tab-selected@2x.png') !important; color: var(--sc2-ink) !important; }
 #sc2NewsFrame.sc2VerModpack > #newsContent,
-#sc2NewsFrame.sc2VerModpack > #newsErrorContainer { display: none !important; }
+#sc2NewsFrame.sc2VerModpack > #newsErrorContainer,
+#sc2NewsFrame.sc2VerServidor > #newsContent,
+#sc2NewsFrame.sc2VerServidor > #newsErrorContainer { display: none !important; }
+
+/* ---- Server release notes (1.14.0) ----------------------------------------- */
+#sc2NewsTabServidor { position: relative; }
+#sc2NovServPunto {
+    position: absolute;
+    top: calc(var(--px) * -6);
+    right: calc(var(--px) * -10);
+    width: calc(var(--px) * 8);
+    height: calc(var(--px) * 8);
+    border-radius: 50%;
+    background: var(--sc2-orange);
+}
+#sc2NovServPunto[hidden] { display: none; }
+#sc2NovServPanel {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--px) * 6);
+    padding: calc(var(--px) * 10) calc(var(--px) * 14);
+    border-top: 1px solid rgba(166, 184, 188, 0.14);
+}
+#sc2NovServPanel[hidden] { display: none; }
+#sc2NovServTitulo {
+    font-size: calc(var(--px) * 22);
+    font-weight: 700;
+    color: var(--sc2-ink);
+}
+#sc2NovServEstado {
+    font-size: calc(var(--px) * 12);
+    color: var(--sc2-orange);
+    margin-bottom: calc(var(--px) * 6);
+}
+#sc2NovServEstado:empty { display: none; }
+#sc2NovServLista {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--px) * 10);
+}
+.sc2NovServItem {
+    flex-shrink: 0;
+    padding: calc(var(--px) * 10) calc(var(--px) * 14) calc(var(--px) * 12);
+    background: rgba(16, 31, 40, 0.7);
+    border-left: 2px solid var(--sc2-ink-3);
+}
+.sc2NovServ-pack, .sc2NovServ-movil { border-left-color: #7cc56f; }
+.sc2NovServ-launcher, .sc2NovServ-modpack { border-left-color: var(--sc2-blue); }
+.sc2NovServ-servidor { border-left-color: var(--sc2-orange); }
+.sc2NovServCab {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--px) * 10);
+    font-size: calc(var(--px) * 11);
+}
+.sc2NovServTipo {
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--sc2-blue);
+}
+.sc2NovServFecha { color: var(--sc2-ink-2); }
+.sc2NovServNuevo {
+    margin-left: auto;
+    padding: calc(var(--px) * 2) calc(var(--px) * 8);
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--sc2-base);
+    background: var(--sc2-orange);
+}
+.sc2NovServItemTitulo {
+    margin: calc(var(--px) * 6) 0 0;
+    font-size: calc(var(--px) * 16);
+    font-weight: 700;
+    color: var(--sc2-ink);
+}
+.sc2NovServPuntos {
+    margin: calc(var(--px) * 6) 0 0;
+    padding-left: calc(var(--px) * 18);
+    font-size: calc(var(--px) * 13);
+    line-height: 1.45;
+    color: #d6dfe0;
+}
+.sc2NovServPuntos li + li { margin-top: calc(var(--px) * 3); }
+#sc2NewsCard[data-servidor] .sc2CardKicker { color: var(--sc2-orange); }
+#sc2NewsCard .sc2CardTitle {
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
 #sc2ModpackPanel {
     flex: 1;
     min-height: 0;
