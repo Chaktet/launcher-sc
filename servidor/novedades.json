@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-15-servidor-Discord-renovado-y-mas-facil-de-usar",
+      "fecha": "2026-10-15",
+      "tipo": "servidor",
+      "titulo": "Discord renovado y más fácil de usar",
+      "puntos": [
+        "Nueva sección «Empieza aquí»: en #como-entrar tienes el launcher, el paquete de recursos y la guía para móvil a un clic.",
+        "Normas nuevas, más cortas y claras, y un #informacion con todos los eventos y sus horarios.",
+        "Al entrar al Discord eliges tu región (Kanto o Kalos) y de qué quieres que te avisemos."
+      ]
+    },
+    {
       "id": "2026-10-14-servidor-El-Magikarp-ya-no-se-corta-al-empezar",
       "fecha": "2026-10-14",
       "tipo": "servidor",
