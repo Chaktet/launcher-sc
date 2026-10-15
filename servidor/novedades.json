@@ -2,6 +2,15 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-14-servidor-El-Magikarp-ya-no-se-corta-al-empezar",
+      "fecha": "2026-10-14",
+      "tipo": "servidor",
+      "titulo": "El Magikarp ya no se corta al empezar",
+      "puntos": [
+        "Si el sedal se recoge solo al empezar el minijuego del Magikarp, la partida sigue y puedes ganar el pez."
+      ]
+    },
+    {
       "id": "2026-10-14-launcher-1.15.0",
       "fecha": "2026-10-14",
       "tipo": "launcher",
