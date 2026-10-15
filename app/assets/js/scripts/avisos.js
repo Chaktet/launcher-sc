@@ -17,6 +17,8 @@ const SC_AVISO_MODPACK_PLAZO = 15000
 let scAvisoClave = null          // what the visible notice is about
 let scModpackAvisado = null      // remote snapshot already announced
 let scModpackRevisando = false
+let scModpackGeneracion = 0      // bumped when JUGAR reloads the distribution or the profile changes
+let scLauncherAvisado = null     // launcher version already announced (the updater repeats the event)
 
 /* ---- Notice ------------------------------------------------------------------ */
 
@@ -153,8 +155,14 @@ async function scRevisarModpackRemoto(){
         return
     }
     scModpackRevisando = true
+    const generacion = scModpackGeneracion
     try {
         const raw = await scDistroRemota()
+        // An answer that arrives after JUGAR reloaded the distribution (or a profile change, or
+        // during a download) compares against something else: drop it.
+        if(generacion !== scModpackGeneracion || scDescargando()){
+            return
+        }
         const remoto = Array.isArray(raw?.servers) ? raw.servers.find(s => s?.id === local.rawServer.id) : null
         // The selection or the loaded distribution may have changed while waiting.
         const actual = DistroAPI.distribution?.getServerById(ConfigManager.getSelectedServer())
@@ -169,6 +177,9 @@ async function scRevisarModpackRemoto(){
         }
         const { cambios, resumen } = scDiferencias(antes, ahora)
         if(cambios.length === 0){
+            // Nothing pending for this profile (any more): an old notice goes away.
+            scModpackAvisado = null
+            scCerrarAviso('modpack')
             return
         }
         scModpackAvisado = clave
@@ -187,6 +198,7 @@ async function scRevisarModpackRemoto(){
 
 /** Called by landing.js after JUGAR refreshed the distribution: the notice is done. */
 function scModpackAlDia(){
+    scModpackGeneracion++
     scModpackAvisado = null
     scCerrarAviso('modpack')
 }
@@ -222,6 +234,11 @@ function scAvisoNovedad(nuevas){
 
 /** A new launcher version is downloaded but the automatic install could not be offered (uicore.js). */
 function scAvisoLauncher(version){
+    // Once per version: the updater emits update-downloaded again on every 30-minute check.
+    if(version === scLauncherAvisado){
+        return
+    }
+    scLauncherAvisado = version
     scMostrarAviso({
         clave: 'launcher',
         kicker: Lang.queryJS('landing.sc2.avisoKickerLauncher'),
@@ -255,3 +272,8 @@ function scAvisoLauncherCuentaAtras(version){
 }
 
 setInterval(scRevisarModpackRemoto, SC_AVISO_MODPACK_CADA)
+// Another profile: its own notice, not the previous profile's (same trigger as novedades.js).
+new MutationObserver(() => {
+    scModpackAlDia()
+    scRevisarModpackRemoto()
+}).observe(document.getElementById('server_selection_button'), { childList: true, characterData: true, subtree: true })
