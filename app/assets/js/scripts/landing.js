@@ -2550,6 +2550,10 @@ async function scDlAsyncInterno(login = true) {
         if(typeof scRevisarModpack === 'function'){
             scRevisarModpack()
         }
+        // The pending "modpack update" notice is now downloading (avisos.js).
+        if(typeof scModpackAlDia === 'function'){
+            scModpackAlDia()
+        }
     } catch(err) {
         loggerLaunchSuite.error('Unable to refresh distribution index.', err)
         scFalloArranque(SC_ERR.DISTRO, Lang.queryJS('landing.launch.errDistro'), new Error('No distribution index'))

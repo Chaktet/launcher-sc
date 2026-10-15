@@ -313,6 +313,7 @@ const SC_NOVSERV_TIPOS = {
 let scNovServ = null              // { entradas, guardadas } (guardadas = copy from a previous run)
 let scNovServError = false
 let scNovServPidiendo = false
+let scNovServConocidas = null     // ids of the first successful download of this session
 const scNovServResaltadas = new Set() // shown as "Nuevo" until the launcher closes
 
 /** "2026-10-14" -> local midnight in ms, or NaN. */
@@ -534,8 +535,18 @@ async function scNovServPedir(){
         if(entradas == null){
             throw new Error('formato desconocido')
         }
+        // Entries that appeared while the launcher was open get a notice (avisos.js).
+        const llegadas = scNovServConocidas == null ? [] : entradas.filter(e => !scNovServConocidas.has(e.id))
+        scNovServConocidas = new Set(entradas.map(e => e.id))
         scNovServ = { entradas, guardadas: false }
         scNovServError = false
+        // Not when the player is already looking at this section.
+        const mirando = scNovServVisible() && typeof scVentanaAtendida === 'function' && scVentanaAtendida()
+        if(llegadas.length > 0 && !mirando && typeof scAvisoNovedad === 'function'){
+            scNovServPrimeraVez()
+            const nuevas = new Set(scNovServNuevas().map(e => e.id))
+            scAvisoNovedad(llegadas.filter(e => nuevas.has(e.id)))
+        }
         scGuardarJson('scNovServCopia', { version: 1, entradas })
     } catch(err){
         loggerLanding.debug('Novedades del servidor no disponibles', err)
