@@ -1,0 +1,41 @@
+{
+  "publicadas": [
+    "2026-10-14-servidor-El-Magikarp-ya-no-se-corta-al-empezar",
+    "2026-10-14-launcher-1.15.0",
+    "2026-10-14-launcher-1.14.0",
+    "2026-10-14-pack-SC-3.2.71",
+    "2026-10-13-launcher-1.13.0",
+    "2026-10-13-launcher-1.12.0",
+    "2026-10-13-launcher-1.11.0",
+    "2026-10-13-launcher-1.10.0",
+    "2026-10-13-launcher-1.9.0",
+    "2026-10-12-launcher-1.8.0",
+    "2026-10-07-pack-SC-3.2.70",
+    "2026-10-06-pack-SC-3.2.68",
+    "2026-10-06-servidor-eventos-rankeds",
+    "2026-10-06-servidor-clanes",
+    "2026-10-05-pack-SC-3.2.64",
+    "2026-10-04-modpack-emotes",
+    "2026-10-04-pack-SC-3.2.63",
+    "2026-10-15-servidor-Nucleo-de-cristal-en-la-tienda",
+    "2026-10-15-servidor-Torneos-con-premios-propios",
+    "2026-10-15-servidor-Gimnasios-aviso-cuando-abre-un-lider",
+    "2026-10-15-servidor-Apuntate-a-un-evento-y-te-avisamos",
+    "2026-10-15-servidor-Avisos-de-eventos-en-directo",
+    "2026-10-15-servidor-Discord-renovado-y-mas-facil-de-usar"
+  ],
+  "mensajes": [
+    {
+      "fecha": "2026-10-15",
+      "mensaje": "1560208455476977735",
+      "entradas": [
+        "2026-10-15-servidor-Nucleo-de-cristal-en-la-tienda",
+        "2026-10-15-servidor-Torneos-con-premios-propios",
+        "2026-10-15-servidor-Gimnasios-aviso-cuando-abre-un-lider",
+        "2026-10-15-servidor-Apuntate-a-un-evento-y-te-avisamos",
+        "2026-10-15-servidor-Avisos-de-eventos-en-directo",
+        "2026-10-15-servidor-Discord-renovado-y-mas-facil-de-usar"
+      ]
+    }
+  ]
+}
