@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-15-servidor-Apuntate-a-un-evento-y-te-avisamos",
+      "fecha": "2026-10-15",
+      "tipo": "servidor",
+      "titulo": "Apúntate a un evento y te avisamos",
+      "puntos": [
+        "Los eventos del servidor, las raids legendarias y el Community Day salen en el calendario del Discord («Eventos», arriba del todo).",
+        "Pulsa «Interesado» y te mandamos un privado 10 minutos antes de que empiece."
+      ]
+    },
+    {
       "id": "2026-10-15-servidor-Avisos-de-eventos-en-directo",
       "fecha": "2026-10-15",
       "tipo": "servidor",
