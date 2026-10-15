@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-15-servidor-Tienda-web-mas-facil",
+      "fecha": "2026-10-15",
+      "tipo": "servidor",
+      "titulo": "Tienda web más fácil",
+      "puntos": [
+        "Ya puedes comprar en la tienda de la web sin conectar Discord: solo con tu nombre de Minecraft",
+        "Los precios salen en la moneda de tu país: dólares si juegas desde América, euros desde España",
+        "Si conectas Discord, vuelves a la misma página de la tienda en vez de a la portada"
+      ]
+    },
+    {
       "id": "2026-10-15-servidor-Nucleo-de-cristal-en-la-tienda",
       "fecha": "2026-10-15",
       "tipo": "servidor",
