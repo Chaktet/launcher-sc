@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-15-servidor-Los-aumentos-de-tesoros-y-cebo-versatil-ya-funcionan",
+      "fecha": "2026-10-15",
+      "tipo": "servidor",
+      "titulo": "Los aumentos de tesoros y cebo versátil ya funcionan",
+      "puntos": [
+        "Cazador de Tesoros ahora te da más tesoros al pescar.",
+        "Cebo Versátil ahora atrae más variedad de peces.",
+        "Los aumentos que los llevan (Cazador Místico de Tesoros, Pescador Versátil Abundante y el de Largo Alcance) ya aplican sus dos encantamientos."
+      ]
+    },
+    {
       "id": "2026-10-15-servidor-Tienda-web-mas-facil",
       "fecha": "2026-10-15",
       "tipo": "servidor",
