@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-15-servidor-Avisos-de-eventos-en-directo",
+      "fecha": "2026-10-15",
+      "tipo": "servidor",
+      "titulo": "Avisos de eventos en directo",
+      "puntos": [
+        "Nuevo canal #eventos-en-directo: raids, legendarios, Community Day, minijuegos y jefes de pesca al momento.",
+        "La mayoría de avisos llegan 10 minutos antes, para que te dé tiempo a entrar."
+      ]
+    },
+    {
       "id": "2026-10-15-servidor-Discord-renovado-y-mas-facil-de-usar",
       "fecha": "2026-10-15",
       "tipo": "servidor",
