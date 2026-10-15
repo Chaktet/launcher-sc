@@ -3040,7 +3040,8 @@ document.getElementById('newsButton').onclick = () => {
     } else {
         $('#lower *').attr('tabindex', '-1')
         $('#newsContainer, #newsContainer *').removeAttr('tabindex')
-        if(newsAlertShown){
+        // The RSS news count as seen only when their tab opens (novedades.js decides the tab first).
+        if(newsAlertShown && (typeof scPestanaNovedades === 'undefined' || scPestanaNovedades === 'noticias')){
             $('#newsButtonAlert').fadeOut(2000)
             newsAlertShown = false
             ConfigManager.setNewsCacheDismissed(true)

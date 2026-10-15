@@ -280,7 +280,9 @@ document.getElementById('newsButton').addEventListener('click', () => {
     const pedida = scPestanaPedida
     scPestanaPedida = null
     if(typeof newsActive !== 'undefined' && !newsActive){
-        scVerPestanaNovedades(pedida || 'servidor')
+        // Pending RSS news and nothing new from the server: open the RSS tab.
+        const rss = typeof newsAlertShown !== 'undefined' && newsAlertShown && scNovServNuevas().length === 0
+        scVerPestanaNovedades(pedida || (rss ? 'noticias' : 'servidor'))
         // landing.js opens the view after this listener: mark as seen once it is open.
         setTimeout(scNovServRefrescarVista, 0)
     }
@@ -383,8 +385,23 @@ function scNovServPrimeraVez(){
     scGuardarJson('scNovServVistas', { ids: scNovServ.entradas.filter(e => scNovServDia(e.fecha) < limite).map(e => e.id) })
 }
 
+/** The news view is on screen (it stays "active" behind Ajustes) showing the given tab. */
+function scPestanaVisible(cual){
+    const enLanding = typeof getCurrentView !== 'function' || typeof VIEWS === 'undefined' || getCurrentView() === VIEWS.landing
+    return enLanding && typeof newsActive !== 'undefined' && newsActive && scPestanaNovedades === cual
+}
+
 function scNovServVisible(){
-    return typeof newsActive !== 'undefined' && newsActive && scPestanaNovedades === 'servidor'
+    return scPestanaVisible('servidor')
+}
+
+/** The RSS news count as seen when their tab is on screen (landing.js no longer does it on open). */
+function scNoticiasVistas(){
+    if(scPestanaVisible('noticias') && typeof newsAlertShown !== 'undefined' && newsAlertShown){
+        newsAlertShown = false
+        ConfigManager.setNewsCacheDismissed(true)
+        ConfigManager.save()
+    }
 }
 
 /** While the section is on screen, its new entries become seen (they keep the mark this session). */
@@ -412,11 +429,12 @@ function scNovServMarcarVistas(){
 function scNovServAvisos(){
     const hay = scNovServNuevas().length > 0
     document.getElementById('sc2NovServPunto').hidden = !hay
-    const alerta = document.getElementById('newsButtonAlert')
-    if(hay){
-        alerta.style.display = ''
-    } else if(typeof newsAlertShown === 'undefined' || !newsAlertShown){
-        alerta.style.display = 'none'
+    // Stop any RSS fade first, or it would hide the dot again when it ends.
+    const alerta = $('#newsButtonAlert').stop(true).css('opacity', '')
+    if(hay || (typeof newsAlertShown !== 'undefined' && newsAlertShown)){
+        alerta.show()
+    } else {
+        alerta.hide()
     }
 }
 
@@ -435,7 +453,8 @@ function scPintarNovServ(){
         msg(Lang.queryJS(scNovServError ? 'landing.sc2.novServError' : 'landing.sc2.novServLoading'))
         return
     }
-    estado.textContent = scNovServError && scNovServ.guardadas ? Lang.queryJS('landing.sc2.novServOffline') : ''
+    // The last refresh failed: whatever is shown is the last copy we had.
+    estado.textContent = scNovServError ? Lang.queryJS('landing.sc2.novServOffline') : ''
     if(scNovServ.entradas.length === 0){
         msg(Lang.queryJS('landing.sc2.novServNone'))
         return
@@ -480,6 +499,7 @@ function scPintarNovServ(){
 /** Repaints the section, the dots and the landing card after any change. */
 function scNovServRefrescarVista(){
     try {
+        scNoticiasVistas()
         scNovServMarcarVistas()
         scPintarNovServ()
         scNovServAvisos()
