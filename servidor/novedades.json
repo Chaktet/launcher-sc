@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-15-servidor-Gimnasios-aviso-cuando-abre-un-lider",
+      "fecha": "2026-10-15",
+      "tipo": "servidor",
+      "titulo": "Gimnasios: aviso cuando abre un líder",
+      "puntos": [
+        "Cuando un líder abre su gimnasio sale en #retar-lideres-y-elite4, con la medalla, la región y el formato.",
+        "Coge el rol Alerta Gimnasios al entrar al Discord para que te mencionen.",
+        "Ese canal ahora lo puede ver todo el mundo."
+      ]
+    },
+    {
       "id": "2026-10-15-servidor-Apuntate-a-un-evento-y-te-avisamos",
       "fecha": "2026-10-15",
       "tipo": "servidor",
