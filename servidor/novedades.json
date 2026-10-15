@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-14-launcher-1.15.0",
+      "fecha": "2026-10-14",
+      "tipo": "launcher",
+      "version": "1.15.0",
+      "titulo": "Avisos de actualización con el launcher abierto",
+      "puntos": [
+        "Si sacamos un paquete de recursos o mods nuevos mientras tienes el launcher abierto, te avisamos: se descargan solos al pulsar JUGAR.",
+        "Las novedades del servidor y las versiones nuevas del launcher también te avisan, con un botón para verlas o instalarlas.",
+        "Con el launcher minimizado te llega una notificación de Windows, nunca mientras juegas."
+      ]
+    },
+    {
       "id": "2026-10-14-launcher-1.14.0",
       "fecha": "2026-10-14",
       "tipo": "launcher",
