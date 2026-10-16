@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-15-servidor-Cobblemon-1.8.2",
+      "fecha": "2026-10-15",
+      "tipo": "servidor",
+      "version": "Cobblemon 1.8.2",
+      "titulo": "El servidor se actualiza a Cobblemon 1.8.2",
+      "puntos": [
+        "Kanto y Kalos ya funcionan con Cobblemon 1.8.2",
+        "El launcher y el pack de móvil se actualizan solos: ábrelos y listo",
+        "Todas las skins siguen viéndose igual que antes"
+      ]
+    },
+    {
       "id": "2026-10-15-servidor-Los-aumentos-de-tesoros-y-cebo-versatil-ya-funcionan",
       "fecha": "2026-10-15",
       "tipo": "servidor",
