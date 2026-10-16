@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-16-servidor-IFE-1.0.700",
+      "fecha": "2026-10-16",
+      "tipo": "servidor",
+      "version": "IFE-1.0.700",
+      "titulo": "Pesca: menos avisos y más claros",
+      "puntos": [
+        "Las temporadas de pesca, los consejos y las capturas normales ya no llenan el chat de todo el servidor; solo se anuncian los jefes y las capturas de verdad raras.",
+        "Tus avisos de racha, maestría, mochila y encantamientos salen en una línea o encima de la barra de objetos.",
+        "El Kraken y el Megalodón se anuncian en una o dos líneas, con el botón para unirte."
+      ]
+    },
+    {
       "id": "2026-10-16-servidor-SCClanes-1.76.91",
       "fecha": "2026-10-16",
       "tipo": "servidor",
