@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-16-servidor-Gimnasios-hacen-falta-6-horas-de-juego",
+      "fecha": "2026-10-16",
+      "tipo": "servidor",
+      "titulo": "Gimnasios: hacen falta 6 horas de juego",
+      "puntos": [
+        "Para retar un gimnasio necesitas 6 horas de juego activo; el tiempo AFK no cuenta",
+        "Si ya jugabas antes del 15 de septiembre, no te afecta",
+        "Al intentar entrar en la cola te dice cuántas horas te faltan"
+      ]
+    },
+    {
       "id": "2026-10-15-servidor-Llaves-de-regalo-desde-Discord",
       "fecha": "2026-10-15",
       "tipo": "servidor",
