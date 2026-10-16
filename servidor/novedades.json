@@ -2,6 +2,20 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-17-servidor-Community-Day-renovado-mas-Pokemon-y-mejores-premios",
+      "fecha": "2026-10-17",
+      "tipo": "servidor",
+      "titulo": "Community Day renovado: más Pokémon y mejores premios",
+      "puntos": [
+        "Salen muchos más Pokémon en las zonas del Community, y cuantos más jugadores haya en una zona, más aparecen.",
+        "Cada hora en punto, 3 minutos de frenesí: lluvia de Pokémon en las zonas, con aviso un minuto antes.",
+        "La skin Community ya no cambia tu Pokémon: conserva su nivel, naturaleza, movimientos y Poké Ball.",
+        "Si llevas muchas capturas sin skin, la siguiente sale seguro.",
+        "Premios nuevos al llegar a 25, 50, 100, 200 y 400 capturas, y la meta de todos se cumple por escalones.",
+        "El podio paga siempre y ahora también premia del 4º al 10º."
+      ]
+    },
+    {
       "id": "2026-10-16-servidor-IFE-1.0.700",
       "fecha": "2026-10-16",
       "tipo": "servidor",
