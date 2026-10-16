@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-16-servidor-Medallas-1.9.166",
+      "fecha": "2026-10-16",
+      "tipo": "servidor",
+      "version": "Medallas 1.9.166",
+      "titulo": "Líderes: ya ves cada combate que te cuenta",
+      "puntos": [
+        "Cuando un reto de tu gimnasio cuenta para tu pago, te sale en pantalla y en el chat: «Combate contado para tu pago: x/10».",
+        "Las rendiciones después del turno 3 siempre han contado; lo que pasaba es que no se veía."
+      ]
+    },
+    {
       "id": "2026-10-16-servidor-Medallas-1.9.164",
       "fecha": "2026-10-16",
       "tipo": "servidor",
