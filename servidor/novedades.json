@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-15-servidor-Los-lideres-de-gimnasio-cobran-por-combatir",
+      "fecha": "2026-10-15",
+      "tipo": "servidor",
+      "titulo": "Los líderes de gimnasio cobran por combatir",
+      "puntos": [
+        "Cada 10 retos de gimnasio terminados, ganes o pierdas, cobras 800 tokens",
+        "Los retos del día uber cuentan aparte y pagan el doble: 1600 tokens cada 10"
+      ]
+    },
+    {
       "id": "2026-10-15-servidor-Llaves-de-regalo-desde-Discord",
       "fecha": "2026-10-15",
       "tipo": "servidor",
