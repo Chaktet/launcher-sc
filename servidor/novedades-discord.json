@@ -28,7 +28,11 @@
     "2026-10-15-servidor-Viajar-a-la-otra-region-con-un-clic",
     "2026-10-15-servidor-Chat-global-entre-Kanto-y-Kalos",
     "2026-10-15-servidor-Cobblemon-1.8.2",
-    "2026-10-15-servidor-Los-aumentos-de-tesoros-y-cebo-versatil-ya-funcionan"
+    "2026-10-15-servidor-Los-aumentos-de-tesoros-y-cebo-versatil-ya-funcionan",
+    "2026-10-15-servidor-Llaves-de-regalo-desde-Discord",
+    "2026-10-15-servidor-Los-lideres-de-gimnasio-cobran-por-combatir",
+    "2026-10-15-servidor-Tienda-web-mas-facil",
+    "2026-10-16-servidor-Gimnasios-hacen-falta-6-horas-de-juego"
   ],
   "mensajes": [
     {
@@ -53,6 +57,16 @@
         "2026-10-15-servidor-Chat-global-entre-Kanto-y-Kalos",
         "2026-10-15-servidor-Cobblemon-1.8.2",
         "2026-10-15-servidor-Los-aumentos-de-tesoros-y-cebo-versatil-ya-funcionan"
+      ]
+    },
+    {
+      "fecha": "2026-10-16",
+      "mensaje": "1560513471601446915",
+      "entradas": [
+        "2026-10-15-servidor-Llaves-de-regalo-desde-Discord",
+        "2026-10-15-servidor-Los-lideres-de-gimnasio-cobran-por-combatir",
+        "2026-10-15-servidor-Tienda-web-mas-facil",
+        "2026-10-16-servidor-Gimnasios-hacen-falta-6-horas-de-juego"
       ]
     }
   ]
