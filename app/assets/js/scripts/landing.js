@@ -2441,6 +2441,28 @@ function scPctEnFase(fase, transcurridoMs, esperadoMs){
 const SC_DISTRO_REFRESCO_MS = 15000
 
 /**
+ * El preloader fija las carpetas de DistroAPI una sola vez, al abrir el launcher. Si
+ * el jugador cambia la carpeta de datos en Ajustes y pulsa JUGAR sin reiniciar, la
+ * reparación descargaba en la carpeta nueva y luego se leía el JSON de Fabric de la
+ * vieja: SC-03 con ENOENT en .helioslauncher\common\versions (informe de 16-10).
+ * Se alinean con la configuración y se rehacen las rutas de la distribución cargada.
+ */
+function scAlinearCarpetasDistro(logger){
+    const common = ConfigManager.getCommonDirectory()
+    const instancias = ConfigManager.getInstanceDirectory()
+    if(DistroAPI.commonDir === common && DistroAPI.instanceDir === instancias){
+        return
+    }
+    logger.info(`Carpeta de datos cambiada: ${DistroAPI.commonDir} -> ${common}`)
+    DistroAPI.commonDir = common
+    DistroAPI.instanceDir = instancias
+    if(DistroAPI.distribution != null){
+        const { HeliosDistribution } = require('helios-core/common')
+        DistroAPI.distribution = new HeliosDistribution(DistroAPI.distribution.rawDistribution, common, instancias)
+    }
+}
+
+/**
  * Equivale a DistroAPI.refreshDistributionOrFallback(), pero con tiempo máximo y
  * sin efectos tardíos. Con un Promise.race sobre el refresco de helios, la respuesta
  * que llegaba DESPUÉS del límite seguía escribiendo distribution.json y la copia en
@@ -2452,6 +2474,7 @@ const SC_DISTRO_REFRESCO_MS = 15000
  * @returns {Promise<HeliosDistribution|null>}
  */
 async function scRefrescarDistribucion(logger){
+    scAlinearCarpetasDistro(logger)
     if(DistroAPI.isDevMode()){
         // En desarrollo helios solo lee la copia local: no hay red que esperar.
         return DistroAPI.refreshDistributionOrFallback()
