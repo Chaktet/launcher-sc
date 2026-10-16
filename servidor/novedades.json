@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-16-servidor-Hunts-con-shiny-y-viajes-arreglados",
+      "fecha": "2026-10-16",
+      "tipo": "servidor",
+      "titulo": "Hunts con shiny y viajes arreglados",
+      "puntos": [
+        "Si capturas la especie de tu hunt en versión shiny, ahora también te cuenta",
+        "C:/Program Files/Git/warp raids ya te lleva a la arena de raids y /warp elite4 a la sala de gimnasios"
+      ]
+    },
+    {
       "id": "2026-10-16-servidor-Medallas-1.9.162",
       "fecha": "2026-10-16",
       "tipo": "servidor",
