@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-16-servidor-Medallas-1.9.164",
+      "fecha": "2026-10-16",
+      "tipo": "servidor",
+      "version": "Medallas 1.9.164",
+      "titulo": "Gimnasios más justos",
+      "puntos": [
+        "No se puede retar el gimnasio de un líder que juega desde tu misma conexión a internet.",
+        "Rendirse antes del turno 3 en un reto de gimnasio ya no cuenta para misiones, logros ni el pase de batalla."
+      ]
+    },
+    {
       "id": "2026-10-16-servidor-Medallas-1.9.163",
       "fecha": "2026-10-16",
       "tipo": "servidor",
