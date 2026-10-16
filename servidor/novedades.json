@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-16-servidor-Tu-insignia-de-rango-en-la-web-aunque-compraras-antes",
+      "fecha": "2026-10-16",
+      "tipo": "servidor",
+      "titulo": "Tu insignia de rango en la web, aunque compraras antes",
+      "puntos": [
+        "Si compraste en la tienda de la web antes de unir tu cuenta de Minecraft, al unirla ya te sale tu insignia de rango.",
+        "Comprar después algo más barato ya no te baja la insignia."
+      ]
+    },
+    {
       "id": "2026-10-16-servidor-PokeMorph-1.0.11",
       "fecha": "2026-10-16",
       "tipo": "servidor",
