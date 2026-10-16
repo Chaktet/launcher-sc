@@ -32,7 +32,11 @@
     "2026-10-15-servidor-Llaves-de-regalo-desde-Discord",
     "2026-10-15-servidor-Los-lideres-de-gimnasio-cobran-por-combatir",
     "2026-10-15-servidor-Tienda-web-mas-facil",
-    "2026-10-16-servidor-Gimnasios-hacen-falta-6-horas-de-juego"
+    "2026-10-16-servidor-Gimnasios-hacen-falta-6-horas-de-juego",
+    "2026-10-16-servidor-Medallas-1.9.163",
+    "2026-10-16-servidor-Hunts-con-shiny-y-viajes-arreglados",
+    "2026-10-16-servidor-Medallas-1.9.162",
+    "2026-10-16-launcher-1.15.1"
   ],
   "mensajes": [
     {
@@ -67,6 +71,16 @@
         "2026-10-15-servidor-Los-lideres-de-gimnasio-cobran-por-combatir",
         "2026-10-15-servidor-Tienda-web-mas-facil",
         "2026-10-16-servidor-Gimnasios-hacen-falta-6-horas-de-juego"
+      ]
+    },
+    {
+      "fecha": "2026-10-16",
+      "mensaje": "1560694711625195594",
+      "entradas": [
+        "2026-10-16-servidor-Medallas-1.9.163",
+        "2026-10-16-servidor-Hunts-con-shiny-y-viajes-arreglados",
+        "2026-10-16-servidor-Medallas-1.9.162",
+        "2026-10-16-launcher-1.15.1"
       ]
     }
   ]
