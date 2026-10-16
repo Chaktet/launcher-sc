@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-15-servidor-Transformaciones-mas-estables-en-pokemorph",
+      "fecha": "2026-10-15",
+      "tipo": "servidor",
+      "titulo": "Transformaciones más estables en /pokemorph",
+      "puntos": [
+        "Se acabaron los Pokémon fantasma y el Pokémon desfasado",
+        "Al desconectarte vuelves a ser humano, así entras sin problemas",
+        "Puedes espectar combates y usar /tpa, /msg y el chat de voz transformado"
+      ]
+    },
+    {
       "id": "2026-10-15-servidor-Novedades-en-las-Ranked",
       "fecha": "2026-10-15",
       "tipo": "servidor",
