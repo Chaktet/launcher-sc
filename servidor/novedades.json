@@ -2,17 +2,6 @@
   "version": 1,
   "entradas": [
     {
-      "id": "2026-10-16-servidor-Expediciones-0.12.27",
-      "fecha": "2026-10-16",
-      "tipo": "servidor",
-      "version": "Expediciones 0.12.27",
-      "titulo": "Expediciones: no se pierde lo que se te cae",
-      "puntos": [
-        "Si se te cae algo dentro de una expedición (por ejemplo unas élitros al quitártelas), al terminar vuelve a tu inventario.",
-        "Si tienes el inventario lleno, se guarda y te avisa: haz hueco y te llega solo."
-      ]
-    },
-    {
       "id": "2026-10-16-servidor-Medallas-1.9.164",
       "fecha": "2026-10-16",
       "tipo": "servidor",
