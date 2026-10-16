@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-16-launcher-1.15.1",
+      "fecha": "2026-10-16",
+      "tipo": "launcher",
+      "version": "1.15.1",
+      "titulo": "Cambiar la carpeta del juego sin reiniciar",
+      "puntos": [
+        "Si cambias la carpeta del juego en Ajustes, ya puedes darle a JUGAR directamente. Antes salía el error SC-03 hasta cerrar y abrir el launcher."
+      ]
+    },
+    {
       "id": "2026-10-16-servidor-Gimnasios-hacen-falta-6-horas-de-juego",
       "fecha": "2026-10-16",
       "tipo": "servidor",
