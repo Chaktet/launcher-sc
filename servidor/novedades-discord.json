@@ -22,7 +22,13 @@
     "2026-10-15-servidor-Gimnasios-aviso-cuando-abre-un-lider",
     "2026-10-15-servidor-Apuntate-a-un-evento-y-te-avisamos",
     "2026-10-15-servidor-Avisos-de-eventos-en-directo",
-    "2026-10-15-servidor-Discord-renovado-y-mas-facil-de-usar"
+    "2026-10-15-servidor-Discord-renovado-y-mas-facil-de-usar",
+    "2026-10-15-servidor-Transformaciones-mas-estables-en-pokemorph",
+    "2026-10-15-servidor-Novedades-en-las-Ranked",
+    "2026-10-15-servidor-Viajar-a-la-otra-region-con-un-clic",
+    "2026-10-15-servidor-Chat-global-entre-Kanto-y-Kalos",
+    "2026-10-15-servidor-Cobblemon-1.8.2",
+    "2026-10-15-servidor-Los-aumentos-de-tesoros-y-cebo-versatil-ya-funcionan"
   ],
   "mensajes": [
     {
@@ -35,6 +41,18 @@
         "2026-10-15-servidor-Apuntate-a-un-evento-y-te-avisamos",
         "2026-10-15-servidor-Avisos-de-eventos-en-directo",
         "2026-10-15-servidor-Discord-renovado-y-mas-facil-de-usar"
+      ]
+    },
+    {
+      "fecha": "2026-10-16",
+      "mensaje": "1560477240662302731",
+      "entradas": [
+        "2026-10-15-servidor-Transformaciones-mas-estables-en-pokemorph",
+        "2026-10-15-servidor-Novedades-en-las-Ranked",
+        "2026-10-15-servidor-Viajar-a-la-otra-region-con-un-clic",
+        "2026-10-15-servidor-Chat-global-entre-Kanto-y-Kalos",
+        "2026-10-15-servidor-Cobblemon-1.8.2",
+        "2026-10-15-servidor-Los-aumentos-de-tesoros-y-cebo-versatil-ya-funcionan"
       ]
     }
   ]
