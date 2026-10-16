@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-15-servidor-Cobblemon-1.8.2",
+      "fecha": "2026-10-15",
+      "tipo": "servidor",
+      "version": "Cobblemon 1.8.2",
+      "titulo": "El servidor se actualiza a Cobblemon 1.8.2",
+      "puntos": [
+        "Kanto y Kalos ya funcionan con Cobblemon 1.8.2",
+        "En PC, el launcher se actualiza solo: ciérralo y vuelve a abrirlo",
+        "En móvil, descarga el pack nuevo desde descargas.servidorcobblemon.es/movil",
+        "Hemos preparado las skins para que se vean como antes; si ves alguna rara, avísanos por ticket"
+      ]
+    },
+    {
       "id": "2026-10-15-servidor-Novedades-en-las-Ranked",
       "fecha": "2026-10-15",
       "tipo": "servidor",
@@ -42,18 +55,6 @@
       "puntos": [
         "Ahora hablas con los jugadores de las dos regiones a la vez",
         "La lista de jugadores (TAB) muestra a todos, con un punto rojo para Kanto y amarillo para Kalos"
-      ]
-    },
-    {
-      "id": "2026-10-15-servidor-Cobblemon-1.8.2",
-      "fecha": "2026-10-15",
-      "tipo": "servidor",
-      "version": "Cobblemon 1.8.2",
-      "titulo": "El servidor se actualiza a Cobblemon 1.8.2",
-      "puntos": [
-        "Kanto y Kalos ya funcionan con Cobblemon 1.8.2",
-        "El launcher y el pack de móvil se actualizan solos: ábrelos y listo",
-        "Todas las skins siguen viéndose igual que antes"
       ]
     },
     {
