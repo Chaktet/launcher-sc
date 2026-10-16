@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-16-servidor-Medallas-1.9.162",
+      "fecha": "2026-10-16",
+      "tipo": "servidor",
+      "version": "Medallas 1.9.162",
+      "titulo": "Gimnasios: el nivel del gimnasio se respeta siempre",
+      "puntos": [
+        "Si el gimnasio es a nivel 100 (o 50), tus Pokémon pelean a ese nivel aunque antes hayas tenido otro combate mientras esperabas.",
+        "Si el combate intenta empezar con otros niveles, no empieza y te avisa para que mandes el desafío otra vez."
+      ]
+    },
+    {
       "id": "2026-10-16-launcher-1.15.1",
       "fecha": "2026-10-16",
       "tipo": "launcher",
