@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-15-servidor-Chat-global-entre-Kanto-y-Kalos",
+      "fecha": "2026-10-15",
+      "tipo": "servidor",
+      "titulo": "Chat global entre Kanto y Kalos",
+      "puntos": [
+        "Ahora hablas con los jugadores de las dos regiones a la vez",
+        "La lista de jugadores (TAB) muestra a todos, con un punto rojo para Kanto y amarillo para Kalos"
+      ]
+    },
+    {
       "id": "2026-10-15-servidor-Cobblemon-1.8.2",
       "fecha": "2026-10-15",
       "tipo": "servidor",
