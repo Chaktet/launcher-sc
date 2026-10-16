@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-16-servidor-Medallas-1.9.170",
+      "fecha": "2026-10-16",
+      "tipo": "servidor",
+      "version": "Medallas-1.9.170",
+      "titulo": "Gimnasios: avisos más cortos y claros",
+      "puntos": [
+        "Cuando alguien gana una medalla o se abre un gimnasio, sale una sola línea en el chat en vez de un bloque grande.",
+        "Los avisos de la fila del gimnasio y tu turno ocupan mucho menos, y los contadores del líder salen encima de la barra de objetos."
+      ]
+    },
+    {
       "id": "2026-10-16-servidor-Tu-insignia-de-rango-en-la-web-aunque-compraras-antes",
       "fecha": "2026-10-16",
       "tipo": "servidor",
