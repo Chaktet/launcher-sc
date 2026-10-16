@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-15-servidor-Novedades-en-las-Ranked",
+      "fecha": "2026-10-15",
+      "tipo": "servidor",
+      "titulo": "Novedades en las Ranked",
+      "puntos": [
+        "Un mismo Pokémon puede usar Mega y Tera",
+        "Ya se puede usar la Dynamax Band",
+        "Revivir Máximo permitido, y las pociones vuelven al volver a la cola"
+      ]
+    },
+    {
       "id": "2026-10-15-servidor-Viajar-a-la-otra-region-con-un-clic",
       "fecha": "2026-10-15",
       "tipo": "servidor",
