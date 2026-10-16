@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-15-servidor-Llaves-de-regalo-desde-Discord",
+      "fecha": "2026-10-15",
+      "tipo": "servidor",
+      "titulo": "Llaves de regalo desde Discord",
+      "puntos": [
+        "Activa los avisos por privado en #anuncios, #actualizaciones o #tienda y te damos 1 llave evento por cada canal",
+        "Si mejoras el servidor con Nitro, te damos 2 llaves NITRO, y otras 2 cada mes que mantengas la mejora",
+        "El bot te manda un código por privado: escríbelo en el juego con /reclamar y tus llaves llegan solas"
+      ]
+    },
+    {
       "id": "2026-10-15-servidor-Transformaciones-mas-estables-en-pokemorph",
       "fecha": "2026-10-15",
       "tipo": "servidor",
