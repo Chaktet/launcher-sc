@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-15-servidor-Transformaciones-mas-estables-en-pokemorph",
+      "fecha": "2026-10-15",
+      "tipo": "servidor",
+      "titulo": "Transformaciones más estables en /pokemorph",
+      "puntos": [
+        "Ya no se quedan Pokémon fantasma al transformarte o cambiar de Pokémon",
+        "Tu Pokémon va más pegado a ti cuando te mueves",
+        "Transformado ya puedes usar /tpa, /msg y el chat de voz",
+        "Al desconectarte o ponerte a ver un combate vuelves a ser humano, para que nada se rompa"
+      ]
+    },
+    {
       "id": "2026-10-15-servidor-Viajar-a-la-otra-region-con-un-clic",
       "fecha": "2026-10-15",
       "tipo": "servidor",
@@ -34,17 +46,6 @@
         "Un Pokémon que entra ya megaevolucionado no puede además teracristalizar: se acabó Mega + Tera en el mismo combate",
         "No se puede entrar a la cola con la Dynamax Band",
         "Al entrar o volver a la cola se revisan los objetos prohibidos (pociones, Revivir, Revivir Máximo, objetos X, Éter…), también en Casual"
-      ]
-    },
-    {
-      "id": "2026-10-15-servidor-Transformaciones-mas-estables-en-pokemorph",
-      "fecha": "2026-10-15",
-      "tipo": "servidor",
-      "titulo": "Transformaciones más estables en /pokemorph",
-      "puntos": [
-        "Se acabaron los Pokémon fantasma y el Pokémon desfasado",
-        "Al desconectarte vuelves a ser humano, así entras sin problemas",
-        "Puedes espectar combates y usar /tpa, /msg y el chat de voz transformado"
       ]
     },
     {
