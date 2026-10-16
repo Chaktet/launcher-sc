@@ -36,7 +36,12 @@
     "2026-10-16-servidor-Medallas-1.9.163",
     "2026-10-16-servidor-Hunts-con-shiny-y-viajes-arreglados",
     "2026-10-16-servidor-Medallas-1.9.162",
-    "2026-10-16-launcher-1.15.1"
+    "2026-10-16-launcher-1.15.1",
+    "2026-10-16-servidor-Tu-insignia-de-rango-en-la-web-aunque-compraras-antes",
+    "2026-10-16-servidor-PokeMorph-1.0.11",
+    "2026-10-16-servidor-TradeLegendary-1.1.4",
+    "2026-10-16-servidor-Medallas-1.9.166",
+    "2026-10-16-servidor-Medallas-1.9.164"
   ],
   "mensajes": [
     {
@@ -81,6 +86,17 @@
         "2026-10-16-servidor-Hunts-con-shiny-y-viajes-arreglados",
         "2026-10-16-servidor-Medallas-1.9.162",
         "2026-10-16-launcher-1.15.1"
+      ]
+    },
+    {
+      "fecha": "2026-10-16",
+      "mensaje": "1560736880864264234",
+      "entradas": [
+        "2026-10-16-servidor-Tu-insignia-de-rango-en-la-web-aunque-compraras-antes",
+        "2026-10-16-servidor-PokeMorph-1.0.11",
+        "2026-10-16-servidor-TradeLegendary-1.1.4",
+        "2026-10-16-servidor-Medallas-1.9.166",
+        "2026-10-16-servidor-Medallas-1.9.164"
       ]
     }
   ]
