@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-15-servidor-Llaves-de-regalo-desde-Discord",
+      "fecha": "2026-10-15",
+      "tipo": "servidor",
+      "titulo": "Llaves de regalo desde Discord",
+      "puntos": [
+        "Activa los avisos por privado en #anuncios, #actualizaciones o #tienda y te damos 1 llave evento por cada canal",
+        "Mejora el servidor con Nitro: 2 llaves NITRO con la primera mejora y 1 más al poner la segunda (3 en total)",
+        "Cada mes que mantengas las mejoras: 3 llaves NITRO con las 2, o 2 con una",
+        "El bot te manda un código por privado: escríbelo en el juego con /reclamar y tus llaves llegan solas"
+      ]
+    },
+    {
       "id": "2026-10-15-servidor-Los-lideres-de-gimnasio-cobran-por-combatir",
       "fecha": "2026-10-15",
       "tipo": "servidor",
@@ -9,17 +21,6 @@
       "puntos": [
         "Cada 10 retos de gimnasio terminados, ganes o pierdas, cobras 800 tokens",
         "Los retos del día uber cuentan aparte y pagan el doble: 1600 tokens cada 10"
-      ]
-    },
-    {
-      "id": "2026-10-15-servidor-Llaves-de-regalo-desde-Discord",
-      "fecha": "2026-10-15",
-      "tipo": "servidor",
-      "titulo": "Llaves de regalo desde Discord",
-      "puntos": [
-        "Activa los avisos por privado en #anuncios, #actualizaciones o #tienda y te damos 1 llave evento por cada canal",
-        "Si mejoras el servidor con Nitro, te damos 2 llaves NITRO, y otras 2 cada mes que mantengas la mejora",
-        "El bot te manda un código por privado: escríbelo en el juego con /reclamar y tus llaves llegan solas"
       ]
     },
     {
