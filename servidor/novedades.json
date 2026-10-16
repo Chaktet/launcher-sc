@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-16-servidor-PokeMorph-1.0.11",
+      "fecha": "2026-10-16",
+      "tipo": "servidor",
+      "version": "PokeMorph 1.0.11",
+      "titulo": "/pokemorph: elige entre dos Pokémon iguales",
+      "puntos": [
+        "Si llevas dos Pokémon de la misma especie, ya puedes elegir en cuál transformarte (por ejemplo, el que tiene skin).",
+        "Al escribir el comando te sugiere cada uno por separado, y el menú te dice si lleva skin o no."
+      ]
+    },
+    {
       "id": "2026-10-16-servidor-TradeLegendary-1.1.4",
       "fecha": "2026-10-16",
       "tipo": "servidor",
