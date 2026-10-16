@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-16-servidor-SCClanes-1.76.91",
+      "fecha": "2026-10-16",
+      "tipo": "servidor",
+      "version": "SCClanes-1.76.91",
+      "titulo": "Clanes: mensajes más limpios y menos repetidos",
+      "puntos": [
+        "Las invitaciones, avisos y el chat de clan ocupan una línea, y los avisos pequeños salen encima de la barra de objetos.",
+        "El ranking y la temporada ya no llenan el chat de todo el servidor cada hora: solo se anuncia un nuevo número 1.",
+        "El anuncio de tu clan se repite cada 2 horas y el aviso de deuda cada 3, sin partículas."
+      ]
+    },
+    {
       "id": "2026-10-16-servidor-Medallas-1.9.170",
       "fecha": "2026-10-16",
       "tipo": "servidor",
