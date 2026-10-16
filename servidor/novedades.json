@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-15-servidor-Viajar-a-la-otra-region-con-un-clic",
+      "fecha": "2026-10-15",
+      "tipo": "servidor",
+      "titulo": "Viajar a la otra región con un clic",
+      "puntos": [
+        "Si un evento es en la otra región, te sale el botón «Viajar a…» y llegas al evento",
+        "«Juntos» hace lo mismo cuando tu pareja está en la otra región",
+        "El botón «Ir» del chat global te lleva junto a quien escribió, aunque esté en la otra región"
+      ]
+    },
+    {
       "id": "2026-10-15-servidor-Cobblemon-1.8.2",
       "fecha": "2026-10-15",
       "tipo": "servidor",
@@ -34,17 +45,6 @@
         "Se acabaron los Pokémon fantasma y el Pokémon desfasado",
         "Al desconectarte vuelves a ser humano, así entras sin problemas",
         "Puedes espectar combates y usar /tpa, /msg y el chat de voz transformado"
-      ]
-    },
-    {
-      "id": "2026-10-15-servidor-Viajar-a-la-otra-region-con-un-clic",
-      "fecha": "2026-10-15",
-      "tipo": "servidor",
-      "titulo": "Viajar a la otra región con un clic",
-      "puntos": [
-        "Ir a un evento de la otra región ya te lleva hasta allí",
-        "«Juntos» te lleva con tu pareja aunque esté en la otra región",
-        "El botón «Ir» del chat global te cambia de región cuando hace falta"
       ]
     },
     {
