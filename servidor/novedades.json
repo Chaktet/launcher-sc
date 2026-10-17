@@ -2,6 +2,15 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-17-servidor-PC-y-curacion-sin-rango-te-decimos-donde-ir",
+      "fecha": "2026-10-17",
+      "tipo": "servidor",
+      "titulo": "PC y curación sin rango: te decimos dónde ir",
+      "puntos": [
+        "Si pulsas PC o Curar equipo sin rango, te explicamos de qué rango es y te llevamos al Centro Pokémon, donde los tienes gratis."
+      ]
+    },
+    {
       "id": "2026-10-17-servidor-Ajustes-en-el-PokeNav-y-raids-con-cuenta-atras",
       "fecha": "2026-10-17",
       "tipo": "servidor",
