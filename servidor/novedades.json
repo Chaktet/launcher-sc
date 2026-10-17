@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-17-servidor-Premios-que-no-llegaban-arreglados",
+      "fecha": "2026-10-17",
+      "tipo": "servidor",
+      "titulo": "Premios que no llegaban, arreglados",
+      "puntos": [
+        "Los caramelos que ganas en los combates ranked ya te llegan.",
+        "Las llaves de evento de la pesca y de las llaves al azar ya se entregan bien.",
+        "En la Tienda SCC, el artículo de fragmentos de expedición te da ahora una Llave de Expedición Dragón.",
+        "En el pase de batalla, los niveles 77 y 150 ya dan sus llaves de expedición (Dragón y Psíquica)."
+      ]
+    },
+    {
       "id": "2026-10-17-servidor-PC-y-curacion-sin-rango-te-decimos-donde-ir",
       "fecha": "2026-10-17",
       "tipo": "servidor",
