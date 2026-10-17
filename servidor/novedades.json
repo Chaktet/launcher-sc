@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-17-servidor-Felicita-compras-y-da-la-bienvenida",
+      "fecha": "2026-10-17",
+      "tipo": "servidor",
+      "titulo": "Felicita compras y da la bienvenida",
+      "puntos": [
+        "Cuando alguien apoya al servidor en la tienda, toda la red lo ve: pulsa ¡Felicitar! en el chat y gana tokens.",
+        "Cuando entra un jugador nuevo, pulsa ¡Bienvenido! para saludarle y gana tokens (si llevas 2 horas jugando).",
+        "Si no quieres ver estos avisos: /comunidad anuncios off.",
+        "Las ruletas muestran ahora sus probabilidades reales, también en la tirada asegurada."
+      ]
+    },
+    {
       "id": "2026-10-17-launcher-1.16.2",
       "fecha": "2026-10-17",
       "tipo": "launcher",
