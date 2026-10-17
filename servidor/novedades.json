@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-17-servidor-Discord-pack-ligero-y-avisos-por-privado-completos",
+      "fecha": "2026-10-17",
+      "tipo": "servidor",
+      "titulo": "Discord: pack ligero y avisos por privado completos",
+      "puntos": [
+        "En #cómo-entrar tienes también el paquete de recursos LITE, para ordenadores justos.",
+        "Los avisos por privado de las novedades llegan completos y con sus iconos."
+      ]
+    },
+    {
       "id": "2026-10-17-servidor-Tienda-web-codigo-de-creador-y-salir-del-pago",
       "fecha": "2026-10-17",
       "tipo": "servidor",
