@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-17-servidor-Battle-Royale-discos-de-MT-en-los-cofres",
+      "fecha": "2026-10-17",
+      "tipo": "servidor",
+      "titulo": "Battle Royale: discos de MT en los cofres",
+      "puntos": [
+        "En los cofres del Battle Royale pueden salir discos de MT (en los más básicos no).",
+        "Haz clic derecho con el disco durante la partida: eliges el Pokémon, la MT y qué movimiento olvida.",
+        "El disco se gasta al enseñar el movimiento y, si algo falla, te lo devolvemos. Si ves algo raro, avísanos por ticket."
+      ]
+    },
+    {
       "id": "2026-10-17-servidor-Todas-las-MTs-en-la-tienda-de-MTs",
       "fecha": "2026-10-17",
       "tipo": "servidor",
