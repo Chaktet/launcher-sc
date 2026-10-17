@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-17-servidor-PC-y-curacion-aviso-de-rango-y-ruleta-mas-clara",
+      "fecha": "2026-10-17",
+      "tipo": "servidor",
+      "titulo": "PC y curación: aviso de rango y ruleta más clara",
+      "puntos": [
+        "Si pulsas PC o Curar equipo sin rango, te explicamos de qué rango es y te llevamos al Centro Pokémon, donde los tienes gratis.",
+        "La placa de la ruleta se ve más ordenada: tus tiradas y el pity, cada uno en su línea."
+      ]
+    },
+    {
       "id": "2026-10-17-servidor-Ajustes-en-el-PokeNav-y-raids-con-cuenta-atras",
       "fecha": "2026-10-17",
       "tipo": "servidor",
