@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-17-launcher-1.16.0",
+      "fecha": "2026-10-17",
+      "tipo": "launcher",
+      "version": "1.16.0",
+      "titulo": "Aviso grande cuando el launcher se actualiza",
+      "puntos": [
+        "Cuando haya una versión nueva del launcher verás un aviso en el centro con lo que lleva descargado, y no se podrá jugar hasta actualizar: así todos tenéis los menús y el PokéNav al día.",
+        "Cuando termine, pulsa «Reiniciar y actualizar»: el launcher se cierra y vuelve a abrirse solo.",
+        "Si la descarga falla, puedes reintentar, bajarlo desde la web o jugar sin actualizar esa vez."
+      ]
+    },
+    {
       "id": "2026-10-17-servidor-Community-Day-renovado-mas-Pokemon-y-mejores-premios",
       "fecha": "2026-10-17",
       "tipo": "servidor",
