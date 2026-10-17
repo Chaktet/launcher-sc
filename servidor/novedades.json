@@ -16,6 +16,17 @@
       ]
     },
     {
+      "id": "2026-10-16-modpack-1.1.0",
+      "fecha": "2026-10-16",
+      "tipo": "modpack",
+      "version": "1.1.0",
+      "titulo": "Modpack para Modrinth App y Prism",
+      "puntos": [
+        "¿No usas nuestro launcher? Descarga ServidorCobblemon.mrpack e impórtalo en Modrinth App o Prism: trae todo.",
+        "Para el launcher oficial u otros, en #cómo-entrar tienes el zip de mods de los menús con un LEEME de instalación."
+      ]
+    },
+    {
       "id": "2026-10-16-movil-2.3.0",
       "fecha": "2026-10-16",
       "tipo": "movil",
