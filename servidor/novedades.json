@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-17-launcher-1.16.3",
+      "fecha": "2026-10-17",
+      "tipo": "launcher",
+      "version": "1.16.3",
+      "titulo": "Perfil LITE más ligero para ordenadores modestos",
+      "puntos": [
+        "El perfil LITE trae ahora un paquete de recursos ligero, sin skins de Pokémon, para que el juego cargue en ordenadores con poca memoria.",
+        "Si quieres ver las skins, entra con el perfil PRO, que sigue con el paquete completo."
+      ]
+    },
+    {
       "id": "2026-10-17-servidor-Felicita-compras-y-da-la-bienvenida",
       "fecha": "2026-10-17",
       "tipo": "servidor",
