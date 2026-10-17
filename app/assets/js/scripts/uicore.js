@@ -40,6 +40,10 @@ let updateCheckListener
 let scLastUpdatePct = -1
 if(!isDev){
     ipcRenderer.on('autoUpdateNotification', (event, arg, info) => {
+        // 1.16.0: aviso central que bloquea JUGAR hasta actualizar (scpuerta.js).
+        if(typeof scPuerta === 'function'){
+            scPuerta(arg, info)
+        }
         switch(arg){
             case 'checking-for-update':
                 loggerAutoUpdater.info('Checking for update..')

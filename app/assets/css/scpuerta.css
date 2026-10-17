@@ -1,0 +1,123 @@
+/* Puerta de actualización (scpuerta.js, 1.16.0): aviso central que bloquea JUGAR. */
+#scPuerta {
+    position: absolute;
+    z-index: 400; /* debajo de #overlayContainer (500): los diálogos salen encima */
+    top: 22px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 22px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(2, 8, 18, 0.72);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s ease-out;
+}
+#scPuerta[visible] {
+    opacity: 1;
+    pointer-events: auto;
+}
+#scPuertaCaja {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: min(520px, calc(100vw - 80px));
+    box-sizing: border-box;
+    padding: 30px 36px 26px;
+    text-align: center;
+    color: var(--sc-ink, #eef4f9);
+    background: rgba(9, 17, 29, 0.94);
+    border: 1px solid var(--sc-line, rgba(255, 255, 255, 0.12));
+    border-radius: 22px;
+    box-shadow: var(--sc-shadow, 0 18px 40px -18px rgba(2, 8, 18, 0.9));
+}
+#scPuerta[visible] #scPuertaCaja {
+    animation: sc-pop-in 0.22s var(--sc-ease, ease) backwards;
+}
+#scPuertaIcono {
+    width: 54px;
+    height: 54px;
+    line-height: 54px;
+    border-radius: 50%;
+    font-size: 26px;
+    color: #fff;
+    background: var(--sc-accent, #4fa9de);
+    box-shadow: 0 0 24px var(--sc-accent-soft, rgba(79, 169, 222, 0.35));
+}
+#scPuerta[estado="error"] #scPuertaIcono { background: #d9534f; box-shadow: 0 0 24px rgba(217, 83, 79, 0.35); }
+#scPuerta[estado="lista"] #scPuertaIcono { background: #3fb36b; box-shadow: 0 0 24px rgba(63, 179, 107, 0.35); }
+#scPuertaTitulo {
+    font-family: 'Avenir Medium';
+    font-size: 22px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+#scPuertaDesc {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--sc-ink-dim, #9db4c6);
+}
+#scPuertaDesc b { color: var(--sc-ink, #eef4f9); }
+#scPuertaBarra {
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.10);
+}
+#scPuertaRelleno {
+    width: 0%;
+    height: 100%;
+    border-radius: 4px;
+    background: var(--sc-accent, #4fa9de);
+    transition: width 0.3s ease;
+}
+#scPuertaPct {
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--sc-ink-dim, #9db4c6);
+}
+#scPuertaPct:empty, #scPuertaNota:empty { display: none; }
+#scPuertaBoton {
+    margin-top: 4px;
+    padding: 10px 26px;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Avenir Medium';
+    font-size: 15px;
+    font-weight: bold;
+    color: #fff;
+    background: var(--sc-accent, #4fa9de);
+    cursor: pointer;
+    transition: filter 0.15s ease, transform 0.15s ease;
+}
+#scPuerta[estado="lista"] #scPuertaBoton { background: #3fb36b; }
+#scPuertaBoton:hover { filter: brightness(1.1); }
+#scPuertaBoton:active { transform: scale(0.98); }
+#scPuertaBoton:focus { outline: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25); }
+#scPuertaNota {
+    font-size: 12px;
+    font-weight: bold;
+    color: #f0ad4e;
+}
+#scPuertaEnlaces {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+#scPuertaWeb, #scPuertaSaltar {
+    font-size: 12px;
+    font-weight: bold;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+#scPuertaWeb { color: var(--sc-accent, #4fa9de); text-decoration: underline; }
+#scPuertaSaltar { color: rgba(202, 202, 202, 0.75); }
+#scPuertaSaltar:hover { color: rgba(255, 255, 255, 0.85); }
+#scPuertaWeb:empty, #scPuertaSaltar:empty { display: none; }

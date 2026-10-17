@@ -193,6 +193,11 @@ document.getElementById('launch_button').addEventListener('click', async e => {
     if(scComprobandoJugar){
         return
     }
+    // 1.16.0: con una actualización del launcher pendiente no se juega (scpuerta.js).
+    if(typeof scPuertaBloquea === 'function' && scPuertaBloquea()){
+        loggerLanding.info('Actualización del launcher pendiente — ignorando clic en JUGAR.')
+        return
+    }
     loggerLanding.info('Launching game..')
     scModoReparacion = false
     scComprobandoJugar = true
