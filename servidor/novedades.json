@@ -16,6 +16,16 @@
       ]
     },
     {
+      "id": "2026-10-16-servidor-Un-solo-vault-para-Kanto-y-Kalos",
+      "fecha": "2026-10-16",
+      "tipo": "servidor",
+      "titulo": "Un solo vault para Kanto y Kalos",
+      "puntos": [
+        "Tus vaults ahora son los mismos en Kanto y en Kalos: lo que guardes en una región lo encuentras en la otra.",
+        "Si tenías cosas en las dos regiones se han juntado. Lo que no cabía está en el nuevo Baúl de recuperados, dentro de /vault: no se ha perdido nada."
+      ]
+    },
+    {
       "id": "2026-10-16-modpack-1.1.0",
       "fecha": "2026-10-16",
       "tipo": "modpack",
