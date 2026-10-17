@@ -1818,7 +1818,13 @@ const SC_TECLAS_EN_CONFLICTO = [
     // Emotecraft abre la rueda de emotes con la B, que Xaero usaba para crear un
     // punto de ruta. La B se queda para los emotes; el punto de ruta va a Inicio,
     // que no usa ningún mod del pack (ni como tecla ni leyendo el teclado).
-    { opcion: 'key_gui.xaero_new_waypoint',                 porDefecto: 'key.keyboard.b',             nueva: 'key.keyboard.home' }
+    { opcion: 'key_gui.xaero_new_waypoint',                 porDefecto: 'key.keyboard.b',             nueva: 'key.keyboard.home' },
+    // Simple Voice Chat 2.6.17 registers push-to-talk WITHOUT a key (InputConstants.UNKNOWN) and starts in
+    // push-to-talk mode, so nobody could talk. Bloq Mayús is free in PRO and LITE (no keybind, no mod reads it).
+    { opcion: 'key_key.push_to_talk',                       porDefecto: 'key.keyboard.unknown',       nueva: 'key.keyboard.caps.lock' },
+    // Shulker Preview (PRO) also takes the V, the key of Simple Voice Chat's menu: Minecraft gives a key to only one
+    // action, so V did nothing for voice chat. The preview moves to F4 (free; no mod reads it).
+    { opcion: 'key_open_shulker',                           porDefecto: 'key.keyboard.v',             nueva: 'key.keyboard.f4' }
 ]
 
 /**
@@ -1861,6 +1867,12 @@ function scCorregirTeclasEnConflicto(){
         let cambios = false
         for(const t of pendientes){
             const i = lineas.findIndex(l => l.startsWith(t.opcion + ':'))
+            // The player already put the new key on another action: leave both alone (no new clash).
+            if(lineas.some(l => l.startsWith('key_') && !l.startsWith(t.opcion + ':') && l.slice(l.indexOf(':') + 1).trim() === t.nueva)){
+                yaHechas.push(t.opcion)
+                cambios = true
+                continue
+            }
             if(i < 0){
                 // Aún no ha arrancado con el mod: se deja puesta ya la buena.
                 lineas.push(t.opcion + ':' + t.nueva)
