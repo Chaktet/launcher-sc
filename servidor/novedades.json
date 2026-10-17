@@ -28,6 +28,17 @@
       ]
     },
     {
+      "id": "2026-10-16-launcher-1.16.1",
+      "fecha": "2026-10-16",
+      "tipo": "launcher",
+      "version": "1.16.1",
+      "titulo": "La gran novedad, en portada",
+      "puntos": [
+        "Al abrir el launcher verás en portada la gran novedad del servidor: los menús nuevos y el PokéNav.",
+        "La primera vez que pulses Novedades se abre directamente esa noticia."
+      ]
+    },
+    {
       "id": "2026-10-16-servidor-Un-solo-vault-para-Kanto-y-Kalos",
       "fecha": "2026-10-16",
       "tipo": "servidor",
