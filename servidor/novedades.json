@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-17-servidor-Todas-las-MTs-en-la-tienda-de-MTs",
+      "fecha": "2026-10-17",
+      "tipo": "servidor",
+      "titulo": "Todas las MTs en la tienda de MTs",
+      "puntos": [
+        "La tienda de MTs vende ahora todas las MTs del juego, también Poder Reserva.",
+        "Cuando el juego traiga MTs nuevas, aparecerán solas en la tienda."
+      ]
+    },
+    {
       "id": "2026-10-17-servidor-Premios-que-no-llegaban-arreglados",
       "fecha": "2026-10-17",
       "tipo": "servidor",
