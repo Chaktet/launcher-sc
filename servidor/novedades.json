@@ -2,6 +2,15 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-17-servidor-Tus-Pokemon-a-salvo-al-volver-a-otra-region",
+      "fecha": "2026-10-17",
+      "tipo": "servidor",
+      "titulo": "Tus Pokémon a salvo al volver a otra región",
+      "puntos": [
+        "Si hace tiempo que no juegas y tus Pokémon solo están en la otra región, al entrar te pedimos que entres primero en esa región, para que no se pierdan."
+      ]
+    },
+    {
       "id": "2026-10-17-servidor-Warps-de-jugadores-vuelve-a-funcionar",
       "fecha": "2026-10-17",
       "tipo": "servidor",
