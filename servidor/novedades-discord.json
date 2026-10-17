@@ -47,7 +47,13 @@
     "2026-10-16-pack-SC-3.2.73",
     "2026-10-16-servidor-Menus-nuevos-en-todo-el-servidor",
     "2026-10-16-servidor-IFE-1.0.700",
-    "2026-10-16-servidor-SCClanes-1.76.91"
+    "2026-10-16-servidor-SCClanes-1.76.91",
+    "2026-10-16-launcher-1.16.1",
+    "2026-10-16-servidor-Un-solo-vault-para-Kanto-y-Kalos",
+    "2026-10-16-servidor-Medallas-1.9.170",
+    "2026-10-17-launcher-1.16.2",
+    "2026-10-17-launcher-1.16.0",
+    "2026-10-17-servidor-Community-Day-renovado-mas-Pokemon-y-mejores-premios"
   ],
   "mensajes": [
     {
@@ -115,6 +121,18 @@
         "2026-10-16-servidor-Menus-nuevos-en-todo-el-servidor",
         "2026-10-16-servidor-IFE-1.0.700",
         "2026-10-16-servidor-SCClanes-1.76.91"
+      ]
+    },
+    {
+      "fecha": "2026-10-17",
+      "mensaje": "",
+      "entradas": [
+        "2026-10-16-launcher-1.16.1",
+        "2026-10-16-servidor-Un-solo-vault-para-Kanto-y-Kalos",
+        "2026-10-16-servidor-Medallas-1.9.170",
+        "2026-10-17-launcher-1.16.2",
+        "2026-10-17-launcher-1.16.0",
+        "2026-10-17-servidor-Community-Day-renovado-mas-Pokemon-y-mejores-premios"
       ]
     }
   ]
