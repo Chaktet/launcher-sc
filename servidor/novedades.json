@@ -2,6 +2,15 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-17-servidor-Warps-de-jugadores-vuelve-a-funcionar",
+      "fecha": "2026-10-17",
+      "tipo": "servidor",
+      "titulo": "Warps de jugadores vuelve a funcionar",
+      "puntos": [
+        "El botón «Warps de jugadores» del PokéNav (Viajes) vuelve a abrir la lista. Antes salía «Algo ha fallado por dentro»."
+      ]
+    },
+    {
       "id": "2026-10-17-servidor-Expediciones-no-pierdes-lo-que-sueltas",
       "fecha": "2026-10-17",
       "tipo": "servidor",
