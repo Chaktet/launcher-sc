@@ -190,16 +190,30 @@ function scCambiosRecientes(){
     return reg != null && Date.now() - reg.fecha < SC_MODPACK_RECIENTE ? reg : null
 }
 
-/** Landing card: modpack changes for 14 days, otherwise the server news. */
+/** 1.16.1 · featured RSS article (<category>destacada</category>, up to 30 days old): the big news of the server. */
+const SC_DESTACADA_MS = 30 * 24 * 3600 * 1000
+let scDestacada = null
+function scPonerDestacada(arts){
+    const i = (arts || []).findIndex(a => a.destacada && Date.now() - new Date(a.pubDate).getTime() < SC_DESTACADA_MS)
+    scDestacada = i >= 0 ? { titulo: arts[i].title, indice: i, guid: arts[i].guid || arts[i].title } : null
+    scPintarTarjetaNovedades()
+}
+
+/** Landing card: the featured news first, then new server notes, then modpack changes for 14 days. */
 function scPintarTarjetaNovedades(){
     const card = document.getElementById('sc2NewsCard')
-    const nueva = scNovServNuevas()[0]
-    const reg = nueva ? null : scCambiosRecientes()
+    const nueva = scDestacada ? null : scNovServNuevas()[0]
+    const reg = (nueva || scDestacada) ? null : scCambiosRecientes()
     let kicker = Lang.queryEJS('landing.sc2.newsKicker')
     let titulo = Lang.queryEJS('landing.sc2.newsTitle')
     let sub = Lang.queryEJS('landing.sc2.newsSub')
     let abre = 'servidor'
-    if(nueva){
+    if(scDestacada){
+        kicker = Lang.queryJS('landing.sc2.destacadaKicker')
+        titulo = scDestacada.titulo
+        sub = Lang.queryJS('landing.sc2.destacadaSee')
+        abre = 'noticias'
+    } else if(nueva){
         kicker = Lang.queryJS('landing.sc2.novServKicker')
         titulo = nueva.titulo
         sub = Lang.queryJS('landing.sc2.novServSee')
@@ -213,6 +227,8 @@ function scPintarTarjetaNovedades(){
     card.querySelector('.sc2CardTitle').textContent = titulo
     card.querySelector('.sc2CardSub').textContent = sub
     card.dataset.abre = abre
+    card.dataset.articulo = scDestacada ? String(scDestacada.indice) : ''
+    card.toggleAttribute('data-destacada', scDestacada != null)
     card.toggleAttribute('data-modpack', abre === 'modpack')
     card.toggleAttribute('data-servidor', nueva != null)
 }
@@ -282,7 +298,16 @@ document.getElementById('newsButton').addEventListener('click', () => {
     if(typeof newsActive !== 'undefined' && !newsActive){
         // Pending RSS news and nothing new from the server: open the RSS tab.
         const rss = typeof newsAlertShown !== 'undefined' && newsAlertShown && scNovServNuevas().length === 0
-        scVerPestanaNovedades(pedida || (rss ? 'noticias' : 'servidor'))
+        // 1.16.1 · the featured news opens first until the player has seen it once
+        const destacadaPendiente = scDestacada != null && localStorage.getItem('scDestacadaVista') !== scDestacada.guid
+        const tab = pedida || (destacadaPendiente || rss ? 'noticias' : 'servidor')
+        scVerPestanaNovedades(tab)
+        if(tab === 'noticias' && scDestacada != null){
+            localStorage.setItem('scDestacadaVista', scDestacada.guid)
+            const i = scDestacada.indice
+            // landing.js shows article 1 when the view opens: switch to the featured one right after
+            setTimeout(() => { if(newsArr != null && newsArr[i] != null) displayArticle(newsArr[i], i + 1) }, 0)
+        }
         // landing.js opens the view after this listener: mark as seen once it is open.
         setTimeout(scNovServRefrescarVista, 0)
     }

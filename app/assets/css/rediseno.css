@@ -1218,6 +1218,9 @@ body {
 }
 .sc2NovServPuntos li + li { margin-top: calc(var(--px) * 3); }
 #sc2NewsCard[data-servidor] .sc2CardKicker { color: var(--sc2-orange); }
+/* 1.16.1 · featured news on the landing card: gold kicker and a warm edge */
+#sc2NewsCard[data-destacada] .sc2CardKicker { color: #ffd166; }
+#sc2NewsCard[data-destacada] { box-shadow: 0 0 0 calc(var(--px) * 2) rgba(255, 209, 102, .55); }
 #sc2NewsCard .sc2CardTitle {
     max-width: 100%;
     overflow: hidden;

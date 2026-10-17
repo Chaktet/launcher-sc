@@ -3183,6 +3183,9 @@ async function initNews(){
     const news = await loadNews()
 
     newsArr = news?.articles || null
+    if(typeof scPonerDestacada === 'function'){
+        scPonerDestacada(newsArr)
+    }
 
     if(newsArr == null){
         // News Loading Failed
@@ -3443,6 +3446,9 @@ async function loadNews(){
                             date,
                             // Raw RFC date: initNews compares it with the cache (the Spanish one does not parse).
                             pubDate: el.find('pubDate').text(),
+                            // 1.16.1 · <category>destacada</category>: the landing card shows it before the server notes
+                            guid: el.find('guid').text().trim(),
+                            destacada: el.find('category').toArray().some(c => $(c).text().trim().toLowerCase() === 'destacada'),
                             author,
                             content,
                             comments,
@@ -3533,6 +3539,12 @@ document.getElementById('sc2TabJugar').addEventListener('click', () => {
 document.getElementById('sc2NewsCard').addEventListener('click', () => {
     if(!newsActive){
         document.getElementById('newsButton').click()
+    }
+    // 1.16.1 · a featured news item on the card opens on that very article
+    const card = document.getElementById('sc2NewsCard')
+    const i = Number(card.dataset.articulo)
+    if(card.dataset.abre === 'noticias' && card.dataset.articulo !== '' && newsArr != null && newsArr[i] != null){
+        displayArticle(newsArr[i], i + 1)
     }
 })
 
