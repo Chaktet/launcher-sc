@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-17-servidor-Iconos-de-rango-con-sus-colores-y-consejos-del-PokeNav",
+      "fecha": "2026-10-17",
+      "tipo": "servidor",
+      "titulo": "Iconos de rango con sus colores y consejos del PokéNav",
+      "puntos": [
+        "Los iconos de rango salen con sus colores de siempre en el chat, sin teñirse. Si ves alguno raro, avísanos por ticket.",
+        "Los mensajes automáticos del chat te enseñan a llegar a cada cosa desde el PokéNav, con la ruta paso a paso."
+      ]
+    },
+    {
       "id": "2026-10-17-servidor-Tus-Pokemon-a-salvo-al-volver-a-otra-region",
       "fecha": "2026-10-17",
       "tipo": "servidor",
