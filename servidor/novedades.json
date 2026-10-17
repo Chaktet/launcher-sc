@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-17-servidor-Ajustes-en-el-PokeNav-y-raids-con-cuenta-atras",
+      "fecha": "2026-10-17",
+      "tipo": "servidor",
+      "titulo": "Ajustes en el PokéNav y raids con cuenta atrás",
+      "puntos": [
+        "Nueva casilla Ajustes en el PokéNav: desde ahí puedes dejar de ver los anuncios de compras y bienvenidas de otros jugadores.",
+        "El menú de raids enseña la raid que está a punto de empezar: qué Pokémon sale, dónde y cuánto falta."
+      ]
+    },
+    {
       "id": "2026-10-17-launcher-1.16.3",
       "fecha": "2026-10-17",
       "tipo": "launcher",
