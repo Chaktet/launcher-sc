@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-17-servidor-Expediciones-no-pierdes-lo-que-sueltas",
+      "fecha": "2026-10-17",
+      "tipo": "servidor",
+      "titulo": "Expediciones: no pierdes lo que sueltas",
+      "puntos": [
+        "Si se te cae algo dentro de una expedición (por ejemplo unos élitros), ya no se pierde: vuelve entero a tu buzón.",
+        "El resumen de premios te llega solo a ti, en 2 líneas, y los premios raros solo los ve tu grupo, no todo el servidor.",
+        "El aviso de nuevo récord sale en una línea, solo para los de esa expedición."
+      ]
+    },
+    {
       "id": "2026-10-17-servidor-Battle-Royale-discos-de-MT-en-los-cofres",
       "fecha": "2026-10-17",
       "tipo": "servidor",
