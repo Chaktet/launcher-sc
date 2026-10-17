@@ -2,6 +2,20 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-17-launcher-1.16.2",
+      "fecha": "2026-10-17",
+      "tipo": "launcher",
+      "version": "1.16.2",
+      "titulo": "Menús más fluidos y chat de voz listo",
+      "puntos": [
+        "Los menús ya no desenfocan el fondo: se abren y se mueven más suaves.",
+        "Casino, Quién es Quién, clanes y pesca ya no recargan la pantalla en cada clic.",
+        "Ya no te echan del servidor por pulsar rápido en los menús.",
+        "Chat de voz: mantén Bloq Mayús para hablar; la V abre su menú. La vista previa de las cajas de shulker pasa a F4.",
+        "Si juegas con Modrinth, Prism u otro launcher, los menús se ponen al día solos con el modpack o el zip nuevos de #cómo-entrar."
+      ]
+    },
+    {
       "id": "2026-10-17-launcher-1.16.0",
       "fecha": "2026-10-17",
       "tipo": "launcher",
