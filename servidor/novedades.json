@@ -16,6 +16,20 @@
       ]
     },
     {
+      "id": "2026-10-16-servidor-Menus-nuevos-en-todo-el-servidor",
+      "fecha": "2026-10-16",
+      "tipo": "servidor",
+      "titulo": "Menús nuevos en todo el servidor",
+      "puntos": [
+        "Haz clic derecho con el PokéNav (tu última casilla): todo el servidor ordenado por categorías.",
+        "Cada función tiene un botón «?» que explica cómo funciona, paso a paso.",
+        "Pokémon en 3D en tiendas, ruletas, cajas y premios; las cajas giran y frenan en tu premio.",
+        "«Volver» te lleva a donde estabas y Escape cierra el menú.",
+        "Nuevo: Mi cartera (monedas, llaves y pases), favoritos en cosméticos y venta rápida de Pokémon.",
+        "Para verlos, actualiza el launcher (ciérralo y ábrelo); sin la actualización sigues con los menús de siempre."
+      ]
+    },
+    {
       "id": "2026-10-16-servidor-IFE-1.0.700",
       "fecha": "2026-10-16",
       "tipo": "servidor",
