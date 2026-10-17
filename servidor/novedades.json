@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-17-servidor-Tienda-web-codigo-de-creador-y-salir-del-pago",
+      "fecha": "2026-10-17",
+      "tipo": "servidor",
+      "titulo": "Tienda web: código de creador y salir del pago",
+      "puntos": [
+        "En la página de cada producto de la tienda web puedes poner un código de creador o un cupón antes de pagar.",
+        "En la ventana de pago tienes el botón «✕ SALIR SIN PAGAR»; también sales con ESC o pulsando fuera."
+      ]
+    },
+    {
       "id": "2026-10-17-servidor-Iconos-de-rango-con-sus-colores-y-consejos-del-PokeNav",
       "fecha": "2026-10-17",
       "tipo": "servidor",
