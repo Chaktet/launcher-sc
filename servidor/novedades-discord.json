@@ -53,7 +53,13 @@
     "2026-10-16-servidor-Medallas-1.9.170",
     "2026-10-17-launcher-1.16.2",
     "2026-10-17-launcher-1.16.0",
-    "2026-10-17-servidor-Community-Day-renovado-mas-Pokemon-y-mejores-premios"
+    "2026-10-17-servidor-Community-Day-renovado-mas-Pokemon-y-mejores-premios",
+    "2026-10-17-servidor-Discord-pack-ligero-y-avisos-por-privado-completos",
+    "2026-10-17-servidor-Tienda-web-codigo-de-creador-y-salir-del-pago",
+    "2026-10-17-servidor-Iconos-de-rango-con-sus-colores-y-consejos-del-PokeNav",
+    "2026-10-17-servidor-Tus-Pokemon-a-salvo-al-volver-a-otra-region",
+    "2026-10-17-servidor-Warps-de-jugadores-vuelve-a-funcionar",
+    "2026-10-17-servidor-Expediciones-no-pierdes-lo-que-sueltas"
   ],
   "mensajes": [
     {
@@ -133,6 +139,18 @@
         "2026-10-17-launcher-1.16.2",
         "2026-10-17-launcher-1.16.0",
         "2026-10-17-servidor-Community-Day-renovado-mas-Pokemon-y-mejores-premios"
+      ]
+    },
+    {
+      "fecha": "2026-10-17",
+      "mensaje": "",
+      "entradas": [
+        "2026-10-17-servidor-Discord-pack-ligero-y-avisos-por-privado-completos",
+        "2026-10-17-servidor-Tienda-web-codigo-de-creador-y-salir-del-pago",
+        "2026-10-17-servidor-Iconos-de-rango-con-sus-colores-y-consejos-del-PokeNav",
+        "2026-10-17-servidor-Tus-Pokemon-a-salvo-al-volver-a-otra-region",
+        "2026-10-17-servidor-Warps-de-jugadores-vuelve-a-funcionar",
+        "2026-10-17-servidor-Expediciones-no-pierdes-lo-que-sueltas"
       ]
     }
   ]
