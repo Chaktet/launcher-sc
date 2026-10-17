@@ -16,6 +16,17 @@
       ]
     },
     {
+      "id": "2026-10-16-pack-SC-3.2.73",
+      "fecha": "2026-10-16",
+      "tipo": "pack",
+      "version": "SC-3.2.73",
+      "titulo": "Pack 3.2.73: PokéNav y juego más ligero",
+      "puntos": [
+        "El PokéNav y el cristal Pikanium Z ya tienen su dibujo.",
+        "El juego necesita menos memoria al cargar las animaciones de los Pokémon; se ven exactamente igual."
+      ]
+    },
+    {
       "id": "2026-10-16-servidor-Menus-nuevos-en-todo-el-servidor",
       "fecha": "2026-10-16",
       "tipo": "servidor",
