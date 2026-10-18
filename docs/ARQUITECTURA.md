@@ -39,7 +39,15 @@ listas de mods distintas. El launcher los trata como "servidores" porque es el m
 | Id | Nombre | Mods | RAM recomendada |
 |---|---|---|---|
 | `ServidorCobblemon-1.21.1` | Servidor Cobblemon · PRO | 103 | 6144 MB (mín. 4096) |
-| `ServidorCobblemonLite-1.21.1` | Servidor Cobblemon · LITE (Gama Baja) | 61 | 4096 MB (mín. 2560) |
+| `ServidorCobblemonLite-1.21.1` | Servidor Cobblemon · LITE (Gama Baja) | 61 | 4096 MB (mín. 3072) |
+| `ServidorCobblemonSuperLite-1.21.1` | Servidor Cobblemon · SUPER LITE (PC muy modesto) | los del LITE | 3072 MB (mín. 2048) |
+
+Desde el 18-10: el LITE lleva el pack completo (todas las skins; con SC Memoria 1.2.0 ocupa 2,18 GB de memoria en la
+pantalla de título) y el SUPER LITE un pack sin skins ni cosméticos 3D (atlas de objetos de 2048² en vez de 8192²).
+El nivel se saca con `screndimiento.nivelDePerfil(id)` («SuperLite» antes que «Lite»); la recomendación
+(`perfilRecomendado`) mira RAM, núcleos y la gráfica por WebGL (tamaño máximo de textura, integrada o no), y
+`perfilDisponible` elige el más cercano que exista en el manifiesto. Al cerrar el juego, si su `latest.log` (de esa
+partida y ese perfil) tiene un error de memoria, se ofrece pasar al perfil más ligero (`scOfrecerPerfilMasLigero`).
 
 Ambos: Minecraft 1.21.1 · Fabric `0.19.3` · Java `>=21 <22`.
 

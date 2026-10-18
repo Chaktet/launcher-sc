@@ -887,6 +887,61 @@ function scDialogoModIlegible(rutaMod, txt){
  * @param {number} code Código de salida del proceso.
  * @param {string} salida Salida de error acumulada del juego.
  */
+/**
+ * Ofrece pasar al perfil más ligero (PRO → LITE → SUPER LITE) cuando el juego se quedó sin memoria.
+ * Sin `seguro`, primero mira el latest.log de la instancia: así se detecta también el cierre a mitad
+ * de partida y el caso en que Minecraft quita el pack porque no le cabe (sigue sin pack y Cobblemon
+ * se cae al ver el primer Pokémon, 16-10), que no llegan como error de arranque.
+ *
+ * @param {boolean} seguro true si ya se sabe que fue por memoria (salida del proceso).
+ * @param {string} [jugado] Perfil con el que se lanzó (el seleccionado puede haber cambiado durante la partida).
+ * @param {number} [desde] Inicio de esa partida: un latest.log anterior no cuenta.
+ * @returns {boolean} true si se ha mostrado (o se mostrará) la oferta.
+ */
+function scOfrecerPerfilMasLigero(seguro = false, jugado = null, desde = 0){
+    const sel = jugado || ConfigManager.getSelectedServer()
+    const distro = DistroAPI.distribution
+    if(!sel || distro == null){
+        return false
+    }
+    if(!seguro && !ScRendimiento.cierrePorMemoria(require('path').join(ConfigManager.getInstanceDirectory(), sel), desde)){
+        return false
+    }
+    const sig = ScRendimiento.perfilMasLigero(sel, distro.servers)
+    const servSig = sig != null ? distro.getServerById(sig) : null
+    if(servSig == null){
+        return false
+    }
+    // No pisar otro diálogo (selector de perfil, cuentas...): se ofrece cuando se cierre.
+    const mostrar = (intentos = 0) => {
+        if(isOverlayVisible()){
+            if(intentos < 90){
+                setTimeout(() => mostrar(intentos + 1), 2000)
+            }
+            return
+        }
+        scMostrarOfertaPerfil(servSig)
+    }
+    mostrar()
+    return true
+}
+
+function scMostrarOfertaPerfil(servSig){
+    setOverlayContent(
+        Lang.queryJS('landing.sc2.memTitulo'),
+        Lang.queryJS('landing.sc2.memTexto', { perfil: sc$escapeHtml(servSig.rawServer.name) }),
+        Lang.queryJS('landing.sc2.memCambiar'),
+        Lang.queryJS('landing.sc2.memNo')
+    )
+    setOverlayHandler(() => {
+        updateSelectedServer(servSig)
+        toggleOverlay(false)
+    })
+    setDismissHandler(() => toggleOverlay(false))
+    toggleOverlay(true, true)
+    return true
+}
+
 function scAnalizarCierreDelJuego(code, salida){
     // El informe de fallo de Minecraft suele contener la causa real cuando el
     // problema es de gráficos, porque ahí no llega nada por la salida de error.
@@ -1016,6 +1071,10 @@ function scAnalizarCierreDelJuego(code, salida){
     }
 
     if(/OutOfMemoryError|Could not reserve enough space|Failed to allocate/i.test(txt)){
+        // Con un perfil más ligero disponible, la solución es cambiar de perfil, no tocar la RAM a mano.
+        if(scOfrecerPerfilMasLigero(true)){
+            return
+        }
         scFalloArranque(SC_ERR.MEMORIA, Lang.queryJS('landing.launch.errMemoria'), new Error(txt.slice(-3000)))
         return
     }
@@ -2804,6 +2863,9 @@ async function scDlAsyncInterno(login = true) {
         // la estábamos tirando.
         let scSalidaError = []
         let scJuegoArranco = false
+        // Perfil y hora de esta partida, para revisar al cerrar SU latest.log (no el de otro perfil ni uno viejo).
+        const scPerfilJugado = serv.rawServer.id
+        const scInicioPartida = Date.now()
 
         const scAnotarSalida = function(data){
             scSalidaError.push(data)
@@ -2995,6 +3057,9 @@ async function scDlAsyncInterno(login = true) {
                 // y el jugador se quedaba sin saber qué había pasado.
                 if(code !== 0 && !scJuegoArranco){
                     scAnalizarCierreDelJuego(code, scSalidaError.join('\n'))
+                } else {
+                    // Partida jugada: si acabó sin memoria (o sin pack por falta de memoria), ofrecer un perfil más ligero.
+                    scOfrecerPerfilMasLigero(false, scPerfilJugado, scInicioPartida)
                 }
             })
 
@@ -3489,8 +3554,8 @@ if(profileHint != null){
     // Memoria que usará el juego y, si el PC pide el otro perfil, la recomendación.
     const refreshProfileHint = () => {
         const sel = ConfigManager.getSelectedServer() || ''
-        const esLite = sel.includes('Lite')
-        let texto = Lang.queryJS(esLite ? 'landing.sc2.profileLite' : 'landing.sc2.profilePro')
+        const nivel = ScRendimiento.nivelDePerfil(sel)
+        let texto = Lang.queryJS({ pro: 'landing.sc2.profilePro', lite: 'landing.sc2.profileLite', superlite: 'landing.sc2.profileSuperLite' }[nivel])
         try {
             // Already loaded by the time the profile is shown (DistroAPI caches it).
             const serv = DistroAPI.distribution?.getServerById(sel)
@@ -3504,8 +3569,11 @@ if(profileHint != null){
                     texto = Lang.queryJS('landing.sc2.ramManual', { gb: ScRendimiento.formatoGb(gb) })
                 }
             }
-            if(ScRendimiento.perfilRecomendado().lite !== esLite){
-                texto += ' · ' + Lang.queryJS(esLite ? 'landing.sc2.suggestPro' : 'landing.sc2.suggestLite')
+            // Only suggest a profile that exists in the distribution.
+            const recId = ScRendimiento.perfilDisponible(DistroAPI.distribution?.servers || [])
+            const rec = ScRendimiento.nivelDePerfil(recId)
+            if(recId != null && rec !== nivel){
+                texto += ' · ' + Lang.queryJS({ pro: 'landing.sc2.suggestPro', lite: 'landing.sc2.suggestLite', superlite: 'landing.sc2.suggestSuperLite' }[rec])
             }
         } catch(e){
             // Sin configuración de Java aún (primer arranque): se queda el texto del perfil.

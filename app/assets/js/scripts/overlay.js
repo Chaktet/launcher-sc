@@ -312,9 +312,10 @@ function setAccountListingHandlers(){
 async function populateServerListings(){
     const distro = await DistroAPI.getDistribution()
     const servers = distro.servers
-    // PRO or LITE by this PC's RAM and cores (screndimiento.perfilRecomendado).
-    const recLite = ScRendimiento.perfilRecomendado().lite
-    const esRecomendado = serv => serv.rawServer.id.includes('Lite') === recLite
+    // PRO, LITE or SUPER LITE by this PC's RAM, cores and graphics card (screndimiento.perfilRecomendado).
+    // With an older manifest the recommended level may not exist: the closest available one is marked instead.
+    const recId = ScRendimiento.perfilDisponible(servers)
+    const esRecomendado = serv => serv.rawServer.id === recId
     let giaSel = ConfigManager.getSelectedServer()
     // First choice: start on the profile that suits the PC.
     if(scEligiendoPorPrimeraVez){
