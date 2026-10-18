@@ -1,7 +1,7 @@
 MIT License
 
 Copyright (c) 2017-2026 Daniel D. Scalzi (Helios Launcher)
-Copyright (c) 2026 Servidor Cobblemon (SC Launcher)
+Copyright (c) 2026 Felix Pareja Valdivia (Chaktet) - Servidor Cobblemon (SC Launcher)
 
 SC Launcher is a fork of Helios Launcher (https://github.com/dscalzi/HeliosLauncher).
 

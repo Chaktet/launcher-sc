@@ -53,8 +53,10 @@ Free code signing provided by [SignPath.io](https://signpath.io/), certificate b
 
 | Rol                    | Miembros                                  |
 | ---------------------- | ----------------------------------------- |
-| Committers y Reviewers | [Chaktet](https://github.com/Chaktet)     |
-| Approvers              | [Chaktet](https://github.com/Chaktet)     |
+| Committers y Reviewers | Felix Pareja Valdivia ([Chaktet](https://github.com/Chaktet)) |
+| Approvers              | Felix Pareja Valdivia ([Chaktet](https://github.com/Chaktet)) |
+
+Mantenedor y responsable del proyecto: **Felix Pareja Valdivia** (Chaktet).
 
 **Privacidad**
 
