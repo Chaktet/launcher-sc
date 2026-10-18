@@ -846,6 +846,12 @@ class ProcessBuilder {
             }
         }
 
+        // Without lwjgl.dll the game dies in Sodium's preLaunch ("Failed to locate library:
+        // lwjgl.dll"): log it here, where it is clear why, instead of only in the crash.
+        if(process.platform === 'win32' && !fs.existsSync(path.join(tempNativePath, 'lwjgl.dll'))){
+            logger.error('lwjgl.dll no está en la carpeta de nativas tras extraerlas:', tempNativePath)
+        }
+
         return libs
     }
 
@@ -879,12 +885,6 @@ class ProcessBuilder {
                 const res = this._resolveModuleLibraries(mods[i])
                 libs = {...libs, ...res}
             }
-        }
-
-        // Without lwjgl.dll the game dies in Sodium's preLaunch ("Failed to locate library:
-        // lwjgl.dll"): log it here, where it is clear why, instead of only in the crash.
-        if(process.platform === 'win32' && !fs.existsSync(path.join(tempNativePath, 'lwjgl.dll'))){
-            logger.error('lwjgl.dll no está en la carpeta de nativas tras extraerlas:', tempNativePath)
         }
 
         return libs
