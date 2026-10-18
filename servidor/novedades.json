@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-18-launcher-1.16.10",
+      "fecha": "2026-10-18",
+      "tipo": "launcher",
+      "version": "1.16.10",
+      "titulo": "Entra a jugar aunque haya bloqueos por el fútbol",
+      "puntos": [
+        "Si tu compañía de internet bloquea las descargas durante los partidos, el launcher cambia solo a otra ruta y puedes entrar con normalidad",
+        "Iconos nuevos en el selector de versión: Raichu para PRO, Pikachu para LITE y Pichu para SUPER LITE"
+      ]
+    },
+    {
       "id": "2026-10-18-servidor-Raids-sin-movimientos-prohibidos",
       "fecha": "2026-10-18",
       "tipo": "servidor",
