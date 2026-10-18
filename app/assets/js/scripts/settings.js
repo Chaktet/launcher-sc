@@ -1354,14 +1354,17 @@ function bindRangeSlider(){
             // Move slider according to the mouse position.
             document.onmousemove = (e) => {
 
-                // Distance from the beginning of the bar in pixels.
-                const diff = e.pageX - v.offsetLeft - track.offsetWidth/2
-                
+                // Distancia desde el inicio de la barra. Rediseño v5: con offsetLeft se medía
+                // contra el panel (que ya no está pegado al borde de la ventana) y el tirador
+                // saltaba al empezar a arrastrar. El tirador va centrado sobre su posición.
+                const rect = v.getBoundingClientRect()
+                const diff = e.clientX - rect.left
+
                 // Don't move the track off the bar.
-                if(diff >= 0 && diff <= v.offsetWidth-track.offsetWidth/2){
+                if(diff >= 0 && diff <= rect.width){
 
                     // Convert the difference to a percentage.
-                    const perc = (diff/v.offsetWidth)*100
+                    const perc = (diff/rect.width)*100
                     // Calculate the percentage of the closest notch.
                     const notch = Number(perc/sliderMeta.inc).toFixed(0)*sliderMeta.inc
 

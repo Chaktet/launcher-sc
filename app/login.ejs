@@ -1,15 +1,12 @@
 <div id="loginContainer" style="display: none;">
-    <div id="loginCancelContainer" style="display: none;">
-        <button id="loginCancelButton">
-            <div id="loginCancelIcon">X</div>
-            <span id="loginCancelText"><%- lang('login.loginCancelText') %></span>
-        </button>
-    </div>
+    <%- include('scentrada') %>
     <div id="loginContent">
         <form id="loginForm">
             <img id="loginImageSeal" src="assets/images/SealCircle.png"/>
             <span id="loginSubheader"><%- lang('login.loginSubheader') %></span>
-            <span class="sc-login-help">Escribe el nombre con el que quieres jugar y pulsa ENTRAR</span>
+            <span id="scLoginTitulo"><%- lang('login.sc2.titulo') %></span>
+            <span class="sc-login-help"><%- lang('login.sc2.ayuda') %></span>
+            <label id="scLoginEtiqueta" for="loginUsername"><%- lang('login.sc2.etiqueta') %></label>
             <div class="loginFieldContainer">
                 <svg id="profileSVG" class="loginSVG" viewBox="40 37 65.36 61.43">
                     <g>
@@ -60,6 +57,13 @@
                 </span>
                 <p class="loginDisclaimerText"><%- lang('login.loginPasswordDisclaimer1') %></p>
                 <p class="loginDisclaimerText"><%- lang('login.loginPasswordDisclaimer2', { appName: lang('app.title') }) %></p>
+            </div>
+            <!-- Rediseño v5: Cancelar va al pie del panel, como enlace (antes flotaba arriba a la izquierda). -->
+            <div id="loginCancelContainer" style="display: none;">
+                <button id="loginCancelButton" type="button">
+                    <div id="loginCancelIcon">X</div>
+                    <span id="loginCancelText"><%- lang('login.loginCancelText') %></span>
+                </button>
             </div>
         </form>
     </div>

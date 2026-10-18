@@ -1,7 +1,10 @@
 <div id="loginOptionsContainer" style="display: none;">
+    <%- include('scentrada') %>
     <div id="loginOptionsContent">
         <div class="loginOptionsMainContent">
+            <span class="scEntradaEtiqueta"><%- lang('loginOptions.sc2.etiqueta') %></span>
             <h2><%- lang('loginOptions.loginOptionsTitle') %></h2>
+            <p class="scEntradaLead"><%- lang('loginOptions.sc2.lead') %></p>
             <div class="loginOptionActions">
                 <div class="loginOptionButtonContainer">
                     <button id="loginOptionMicrosoft" class="loginOptionButton">
@@ -25,6 +28,7 @@
                     </button>
                 </div>
             </div>
+            <p class="scEntradaNota"><%- lang('loginOptions.sc2.nota') %></p>
             <div id="loginOptionCancelContainer" style="display: none;">
                 <button id="loginOptionCancelButton"><%- lang('loginOptions.cancelButton') %></button>
             </div>

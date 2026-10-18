@@ -166,6 +166,18 @@ function setOverlayContent(title, description, acknowledge, dismiss = Lang.query
     document.getElementById('overlayDesc').innerHTML = description
     document.getElementById('overlayAcknowledge').innerHTML = acknowledge
     document.getElementById('overlayDismiss').innerHTML = dismiss
+    // Cada aviso nuevo empieza como informativo: si no, heredaría el rojo del error anterior.
+    scTipoAviso('info')
+}
+
+/**
+ * Tipo visual del aviso genérico (rediseño v5): icono y color de la cabecera.
+ * Se llama después de setOverlayContent(); el tipo nunca se deduce del texto traducido.
+ *
+ * @param {'info'|'atencion'|'error'} tipo
+ */
+function scTipoAviso(tipo){
+    document.getElementById('overlayContent').setAttribute('tipo', tipo)
 }
 
 /**
@@ -323,27 +335,27 @@ async function populateServerListings(){
     }
     let htmlString = ''
     for(const serv of servers){
-        htmlString += `<button class="serverListing" servid="${serv.rawServer.id}" ${serv.rawServer.id === giaSel ? 'selected' : ''}>
-            <img class="serverListingImg" src="${serv.rawServer.icon}"/>
+        // Rediseño v5: filas con personaje, nombre corto ("LITE" + "(Gama Baja)") y marca de
+        // selección. El nombre completo sigue en title y en el lector de pantalla.
+        const nombre = String(serv.rawServer.name || '')
+        const corto = nombre.includes('·') ? nombre.slice(nombre.lastIndexOf('·') + 1).trim() : nombre
+        const parentesis = corto.indexOf('(')
+        const principal = parentesis > 0 ? corto.slice(0, parentesis).trim() : corto
+        const apellido = parentesis > 0 ? corto.slice(parentesis) : ''
+        const id = String(serv.rawServer.id || '')
+        const pokemon = /superlite/i.test(id) ? 'pikachu' : (/lite/i.test(id) ? 'bulbasaur' : 'eevee')
+        htmlString += `<button class="serverListing" servid="${sc$escapeHtml(id)}" ${serv.rawServer.id === giaSel ? 'selected' : ''} title="${sc$escapeHtml(nombre)}" aria-label="${sc$escapeHtml(nombre)}">
+            <img class="serverListingImg" src="./assets/images/ui/pokemon-${pokemon}@2x.png" alt=""/>
             <div class="serverListingDetails">
-                <span class="serverListingName">${serv.rawServer.name}</span>
-                ${esRecomendado(serv) ? `<span class="serverListingRecomendado">${Lang.queryJS('landing.sc2.recommended')}</span>` : ''}
-                <span class="serverListingDescription">${serv.rawServer.description}</span>
-                <div class="serverListingInfo">
-                    <div class="serverListingVersion">${serv.rawServer.minecraftVersion}</div>
-                    <div class="serverListingRevision">${serv.rawServer.version}</div>
-                    ${serv.rawServer.mainServer ? `<div class="serverListingStarWrapper">
-                        <svg id="Layer_1" viewBox="0 0 107.45 104.74" width="20px" height="20px">
-                            <defs>
-                                <style>.cls-1{fill:#fff;}.cls-2{fill:none;stroke:#fff;stroke-miterlimit:10;}</style>
-                            </defs>
-                            <path class="cls-1" d="M100.93,65.54C89,62,68.18,55.65,63.54,52.13c2.7-5.23,18.8-19.2,28-27.55C81.36,31.74,63.74,43.87,58.09,45.3c-2.41-5.37-3.61-26.52-4.37-39-.77,12.46-2,33.64-4.36,39-5.7-1.46-23.3-13.57-33.49-20.72,9.26,8.37,25.39,22.36,28,27.55C39.21,55.68,18.47,62,6.52,65.55c12.32-2,33.63-6.06,39.34-4.9-.16,5.87-8.41,26.16-13.11,37.69,6.1-10.89,16.52-30.16,21-33.9,4.5,3.79,14.93,23.09,21,34C70,86.84,61.73,66.48,61.59,60.65,67.36,59.49,88.64,63.52,100.93,65.54Z"/>
-                            <circle class="cls-2" cx="53.73" cy="53.9" r="38"/>
-                        </svg>
-                        <span class="serverListingStarTooltip">${Lang.queryJS('settings.serverListing.mainServer')}</span>
-                    </div>` : ''}
-                </div>
+                <span class="serverListingName">${sc$escapeHtml(principal)}${apellido ? ` <small>${sc$escapeHtml(apellido)}</small>` : ''}</span>
+                <span class="serverListingDescription">${sc$escapeHtml(serv.rawServer.description || '')}</span>
             </div>
+            <div class="scPerfilMeta">
+                ${esRecomendado(serv) ? `<span class="serverListingRecomendado">★ ${Lang.queryJS('landing.sc2.recommended')}</span>` : ''}
+                <span class="scPerfilElegido">✓ ${Lang.queryJS('overlay.sc2.seleccionado')}</span>
+                <span class="scPerfilVersion">${Lang.queryJS('overlay.sc2.minecraft', { v: sc$escapeHtml(serv.rawServer.minecraftVersion || '') })}</span>
+            </div>
+            <span class="scPerfilMarca" aria-hidden="true"></span>
         </button>`
     }
     document.getElementById('serverSelectListScrollable').innerHTML = htmlString

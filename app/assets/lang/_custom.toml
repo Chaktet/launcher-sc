@@ -69,24 +69,34 @@ zip = "ZIP de soporte"
 
 [ejs.login]
 loginCancelText = "Cancelar"
-loginSubheader = "ACCESO NO PREMIUM"
+loginSubheader = "CUENTA NO PREMIUM"
 loginEmailError = "* Nombre no válido"
-loginEmailPlaceholder = "NOMBRE DE USUARIO"
+loginEmailPlaceholder = "Tu nombre en el juego"
 loginPasswordError = "* Obligatorio"
 loginPasswordPlaceholder = "CONTRASEÑA"
 loginForgotPasswordLink = "#"
 loginForgotPasswordText = ""
-loginRememberMeText = "¿recordarme?"
+loginRememberMeText = "¿Recordarme?"
 loginButtonText = "ENTRAR"
 loginNeedAccountLink = "#"
 loginNeedAccountText = ""
 loginPasswordDisclaimer1 = "Tu cuenta se protege con contraseña DENTRO del servidor (/register y /login)."
 loginPasswordDisclaimer2 = "{appName} no está afiliado a Mojang AB."
 
+[ejs.login.sc2]
+titulo = "Entra con tu nombre"
+ayuda = "Usa el mismo nombre con el que juegas en el servidor."
+etiqueta = "Nombre de usuario"
+
 [ejs.loginOptions]
 loginOptionsTitle = "¿Cómo quieres entrar?"
 loginWithMicrosoft = "Premium (cuenta Microsoft)"
 loginWithMojang = "No Premium (solo nombre)"
+
+[ejs.loginOptions.sc2]
+etiqueta = "Tu cuenta"
+lead = "Elige el tipo de cuenta que usas para jugar."
+nota = "Microsoft abre su propia ventana para iniciar sesión de forma segura."
 cancelButton = "Cancelar"
 
 [ejs.overlay]
@@ -99,11 +109,16 @@ accountSelectHeader = "Elige una cuenta"
 accountSelectConfirm = "Seleccionar"
 accountSelectCancel = "Cancelar"
 
+[ejs.overlay.sc2]
+tipoInfo = "Aviso"
+tipoAtencion = "Atención"
+tipoError = "Error"
+
 [ejs.settings]
 sourceGithubLink = "https://github.com/Chaktet/launcher-sc"
 supportLink = "https://discord.gg/servidorcobblemon"
-navViewLogs = "📄 Registros del juego"
-navViewLauncherLogs = "🧩 Registros del launcher"
+navViewLogs = "Registros del juego"
+navViewLauncherLogs = "Registros del launcher"
 tabRpHeaderText = "Paquetes de recursos"
 tabRpHeaderDesc = "Activa, desactiva, importa o quita paquetes de texturas."
 rpListTitle = "Tus paquetes"
@@ -196,12 +211,17 @@ checkForUpdates = "Buscar actualizaciones"
 whatsNew = "Novedades"
 updateReleaseNotes = "Notas de la actualización"
 
+[ejs.scEntrada]
+hero = "Tu próxima aventura empieza aquí."
+texto = "Explora, captura y comparte tu historia con la comunidad."
+pie = "servidorcobblemon.es"
+
 [ejs.waiting]
 waitingText = "Esperando a Microsoft.."
 cancelButton = "Cancelar"
 
 [ejs.welcome]
-welcomeHeader = "BIENVENIDO A SERVIDOR COBBLEMON"
+welcomeHeader = "Bienvenido a Servidor Cobblemon"
 welcomeDescription = "Tu aventura Cobblemon empieza aquí. El launcher instala automáticamente todo lo necesario: Minecraft 1.21.1, los mods y el paquete de recursos del servidor. Solo inicia sesión y pulsa JUGAR."
 welcomeDescCTA = "Estás a un clic de empezar."
 continueButton = "CONTINUAR"
@@ -323,7 +343,9 @@ suggestPro = "Tu PC puede con PRO"
 profileSuperLite = "Perfil para PC muy modesto"
 suggestSuperLite = "Para tu PC: SUPER LITE"
 memTitulo = "Tu PC se ha quedado sin memoria"
-memTexto = "El juego no ha tenido memoria suficiente con este perfil. Te recomendamos <b>{perfil}</b>, que gasta mucha menos memoria y te deja jugar igual en el mismo servidor.<br><br>¿Cambiamos de perfil? Lo puedes cambiar de nuevo cuando quieras."
+memTexto = "El juego no ha tenido memoria suficiente con este perfil. Te recomendamos uno más ligero, que gasta mucha menos memoria y te deja jugar igual en el mismo servidor."
+memRecomendado = "Perfil recomendado"
+memPregunta = "¿Cambiamos de perfil? Lo puedes cambiar de nuevo cuando quieras."
 memCambiar = "Cambiar de perfil"
 memNo = "Ahora no"
 recommended = "Recomendado para tu PC"
@@ -468,6 +490,10 @@ joined = "¡Atrapándolos a todos!"
 
 [js.overlay]
 dismiss = "Cerrar"
+
+[js.overlay.sc2]
+seleccionado = "Seleccionado"
+minecraft = "Minecraft {v}"
 
 [js.settings.fileSelectors]
 executables = "Ejecutables"
@@ -643,6 +669,7 @@ unknownErrorTitle = "Error desconocido al entrar"
 unknownErrorDesc = "Ha ocurrido un error desconocido. Mira la consola para más detalles."
 
 [ejs.settings.sc2]
+headerDesc = "Tu cuenta, tu juego y las opciones del launcher."
 ramAutoTitle = "RAM automática"
 ramAutoDesc = "El launcher elige la memoria según tu PC y el perfil, dejando margen para Windows."
 qualityTitle = "Calidad gráfica"

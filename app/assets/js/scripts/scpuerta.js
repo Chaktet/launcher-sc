@@ -45,18 +45,27 @@ function scPuertaNodo(){
     n.setAttribute('aria-modal', 'true')
     n.innerHTML = `
         <div id="scPuertaCaja">
-            <div id="scPuertaIcono">⬇</div>
-            <span id="scPuertaTitulo"></span>
+            <div id="scPuertaCabecera">
+                <div id="scPuertaIcono" aria-hidden="true">⬇</div>
+                <div id="scPuertaTitulos">
+                    <span id="scPuertaTitulo"></span>
+                    <span id="scPuertaSub"></span>
+                </div>
+            </div>
             <span id="scPuertaDesc"></span>
             <div id="scPuertaBarra"><div id="scPuertaRelleno"></div></div>
             <span id="scPuertaPct"></span>
-            <button id="scPuertaBoton" type="button"></button>
-            <span id="scPuertaNota"></span>
-            <div id="scPuertaEnlaces">
-                <a id="scPuertaWeb" href="#"></a>
-                <button id="scPuertaSaltar" type="button"></button>
+            <div id="scPuertaPie">
+                <button id="scPuertaBoton" type="button"></button>
+                <span id="scPuertaNota"></span>
+                <div id="scPuertaEnlaces">
+                    <a id="scPuertaWeb" href="#"></a>
+                    <button id="scPuertaSaltar" type="button"></button>
+                </div>
             </div>
         </div>`
+    // Rediseño v5: subtítulo fijo bajo el título, como en los demás avisos.
+    n.querySelector('#scPuertaSub').textContent = scPuertaTxt('subtitulo', 'Actualización del launcher')
     document.body.appendChild(n)
     n.querySelector('#scPuertaWeb').addEventListener('click', e => {
         e.preventDefault()

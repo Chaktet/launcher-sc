@@ -361,6 +361,7 @@ function showLaunchFailure(title, desc){
         desc,
         Lang.queryJS('landing.launch.okay')
     )
+    scTipoAviso('error')
     setOverlayHandler(null)
     toggleOverlay(true)
     toggleLaunchArea(false)
@@ -927,12 +928,19 @@ function scOfrecerPerfilMasLigero(seguro = false, jugado = null, desde = 0){
 }
 
 function scMostrarOfertaPerfil(servSig){
+    // Rediseño v5: el perfil propuesto va en su propia tarjeta entre la explicación y la pregunta.
+    const tarjeta = `<span class="scAvisoPerfil">
+        <img src="${sc$escapeHtml(servSig.rawServer.icon || './assets/images/SealCircle.png')}" alt="">
+        <span><small>${Lang.queryJS('landing.sc2.memRecomendado')}</small>
+        <b>${sc$escapeHtml(servSig.rawServer.name)}</b>
+        <em>${sc$escapeHtml(servSig.rawServer.description || '')}</em></span></span>`
     setOverlayContent(
         Lang.queryJS('landing.sc2.memTitulo'),
-        Lang.queryJS('landing.sc2.memTexto', { perfil: sc$escapeHtml(servSig.rawServer.name) }),
+        Lang.queryJS('landing.sc2.memTexto') + tarjeta + Lang.queryJS('landing.sc2.memPregunta'),
         Lang.queryJS('landing.sc2.memCambiar'),
         Lang.queryJS('landing.sc2.memNo')
     )
+    scTipoAviso('atencion')
     setOverlayHandler(() => {
         updateSelectedServer(servSig)
         toggleOverlay(false)
@@ -1746,6 +1754,7 @@ function scFalloArranque(codigo, explicacion, err, reintentable = false){
         setDismissHandler(() => toggleOverlay(false))
     }
 
+    scTipoAviso('error')
     toggleOverlay(true, true)
     toggleLaunchArea(false)
 }
