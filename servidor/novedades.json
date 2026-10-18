@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-18-launcher-1.16.12",
+      "fecha": "2026-10-18",
+      "tipo": "launcher",
+      "version": "1.16.12",
+      "titulo": "Noticias más claras, eventos y tu skin de verdad",
+      "puntos": [
+        "Las imágenes de las noticias ya no tapan el texto y se amplían al pulsarlas",
+        "El calendario y la portada enseñan las raids legendarias y los Community Day",
+        "Tu cara en la esquina sale con tu skin de verdad",
+        "Si el juego no arranca o se cierra, nos llega un aviso anónimo para arreglarlo antes (se puede apagar en Ajustes)"
+      ]
+    },
+    {
       "id": "2026-10-18-launcher-1.16.11",
       "fecha": "2026-10-18",
       "tipo": "launcher",
