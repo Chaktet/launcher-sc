@@ -343,7 +343,8 @@ async function populateServerListings(){
         const principal = parentesis > 0 ? corto.slice(0, parentesis).trim() : corto
         const apellido = parentesis > 0 ? corto.slice(parentesis) : ''
         const id = String(serv.rawServer.id || '')
-        const pokemon = /superlite/i.test(id) ? 'pikachu' : (/lite/i.test(id) ? 'bulbasaur' : 'eevee')
+        // La línea evolutiva marca el peso del perfil: Raichu PRO, Pikachu LITE, Pichu SUPER LITE.
+        const pokemon = /superlite/i.test(id) ? 'pichu' : (/lite/i.test(id) ? 'pikachu' : 'raichu')
         htmlString += `<button class="serverListing" servid="${sc$escapeHtml(id)}" ${serv.rawServer.id === giaSel ? 'selected' : ''} title="${sc$escapeHtml(nombre)}" aria-label="${sc$escapeHtml(nombre)}">
             <img class="serverListingImg" src="./assets/images/ui/pokemon-${pokemon}@2x.png" alt=""/>
             <div class="serverListingDetails">

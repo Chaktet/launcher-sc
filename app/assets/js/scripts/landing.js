@@ -1220,7 +1220,11 @@ const SC_RE_TLS_CADENA = /SELF_SIGNED_CERT_IN_CHAIN|UNABLE_TO_GET_ISSUER_CERT|UN
 // normal contestando en el puerto 443: un portal cautivo (wifi de hotel o de tren
 // antes de identificarse) o una página de bloqueo sin TLS. No es un certificado:
 // es que no llegamos, y caía al mensaje de "comprueba el disco".
-const SC_RE_RED = /ETIMEDOUT|ENOTFOUND|ECONNREFUSED|ECONNRESET|EAI_AGAIN|ENETUNREACH|EHOSTUNREACH|ERR_SSL_WRONG_VERSION_NUMBER|ERR_SSL_PACKET_LENGTH_TOO_LONG|EPROTO/i
+// "timed out": helios-core convierte el TimeoutError de got en "Request timed out
+// (5006ms)." SIN el código ETIMEDOUT. Es justo lo que deja Movistar al tirar los
+// paquetes en un partido, y sin esto la ruta directa no se probaba nunca (18/10/2026,
+// "cambios automaticos 0/2" en el informe de soporte).
+const SC_RE_RED = /ETIMEDOUT|ENOTFOUND|ECONNREFUSED|ECONNRESET|EAI_AGAIN|ENETUNREACH|EHOSTUNREACH|ERR_SSL_WRONG_VERSION_NUMBER|ERR_SSL_PACKET_LENGTH_TOO_LONG|EPROTO|timed out/i
 
 // Programas que abren el HTTPS del equipo firmándolo con su propia autoridad. Se
 // reconocen por una palabra del nombre del emisor y no por el nombre exacto,
@@ -2385,7 +2389,7 @@ function scActivarModoLento(motivo){
  * hijo, así que se mira el texto completo con scErrorLegible.
  */
 function scEsCorteDeRed(err){
-    return /ECONNRESET|ETIMEDOUT|ENOTFOUND|EAI_AGAIN|ENETUNREACH|ENETDOWN|EHOSTUNREACH|ECONNABORTED|EPIPE|socket hang up|RequestError|ReadError|TimeoutError/i
+    return /ECONNRESET|ETIMEDOUT|ENOTFOUND|EAI_AGAIN|ENETUNREACH|ENETDOWN|EHOSTUNREACH|ECONNABORTED|EPIPE|socket hang up|RequestError|ReadError|TimeoutError|timed out/i
         .test(scErrorLegible(err))
 }
 

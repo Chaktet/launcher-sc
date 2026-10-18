@@ -452,7 +452,7 @@ Cómo se reconoce en un informe de soporte:
 
 | `displayable` en el informe | Qué es |
 |---|---|
-| `ETIMEDOUT`, `ENOTFOUND`, `ENETUNREACH` | **El bloqueo.** Los paquetes no llegan |
+| `ETIMEDOUT`, `ENOTFOUND`, `ENETUNREACH`, `Request timed out (5006ms).` | **El bloqueo.** Los paquetes no llegan. El último es el `TimeoutError` de got tal como lo escribe helios-core, sin código: hasta la 1.16.10 no se reconocía y la ruta directa no saltaba (informe del 18/10/2026, "cambios automaticos 0/2") |
 | `DEPTH_ZERO_SELF_SIGNED_CERT` y otros de certificado | **También el bloqueo**, en Digi: contesta por la IP bloqueada con su propio certificado. O un antivirus o proxy que abre el HTTPS. El launcher lo distingue (ver SC-04 en [ERRORES.md](ERRORES.md)) |
 
 ### Cómo lo esquiva el launcher (desde 1.5.15, automático desde 1.6.1)
