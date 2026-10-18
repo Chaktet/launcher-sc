@@ -494,7 +494,8 @@ const SC_ERR = {
     DRIVER_SODIUM:  'SC-13', // Sodium rechaza el driver: hay UNA versión concreta que instalar
     JAVA_BLOQUEADO: 'SC-14', // Java se instaló pero el sistema no le deja ejecutarse
     MOD_ILEGIBLE:   'SC-15', // el juego no ha podido abrir un archivo del pack
-    DISCO:          'SC-16'  // no queda espacio libre suficiente en el disco de datos
+    DISCO:          'SC-16', // no queda espacio libre suficiente en el disco de datos
+    NATIVAS:        'SC-17'  // falta lwjgl.dll (u otra nativa) al arrancar: antivirus o carpeta temporal
 }
 
 // Cuántas veces se ha intentado ya arreglar cada fichero en ESTA sesión.
@@ -1074,6 +1075,15 @@ function scAnalizarCierreDelJuego(code, salida){
             .replace('{instalada}', instalada)
             .replace('{requerida}', requerida)
         scFalloArranque(SC_ERR.DRIVER_SODIUM, mensaje, new Error(txt.slice(-4000)))
+        return
+    }
+
+    // Falta una librería nativa (casi siempre lwjgl.dll) al arrancar. Desde la 1.16.13
+    // el launcher las escribe antes de abrir Java, así que lo que queda es que el
+    // antivirus o un limpiador la borre o la bloquee en la carpeta temporal. Va antes
+    // que gráficos: la traza pasa por clases de Sodium y no es un problema del driver.
+    if(/UnsatisfiedLinkError/.test(txt) && /Failed to locate library: (lwjgl|glfw|jemalloc|openal)[^\s]*\.dll|no lwjgl in java\.library\.path/i.test(txt)){
+        scFalloArranque(SC_ERR.NATIVAS, Lang.queryJS('landing.launch.errNativas'), new Error(txt.slice(-4000)), true)
         return
     }
 

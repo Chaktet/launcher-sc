@@ -45,6 +45,12 @@ Infra del ecosistema: `E:\cobblemon-web\infra\INFRA-MAP.md` (del 22/05/2026, ver
 
 ## Reglas duras
 
+- **Fondos del launcher: solo se publica un fondo que Felix haya validado** (Felix, 18-10-2026). El catálogo
+  `launcher/fondos/fondos.json` de OVH-A tiene hoy solo **Valle Cobblemon** (`valle-2026-10`). Los fondos de
+  `diseno-v*` (las rondas anteriores rechazadas) NO se publican. Para probar el selector con varios fondos, usa un
+  catálogo local en una carpeta de datos aparte (`--user-data-dir`), nunca el de producción. Un fondo publicado se
+  pone solo a todos los jugadores (`app/assets/js/scfondos.js`): nombre de fichero nuevo por fondo y sha256 en el
+  catálogo.
 - **No reiniciar ni tocar servidores de Minecraft de producción sin un "sí, reinicia" textual del usuario.**
   Desconecta a los jugadores; OVH-A aloja además el proxy Velocity, el Lobby y Hoenn.
 - **`options.txt` no se toca con el juego abierto.** Minecraft lo reescribe entero al cerrarse y se

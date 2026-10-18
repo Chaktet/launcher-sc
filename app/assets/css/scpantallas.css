@@ -1948,3 +1948,42 @@
 #scNoticiaLienzo{flex:1;min-height:0;min-width:0;display:flex;align-items:center;justify-content:center;border-top:1px solid #34464e;border-bottom:1px solid #34464e;padding:calc(12 * var(--u));cursor:zoom-out}
 #scNoticiaImagen{display:block;width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain;cursor:default}
 #scNoticiaVisorAyuda{flex:none;text-align:center;color:var(--v5-tinta-2);font-size:calc(11 * var(--u))}
+
+/* ---- Fondos del launcher (1.16.13): selector en Ajustes -> Launcher ----
+   Diseño v7 de Codex aprobado por Felix el 18-10-2026 (diseno-v7-fondos/ESPECIFICACION.md), copiado tal cual. */
+/* BEGIN scFondo: CSS de la propuesta. El resto del archivo solo reconstruye Ajustes v5. */
+#settingsContainer #settingsTabLauncher .scFondoBloque{container-type:inline-size;min-width:0;margin:0 0 calc(4 * var(--u));padding:0 0 calc(20 * var(--u));border-bottom:1px solid var(--v5-linea)}
+#settingsContainer #settingsTabLauncher .scFondoCabecera{display:flex;align-items:baseline;justify-content:space-between;gap:calc(20 * var(--u));margin-bottom:calc(14 * var(--u))}
+#settingsContainer #settingsTabLauncher .scFondoTitulo{font-size:calc(15 * var(--u));line-height:1.4;font-weight:650;color:var(--v5-tinta)}
+#settingsContainer #settingsTabLauncher .scFondoAyuda{max-width:calc(540 * var(--u));margin:calc(4 * var(--u)) 0 0;font-size:calc(12 * var(--u));line-height:1.48;color:var(--v5-tinta-2)}
+#settingsContainer #settingsTabLauncher .scFondoCantidad{flex:none;font-size:calc(11 * var(--u));color:var(--v5-tinta-2);white-space:nowrap}
+#settingsContainer #settingsTabLauncher .scFondoLista{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:calc(12 * var(--u));padding:calc(4 * var(--u));margin:calc(-4 * var(--u));align-items:stretch}
+#settingsContainer #settingsTabLauncher .scFondoTarjeta{position:relative;display:flex;flex-direction:column;min-width:0;width:100%;margin:0;padding:calc(3 * var(--u));border:1px solid var(--v5-linea);border-radius:0;background:var(--v5-base);box-shadow:inset 0 1px #ffffff08;color:var(--v5-tinta);text-align:left;text-transform:none;letter-spacing:normal;font:inherit;cursor:pointer;transition:border-color 120ms ease,background-color 120ms ease}
+#settingsContainer #settingsTabLauncher .scFondoTarjeta:hover:not([aria-disabled=true]){border-color:#7b9baa;background:#10232f}
+#settingsContainer #settingsTabLauncher .scFondoTarjeta[aria-checked=true]{border-color:var(--v5-azul);background:#102a39;box-shadow:inset 0 0 0 1px var(--v5-azul)}
+#settingsContainer #settingsTabLauncher .scFondoTarjeta:focus,#settingsContainer #settingsTabLauncher .scFondoTarjeta:focus-visible{outline:2px solid var(--v5-azul);outline-offset:3px}
+#settingsContainer #settingsTabLauncher .scFondoTarjeta:focus-visible::after{content:none}
+#settingsContainer #settingsTabLauncher .scFondoTarjeta[aria-disabled=true]{cursor:default}
+#settingsContainer #settingsTabLauncher .scFondoMiniatura{position:relative;display:block;aspect-ratio:16/9;flex:none;overflow:hidden;background:#142b37}
+#settingsContainer #settingsTabLauncher .scFondoImagen{position:relative;display:block;width:100%;height:100%;object-fit:cover;z-index:1}
+#settingsContainer #settingsTabLauncher .scFondoAlternativa{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:calc(12 * var(--u));font-size:calc(11 * var(--u));line-height:1.45;color:var(--v5-tinta-2)}
+#settingsContainer #settingsTabLauncher .scFondoImagen[hidden]{display:none}
+#settingsContainer #settingsTabLauncher .scFondoNuevo{position:absolute;right:calc(6 * var(--u));top:calc(6 * var(--u));z-index:3;padding:calc(2 * var(--u)) calc(7 * var(--u));background:#ffc18b;color:#36200d;font-size:calc(10 * var(--u));line-height:1.7;font-weight:750;clip-path:polygon(0 0,calc(100% - 4px) 0,100% 4px,100% 100%,4px 100%,0 calc(100% - 4px))}
+#settingsContainer #settingsTabLauncher .scFondoVelo{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;background:#07141c99;color:#f3f5ef}
+#settingsContainer #settingsTabLauncher .scFondoIcono{width:calc(25 * var(--u));height:calc(25 * var(--u));fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+#settingsContainer #settingsTabLauncher .scFondoProgreso{position:absolute;inset:auto 0 0;height:calc(3 * var(--u));z-index:3;background:#263f4c}
+#settingsContainer #settingsTabLauncher .scFondoProgreso>span{display:block;width:62%;height:100%;background:var(--v5-azul)}
+#settingsContainer #settingsTabLauncher .scFondoDatos{display:flex;flex-direction:column;min-width:0;padding:calc(9 * var(--u)) calc(7 * var(--u)) calc(6 * var(--u))}
+#settingsContainer #settingsTabLauncher .scFondoNombre{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;overflow-wrap:anywhere;min-height:calc(36 * var(--u));font-size:calc(12.5 * var(--u));line-height:calc(18 * var(--u));font-weight:650;color:var(--v5-tinta)}
+#settingsContainer #settingsTabLauncher .scFondoFecha{display:block;margin-top:calc(4 * var(--u));font-size:calc(10.5 * var(--u));line-height:calc(16 * var(--u));color:var(--v5-tinta-2)}
+#settingsContainer #settingsTabLauncher .scFondoEstado{display:flex;align-items:flex-start;gap:calc(5 * var(--u));height:calc(36 * var(--u));margin-top:calc(8 * var(--u));padding-top:calc(7 * var(--u));border-top:1px solid #34464e99;font-size:calc(10.5 * var(--u));line-height:calc(14 * var(--u));font-weight:550;color:var(--v5-tinta-2)}
+#settingsContainer #settingsTabLauncher .scFondoEnUso{display:none;color:#8bd0f4}
+#settingsContainer #settingsTabLauncher .scFondoTarjeta[aria-checked=true] .scFondoEnUso{display:inline}
+#settingsContainer #settingsTabLauncher .scFondoTarjeta[aria-checked=true] .scFondoDisponible{display:none}
+#settingsContainer #settingsTabLauncher .scFondoTarjeta[data-estado=descargando] .scFondoEstado{color:#8bd0f4}
+#settingsContainer #settingsTabLauncher .scFondoSr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+@container (max-width:600px){#settingsContainer #settingsTabLauncher .scFondoLista{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@container (max-width:440px){#settingsContainer #settingsTabLauncher .scFondoLista{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@container (max-width:260px){#settingsContainer #settingsTabLauncher .scFondoLista{grid-template-columns:minmax(0,1fr)}#settingsContainer #settingsTabLauncher .scFondoCabecera{gap:8px}}
+@media(prefers-reduced-motion:reduce){#settingsContainer #settingsTabLauncher .scFondoTarjeta{transition:none}}
+/* END scFondo */

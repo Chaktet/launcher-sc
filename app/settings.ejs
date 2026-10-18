@@ -333,6 +333,18 @@
                 <span class="settingsTabHeaderText"><%- lang('settings.launcherTabHeaderText') %></span>
                 <span class="settingsTabHeaderDesc"><%- lang('settings.launcherTabHeaderDesc') %></span>
             </div>
+            <!-- Fondos del launcher (1.16.13, diseño v7 de Codex): las tarjetas las pinta scPintarFondos() en settings.js. -->
+            <section class="scFondoBloque" aria-labelledby="scFondoTitulo">
+                <div class="scFondoCabecera">
+                    <div>
+                        <h3 id="scFondoTitulo" class="scFondoTitulo"><%- lang('settings.sc2.fondoTitulo') %></h3>
+                        <p id="scFondoAyuda" class="scFondoAyuda"><%- lang('settings.sc2.fondoAyuda') %></p>
+                    </div>
+                    <span class="scFondoCantidad" id="scFondoCantidad"></span>
+                </div>
+                <div class="scFondoLista" id="scFondoLista" role="radiogroup" aria-labelledby="scFondoTitulo" aria-describedby="scFondoAyuda"></div>
+                <p class="scFondoSr" id="scFondoAnuncio" role="status" aria-live="polite" aria-atomic="true"></p>
+            </section>
             <div class="settingsFieldContainer">
                 <div class="settingsFieldLeft">
                     <span class="settingsFieldTitle"><%- lang('settings.sc2.minimizeTitle') %></span>

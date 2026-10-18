@@ -94,7 +94,11 @@ const DEFAULT_CONFIG = {
             // Hide the launcher to the tray once the game has loaded (1.10.0).
             minimizarAlJugar: true,
             // Envío anónimo del código de un fallo de arranque (1.16.12). Se puede apagar en Ajustes → Launcher.
-            enviarErrores: true
+            enviarErrores: true,
+            // Fondos (1.16.13, scfondos.js): el elegido en Ajustes (null = el más nuevo) y el
+            // más nuevo que ya se aplicó una vez (cuando sale otro, se pone solo).
+            fondoElegido: null,
+            fondoNuevoVisto: null
         }
     },
     newsCache: {
@@ -994,4 +998,22 @@ exports.getEnviarErrores = function(def = false){
 
 exports.setEnviarErrores = function(v){
     config.settings.launcher.enviarErrores = v === true
+}
+
+/** Fondo elegido en Ajustes → Launcher, o null para seguir siempre el más nuevo (scfondos.js). */
+exports.getFondoElegido = function(){
+    return config.settings.launcher.fondoElegido || null
+}
+
+exports.setFondoElegido = function(id){
+    config.settings.launcher.fondoElegido = id || null
+}
+
+/** Id del fondo más nuevo que ya se aplicó una vez: si el catálogo trae otro más nuevo, se pone solo. */
+exports.getFondoNuevoVisto = function(){
+    return config.settings.launcher.fondoNuevoVisto || null
+}
+
+exports.setFondoNuevoVisto = function(id){
+    config.settings.launcher.fondoNuevoVisto = id || null
 }

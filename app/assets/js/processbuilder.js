@@ -12,6 +12,22 @@ const ConfigManager            = require('./configmanager')
 
 const logger = LoggerUtil.getLogger('ProcessBuilder')
 
+/**
+ * Writes one native library (lwjgl.dll, glfw.dll...) SYNCHRONOUSLY (1.16.13). Helios used
+ * fs.writeFile without waiting and the game was spawned right after: on a slow disk or
+ * with an antivirus scanning every new DLL, Java started before lwjgl.dll existed and
+ * Sodium's preLaunch died with "UnsatisfiedLinkError: Failed to locate library:
+ * lwjgl.dll" (player report, 18-10-2026). A failed write is logged, not thrown: the
+ * crash analyzer explains it to the player (SC-17).
+ */
+function sc$escribirNativa(destino, datos){
+    try {
+        fs.writeFileSync(destino, datos)
+    } catch(err){
+        logger.error('Error while extracting native library:', destino, err)
+    }
+}
+
 
 /**
  * Only forge and fabric are top level mod loaders.
@@ -747,13 +763,9 @@ class ProcessBuilder {
                             }
                         })
 
-                        // Extract the file.
+                        // Extract the file (synchronously: see sc$escribirNativa).
                         if(!shouldExclude){
-                            fs.writeFile(path.join(tempNativePath, fileName), zipEntries[i].getData(), (err) => {
-                                if(err){
-                                    logger.error('Error while extracting native library:', err)
-                                }
-                            })
+                            sc$escribirNativa(path.join(tempNativePath, fileName), zipEntries[i].getData())
                         }
 
                     }
@@ -798,13 +810,9 @@ class ProcessBuilder {
 
                         const extractName = fileName.includes('/') ? fileName.substring(fileName.lastIndexOf('/')) : fileName
 
-                        // Extract the file.
+                        // Extract the file (synchronously: see sc$escribirNativa).
                         if(!shouldExclude){
-                            fs.writeFile(path.join(tempNativePath, extractName), zipEntries[i].getData(), (err) => {
-                                if(err){
-                                    logger.error('Error while extracting native library:', err)
-                                }
-                            })
+                            sc$escribirNativa(path.join(tempNativePath, extractName), zipEntries[i].getData())
                         }
 
                     }
@@ -853,6 +861,12 @@ class ProcessBuilder {
                 const res = this._resolveModuleLibraries(mods[i])
                 libs = {...libs, ...res}
             }
+        }
+
+        // Without lwjgl.dll the game dies in Sodium's preLaunch ("Failed to locate library:
+        // lwjgl.dll"): log it here, where it is clear why, instead of only in the crash.
+        if(process.platform === 'win32' && !fs.existsSync(path.join(tempNativePath, 'lwjgl.dll'))){
+            logger.error('lwjgl.dll no está en la carpeta de nativas tras extraerlas:', tempNativePath)
         }
 
         return libs

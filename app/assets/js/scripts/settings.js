@@ -2330,6 +2330,184 @@ document.getElementById('settingsAboutLogo').addEventListener('click', async () 
     }
 })
 
+/* ---- Fondos del launcher (1.16.13) ----------------------------------------
+ * Selector de Ajustes → Launcher, diseño v7 de Codex (diseno-v7-fondos). La regla
+ * vive en scfondos.js: el más nuevo se pone solo cuando sale; aquí se vuelve a otro.
+ */
+const loggerFondos = LoggerUtil.getLogger('Fondos')
+const scFondoEstados = new Map() // id → 'descargando' | 'error' (lo que no se deduce del disco)
+
+function scTxtFondo(clave, datos){
+    return Lang.queryJS('settings.fondos.' + clave, datos)
+}
+
+function scFechaFondo(fecha){
+    const [y, m] = String(fecha).split('-').map(Number)
+    const mes = (scTxtFondo('meses').split(',')[m - 1] || '')
+    return (mes.charAt(0).toUpperCase() + mes.slice(1)) + ' de ' + y
+}
+
+function scPintarFondos(){
+    const lista = document.getElementById('scFondoLista')
+    if(lista == null){
+        return
+    }
+    let ScFondos
+    try {
+        ScFondos = require('./assets/js/scfondos')
+    } catch(e){
+        loggerFondos.warn('Fondos no disponibles', e)
+        return
+    }
+    const catalogo = ScFondos.catalogo().slice().reverse() // el más reciente primero
+    const nuevoId = catalogo.length ? catalogo[0].id : null
+    const usoId = document.body.getAttribute('data-sc-fondo') || ScFondos.efectivo().id
+    document.getElementById('scFondoCantidad').textContent = catalogo.length === 1
+        ? scTxtFondo('cantidadUno') : scTxtFondo('cantidadVarios', { n: catalogo.length })
+    lista.textContent = ''
+    const conRed = navigator.onLine !== false
+    catalogo.forEach(f => {
+        const listo = ScFondos.disponible(f)
+        const estado = listo ? 'listo' : (scFondoEstados.get(f.id) || (conRed ? 'remoto' : 'sin-conexion'))
+        const enUso = f.id === usoId
+        const sufijo = f.id
+        const b = document.createElement('button')
+        b.type = 'button'
+        b.className = 'scFondoTarjeta'
+        b.setAttribute('role', 'radio')
+        b.setAttribute('aria-checked', enUso ? 'true' : 'false')
+        b.tabIndex = enUso ? 0 : -1
+        b.title = f.nombre
+        b.dataset.id = f.id
+        b.dataset.estado = estado
+        b.setAttribute('aria-labelledby', 'scFondoNombre-' + sufijo)
+        b.setAttribute('aria-describedby', ['scFondoFecha-', 'scFondoEstado-'].map(p => p + sufijo).join(' ')
+            + (f.id === nuevoId ? ' scFondoNuevo-' + sufijo : ''))
+        if(estado === 'descargando' || estado === 'sin-conexion'){
+            b.setAttribute('aria-disabled', 'true')
+        }
+        if(estado === 'descargando'){
+            b.setAttribute('aria-busy', 'true')
+        }
+
+        const mini = document.createElement('span')
+        mini.className = 'scFondoMiniatura'
+        const alt = document.createElement('span')
+        alt.className = 'scFondoAlternativa'
+        alt.textContent = scTxtFondo('sinVista')
+        const img = document.createElement('img')
+        img.className = 'scFondoImagen'
+        img.alt = ''
+        img.width = 1920
+        img.height = 1080
+        img.loading = 'lazy'
+        img.onerror = () => img.remove()
+        img.src = ScFondos.miniatura(f)
+        mini.append(alt, img)
+        if(f.id === nuevoId){
+            const n = document.createElement('span')
+            n.id = 'scFondoNuevo-' + sufijo
+            n.className = 'scFondoNuevo'
+            n.textContent = scTxtFondo('nuevo')
+            mini.append(n)
+        }
+        if(estado === 'descargando' || estado === 'sin-conexion'){
+            const velo = document.createElement('span')
+            velo.className = 'scFondoVelo'
+            velo.setAttribute('aria-hidden', 'true')
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+            svg.setAttribute('class', 'scFondoIcono')
+            svg.setAttribute('viewBox', '0 0 24 24')
+            const p = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+            p.setAttribute('d', estado === 'descargando'
+                ? 'M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4'
+                : 'M3 3l18 18M6 7.5a14 14 0 0 1 15 1M3 8.5l1-.6m4 4a8 8 0 0 1 3-.9m5.5 1a8 8 0 0 1 1.5.9M8.5 16a5 5 0 0 1 6.5-.2M12 20h.01')
+            svg.append(p)
+            velo.append(svg)
+            mini.append(velo)
+        }
+
+        const datos = document.createElement('span')
+        datos.className = 'scFondoDatos'
+        const nombre = document.createElement('span')
+        nombre.id = 'scFondoNombre-' + sufijo
+        nombre.className = 'scFondoNombre'
+        nombre.textContent = f.nombre
+        const fecha = document.createElement('time')
+        fecha.id = 'scFondoFecha-' + sufijo
+        fecha.className = 'scFondoFecha'
+        fecha.dateTime = String(f.fecha).slice(0, 7)
+        fecha.textContent = scFechaFondo(f.fecha)
+        const est = document.createElement('span')
+        est.id = 'scFondoEstado-' + sufijo
+        est.className = 'scFondoEstado'
+        const texto = document.createElement('span')
+        if(enUso){
+            texto.className = 'scFondoEnUso'
+            texto.textContent = scTxtFondo('enUso')
+        } else {
+            texto.className = 'scFondoDisponible'
+            texto.textContent = scTxtFondo({ listo: 'elegir', remoto: 'descargarUsar', descargando: 'descargando',
+                'sin-conexion': 'sinConexion', error: 'reintentar' }[estado])
+        }
+        est.append(texto)
+        datos.append(nombre, fecha, est)
+        b.append(mini, datos)
+        b.addEventListener('click', () => scElegirFondo(f, estado, enUso))
+        lista.append(b)
+    })
+}
+
+function scElegirFondo(f, estado, enUso){
+    if(enUso || estado === 'descargando' || estado === 'sin-conexion'){
+        return
+    }
+    const anuncio = document.getElementById('scFondoAnuncio')
+    if(estado !== 'listo'){
+        scFondoEstados.set(f.id, 'descargando')
+        scPintarFondos()
+    }
+    require('./assets/js/scfondos').elegir(f.id).then(puesto => {
+        scFondoEstados.delete(f.id)
+        if(puesto){
+            anuncio.textContent = scTxtFondo('anuncioPuesto', { nombre: f.nombre })
+        }
+    }).catch(e => {
+        loggerFondos.warn('No se pudo descargar el fondo', f.id, e)
+        scFondoEstados.set(f.id, 'error')
+        anuncio.textContent = scTxtFondo('anuncioError', { nombre: f.nombre })
+    }).finally(() => {
+        scPintarFondos()
+        const sel = document.querySelector(`#scFondoLista .scFondoTarjeta[data-id="${CSS.escape(f.id)}"]`)
+        if(sel){
+            sel.focus({ preventScroll: true })
+        }
+    })
+}
+
+// Un fondo puesto por otra vía (el nuevo que llega solo, o al arrancar) repinta las
+// tarjetas: si no, «En uso» se quedaba en el anterior y no se podía volver a él.
+window.addEventListener('sc-fondo-cambiado', () => {
+    if(document.getElementById('scFondoLista') != null){
+        scPintarFondos()
+    }
+})
+
+// Radiogroup: las flechas mueven el foco entre tarjetas (una sola parada de tabulación).
+document.addEventListener('keydown', e => {
+    const actual = e.target && e.target.closest ? e.target.closest('#scFondoLista .scFondoTarjeta') : null
+    if(actual == null || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)){
+        return
+    }
+    const todas = Array.from(document.querySelectorAll('#scFondoLista .scFondoTarjeta'))
+    const i = todas.indexOf(actual)
+    const j = e.key === 'Home' ? 0 : e.key === 'End' ? todas.length - 1
+        : (i + (e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 1) + todas.length) % todas.length
+    e.preventDefault()
+    todas.forEach((t, k) => { t.tabIndex = k === j ? 0 : -1 })
+    todas[j].focus()
+})
+
 async function prepareSettings(first = false) {
     if(first){
         setupSettingsTabs()
@@ -2344,6 +2522,7 @@ async function prepareSettings(first = false) {
     prepareAccountsTab()
     await prepareJavaTab()
     prepareAboutTab()
+    scPintarFondos()
     scMarcarCalidad()
     document.getElementById('settingsCalidadEstado').textContent = ''
 }
