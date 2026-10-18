@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-17-movil-2.3.4",
+      "fecha": "2026-10-17",
+      "tipo": "movil",
+      "version": "2.3.4",
+      "titulo": "Móvil: menos memoria y skins de gimnasio arregladas",
+      "puntos": [
+        "El juego prepara cada Pokémon la primera vez que aparece, no todos al abrirlo: necesita menos memoria y va mejor en móviles justos.",
+        "Ya no se cierra el juego al ver a Heatran o Zeraora con su skin de gimnasio.",
+        "Heatran, Zeraora, Meltan de Navidad, Araquanid y Alcremie Gigamax con skin ya se mueven bien."
+      ]
+    },
+    {
       "id": "2026-10-17-pack-SC-3.2.74",
       "fecha": "2026-10-17",
       "tipo": "pack",
