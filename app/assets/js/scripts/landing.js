@@ -353,7 +353,11 @@ function updateSelectedAccount(authUser){
         if(authUser.uuid != null && cabeza != null){
             const pedida = ++scCabezaPedida
             const premium = authUser.type === 'microsoft'
-            Promise.resolve(premium ? scSkinPremium(authUser.uuid) : null).then(url => {
+            // No premium (1.17): la skin que lleva en el servidor, de SCSkinLauncher (scskin.js). Ese fichero
+            // se carga después de este; al cargar vuelve a llamar aquí, así que la primera vez sale minotar.
+            const pedirSkin = premium ? scSkinPremium(authUser.uuid)
+                : typeof scSkinServidor === 'function' ? scSkinServidor(authUser.displayName) : null
+            Promise.resolve(pedirSkin).then(url => {
                 // Si entretanto se cambió de cuenta, esta respuesta ya no vale.
                 if(pedida !== scCabezaPedida){
                     return
@@ -364,6 +368,41 @@ function updateSelectedAccount(authUser){
         }
     }
     user_text.innerHTML = username
+    scMarcarCambiarSkin(authUser)
+}
+
+/**
+ * La píldora de cuenta abre «Cambiar skin» (1.17, diseño v7): para no premium pone ese texto y un lápiz
+ * sobre la cara; para premium, «Ver skin», sin lápiz (su skin se cambia en minecraft.net).
+ */
+function scMarcarCambiarSkin(authUser){
+    const rol = document.getElementById('user_role')
+    const caja = document.getElementById('avatarContainer')
+    const boton = document.getElementById('avatarOverlay')
+    if(rol == null || caja == null){
+        return
+    }
+    let lapiz = document.getElementById('scSkinLapiz')
+    const premium = authUser != null && authUser.type === 'microsoft'
+    if(authUser == null){
+        rol.textContent = Lang.queryJS('scSkin.account.manage')
+    } else {
+        rol.textContent = Lang.queryJS(premium ? 'scSkin.account.premiumAction' : 'scSkin.title')
+        if(boton != null){
+            boton.setAttribute('aria-label', Lang.queryJS(premium ? 'scSkin.account.avatarPremium' : 'scSkin.account.avatarLabel', { name: authUser.displayName }))
+        }
+    }
+    if(authUser != null && !premium){
+        if(lapiz == null){
+            lapiz = document.createElement('span')
+            lapiz.id = 'scSkinLapiz'
+            lapiz.setAttribute('aria-hidden', 'true')
+            lapiz.textContent = '✎'
+            caja.appendChild(lapiz)
+        }
+    } else if(lapiz != null){
+        lapiz.remove()
+    }
 }
 updateSelectedAccount(ConfigManager.getSelectedAccount())
 

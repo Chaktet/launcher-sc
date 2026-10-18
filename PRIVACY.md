@@ -19,8 +19,10 @@ Todo se queda en tu equipo, en la carpeta de datos del launcher:
 - **Registros de ejecución** del launcher y del juego, útiles para resolver incidencias. No se envían
   a ningún sitio: se quedan en tu disco y solo se comparten si tú decides adjuntarlos en un ticket de
   soporte.
+- **Identificador de este PC para «Cambiar skin»**, solo si vinculas el launcher (ver más abajo).
 
-**No se transmite ninguno de estos datos a nuestros servidores.**
+**No se transmite ninguno de estos datos a nuestros servidores**, salvo el identificador de «Cambiar skin»
+cuando tú cambias tu skin desde el launcher.
 
 ## Conexiones que realiza el programa
 
@@ -32,6 +34,8 @@ Todo se queda en tu equipo, en la carpeta de datos del launcher:
 | `directo.servidorcobblemon.es` | Ruta alternativa a las descargas cuando tu operador bloquea la normal (por ejemplo, durante los partidos de fútbol) | Peticiones web normales |
 | `sessionserver.mojang.com` | Mostrar la cara de tu skin si tu cuenta es premium | El identificador público (UUID) de tu cuenta |
 | `minotar.net` | Mostrar la cabeza y el cuerpo de las cuentas cuando no hay skin de Mojang | El identificador público (UUID) de la cuenta |
+| `descargas.servidorcobblemon.es/launcher/skin` (o `directo.…`) | Mostrar la skin que llevas en el servidor y cambiarla desde el launcher | Tu nombre de jugador; si vinculas el launcher, el código de un solo uso y después el identificador de este PC; la imagen de la skin que subas |
+| `api.mojang.com` y `sessionserver.mojang.com` | Enseñar la vista previa al copiar la skin de un jugador premium | El nombre de ese jugador premium |
 | `servidorcobblemon.es` | Mostrar el número de jugadores conectados y jugar | Lo propio del protocolo de Minecraft |
 
 ## Avisos anónimos de error
@@ -59,6 +63,21 @@ ordenador. Se cuenta únicamente cuántos jugadores distintos tienen cada error 
 los fallos sin esperar a que nos los reportéis. Puedes desactivarlo en **Ajustes → Launcher → Enviar
 avisos de error anónimos**.
 
+## Cambiar la skin desde el launcher
+
+Para cambiar tu skin desde el launcher (cuentas no premium) hay que vincularlo una vez con un código que da el
+servidor al escribir `/launcher` dentro del juego. El launcher guarda en tu equipo un identificador de este PC; en
+el servidor solo guardamos una huella de ese identificador (no el identificador en sí), tu nombre de jugador y
+cuándo se usó por última vez. Se borra con `/launcher desvincular` en el juego, con «Desvincular este PC» o al
+quitar la cuenta del launcher, y caduca solo tras 180 días sin usarlo.
+
+**Las skins son públicas.** Para que Minecraft acepte una skin subida, el servidor la envía al servicio
+[MineSkin](https://mineskin.org), que la publica en los servidores de texturas de Mojang. Cualquiera que juegue
+contigo la ve, igual que con `/skin`. No subas imágenes con datos personales.
+
+Para limitar abusos, el servidor cuenta las peticiones por dirección IP durante unos minutos, solo en memoria:
+no se guardan.
+
 ## Registros del servidor de descargas
 
 Como cualquier servidor web, `descargas.servidorcobblemon.es` guarda un **registro de accesos**
@@ -81,6 +100,7 @@ Al usar el launcher también te aplican las políticas de:
 - [Microsoft / Mojang](https://www.minecraft.net/es-es/privacy) — cuenta y descarga del juego.
 - [GitHub](https://docs.github.com/es/site-policy/privacy-policies/github-general-privacy-statement) —
   alojamiento de las actualizaciones del launcher.
+- [MineSkin](https://mineskin.org) — firma de las skins que subes desde «Cambiar skin».
 
 ## Contacto
 
