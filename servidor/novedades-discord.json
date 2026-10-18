@@ -47,7 +47,13 @@
     "2026-10-16-modpack-1.1.0",
     "2026-10-16-movil-2.3.0",
     "2026-10-16-pack-SC-3.2.73",
-    "2026-10-16-servidor-Menus-nuevos-en-todo-el-servidor"
+    "2026-10-16-servidor-Menus-nuevos-en-todo-el-servidor",
+    "2026-10-16-servidor-IFE-1.0.700",
+    "2026-10-16-servidor-SCClanes-1.76.91",
+    "2026-10-16-servidor-Medallas-1.9.170",
+    "2026-10-17-launcher-1.16.7",
+    "2026-10-17-movil-2.3.5",
+    "2026-10-17-pack-SC-3.2.75"
   ],
   "mensajes": [
     {
@@ -115,6 +121,18 @@
         "2026-10-16-movil-2.3.0",
         "2026-10-16-pack-SC-3.2.73",
         "2026-10-16-servidor-Menus-nuevos-en-todo-el-servidor"
+      ]
+    },
+    {
+      "fecha": "2026-10-18",
+      "mensaje": "1561246556605128827",
+      "entradas": [
+        "2026-10-16-servidor-IFE-1.0.700",
+        "2026-10-16-servidor-SCClanes-1.76.91",
+        "2026-10-16-servidor-Medallas-1.9.170",
+        "2026-10-17-launcher-1.16.7",
+        "2026-10-17-movil-2.3.5",
+        "2026-10-17-pack-SC-3.2.75"
       ]
     }
   ]
