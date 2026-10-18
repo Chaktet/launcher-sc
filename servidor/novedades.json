@@ -2,6 +2,20 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-18-launcher-1.16.13",
+      "fecha": "2026-10-18",
+      "tipo": "launcher",
+      "version": "1.16.13",
+      "titulo": "Fondos a elegir y cambia tu skin desde el launcher",
+      "puntos": [
+        "Cuando salga un fondo nuevo se pondrá solo; en Ajustes → Launcher puedes volver a uno anterior",
+        "Si juegas sin cuenta premium, pulsa tu cabeza arriba a la derecha y elige «Cambiar skin»",
+        "La primera vez escribe /launcher en el chat del servidor y pega el código en el launcher",
+        "Nueva pestaña «Launcher y modpack» en Novedades",
+        "Arreglado un fallo por el que en algunos PC el juego no abría"
+      ]
+    },
+    {
       "id": "2026-10-18-launcher-1.16.12",
       "fecha": "2026-10-18",
       "tipo": "launcher",
