@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-17-movil-2.3.5",
+      "fecha": "2026-10-17",
+      "tipo": "movil",
+      "version": "2.3.5",
+      "titulo": "Móvil: cartas de Vegas y un pack más ligero",
+      "puntos": [
+        "Vuelven a verse las cartas del póker de Vegas.",
+        "Hemos quitado skins y objetos que no se podían ver ni usar: el pack del móvil pesa menos."
+      ]
+    },
+    {
       "id": "2026-10-17-pack-SC-3.2.75",
       "fecha": "2026-10-17",
       "tipo": "pack",
