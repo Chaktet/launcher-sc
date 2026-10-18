@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-17-launcher-1.16.7",
+      "fecha": "2026-10-17",
+      "tipo": "launcher",
+      "version": "1.16.7",
+      "titulo": "Nuevo perfil SUPER LITE y LITE con todas las skins",
+      "puntos": [
+        "Nuevo perfil SUPER LITE para ordenadores muy modestos: todos los Pokémon, sin skins ni cosméticos, con muy poca memoria.",
+        "El perfil LITE ahora lleva todas las skins.",
+        "El launcher te recomienda el perfil que mejor va con tu PC según su memoria y su gráfica.",
+        "Si el juego se queda sin memoria, el launcher te ofrece pasar a un perfil más ligero con un clic."
+      ]
+    },
+    {
       "id": "2026-10-17-movil-2.3.5",
       "fecha": "2026-10-17",
       "tipo": "movil",
