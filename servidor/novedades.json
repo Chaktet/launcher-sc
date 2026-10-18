@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-17-pack-SC-3.2.75",
+      "fecha": "2026-10-17",
+      "tipo": "pack",
+      "version": "SC-3.2.75",
+      "titulo": "Cartas de Vegas, gritos y un pack más ligero",
+      "puntos": [
+        "Vuelven a verse las cartas del póker de Vegas.",
+        "Ya suenan los gritos de Braixen, Ursaring, Psyduck y Lopunny de Halloween, y el de Hypno no se queda en silencio.",
+        "Hemos quitado skins y objetos que no se podían ver ni usar: el pack pesa menos y carga antes."
+      ]
+    },
+    {
       "id": "2026-10-17-movil-2.3.4",
       "fecha": "2026-10-17",
       "tipo": "movil",
