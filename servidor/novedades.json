@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-18-servidor-Raids-sin-movimientos-prohibidos",
+      "fecha": "2026-10-18",
+      "tipo": "servidor",
+      "titulo": "¡Raids sin movimientos prohibidos!",
+      "puntos": [
+        "Ya no hay ningún movimiento prohibido en las raids: entra con tu equipo de siempre.",
+        "El jefe es inmune a quemaduras, veneno, sueño, parálisis y bajadas de estadísticas.",
+        "Los golpes de daño fijo y los que debilitan de un toque le hacen lo mismo que un ataque normal.",
+        "El chat te avisa cuando el jefe se libra de un efecto."
+      ]
+    },
+    {
       "id": "2026-10-18-launcher-1.16.9",
       "fecha": "2026-10-18",
       "tipo": "launcher",
