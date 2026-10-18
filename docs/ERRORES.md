@@ -1,4 +1,4 @@
-# Códigos de error de arranque (SC-01 … SC-16)
+# Códigos de error de arranque (SC-01 … SC-17) y del juego (SC-90 … SC-93)
 
 > Estado verificado: 2026-08-06. Definidos en [landing.js](../app/assets/js/scripts/landing.js),
 > constante `SC_ERR`.
@@ -27,6 +27,7 @@ una explicación en cristiano y un botón que copia un informe completo al porta
 | **SC-14** | `JAVA_BLOQUEADO` | Java se instaló pero no puede ejecutarse | **Antivirus.** Ver abajo |
 | **SC-15** | `MOD_ILEGIBLE` | El juego no pudo abrir un archivo del pack | Que **reintente**. Ver abajo |
 | **SC-16** | `DISCO` | No cabe en el disco lo que falta por descargar (más 512 MB de margen) | Liberar espacio; el mensaje dice cuánto queda y la carpeta |
+| **SC-17** | `NATIVAS` | Falta `lwjgl.dll` (u otra nativa) al arrancar: Sodium muere en preLaunch con `UnsatisfiedLinkError: Failed to locate library` | Reintentar; si se repite, excluir la carpeta del launcher y `%TEMP%` del antivirus y cerrar limpiadores |
 
 ## El informe de diagnóstico
 
@@ -170,6 +171,18 @@ También se dispara desde `proc.on('error')`: si el proceso **ni siquiera llega 
 borrado por el antivirus, permisos, ruta rota), Node emite `error` y **nunca** emite `close`. Sin ese
 listener el botón JUGAR no volvía nunca y la guarda anti doble clic bloqueaba todos los intentos
 siguientes — el launcher quedaba inservible hasta reiniciarlo.
+
+### SC-17 · Falta lwjgl.dll al arrancar (1.16.13)
+
+Informe de un jugador del 18-10-2026: `UnsatisfiedLinkError: Failed to locate library: lwjgl.dll` dentro de
+`SodiumPreLaunch` → `GraphicsAdapterProbe`. El launcher extrae las librerías nativas en
+`%TEMP%WCNatives<aleatorio>` en cada arranque, y Helios lo hacía con `fs.writeFile` sin esperar:
+con disco lento o antivirus revisando cada DLL, Java arrancaba antes de que existiera `lwjgl.dll`.
+
+- **Arreglo (1.16.13):** `sc$escribirNativa()` en `processbuilder.js` escribe cada nativa de forma síncrona y,
+  en Windows, se registra en el log si `lwjgl.dll` no está tras extraer.
+- **Lo que queda:** antivirus o limpiador que borra/bloquea la DLL en `%TEMP%`. `scAnalizarCierreDelJuego`
+  lo reconoce (antes caía al genérico SC-06) y enseña `errNativas`, reintentable.
 
 ### SC-16 · No cabe lo que falta por descargar (1.7.4)
 
