@@ -1704,9 +1704,12 @@ function settingsUpdateButtonStatus(text, disabled = false, handler = null){
 function populateSettingsUpdateInformation(data){
     if(data != null){
         settingsUpdateTitle.innerHTML = isPrerelease(data.version) ? Lang.queryJS('settings.updates.newPreReleaseTitle') : Lang.queryJS('settings.updates.newReleaseTitle')
-        settingsUpdateChangelogCont.style.display = null
-        settingsUpdateChangelogTitle.innerHTML = data.releaseName
-        settingsUpdateChangelogText.innerHTML = data.releaseNotes
+        // Sin nombre ni notas en la release salía "undefined" dos veces: el título
+        // cae a la versión y, sin notas, el bloque de novedades no se enseña.
+        const notas = typeof data.releaseNotes === 'string' ? data.releaseNotes : ''
+        settingsUpdateChangelogCont.style.display = notas ? null : 'none'
+        settingsUpdateChangelogTitle.innerHTML = sc$escapeHtml(data.releaseName || ('SC Launcher ' + (data.version || '')))
+        settingsUpdateChangelogText.innerHTML = notas
         populateVersionInformation(data.version, settingsUpdateVersionValue, settingsUpdateVersionTitle, settingsUpdateVersionCheck)
         
         if(process.platform === 'darwin'){

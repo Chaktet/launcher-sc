@@ -5,8 +5,10 @@
  * - the modpack (mods, resource pack, configs): checked here every 10 minutes
  *   against the remote distribution, without touching the loaded one;
  * - a new server release note (novedades.js calls scAvisoNovedad);
- * - a new launcher version (uicore.js calls scAvisoLauncher when it cannot
- *   offer the automatic install, e.g. the player is in Ajustes or downloading).
+ *
+ * A new launcher version is NOT announced here any more: the update gate
+ * (scpuerta.js) is the only on-screen notice; this file only sends its Windows
+ * notification when the countdown starts (scAvisoLauncherCuentaAtras).
  *
  * Each one shows a notice over every view (landing and Ajustes) and, when the
  * window is not in front and the game is not running, a Windows notification.
@@ -18,7 +20,6 @@ let scAvisoClave = null          // what the visible notice is about
 let scModpackAvisado = null      // remote snapshot already announced
 let scModpackRevisando = false
 let scModpackGeneracion = 0      // bumped when JUGAR reloads the distribution or the profile changes
-let scLauncherAvisado = null     // launcher version already announced (the updater repeats the event)
 
 /* ---- Notice ------------------------------------------------------------------ */
 
@@ -232,32 +233,7 @@ function scAvisoNovedad(nuevas){
     })
 }
 
-/** A new launcher version is downloaded but the automatic install could not be offered (uicore.js). */
-function scAvisoLauncher(version){
-    // Once per version: the updater emits update-downloaded again on every 30-minute check.
-    if(version === scLauncherAvisado){
-        return
-    }
-    scLauncherAvisado = version
-    scMostrarAviso({
-        clave: 'launcher',
-        kicker: Lang.queryJS('landing.sc2.avisoKickerLauncher'),
-        titulo: Lang.queryJS('landing.sc2.avisoLauncherTitle', { v: version || '' }),
-        texto: Lang.queryJS('landing.sc2.avisoLauncherText'),
-        accion: Lang.queryJS('landing.sc2.avisoInstalar'),
-        alPulsar: () => {
-            // Never in the middle of a game or a download: the installer closes the launcher.
-            if(scJugandoAhora() || (typeof scOcupado === 'function' && scOcupado())){
-                document.querySelector('#scAvisoUpd .scAvisoTexto').textContent = Lang.queryJS('landing.sc2.avisoLauncherOcupado')
-                return
-            }
-            scCerrarAviso('launcher')
-            scInstalarAhora(version)
-        }
-    })
-}
-
-/** The automatic install countdown started: tell a player who is not looking (uicore.js). */
+/** The update gate started its automatic install countdown: tell a player who is not looking (scpuerta.js). */
 function scAvisoLauncherCuentaAtras(version){
     if(scVentanaAtendida() || scJugandoAhora()){
         return

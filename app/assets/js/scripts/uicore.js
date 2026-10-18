@@ -38,6 +38,15 @@ webFrame.setVisualZoomLevelLimits(1, 1)
 // Initialize auto updates in production environments.
 let updateCheckListener
 let scLastUpdatePct = -1
+const SC_UPDATE_CADA = 5 * 60 * 1000
+const SC_UPDATE_FOCO_MIN = 60 * 1000
+let scUltimaBusquedaUpdate = 0
+let scUpdateFocoPuesto = false
+
+function scBuscarActualizacion(){
+    scUltimaBusquedaUpdate = Date.now()
+    ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
+}
 if(!isDev){
     ipcRenderer.on('autoUpdateNotification', (event, arg, info) => {
         // 1.16.0: aviso central que bloquea JUGAR hasta actualizar (scpuerta.js).
@@ -55,15 +64,14 @@ if(!isDev){
                 if(process.platform === 'darwin'){
                     info.darwindownload = `https://github.com/dscalzi/HeliosLauncher/releases/download/v${info.version}/Helios-Launcher-setup-${info.version}${process.arch === 'arm64' ? '-arm64' : '-x64'}.dmg`
                 }
-                // Aviso inmediato: antes el sello solo se encendía al terminar
-                // la descarga completa (update-downloaded) y parecía que no había update.
-                showUpdateUI(info, false)
-
+                // El aviso a la vista es la puerta (scpuerta.js), que ya se ha pintado
+                // arriba. El sello del logo de Helios que se encendía aquí era un
+                // segundo aviso para lo mismo, con el diseño viejo.
                 populateSettingsUpdateInformation(info)
                 break
             case 'download-progress': {
-                // Progreso real de la descarga, tanto en la píldora del logo
-                // como en el botón de Ajustes → Actualizaciones.
+                // Progreso real de la descarga en la insignia y en el botón de
+                // Ajustes → Actualizaciones (la puerta pinta el suyo).
                 const pct = Math.max(0, Math.min(100, Math.round(info != null ? info.percent : 0)))
                 // electron-updater emite este evento por cada trozo descargado:
                 // sin este filtro se repintaría la interfaz cientos de veces.
@@ -71,10 +79,6 @@ if(!isDev){
                     break
                 }
                 scLastUpdatePct = pct
-                const tooltip = document.getElementById('updateAvailableTooltip')
-                if(tooltip != null && document.getElementById('image_seal_container').hasAttribute('update')){
-                    tooltip.innerHTML = `${Lang.queryJS('uicore.autoUpdate.downloadingProgress')} ${pct}%`
-                }
                 settingsUpdateButtonStatus(`${Lang.queryJS('uicore.autoUpdate.downloadingProgress')} ${pct}%`, true)
                 scInsigniaVersion('descargando', `${Lang.queryJS('uicore.autoUpdate.downloadingProgress')} ${pct}%`)
                 break
@@ -86,9 +90,9 @@ if(!isDev){
                         scInstalarAhora(info != null ? info.version : '')
                     }
                 })
-                showUpdateUI(info, true)
+                // La cuenta atrás y la instalación sola cuando nadie lo usa las lleva la
+                // puerta: aquí solo la insignia de abajo (1.16.11).
                 scInsigniaLista(info != null ? info.version : '')
-                scAutoInstalarSiProcede(info)
                 break
             case 'update-not-available':
                 loggerAutoUpdater.info('No new update found.')
@@ -98,11 +102,21 @@ if(!isDev){
             case 'ready':
                 scComprobarActualizacionEnCurso()
                 // Un 'ready' repetido no debe sumar otro intervalo de comprobación.
+                // Cada 5 minutos y al volver a la ventana: con 30 minutos, quien tenía
+                // el launcher abierto seguía viendo "Estás al día" media hora después
+                // de publicar una versión (Felix, 18-10). Solo pide el latest.yml de
+                // GitHub (unos cientos de bytes); descargar, solo si hay versión nueva.
                 clearInterval(updateCheckListener)
-                updateCheckListener = setInterval(() => {
-                    ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
-                }, 1800000)
-                ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
+                updateCheckListener = setInterval(scBuscarActualizacion, SC_UPDATE_CADA)
+                if(!scUpdateFocoPuesto){
+                    scUpdateFocoPuesto = true
+                    window.addEventListener('focus', () => {
+                        if(Date.now() - scUltimaBusquedaUpdate > SC_UPDATE_FOCO_MIN){
+                            scBuscarActualizacion()
+                        }
+                    })
+                }
+                scBuscarActualizacion()
                 break
             case 'realerror':
                 if(info != null && info.code != null){
@@ -117,7 +131,6 @@ if(!isDev){
                 }
                 // Sin esto, si la descarga fallaba el botón se quedaba bloqueado
                 // en "Descargando X%" para siempre.
-                document.getElementById('image_seal_container').removeAttribute('update')
                 scInsigniaAlDia()
                 settingsUpdateButtonStatus(Lang.queryJS('uicore.autoUpdate.checkForUpdatesButton'), false, () => {
                     ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
@@ -175,40 +188,25 @@ function scInsigniaAlDia(){
     )
 }
 
-/** Hay actualización descargada: se ofrece instalar con una confirmación. */
+/**
+ * Hay actualización descargada. La insignia instala con la misma comprobación que
+ * el botón de la puerta (nunca con Minecraft abierto); antes abría un tercer diálogo
+ * de confirmación con el diseño viejo.
+ */
 function scInsigniaLista(version){
     scInsigniaVersion(
         'lista',
         Lang.queryJS('uicore.autoUpdate.insigniaLista').replace('{v}', version || ''),
         () => {
-            setOverlayContent(
-                Lang.queryJS('uicore.autoUpdate.instalarTitulo'),
-                Lang.queryJS('uicore.autoUpdate.instalarDesc'),
-                Lang.queryJS('uicore.autoUpdate.instalarConfirmar'),
-                Lang.queryJS('uicore.autoUpdate.instalarCancelar')
-            )
-            setOverlayHandler(() => scInstalarAhora(version))
-            setDismissHandler(() => toggleOverlay(false))
-            toggleOverlay(true, true)
+            if(typeof scPuertaInstalar === 'function'){
+                scPuertaInstalar()
+            } else {
+                scInstalarAhora(version)
+            }
         }
     )
 }
 
-/**
- * Instala la actualización sola cuando no molesta a nadie.
- *
- * El instalador público está congelado en una versión concreta para que Windows
- * le vaya cogiendo confianza, así que quien acaba de instalar arranca con una
- * versión antigua. En vez de obligarle a pulsar nada, si el launcher está
- * ocioso se actualiza y se reinicia solo.
- *
- * NO se hace si el jugador está haciendo algo: con el juego abierto, fuera de la
- * pantalla principal, o con una descarga en marcha.
- *
- * Ojo con lo de la descarga: 'proc' no existe hasta DESPUÉS de bajar y verificar
- * los 300 MB del pack, así que mirarlo a él solo daba por ocioso un launcher que
- * llevaba diez minutos descargando, y se reiniciaba a media faena.
- */
 /**
  * ¿Hay juego abierto? Pasiva (último resultado conocido, sin esperar) salvo con
  * `confirmar`, que hace la comprobación completa en segundo plano y la espera.
@@ -243,96 +241,6 @@ function scOcupado(){
     return false
 }
 
-// Reintento pendiente de la instalación automática mientras hay un diálogo abierto.
-let scEsperaAutoInstalar = null
-
-async function scAutoInstalarSiProcede(info){
-    // Con un diálogo abierto (un error SC, el selector del primer arranque, el aviso de
-    // Java...) la cuenta atrás lo sustituía: el jugador perdía el error o la elección
-    // sin llegar a leerlo. Se espera a que lo cierre, sin perder la actualización.
-    clearTimeout(scEsperaAutoInstalar)
-    if(typeof isOverlayVisible === 'function' && isOverlayVisible()){
-        scEsperaAutoInstalar = setTimeout(() => scAutoInstalarSiProcede(info), 2000)
-        return
-    }
-    // Con el juego abierto se espera a que se cierre (se sigue mirando cada 30 s) en
-    // vez de abandonar: así se instala sola en cuanto el jugador termina de jugar.
-    if(await scJuegoEnMarcha(true)){
-        scEsperaAutoInstalar = setTimeout(() => scAutoInstalarSiProcede(info), 30000)
-        return
-    }
-    const enAjustes = typeof getCurrentView === 'function' && typeof VIEWS !== 'undefined'
-        && getCurrentView() !== VIEWS.landing
-    if(scOcupado() || enAjustes){
-        // Se queda la insignia y un aviso visible (avisos.js) para instalarla cuando quiera.
-        if(typeof scAvisoLauncher === 'function'){
-            scAvisoLauncher(info != null ? info.version : '')
-        }
-        return
-    }
-
-    // 1.7.2: aviso a pantalla completa con la cuenta atrás (antes solo cambiaba la
-    // etiqueta de versión y nadie lo veía: el launcher "se cerraba solo", el jugador lo
-    // volvía a abrir a medio instalar y el instalador se lo cerraba otra vez a media partida).
-    const version = info != null ? info.version : ''
-    let restantes = 10
-    const pinta = () => {
-        scInsigniaVersion('lista', Lang.queryJS('uicore.autoUpdate.insigniaAutoInstalando').replace('{s}', restantes))
-        setOverlayContent(
-            Lang.queryJS('uicore.autoUpdate.autoTitulo').replace('{v}', version),
-            Lang.queryJS('uicore.autoUpdate.autoDesc').replace('{s}', restantes),
-            Lang.queryJS('uicore.autoUpdate.autoAhora'),
-            Lang.queryJS('uicore.autoUpdate.autoMasTarde')
-        )
-    }
-    pinta()
-
-    let cuenta = null
-    const cancela = () => {
-        clearInterval(cuenta)
-        toggleOverlay(false)
-        scInsigniaLista(version)
-    }
-    setOverlayHandler(() => {
-        clearInterval(cuenta)
-        scInstalarAhora(version)
-    })
-    setDismissHandler(cancela)
-    toggleOverlay(true, true)
-    if(typeof scCerrarAviso === 'function'){
-        scCerrarAviso('launcher')
-    }
-    // Con la ventana detrás nadie ve la cuenta atrás: aviso de Windows (avisos.js).
-    if(typeof scAvisoLauncherCuentaAtras === 'function'){
-        scAvisoLauncherCuentaAtras(version)
-    }
-
-    cuenta = setInterval(() => {
-        restantes--
-        if(scOcupado()){
-            // Se ha puesto a jugar o a descargar: se cancela y no se toca nada.
-            cancela()
-            return
-        }
-        if(restantes <= 0){
-            clearInterval(cuenta)
-            // Última comprobación completa antes de instalar (el instalador cierra el
-            // launcher): si entretanto aparece un juego abierto, se vuelve a esperar.
-            scJuegoEnMarcha(true).then(abierto => {
-                if(abierto){
-                    toggleOverlay(false)
-                    scInsigniaLista(version)
-                    scEsperaAutoInstalar = setTimeout(() => scAutoInstalarSiProcede(info), 30000)
-                } else {
-                    scInstalarAhora(version)
-                }
-            })
-            return
-        }
-        pinta()
-    }, 1000)
-}
-
 // Marca en disco mientras se instala una actualización. Si alguien reabre el launcher
 // viejo antes de que el instalador acabe, ve "Terminando de actualizar…" y no puede
 // jugar (el instalador lo cerraría a los pocos segundos, con el juego ya abierto).
@@ -344,14 +252,20 @@ function scInstalarAhora(version){
     try {
         require('fs').writeFileSync(scRutaMarcaActualizando(), JSON.stringify({ version: version || '', ts: Date.now() }))
     } catch(e) { /* sin marca: solo se pierde el aviso de reapertura */ }
-    setOverlayContent(
-        Lang.queryJS('uicore.autoUpdate.instalandoTitulo'),
-        Lang.queryJS('uicore.autoUpdate.instalandoDesc'),
-        Lang.queryJS('uicore.autoUpdate.instalandoTitulo'),
-        ''
-    )
-    setOverlayHandler(() => {})
-    toggleOverlay(true, false)
+    // En Ajustes, RAM, Java y demás solo se guardan al pulsar "Listo", y la puerta
+    // tapa ese botón: sin esto, el reinicio (a mano o por la cuenta atrás) los perdía.
+    if(typeof getCurrentView === 'function' && typeof VIEWS !== 'undefined'
+        && getCurrentView() === VIEWS.settings && typeof fullSettingsSave === 'function'){
+        try {
+            fullSettingsSave()
+        } catch(e){
+            loggerAutoUpdater.warn('No se pudieron guardar los ajustes antes de actualizar', e)
+        }
+    }
+    // "Actualizando…" sale en la misma puerta, no en otro diálogo encima (1.16.11).
+    if(typeof scPuertaPinta === 'function'){
+        scPuertaPinta('instalando', { version, desde: Date.now() })
+    }
     // Un instante para que se pinte el aviso antes de que la ventana se cierre.
     setTimeout(() => ipcRenderer.send('autoUpdateAction', 'installUpdateNow'), 400)
 }
@@ -368,46 +282,27 @@ function scComprobarActualizacionEnCurso(){
     const reciente = marca != null && typeof marca.ts === 'number' && Date.now() - marca.ts < 3 * 60 * 1000
     const masNueva = marca != null && marca.version && marca.version !== actual
     if(!reciente || !masNueva){
+        // Recién actualizado a esta versión: lo que ha tardado desde pulsar el botón
+        // hasta abrirse de nuevo es la estimación de la barra de la próxima vez.
+        if(reciente && marca.version === actual && typeof scPuertaGuardaDuracion === 'function'){
+            scPuertaGuardaDuracion(Date.now() - marca.ts)
+        }
         // Ya está instalada (o el intento es viejo y falló): se borra y arranque normal.
         try { require('fs').unlinkSync(scRutaMarcaActualizando()) } catch(e) { /* nada */ }
         return
     }
-    setOverlayContent(
-        Lang.queryJS('uicore.autoUpdate.terminandoTitulo'),
-        Lang.queryJS('uicore.autoUpdate.terminandoDesc').replace('{v}', marca.version),
-        Lang.queryJS('uicore.autoUpdate.terminandoTitulo'),
-        ''
-    )
-    setOverlayHandler(() => {})
-    toggleOverlay(true, false)
+    if(typeof scPuertaPinta === 'function'){
+        scPuertaPinta('terminando', { version: marca.version, desde: marca.ts })
+    }
     // Si el instalador falló y no llega a cerrar este launcher, no se queda bloqueado:
     // a los 3 minutos de empezar se quita el aviso y se sigue con esta versión.
     setTimeout(() => {
         try { require('fs').unlinkSync(scRutaMarcaActualizando()) } catch(e) { /* nada */ }
-        toggleOverlay(false)
-    }, Math.max(1000, marca.ts + 3 * 60 * 1000 - Date.now()))
-}
-
-function showUpdateUI(info, downloaded = false){
-    const sealContainer = document.getElementById('image_seal_container')
-    sealContainer.setAttribute('update', true)
-    // La píldora refleja el estado real: descargando vs lista para instalar.
-    const tooltip = document.getElementById('updateAvailableTooltip')
-    if(tooltip != null){
-        tooltip.innerHTML = downloaded ? Lang.queryJS('uicore.autoUpdate.tooltipReady') : Lang.queryJS('uicore.autoUpdate.tooltipDownloading')
-    }
-    sealContainer.onclick = async () => {
-        if(getCurrentView() === VIEWS.settings){
-            settingsNavItemListener(document.getElementById('settingsNavUpdate'), false)
-            return
+        if(typeof scPuertaPinta === 'function'){
+            scPuertaPinta('oculta')
         }
-        // Sin prepareSettings() el guardado de "Listo" petaba con estado sin
-        // inicializar y el botón parecía no responder.
-        await prepareSettings()
-        switchView(getCurrentView(), VIEWS.settings, 500, 500, () => {
-            settingsNavItemListener(document.getElementById('settingsNavUpdate'), false)
-        })
-    }
+        ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
+    }, Math.max(1000, marca.ts + 3 * 60 * 1000 - Date.now()))
 }
 
 /* jQuery Example

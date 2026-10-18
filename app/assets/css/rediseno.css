@@ -195,36 +195,6 @@ body {
     height: 100%;
     display: block;
 }
-#image_seal_container[update] {
-    cursor: pointer;
-}
-#image_seal_container[update]::after {
-    content: '';
-    position: absolute;
-    right: calc(var(--px) * -2);
-    top: calc(var(--px) * -2);
-    width: calc(var(--px) * 12);
-    height: calc(var(--px) * 12);
-    border-radius: 50%;
-    background: var(--sc2-orange);
-    box-shadow: 0 0 0 2px var(--sc2-base);
-}
-#updateAvailableTooltip {
-    position: absolute;
-    left: 0;
-    top: calc(100% + var(--px) * 6);
-    white-space: nowrap;
-    font-size: calc(var(--px) * 11);
-    font-weight: 600;
-    color: var(--sc2-ink);
-    background: var(--sc2-panel);
-    border: 1px solid rgba(232, 134, 42, 0.6);
-    padding: calc(var(--px) * 4) calc(var(--px) * 8);
-    display: none;
-}
-#image_seal_container[update] #updateAvailableTooltip {
-    display: block;
-}
 #sc2BrandText {
     display: flex;
     flex-direction: column;

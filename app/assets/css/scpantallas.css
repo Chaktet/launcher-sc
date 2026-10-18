@@ -1579,7 +1579,8 @@
     margin-top: calc(18 * var(--u));
     border-top: 1px solid var(--v5-linea);
 }
-#scPuerta[estado="disponible"] #scPuertaPie, #scPuerta[estado="descargando"] #scPuertaPie { display: none; }
+#scPuerta[estado="disponible"] #scPuertaPie, #scPuerta[estado="descargando"] #scPuertaPie,
+#scPuerta[estado="instalando"] #scPuertaPie, #scPuerta[estado="terminando"] #scPuertaPie { display: none; }
 #scPuerta #scPuertaBoton { width: 100%; }
 #scPuertaNota { font-size: calc(12 * var(--u)) !important; color: #ffc18b !important; text-align: left !important; }
 #scPuertaNota:empty { display: none; }
