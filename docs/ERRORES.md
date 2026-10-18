@@ -356,3 +356,31 @@ mismo código cuenta una vez por minuto. Se apaga en Ajustes → Launcher (`envi
   `x` (tipo de excepción) y `e` (código de salida), sacados por `scPistaCrash()` del crash report más reciente.
   En `stats.json`: `crash_mods_hoy` y `crash_excepciones_hoy`. Nunca el mensaje ni el informe: llevan rutas y usuario.
 - **Privacidad:** viaja solo lo de arriba. Está en `PRIVACY.md`.
+
+## Recursos rotos dentro del juego: SC-91, SC-92 y SC-93 (desde 1.16.13)
+
+El launcher no ve nada de lo que pasa dentro del juego. El mod **SC Avisos Cliente**
+(`E:/PROYECTOS-MC/sc-avisos-cliente`, en los tres perfiles) mira desde dentro y avisa por el mismo canal
+anónimo, con códigos que **no se enseñan al jugador**:
+
+| Código | Qué ha pasado | Campos | Primera cosa que mirar |
+|---|---|---|---|
+| **SC-91** | Tras cargar recursos, el SC-Pack no está activo | `x`: `error` (el juego los quitó todos tras un fallo), `apagado` (está pero no activado), `falta` (no hay `SC-Pack.zip`) | `error`: el SC-93 del mismo rato dice qué modelo lo tumbó. `apagado`/`falta`: la reposición de `sc$repararPacksBorradosPorElJuego()` |
+| **SC-92** | Texturas que faltan en los packs cargados, aparte de las conocidas | `n` (cuántas; `5000-mas` si pasa del tope), `m` (namespace de la primera), `t` (la primera, con `:` y `/` como `.`) | Que la textura `t` exista en el pack publicado |
+| **SC-93** | Un modelo de Cobblemon falla o tumba el juego | `x`: `parte` (`Can't find part`, el crash de Wartortle del 15-09), `modelo` (`Unable to load model … for …`), `pose` (`Failed to deserialize pose`), `geo` (un `.geo.json` que no se lee); `m`: hueso, modelo, grupo de animación o fichero | `herramientas/crash_item_clase.js` y `validar_pack.js` sobre el pack publicado |
+
+- **Cuándo mira:** al terminar cada carga de recursos (al arrancar, F3+T o al cambiar packs: cuando se quita la
+  pantalla de carga), al vaciar el juego los packs por un error (`clearResourcePacksOnError`) y justo antes de
+  cerrarse por un crash (`Minecraft.crash`, el envío espera hasta 6 s). Cada código sale **una vez por partida**.
+- **Ruido conocido, que NO cuenta** (calibrado en 149 registros reales de julio a octubre y en los clientes de prueba
+  PRO/LITE/SUPER LITE con la SC-3.2.75): las 7 texturas que faltan en todos los PRO al arrancar
+  (`minecraft:item/shield`, `crossbow`, `butterfree_bonnet`, `guis/pixel`, y los namespaces `_iainternal` y `myitems`
+  de objetos de plugins) y los `Unable to load model: 'zcrystals:item/tera_orb' referenced from …` de modelos de
+  objetos. Si se arregla o aparece ruido nuevo de ese tipo, se cambia `Detector.BASE` / `NS_IGNORADOS`.
+- **Si el jugador apagó el SC-Pack a propósito** (Ajustes → Paquetes, `.sc-packs-apagados.json`) no hay SC-91.
+- **Interruptor:** el launcher pasa `-Dsc.avisos=1` solo con «Enviar avisos de error anónimos» activado
+  (`sc$argsAvisos()` en `processbuilder.js`, junto a `-Dsc.launcher` y `-Dsc.perfil`). Sin esa propiedad (otro
+  launcher, la 1.16.12 o anteriores) el mod no envía nada. Además, `config/sc_avisos_cliente.properties` →
+  `enviar=false` lo apaga en ese PC. Lo que detecta siempre queda en `latest.log` con `[SC Avisos]`.
+- **Recuento y alerta:** `sc-stats.py` los cuenta como los demás y además publica `informes.recursos_hoy`
+  (`{código: {x|m|t: {valor: jugadores}}}`); `mc-monitor` manda el privado con los tres valores más repetidos.

@@ -56,7 +56,24 @@ class ProcessBuilder {
         this.usingFabricLoader = false
         this.llPath = null
     }
-    
+
+    /**
+     * Propiedades para el mod SC Avisos Cliente (1.16.13): detecta dentro del juego texturas que faltan,
+     * modelos de Cobblemon rotos y el SC-Pack sin cargar, y lo avisa por el mismo canal anónimo que
+     * scEnviarAvisoError. El mod SOLO envía si recibe sc.avisos=1, así que el interruptor de Ajustes →
+     * Launcher (enviarErrores) también lo apaga a él, y con otro launcher no envía nada.
+     */
+    sc$argsAvisos(){
+        const id = String(this.server.rawServer.id || '')
+        const perfil = /superlite/i.test(id) ? 'superlite' : (/lite/i.test(id) ? 'lite' : 'pro')
+        const version = /^\d+\.\d+\.\d+$/.test(String(this.launcherVersion)) ? String(this.launcherVersion) : '0.0.0'
+        return [
+            '-Dsc.avisos=' + (ConfigManager.getEnviarErrores() ? '1' : '0'),
+            '-Dsc.launcher=' + version,
+            '-Dsc.perfil=' + perfil
+        ]
+    }
+
     /**
      * Convienence method to run the functions typically used to build a process.
      */
@@ -444,6 +461,7 @@ class ProcessBuilder {
         args.push('-Xmx' + ConfigManager.getMaxRAM(this.server.rawServer.id))
         args.push('-Xms' + ConfigManager.getMinRAM(this.server.rawServer.id))
         args = args.concat(ConfigManager.getJVMOptions(this.server.rawServer.id))
+        args = args.concat(this.sc$argsAvisos())
 
         // Main Java Class
         args.push(this.modManifest.mainClass)

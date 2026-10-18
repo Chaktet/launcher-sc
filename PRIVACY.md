@@ -46,6 +46,14 @@ el launcher envía un aviso con:
 - si el juego se cerró a media partida: el **tipo de error** de Java (por ejemplo, `OutOfMemoryError`) y el
   **nombre del paquete del mod** que aparece como causa en el informe de fallo (por ejemplo, `com.cobblemon.mod`).
 
+Desde la versión 1.16.13, el juego también puede enviar un aviso igual de anónimo cuando, dentro de la partida,
+algo del paquete de recursos no carga: si el **paquete del servidor (SC-Pack) no está activo**, si **faltan texturas**
+(cuántas y el nombre interno de la primera, por ejemplo `cobblemon:item/poke_ball`) o si **un modelo de Pokémon falla**
+(el nombre interno del modelo o de la pieza, por ejemplo `wartortle`). Lo envía un pequeño mod incluido en el modpack,
+como mucho una vez por partida y por tipo de aviso, con la versión del launcher, el perfil y la versión del propio mod.
+Solo lo hace si el launcher lo abrió con esta opción activada; también se puede apagar en ese ordenador poniendo
+`enviar=false` en `config/sc_avisos_cliente.properties`.
+
 No se envía tu nombre, tu cuenta, el contenido del informe de soporte o del informe de fallo del juego ni ninguna ruta o archivo de tu
 ordenador. Se cuenta únicamente cuántos jugadores distintos tienen cada error al día, para enterarnos de
 los fallos sin esperar a que nos los reportéis. Puedes desactivarlo en **Ajustes → Launcher → Enviar

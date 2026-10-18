@@ -152,7 +152,19 @@ def fusionar(hist, nuevos):
     Ademas de CAMPOS, las claves 'inf_*' de los avisos de error (1.16.12)."""
     for d, v in nuevos.items():
         prev = hist.get(d, {})
-        claves = set(CAMPOS) | {k for k in list(prev) + list(v) if k.startswith('inf_')}
+        claves = set(CAMPOS) | {k for k in list(prev) + list(v) if k.startswith('inf_') and not k.startswith('inf_r_')}
+        # Las de recursos (inf_r_<codigo>_<campo>_<valor>) con el mismo tope por dia que contar_informes:
+        # primero las ya guardadas y luego las nuevas mientras quepan (revision de Codex).
+        por_prefijo = {}
+        for k in list(prev) + sorted(set(v) - set(prev)):
+            if not k.startswith('inf_r_'):
+                continue
+            prefijo = '_'.join(k.split('_', 4)[:4])  # inf_r_SC-93_m
+            n = por_prefijo.setdefault(prefijo, set())
+            if k in n or len(n) < MAX_VALORES:
+                n.add(k)
+        for n in por_prefijo.values():
+            claves |= n
         hist[d] = {c: max(prev.get(c, 0), v.get(c, 0)) for c in claves}
     return hist
 
@@ -163,6 +175,9 @@ RE_INFORME = re.compile(r'"GET /launcher/informe\.txt\?(\S*) HTTP')
 RE_CODIGO = re.compile(r'^SC-\d{2}$')
 RE_VERSION = re.compile(r'^\d+\.\d+\.\d+$')
 RE_PISTA = re.compile(r'^[A-Za-z0-9._-]{1,60}$')
+CODIGOS_RECURSOS = ('SC-91', 'SC-92', 'SC-93')
+X_VALIDOS = {'SC-91': ('error', 'apagado', 'falta'), 'SC-92': (), 'SC-93': ('parte', 'modelo', 'pose', 'geo')}
+MAX_VALORES = 50
 RE_MOMENTO = re.compile(r'\[(\d{2}/[A-Za-z]{3}/\d{4}:\d{2}:\d{2}:\d{2}) ([+-]\d{4})\]')
 
 
@@ -214,6 +229,24 @@ def contar_informes():
                             for campo in ('m', 'x'):
                                 if RE_PISTA.match(q.get(campo, '')):
                                     s.setdefault('inf_%s_%s' % (campo, q[campo]), set()).add(ip)
+                        # SC-91/92/93 = recursos rotos vistos DENTRO del juego por el mod SC Avisos
+                        # Cliente (1.16.13): que (x), cual (m) y la primera textura (t), ya saneados.
+                        # Clave propia por codigo para no mezclarlas con las de SC-90.
+                        # La query la puede escribir cualquiera (revision de Codex): x solo con los valores
+                        # que existen y como mucho MAX_VALORES valores distintos de m/t por codigo y dia,
+                        # para que nadie llene el historico de claves inventadas.
+                        if q['c'] in CODIGOS_RECURSOS:
+                            for campo in ('m', 'x', 't'):
+                                val = q.get(campo, '')
+                                if not RE_PISTA.match(val):
+                                    continue
+                                if campo == 'x' and val not in X_VALIDOS[q['c']]:
+                                    continue
+                                clave = 'inf_r_%s_%s_%s' % (q['c'], campo, val)
+                                prefijo = 'inf_r_%s_%s_' % (q['c'], campo)
+                                if clave not in s and sum(1 for k in s if k.startswith(prefijo)) >= MAX_VALORES:
+                                    continue
+                                s.setdefault(clave, set()).add(ip)
             except Exception:
                 continue
     return {d: {k: len(v) for k, v in s.items()} for d, s in por_dia.items()}
@@ -251,6 +284,18 @@ def informes_de(dia, prefijo):
     """{'SC-04': 3} o {'1.16.12': 2} a partir de las claves inf_* de un dia."""
     corte = len('inf_') if prefijo == 'inf_SC-' else len(prefijo)
     return {k[corte:]: v for k, v in sorted(dia.items()) if k.startswith(prefijo)}
+
+
+def recursos_de(dia):
+    """{'SC-93': {'m': {'wartortle': 4}, 'x': {'parte': 4}}} a partir de las claves inf_r_* de un dia."""
+    out = {}
+    for k, v in sorted(dia.items()):
+        if not k.startswith('inf_r_'):
+            continue
+        partes = k[len('inf_r_'):].split('_', 2)
+        if len(partes) == 3 and partes[0] in CODIGOS_RECURSOS:
+            out.setdefault(partes[0], {}).setdefault(partes[1], {})[partes[2]] = v
+    return out
 
 
 def launchers_activos():
@@ -367,6 +412,9 @@ def main():
             # Crasheos a media partida (SC-90) de hoy: mods sospechosos y excepciones.
             'crash_mods_hoy': informes_de(hist.get(hoy, {}), 'inf_m_'),
             'crash_excepciones_hoy': informes_de(hist.get(hoy, {}), 'inf_x_'),
+            # Recursos rotos dentro del juego (SC-91/92/93, mod SC Avisos Cliente) de hoy:
+            # por codigo, jugadores distintos por cada valor de x, m y t.
+            'recursos_hoy': recursos_de(hist.get(hoy, {})),
         },
         'serie': serie,
     }
