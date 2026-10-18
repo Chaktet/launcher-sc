@@ -92,7 +92,9 @@ const DEFAULT_CONFIG = {
             allowPrerelease: false,
             dataDirectory: dataPath,
             // Hide the launcher to the tray once the game has loaded (1.10.0).
-            minimizarAlJugar: true
+            minimizarAlJugar: true,
+            // Envío anónimo del código de un fallo de arranque (1.16.12). Se puede apagar en Ajustes → Launcher.
+            enviarErrores: true
         }
     },
     newsCache: {
@@ -978,4 +980,18 @@ exports.getMinimizarAlJugar = function(def = false){
 
 exports.setMinimizarAlJugar = function(v){
     config.settings.launcher.minimizarAlJugar = v === true
+}
+
+/**
+ * Whether the anonymous code of a launch failure is sent (1.16.12). On by
+ * default; configs from before have no value and count as on.
+ *
+ * @param {boolean} def Optional. If true, the default value will be returned.
+ */
+exports.getEnviarErrores = function(def = false){
+    return !def ? config.settings.launcher.enviarErrores !== false : DEFAULT_CONFIG.settings.launcher.enviarErrores
+}
+
+exports.setEnviarErrores = function(v){
+    config.settings.launcher.enviarErrores = v === true
 }

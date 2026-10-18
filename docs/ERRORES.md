@@ -338,3 +338,21 @@ Con un fallo de certificado, `scDiagnosticarTls()` lee el certificado que presen
 > 🔒 `scLeerCertificado()` usa `rejectUnauthorized: false` **solo para leer el emisor**: hace el apretón de manos TLS y cierra, sin enviar ninguna petición ni usar datos de esa conexión. La decisión de cambiar de ruta la toma `scSondearRutaDirecta()`, que valida de forma normal: si alguien intercepta también la ruta directa, no se cambia nada. **No relajes nunca esa sonda.** Y el nombre del emisor lo controla quien intercepta: se escapa, se recorta y se sustituye con función antes de pintarlo.
 
 Máximo dos cambios automáticos de ruta por sesión (`SC_MAX_CAMBIOS_RUTA`), para que un fallo que no se arregla así no se convierta en un bucle. Volver a la normal cuando falla la directa no cuenta como cambio, y con el tope agotado se sigue diagnosticando, para que el mensaje sea del fallo actual.
+
+## Avisos anónimos de error (desde 1.16.12)
+
+Cada fallo de arranque (`scFalloArranque`) envía, además de guardar el informe, una petición
+`GET /launcher/informe.txt?c=SC-04&v=1.16.12&p=pro&r=normal&t=red` a un fichero vacío: primero por
+`directo.servidorcobblemon.es` (funciona con el bloqueo de LaLiga) y, si falla, por la ruta normal. Un
+mismo código cuenta una vez por minuto. Se apaga en Ajustes → Launcher (`enviarErrores`).
+
+- **Recuento:** `tools/sc-stats.py` (OVH-A, cada 5 min) cuenta jugadores DISTINTOS por código y día en
+  `packs_cf.log*` y `packs_directo.log*`, sin guardar las IP, y lo publica en `stats.json` → `informes`
+  (`hoy`, `ayer`, `versiones_hoy`, `directa_hoy`, `ultima_hora`). `SC-99` es el código de pruebas y no cuenta.
+- **Alerta:** `/opt/mc-monitor/monitor.py` (Hetzner, cada 2 min) manda un privado a Felix cuando 5 o más
+  jugadores distintos tienen el mismo código en la última hora; no repite hasta que ese código baja de 2.
+- **SC-90 (interno, no se enseña al jugador):** el juego se cerró con error DESPUÉS de entrar. Lleva además
+  `m` (paquete del primer marco de la traza que no es de Java, Minecraft ni Fabric, p. ej. `com.cobblemon.mod`),
+  `x` (tipo de excepción) y `e` (código de salida), sacados por `scPistaCrash()` del crash report más reciente.
+  En `stats.json`: `crash_mods_hoy` y `crash_excepciones_hoy`. Nunca el mensaje ni el informe: llevan rutas y usuario.
+- **Privacidad:** viaja solo lo de arriba. Está en `PRIVACY.md`.

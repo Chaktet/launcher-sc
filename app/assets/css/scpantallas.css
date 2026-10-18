@@ -1905,3 +1905,46 @@
 #scPuerta [style*="display: none"], #loginContainer [style*="display: none"],
 #loginOptionsContainer [style*="display: none"], #welcomeContainer [style*="display: none"],
 #waitingContainer [style*="display: none"] { display: none !important; }
+
+/* ---- Noticias v6: imágenes con tope, junto a su texto y ampliables (1.16.12) ----
+   Diseño de Codex aprobado por Felix el 18-10-2026 (diseno-v6-noticias/ESPECIFICACION.md).
+   Antes cada imagen ocupaba todo el ancho del texto y una sola llenaba el panel. */
+#newsArticleContainer { scrollbar-gutter: stable; }
+#newsArticleContentScrollable{width:100%;max-width:none;min-width:0;color:#d6dfe0;font:calc(14 * var(--u))/1.6 Inter,sans-serif;container-type:inline-size;--sc-noticia-espacio:calc(24 * var(--u));--sc-noticia-imagen:calc(240 * var(--u))}
+#newsArticleContentScrollable #newsArticleContentWrapper{width:100%;max-width:none;min-width:0}
+#newsArticleContentScrollable :where(p,ul,ol){max-width:78ch;margin:0 0 calc(16 * var(--u));overflow-wrap:anywhere}
+#newsArticleContentScrollable :where(h2,h3){color:var(--v5-tinta);font-weight:700;line-height:1.3;margin:0 0 calc(12 * var(--u));font-size:calc(18 * var(--u))}
+#newsArticleContentScrollable b,#newsArticleContentScrollable strong{color:var(--v5-tinta);font-weight:650}
+#newsArticleContentScrollable ul,#newsArticleContentScrollable ol{padding-left:calc(20 * var(--u));margin-top:calc(14 * var(--u))}
+#newsArticleContentScrollable li+li{margin-top:calc(6 * var(--u))}
+#newsArticleContentScrollable li::marker{color:var(--v5-azul)}
+#newsArticleContentScrollable .scNoticiaBloque{display:grid;grid-template-columns:minmax(0,1fr) calc(264 * var(--u));gap:var(--sc-noticia-espacio);align-items:start;margin:calc(22 * var(--u)) 0}
+#newsArticleContentScrollable .scNoticiaTexto{min-width:0}
+#newsArticleContentScrollable .scNoticiaTexto>:last-child{margin-bottom:0}
+#newsArticleContentScrollable .scNoticiaFigura{margin:0;min-width:0;max-width:100%;display:grid;justify-items:center;gap:calc(7 * var(--u))}
+#newsArticleContentScrollable .scNoticiaAbrir{display:flex;justify-content:center;align-items:center;position:relative;width:100%;min-height:44px;padding:calc(4 * var(--u));border:1px solid #34464e;background:#07141c;cursor:zoom-in;border-radius:calc(3 * var(--u));line-height:0;color:var(--v5-tinta);text-decoration:none}
+#newsArticleContentScrollable .scNoticiaAbrir:hover{border-color:var(--v5-azul)}
+#newsArticleContentScrollable .scNoticiaAbrir:focus-visible{outline:2px solid var(--v5-azul);outline-offset:3px}
+#newsArticleContentScrollable img{display:block;width:auto!important;height:auto!important;max-width:min(100%,var(--sc-noticia-ancho,100%))!important;max-height:var(--sc-noticia-imagen)!important;object-fit:contain;border-radius:0!important;float:none!important;margin:0!important}
+#newsArticleContentScrollable img.scNoticiaSuelta{cursor:zoom-in}
+#newsArticleContentScrollable img.scNoticiaSuelta:focus-visible{outline:2px solid var(--v5-azul);outline-offset:3px}
+#newsArticleContentScrollable .scNoticiaAmpliar{position:absolute;right:calc(8 * var(--u));bottom:calc(8 * var(--u));display:grid;place-items:center;width:calc(28 * var(--u));height:calc(28 * var(--u));background:#07141ced;border:1px solid #4fa9de88;color:var(--v5-tinta);font:calc(18 * var(--u))/1 Inter,sans-serif;pointer-events:none}
+#newsArticleContentScrollable figcaption{font-size:calc(11 * var(--u));line-height:1.4;color:var(--v5-tinta-2);text-align:center;overflow-wrap:anywhere;max-width:100%}
+#newsArticleContentScrollable figcaption a{color:var(--v5-azul);text-decoration:underline}
+#newsArticleContentScrollable #newsArticleContentWrapper>.scNoticiaFigura{width:fit-content;max-width:100%;margin:calc(22 * var(--u)) 0;justify-items:start}
+#newsArticleContentScrollable .scNoticiaFigura--ancha{margin:calc(22 * var(--u)) 0;width:fit-content;max-width:min(100%,calc(960 * var(--u)));justify-self:start}
+#newsArticleContentScrollable .scNoticiaFigura--ancha img{max-height:calc(180 * var(--u))!important}
+@container (max-width:780px){#newsArticleContentScrollable .scNoticiaBloque{grid-template-columns:minmax(0,1fr)}#newsArticleContentScrollable .scNoticiaBloque>.scNoticiaFigura{width:min(100%,calc(264 * var(--u)));justify-self:start}}
+
+/* Visor: fuera del árbol que desplaza el artículo, bajo la barra de la ventana. */
+#scNoticiaVisor{position:fixed;inset:30px 0 0;z-index:1000;display:flex;flex-direction:column;gap:calc(16 * var(--u));padding:calc(22 * var(--u)) calc(28 * var(--u));background:#02090ff5;overscroll-behavior:contain;font-family:Inter,sans-serif;color:var(--v5-tinta)}
+#scNoticiaVisor[hidden]{display:none}
+#scNoticiaVisor .scNoticiaVisorCabecera{display:flex;align-items:center;justify-content:space-between;gap:calc(20 * var(--u));flex:none}
+#scNoticiaVisorTitulo{margin:0;font-size:calc(18 * var(--u));font-weight:700;line-height:1.3}
+#scNoticiaVisorArticulo{display:block;font-size:calc(11 * var(--u));font-weight:400;color:var(--v5-tinta-2);margin-top:calc(5 * var(--u))}
+#scNoticiaCerrar{height:calc(44 * var(--u));min-width:calc(124 * var(--u));border:calc(8 * var(--u)) solid transparent;border-image:url('../images/ui/button-secondary-normal@2x.png') 16 64 16 32 fill / calc(8 * var(--u)) calc(32 * var(--u)) calc(8 * var(--u)) calc(16 * var(--u));background:none;color:var(--v5-tinta);font:650 calc(12 * var(--u)) Inter,sans-serif;white-space:nowrap;cursor:pointer;flex:none}
+#scNoticiaCerrar:hover{border-image-source:url('../images/ui/button-secondary-hover@2x.png')}
+#scNoticiaCerrar:focus-visible{outline:2px solid var(--v5-azul);outline-offset:3px}
+#scNoticiaLienzo{flex:1;min-height:0;min-width:0;display:flex;align-items:center;justify-content:center;border-top:1px solid #34464e;border-bottom:1px solid #34464e;padding:calc(12 * var(--u));cursor:zoom-out}
+#scNoticiaImagen{display:block;width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain;cursor:default}
+#scNoticiaVisorAyuda{flex:none;text-align:center;color:var(--v5-tinta-2);font-size:calc(11 * var(--u))}

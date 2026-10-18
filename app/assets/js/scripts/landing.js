@@ -249,15 +249,118 @@ document.getElementById('avatarOverlay').onclick = async e => {
     })
 }
 
+/**
+ * Skin de una cuenta premium, leída de Mojang (1.16.12). mc-heads.net devolvía a
+ * Steve para cuentas premium con skin propia (la de Felix, 18-10), así que la cara
+ * se pinta aquí con la textura original. Se pide con https de Node, no con fetch:
+ * sessionserver no manda cabeceras CORS. Caché de 6 horas por cuenta.
+ *
+ * @returns {Promise<string|null>} URL https de textures.minecraft.net, o null.
+ */
+const SC_SKIN_CADUCA = 6 * 3600 * 1000
+function scSkinPremium(uuid){
+    const id = String(uuid || '').replace(/-/g, '')
+    if(!/^[0-9a-f]{32}$/i.test(id)){
+        return Promise.resolve(null)
+    }
+    try {
+        const c = JSON.parse(localStorage.getItem('scSkin:' + id) || 'null')
+        if(c != null && Date.now() - c.ts < SC_SKIN_CADUCA){
+            return Promise.resolve(c.url)
+        }
+    } catch(e){ /* sin caché */ }
+    return new Promise(resolve => {
+        const req = require('https').get({ host: 'sessionserver.mojang.com', path: '/session/minecraft/profile/' + id, timeout: 8000 }, res => {
+            let cuerpo = ''
+            res.setEncoding('utf8')
+            res.on('data', d => { cuerpo += d.length < 65536 ? d : '' })
+            res.on('end', () => {
+                try {
+                    const prop = JSON.parse(cuerpo).properties.find(p => p.name === 'textures')
+                    const raw = JSON.parse(Buffer.from(prop.value, 'base64').toString('utf8')).textures.SKIN.url
+                    // Solo texturas de Mojang, y siempre por https.
+                    const u = new URL(raw)
+                    if(u.hostname !== 'textures.minecraft.net'){
+                        throw new Error('host ' + u.hostname)
+                    }
+                    u.protocol = 'https:'
+                    const url = u.toString()
+                    try { localStorage.setItem('scSkin:' + id, JSON.stringify({ url, ts: Date.now() })) } catch(e){ /* nada */ }
+                    resolve(url)
+                } catch(e){
+                    resolve(null)
+                }
+            })
+        })
+        req.on('timeout', () => req.destroy())
+        req.on('error', () => resolve(null))
+    })
+}
+
+/**
+ * Pinta la cara (8,8) y el casco (40,8) de una skin de 64x64 con dos capas de fondo:
+ * a tamaño 800 % cada píxel de la skin ocupa 1/8 del elemento. Sin skin (no premium,
+ * Mojang caído) queda la cabeza de minotar por UUID.
+ */
+function scPintarCabeza(el, uuid, skinUrl, vigente = () => true){
+    if(el == null){
+        return
+    }
+    if(skinUrl){
+        // Hace falta el alto real: las skins antiguas miden 64x32 (la de Felix) y las
+        // nuevas 64x64. En porcentaje, la posición va sobre (elemento - imagen): en X
+        // la imagen mide 8 elementos (x = 40 px → 5/7, x = 8 px → 1/7); en Y mide
+        // 8·alto/64 elementos, así que y = 8 px es 1/(8·alto/64 - 1).
+        const img = new Image()
+        // La textura llega tarde: si entretanto se cambió de cuenta, no se pinta encima
+        // de la nueva (revisión de Codex).
+        img.onload = () => {
+            if(!vigente()){
+                return
+            }
+            const alto = img.naturalHeight >= 64 ? 64 : 32
+            const y = (100 / (8 * alto / 64 - 1)).toFixed(4) + '%'
+            const u = `url("${skinUrl}")`
+            el.style.backgroundImage = `${u}, ${u}`
+            el.style.backgroundSize = '800% auto, 800% auto'
+            el.style.backgroundPosition = `71.4286% ${y}, 14.2857% ${y}`
+        }
+        img.onerror = () => {
+            if(vigente()){
+                scPintarCabeza(el, uuid, null)
+            }
+        }
+        img.src = skinUrl
+    } else {
+        el.style.backgroundImage = `url("https://minotar.net/helm/${encodeURIComponent(String(uuid).replace(/-/g, ''))}/64.png")`
+        el.style.backgroundSize = '100% 100%'
+        el.style.backgroundPosition = 'center'
+    }
+}
+
 // Bind selected account
+let scCabezaPedida = 0
 function updateSelectedAccount(authUser){
     let username = Lang.queryJS('landing.selectedAccount.noAccountSelected')
+    const cabeza = document.getElementById('avatarCabeza')
+    if(cabeza != null){
+        cabeza.hidden = true
+    }
     if(authUser != null){
         if(authUser.displayName != null){
             username = authUser.displayName
         }
-        if(authUser.uuid != null){
-            document.getElementById('avatarContainer').style.backgroundImage = `url('https://mc-heads.net/avatar/${authUser.uuid}/64')`
+        if(authUser.uuid != null && cabeza != null){
+            const pedida = ++scCabezaPedida
+            const premium = authUser.type === 'microsoft'
+            Promise.resolve(premium ? scSkinPremium(authUser.uuid) : null).then(url => {
+                // Si entretanto se cambió de cuenta, esta respuesta ya no vale.
+                if(pedida !== scCabezaPedida){
+                    return
+                }
+                scPintarCabeza(cabeza, authUser.uuid, url, () => pedida === scCabezaPedida)
+                cabeza.hidden = false
+            })
         }
     }
     user_text.innerHTML = username
@@ -1678,6 +1781,142 @@ function scGuardarInforme(codigo, texto){
     }
 }
 
+// Último aviso anónimo enviado por código: los reintentos seguidos de un mismo fallo
+// cuentan una vez por minuto, no una por clic.
+const scAvisoErrorEnviado = {}
+
+// Código interno (no se enseña al jugador) para un cierre con error a media partida.
+const SC_CRASH_PARTIDA = 'SC-90'
+
+// Paquetes que salen en casi todas las trazas y no dicen de quién es el fallo.
+const SC_PAQUETES_COMUNES = /^(java|javax|jdk|sun|com\.sun|kotlin|kotlinx|scala|net\.minecraft|com\.mojang|net\.fabricmc|org\.spongepowered|org\.lwjgl|io\.netty|com\.google|org\.apache|it\.unimi|cpw|knot|sodium\.common\.util)\b/
+
+/**
+ * Pista anónima de un crash report de Minecraft (1.16.12, Felix 18-10): el tipo de
+ * excepción y el paquete del primer marco de la traza que no es de Java, Minecraft o
+ * Fabric (normalmente, el mod culpable: com.cobblemon en el crash de Wartortle del
+ * 15-09). NUNCA el mensaje ni el resto del informe: llevan rutas y el usuario de Windows.
+ *
+ * @returns {{x?: string, m?: string}} Campos ya saneados para scEnviarAvisoError.
+ */
+function scPistaCrash(texto){
+    const pista = {}
+    if(!texto){
+        return pista
+    }
+    const lineas = String(texto).split('\n').slice(0, 200)
+    // La excepción es la primera línea "paquete.Clase: mensaje" o "paquete.Clase" tras la descripción.
+    for(const l of lineas){
+        const m = /^\s*(?:Caused by: )?([a-z][\w$]*(?:\.[\w$]+)+(?:Exception|Error|Throwable))\b/.exec(l)
+        if(m){
+            pista.x = m[1].split('.').pop().slice(0, 60)
+            break
+        }
+    }
+    for(const l of lineas){
+        const m = /^\s*at (?:[\w-]+\/\/)?([a-z][\w]*(?:\.[\w]+)+)\.[\w$<>]+\(/.exec(l)
+        if(!m){
+            continue
+        }
+        const paquete = m[1].split('.').filter(p => !/^[A-Z$]/.test(p))
+        const nombre = paquete.slice(0, 3).join('.')
+        if(nombre && !SC_PAQUETES_COMUNES.test(nombre)){
+            pista.m = nombre.slice(0, 60)
+            break
+        }
+    }
+    return pista
+}
+
+/** El crash report más reciente de un perfil escrito desde `desde` (ms), o ''. */
+function scCrashReportDe(perfil, desde){
+    try {
+        const nodeFs = require('fs')
+        const nodePath = require('path')
+        const dir = nodePath.join(ConfigManager.getInstanceDirectory(), String(perfil || ''), 'crash-reports')
+        if(!perfil || !nodeFs.existsSync(dir)){
+            return ''
+        }
+        const ultimo = nodeFs.readdirSync(dir)
+            .filter(f => f.endsWith('.txt'))
+            .map(f => ({ f, t: nodeFs.statSync(nodePath.join(dir, f)).mtimeMs }))
+            .filter(x => x.t >= desde)
+            .sort((a, b) => b.t - a.t)[0]
+        return ultimo ? nodeFs.readFileSync(nodePath.join(dir, ultimo.f), 'utf8') : ''
+    } catch(e){
+        return ''
+    }
+}
+
+/** Cierre con error después de haber entrado al juego: aviso anónimo con la pista del crash report. */
+function scAvisoCrashPartida(code, perfilJugado, inicio){
+    try {
+        // Del perfil que se jugó (el jugador puede haber cambiado el seleccionado con
+        // el juego abierto) y solo un informe escrito durante ESTA partida, no uno de
+        // una anterior (revisión de Codex).
+        const pista = scPistaCrash(scCrashReportDe(perfilJugado, inicio))
+        pista.e = String(code).replace(/[^0-9-]/g, '').slice(0, 11) || 'x'
+        pista.p = /superlite/i.test(perfilJugado) ? 'superlite' : (/lite/i.test(perfilJugado) ? 'lite' : 'pro')
+        scEnviarAvisoError(SC_CRASH_PARTIDA, null, pista)
+    } catch(e){
+        loggerLanding.debug('Aviso de crash no enviado', e)
+    }
+}
+
+/**
+ * Aviso anónimo de un fallo de arranque (1.16.12). Hasta ahora solo sabíamos de un
+ * fallo si el jugador mandaba el ZIP de soporte; un sábado de partido podían fallar
+ * decenas sin que nadie dijera nada.
+ *
+ * Solo viaja: el código SC, la versión del launcher, el perfil, la ruta (normal o
+ * directa) y, en un fallo de descarga, de qué tipo. Nada del informe, ni nombre, ni
+ * cuenta, ni rutas del disco. Es una petición GET a un fichero vacío: el servidor la
+ * cuenta en su registro (tools/sc-stats.py) y la IP no se guarda en ningún recuento.
+ * Va primero por la ruta directa, que es la que funciona cuando Cloudflare está
+ * bloqueado. Se apaga en Ajustes → Launcher.
+ */
+function scEnviarAvisoError(codigo, err, extra = null){
+    try {
+        if(!ConfigManager.getEnviarErrores() || !/^SC-\d{2}$/.test(String(codigo))){
+            return
+        }
+        const ahora = Date.now()
+        if(ahora - (scAvisoErrorEnviado[codigo] || 0) < 60000){
+            return
+        }
+        scAvisoErrorEnviado[codigo] = ahora
+        const serv = String(ConfigManager.getSelectedServer() || '')
+        const perfil = /superlite/i.test(serv) ? 'superlite' : (/lite/i.test(serv) ? 'lite' : 'pro')
+        const q = new URLSearchParams({ c: codigo, v: remote.app.getVersion(), p: perfil, r: scRutaUltimoIntento === 'directa' ? 'directa' : 'normal' })
+        if(codigo === SC_ERR.DESCARGA){
+            const clave = scMensajeDescarga(err)
+            q.set('t', clave.endsWith('SinRespuesta') ? 'red' : clave.endsWith('Certificado') ? 'cert' : clave.endsWith('Disco') ? 'disco' : 'otro')
+        }
+        // Solo pares ya saneados por quien llama (scPistaCrash): letras, números, punto y guion.
+        for(const [k, val] of Object.entries(extra || {})){
+            if(/^[a-z]$/.test(k) && /^[A-Za-z0-9._-]{1,60}$/.test(String(val))){
+                q.set(k, String(val))
+            }
+        }
+        const https = require('https')
+        const pedir = (host, siguiente) => {
+            const req = https.get({ host, path: '/launcher/informe.txt?' + q.toString(), timeout: 5000,
+                headers: { 'User-Agent': 'SC-Launcher/' + remote.app.getVersion() } }, res => {
+                res.resume()
+                if(res.statusCode !== 200 && siguiente){
+                    siguiente()
+                }
+            })
+            req.on('timeout', () => req.destroy(new Error('timeout')))
+            req.on('error', () => { if(siguiente){ siguiente() } })
+        }
+        pedir(distroManager.SC_HOST_DIRECTO, () => pedir(distroManager.SC_HOST_PRINCIPAL, null))
+    } catch(e){
+        // Un aviso que no sale nunca puede estorbar al jugador.
+        loggerLanding.debug('Aviso de error no enviado', e)
+    }
+}
+
 /**
  * Muestra un fallo de arranque con código, explicación y botón para copiar el
  * informe completo.
@@ -1692,6 +1931,7 @@ function scFalloArranque(codigo, explicacion, err, reintentable = false){
     scInvalidarCacheValidacion(codigo)
     const informe = scInformeDiagnostico(codigo, err)
     const ruta = scGuardarInforme(codigo, informe)
+    scEnviarAvisoError(codigo, err)
     // En launcher.log solo el resumen y dónde está el informe. Antes se escribía el
     // error entero, y en los fallos del juego ese error lleva dentro 3.000-4.000
     // caracteres de la salida de Minecraft: el "registro del launcher" acababa
@@ -3071,6 +3311,10 @@ async function scDlAsyncInterno(login = true) {
                 if(code !== 0 && !scJuegoArranco){
                     scAnalizarCierreDelJuego(code, scSalidaError.join('\n'))
                 } else {
+                    // Se cerró con error a media partida: aviso anónimo (SC-90) con la pista del crash report.
+                    if(code !== 0){
+                        scAvisoCrashPartida(code, scPerfilJugado, scInicioPartida)
+                    }
                     // Partida jugada: si acabó sin memoria (o sin pack por falta de memoria), ofrecer un perfil más ligero.
                     scOfrecerPerfilMasLigero(false, scPerfilJugado, scInicioPartida)
                 }
@@ -3474,6 +3718,10 @@ function displayArticle(articleObject, index){
             text.style.display = text.style.display === 'block' ? 'none' : 'block'
         }
     })
+    // Imágenes con tope de alto, junto a su texto y ampliables (scnoticias.js, 1.16.12).
+    if(typeof scPrepararNoticia === 'function'){
+        scPrepararNoticia(newsArticleContentScrollable)
+    }
     newsNavigationStatus.innerHTML = Lang.query('ejs.landing.newsNavigationStatus', {currentPage: index, totalPages: newsArr.length})
     newsContent.setAttribute('article', index-1)
 }

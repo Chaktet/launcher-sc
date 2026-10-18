@@ -264,18 +264,19 @@ body {
     background: url('../images/ui/iconbutton-account-normal@2x.png') center / 100% 100% no-repeat;
     image-rendering: pixelated;
 }
-#avatarContainer[style*="mc-heads"] {
-    background-size: 70% 70%;
-    background-position: center;
-}
-#avatarContainer[style*="mc-heads"]::before {
-    content: '';
+/* Cara de la skin dentro del marco (1.16.12): imagen nítida centrada, sin la máscara
+   circular de antes, que recortaba las esquinas del marco. La pinta scPintarCabeza(). */
+#avatarCabeza {
     position: absolute;
-    inset: 0;
-    background: url('../images/ui/iconbutton-account-normal@2x.png') center / 100% 100% no-repeat;
-    -webkit-mask: radial-gradient(transparent 46%, #000 47%);
+    left: 21%;
+    top: 21%;
+    width: 58%;
+    height: 58%;
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
     pointer-events: none;
 }
+#avatarCabeza[hidden] { display: none; }
 #avatarOverlay {
     position: absolute !important;
     inset: 0;

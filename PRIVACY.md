@@ -1,10 +1,11 @@
 # Política de privacidad · SC Launcher
 
-_Última actualización: 24 de julio de 2026_
+_Última actualización: 18 de octubre de 2026_
 
 SC Launcher es el launcher del servidor de Minecraft [servidorcobblemon.es](https://servidorcobblemon.es).
-Esta política explica qué datos maneja el programa. En resumen: **no recopilamos datos personales, no
-hay telemetría y no hay seguimiento de usuarios.**
+Esta política explica qué datos maneja el programa. En resumen: **no recopilamos datos personales ni
+hay seguimiento de usuarios.** Lo único que el launcher envía por su cuenta es un aviso anónimo
+cuando el juego no arranca (ver abajo), y se puede desactivar.
 
 ## Datos que el programa guarda en tu ordenador
 
@@ -28,7 +29,27 @@ Todo se queda en tu equipo, en la carpeta de datos del launcher:
 | Servidores de Mojang / Microsoft | Descargar Minecraft y sus recursos; iniciar sesión con cuentas de pago | Lo que exige su propio proceso de autenticación. Las credenciales van directas a Microsoft: **nunca pasan por nosotros ni las almacenamos** |
 | `descargas.servidorcobblemon.es` | Descargar y actualizar los mods y los paquetes de recursos | Peticiones web normales |
 | `github.com` | Comprobar si hay una versión nueva del launcher y descargarla | Peticiones web normales |
+| `directo.servidorcobblemon.es` | Ruta alternativa a las descargas cuando tu operador bloquea la normal (por ejemplo, durante los partidos de fútbol) | Peticiones web normales |
+| `sessionserver.mojang.com` | Mostrar la cara de tu skin si tu cuenta es premium | El identificador público (UUID) de tu cuenta |
+| `minotar.net` | Mostrar la cabeza y el cuerpo de las cuentas cuando no hay skin de Mojang | El identificador público (UUID) de la cuenta |
 | `servidorcobblemon.es` | Mostrar el número de jugadores conectados y jugar | Lo propio del protocolo de Minecraft |
+
+## Avisos anónimos de error
+
+Desde la versión 1.16.12, cuando el juego no consigue arrancar o se cierra con un error a media partida,
+el launcher envía un aviso con:
+
+- el **código del error** (por ejemplo, `SC-04`);
+- la **versión del launcher** y el **perfil** (PRO, LITE o SUPER LITE);
+- si estaba usando la **ruta alternativa** de descarga y, en un fallo de descarga, de qué tipo es
+  (sin conexión, certificado, disco u otro).
+- si el juego se cerró a media partida: el **tipo de error** de Java (por ejemplo, `OutOfMemoryError`) y el
+  **nombre del paquete del mod** que aparece como causa en el informe de fallo (por ejemplo, `com.cobblemon.mod`).
+
+No se envía tu nombre, tu cuenta, el contenido del informe de soporte o del informe de fallo del juego ni ninguna ruta o archivo de tu
+ordenador. Se cuenta únicamente cuántos jugadores distintos tienen cada error al día, para enterarnos de
+los fallos sin esperar a que nos los reportéis. Puedes desactivarlo en **Ajustes → Launcher → Enviar
+avisos de error anónimos**.
 
 ## Registros del servidor de descargas
 

@@ -90,11 +90,23 @@ function scCuentaAtras(ms){
     return `${m} min`
 }
 
-function scEventosValidos(){
-    if(!scEstadoVigente() || !Array.isArray(scEstado.eventos)){
+/**
+ * Events to show: the staff ones (/eventos) plus, since 1.16.12, the fixed ones (`fijos`: legendary raids and
+ * Community Days, read by the server from the plugin configs). The calendar was empty most weeks while Discord
+ * listed ten events. `soloStaff` is for the Windows notices: the fixed raids are almost daily (01:00 in Spain on
+ * weekdays) and would notify every night; Discord's «Interesado» covers whoever wants them.
+ * null = the staff events could not be read and there are no fixed ones either.
+ */
+function scEventosValidos(soloStaff = false){
+    if(!scEstadoVigente()){
         return null
     }
-    return scEstado.eventos
+    const staff = Array.isArray(scEstado.eventos) ? scEstado.eventos : null
+    const fijos = !soloStaff && Array.isArray(scEstado.fijos) ? scEstado.fijos.map(e => ({ ...e, fijo: true })) : []
+    if(staff == null && fijos.length === 0){
+        return null
+    }
+    return (staff || []).filter(e => e && !e.fijo).concat(fijos)
         .filter(e => e && typeof e.nombre === 'string' && Number.isFinite(e.inicio) && Number.isFinite(e.fin) && e.fin > Date.now())
         .sort((a, b) => a.inicio - b.inicio)
 }
@@ -369,7 +381,7 @@ function scMarcarAvisado(clave, si = true){
 }
 
 function scAvisosEscritorio(){
-    const lista = scEventosValidos()
+    const lista = scEventosValidos(true)
     // Playing: the server already announces it in the chat.
     if(lista == null || scJugando()){
         return

@@ -474,6 +474,15 @@ hitoPokemon = "Casi listo.."
 hitoConectando = "Conectando al servidor.."
 checkConsoleForDetails = "Mira la consola (CTRL + Shift + i) para más detalles."
 
+[js.landing.noticias]
+cerrar = "Cerrar  ×"
+ampliar = "Ampliar"
+ampliarImagen = "Ampliar imagen: {t}"
+imagenN = "Imagen de la noticia {n}"
+ayudaVisor = "Pulsa Esc o haz clic fuera de la imagen para volver a la noticia."
+enlaceOriginal = "Abrir enlace original"
+noCarga = "No se pudo cargar la imagen"
+
 [js.landing.news]
 checking = "Buscando noticias"
 
@@ -690,6 +699,8 @@ qualityHigh = "Alto"
 qualityHighDesc = "Más detalle"
 minimizeTitle = "Ocultar el launcher al jugar"
 minimizeDesc = "Cuando el juego termina de cargar, el launcher se queda en la bandeja (junto al reloj) y vuelve solo al cerrar Minecraft."
+erroresTitle = "Enviar avisos de error anónimos"
+erroresDesc = "Si el juego no arranca, el launcher nos manda solo el código del error (por ejemplo SC-04), su versión y si usó la ruta alternativa. Nada de tu nombre, tu cuenta ni tus archivos. Nos ayuda a ver los fallos sin esperar a que los reportéis."
 
 [js.settings.sc2]
 ramAutoValue = "Usará {gb} con este perfil."
