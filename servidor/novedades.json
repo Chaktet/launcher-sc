@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-18-pack-SC-3.2.76",
+      "fecha": "2026-10-18",
+      "tipo": "pack",
+      "version": "SC-3.2.76",
+      "titulo": "Paquete de recursos más ligero",
+      "puntos": [
+        "El paquete de recursos pesa menos (de 148 a 125 MB) y el del perfil SUPER LITE baja de 41 a 37 MB: se descargan y cargan antes.",
+        "No cambia nada de lo que ves en el juego."
+      ]
+    },
+    {
       "id": "2026-10-17-launcher-1.16.7",
       "fecha": "2026-10-17",
       "tipo": "launcher",
