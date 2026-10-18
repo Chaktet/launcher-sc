@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-18-launcher-1.16.11",
+      "fecha": "2026-10-18",
+      "tipo": "launcher",
+      "version": "1.16.11",
+      "titulo": "Actualizar el launcher ahora es más claro",
+      "puntos": [
+        "Te avisa de una versión nueva a los pocos minutos de salir, sin cerrar el launcher",
+        "Una sola pantalla con el tiempo que falta para descargar e instalar",
+        "Se reinicia solo si no estás jugando, y guarda tus cambios de Ajustes antes"
+      ]
+    },
+    {
       "id": "2026-10-18-launcher-1.16.10",
       "fecha": "2026-10-18",
       "tipo": "launcher",
