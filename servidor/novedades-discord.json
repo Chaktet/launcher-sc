@@ -65,7 +65,13 @@
     "2026-10-17-servidor-Battle-Royale-discos-de-MT-en-los-cofres",
     "2026-10-17-servidor-Todas-las-MTs-en-la-tienda-de-MTs",
     "2026-10-17-servidor-Premios-que-no-llegaban-arreglados",
-    "2026-10-17-servidor-PC-y-curacion-sin-rango-te-decimos-donde-ir"
+    "2026-10-17-servidor-PC-y-curacion-sin-rango-te-decimos-donde-ir",
+    "2026-10-17-servidor-Ajustes-en-el-PokeNav-y-raids-con-cuenta-atras",
+    "2026-10-17-launcher-1.16.3",
+    "2026-10-17-servidor-Felicita-compras-y-da-la-bienvenida",
+    "2026-10-17-launcher-1.16.2",
+    "2026-10-17-launcher-1.16.0",
+    "2026-10-17-servidor-Community-Day-renovado-mas-Pokemon-y-mejores-premios"
   ],
   "mensajes": [
     {
@@ -169,6 +175,18 @@
         "2026-10-17-servidor-Todas-las-MTs-en-la-tienda-de-MTs",
         "2026-10-17-servidor-Premios-que-no-llegaban-arreglados",
         "2026-10-17-servidor-PC-y-curacion-sin-rango-te-decimos-donde-ir"
+      ]
+    },
+    {
+      "fecha": "2026-10-18",
+      "mensaje": "1561246676545572985",
+      "entradas": [
+        "2026-10-17-servidor-Ajustes-en-el-PokeNav-y-raids-con-cuenta-atras",
+        "2026-10-17-launcher-1.16.3",
+        "2026-10-17-servidor-Felicita-compras-y-da-la-bienvenida",
+        "2026-10-17-launcher-1.16.2",
+        "2026-10-17-launcher-1.16.0",
+        "2026-10-17-servidor-Community-Day-renovado-mas-Pokemon-y-mejores-premios"
       ]
     }
   ]
