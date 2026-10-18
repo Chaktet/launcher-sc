@@ -214,9 +214,11 @@ function scPintarTarjetaNovedades(){
         sub = Lang.queryJS('landing.sc2.destacadaSee')
         abre = 'noticias'
     } else if(nueva){
-        kicker = Lang.queryJS('landing.sc2.novServKicker')
+        const delLauncher = nueva.tipo === 'launcher'
+        kicker = Lang.queryJS(delLauncher ? 'landing.sc2.launcherKicker' : 'landing.sc2.novServKicker')
         titulo = nueva.titulo
         sub = Lang.queryJS('landing.sc2.novServSee')
+        abre = delLauncher ? 'modpack' : 'servidor'
     } else if(reg){
         kicker = Lang.queryJS('landing.sc2.modpackKicker')
         titulo = reg.resumen
@@ -300,7 +302,9 @@ document.getElementById('newsButton').addEventListener('click', () => {
         const rss = typeof newsAlertShown !== 'undefined' && newsAlertShown && scNovServNuevas().length === 0
         // 1.16.1 · the featured news opens first until the player has seen it once
         const destacadaPendiente = scDestacada != null && localStorage.getItem('scDestacadaVista') !== scDestacada.guid
-        const tab = pedida || (destacadaPendiente || rss ? 'noticias' : 'servidor')
+        // 1.16.13 · only launcher news pending: open the tab where they are now
+        const soloLauncher = scNovServNuevas('servidor').length === 0 && scNovServNuevas('launcher').length > 0
+        const tab = pedida || (destacadaPendiente || rss ? 'noticias' : (soloLauncher ? 'modpack' : 'servidor'))
         scVerPestanaNovedades(tab)
         if(tab === 'noticias' && scDestacada != null){
             localStorage.setItem('scDestacadaVista', scDestacada.guid)
@@ -327,6 +331,7 @@ const SC_NOVSERV_MAX = 40
 const SC_NOVSERV_MAX_BYTES = 512 * 1024
 const SC_NOVSERV_NUEVO_DIAS = 60      // older entries are never marked as new
 const SC_NOVSERV_PRIMERA_DIAS = 7     // first run: only the last week counts as new
+const SC_LAUNCHER_MAX = 6             // launcher versions shown above the modpack changes
 const SC_NOVSERV_TIPOS = {
     pack: 'novServTipoPack',
     launcher: 'novServTipoLauncher',
@@ -391,15 +396,24 @@ function scNovServVistas(){
     return v != null && Array.isArray(v.ids) ? v : null
 }
 
-/** Entries the player has not opened yet (empty until the list is known). */
-function scNovServNuevas(){
+/**
+ * Entries the player has not opened yet (empty until the list is known). 1.16.13: launcher
+ * entries live in the "Launcher y modpack" tab, so each tab asks for its own category:
+ * 'servidor' = everything but launcher, 'launcher' = only launcher, nothing = both.
+ */
+function scNovServNuevas(categoria){
     const v = scNovServVistas()
     if(scNovServ == null || v == null){
         return []
     }
     const vistas = new Set(v.ids)
     const limite = Date.now() - SC_NOVSERV_NUEVO_DIAS * 86400000
-    return scNovServ.entradas.filter(e => !vistas.has(e.id) && scNovServDia(e.fecha) >= limite)
+    return scNovServ.entradas.filter(e => scNovServDeCategoria(e, categoria)
+        && !vistas.has(e.id) && scNovServDia(e.fecha) >= limite)
+}
+
+function scNovServDeCategoria(e, categoria){
+    return categoria == null || (categoria === 'launcher') === (e.tipo === 'launcher')
 }
 
 /** First run: what is older than a week counts as already seen. */
@@ -432,10 +446,12 @@ function scNoticiasVistas(){
 
 /** While the section is on screen, its new entries become seen (they keep the mark this session). */
 function scNovServMarcarVistas(){
-    if(scNovServ == null || !scNovServVisible()){
+    // Server notes are seen in their tab; launcher notes in "Launcher y modpack" (1.16.13).
+    const categoria = scNovServVisible() ? 'servidor' : (scPestanaVisible('modpack') ? 'launcher' : null)
+    if(scNovServ == null || categoria == null){
         return
     }
-    const nuevas = scNovServNuevas()
+    const nuevas = scNovServNuevas(categoria)
     if(nuevas.length === 0){
         return
     }
@@ -446,15 +462,18 @@ function scNovServMarcarVistas(){
     const actuales = new Set(scNovServ.entradas.map(e => e.id))
     // Ids no longer in the file are dropped so the list does not grow forever.
     const ids = new Set(v.ids.filter(id => actuales.has(id)))
-    for(const id of actuales){
-        ids.add(id)
+    for(const e of scNovServ.entradas){
+        if(scNovServDeCategoria(e, categoria)){
+            ids.add(e.id)
+        }
     }
     scGuardarJson('scNovServVistas', { ids: [...ids] })
 }
 
 function scNovServAvisos(){
     const hay = scNovServNuevas().length > 0
-    document.getElementById('sc2NovServPunto').hidden = !hay
+    document.getElementById('sc2NovServPunto').hidden = scNovServNuevas('servidor').length === 0
+    document.getElementById('sc2LauncherPunto').hidden = scNovServNuevas('launcher').length === 0
     // Stop any RSS fade first, or it would hide the dot again when it ends.
     const alerta = $('#newsButtonAlert').stop(true).css('opacity', '')
     if(hay || (typeof newsAlertShown !== 'undefined' && newsAlertShown)){
@@ -481,44 +500,72 @@ function scPintarNovServ(){
     }
     // The last refresh failed: whatever is shown is the last copy we had.
     estado.textContent = scNovServError ? Lang.queryJS('landing.sc2.novServOffline') : ''
-    if(scNovServ.entradas.length === 0){
+    const delServidor = scNovServ.entradas.filter(e => scNovServDeCategoria(e, 'servidor'))
+    if(delServidor.length === 0){
         msg(Lang.queryJS('landing.sc2.novServNone'))
         return
     }
-    for(const e of scNovServ.entradas){
-        const item = document.createElement('article')
-        item.className = 'sc2NovServItem sc2NovServ-' + e.tipo
-        const cab = document.createElement('div')
-        cab.className = 'sc2NovServCab'
-        const tipo = document.createElement('span')
-        tipo.className = 'sc2NovServTipo'
-        tipo.textContent = Lang.queryJS('landing.sc2.' + SC_NOVSERV_TIPOS[e.tipo]) + (e.version ? ' · ' + e.version : '')
-        const fecha = document.createElement('span')
-        fecha.className = 'sc2NovServFecha'
-        fecha.textContent = new Date(scNovServDia(e.fecha)).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
-        cab.append(tipo, fecha)
-        if(scNovServResaltadas.has(e.id)){
-            item.classList.add('sc2NovServNueva')
-            const nuevo = document.createElement('span')
-            nuevo.className = 'sc2NovServNuevo'
-            nuevo.textContent = Lang.queryJS('landing.sc2.novServNew')
-            cab.append(nuevo)
+    for(const e of delServidor){
+        lista.append(scNovServArticulo(e))
+    }
+}
+
+/** One release note as shown in both tabs (server notes and launcher notes). */
+function scNovServArticulo(e){
+    const item = document.createElement('article')
+    item.className = 'sc2NovServItem sc2NovServ-' + e.tipo
+    const cab = document.createElement('div')
+    cab.className = 'sc2NovServCab'
+    const tipo = document.createElement('span')
+    tipo.className = 'sc2NovServTipo'
+    tipo.textContent = Lang.queryJS('landing.sc2.' + SC_NOVSERV_TIPOS[e.tipo]) + (e.version ? ' · ' + e.version : '')
+    const fecha = document.createElement('span')
+    fecha.className = 'sc2NovServFecha'
+    fecha.textContent = new Date(scNovServDia(e.fecha)).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
+    cab.append(tipo, fecha)
+    if(scNovServResaltadas.has(e.id)){
+        item.classList.add('sc2NovServNueva')
+        const nuevo = document.createElement('span')
+        nuevo.className = 'sc2NovServNuevo'
+        nuevo.textContent = Lang.queryJS('landing.sc2.novServNew')
+        cab.append(nuevo)
+    }
+    const titulo = document.createElement('h3')
+    titulo.className = 'sc2NovServItemTitulo'
+    titulo.textContent = e.titulo
+    item.append(cab, titulo)
+    if(e.puntos.length > 0){
+        const ul = document.createElement('ul')
+        ul.className = 'sc2NovServPuntos'
+        for(const p of e.puntos){
+            const li = document.createElement('li')
+            li.textContent = p
+            ul.append(li)
         }
-        const titulo = document.createElement('h3')
-        titulo.className = 'sc2NovServItemTitulo'
-        titulo.textContent = e.titulo
-        item.append(cab, titulo)
-        if(e.puntos.length > 0){
-            const ul = document.createElement('ul')
-            ul.className = 'sc2NovServPuntos'
-            for(const p of e.puntos){
-                const li = document.createElement('li')
-                li.textContent = p
-                ul.append(li)
-            }
-            item.append(ul)
-        }
-        lista.append(item)
+        item.append(ul)
+    }
+    return item
+}
+
+/** Launcher release notes, on top of the "Launcher y modpack" tab (1.16.13). */
+function scPintarLauncher(){
+    const lista = document.getElementById('sc2LauncherLista')
+    if(lista == null){
+        return
+    }
+    lista.replaceChildren()
+    const entradas = scNovServ == null ? null : scNovServ.entradas.filter(e => e.tipo === 'launcher').slice(0, SC_LAUNCHER_MAX)
+    if(entradas == null || entradas.length === 0){
+        const p = document.createElement('p')
+        p.className = 'sc2CalMsg'
+        p.textContent = Lang.queryJS(entradas == null
+            ? (scNovServError ? 'landing.sc2.novServError' : 'landing.sc2.novServLoading')
+            : 'landing.sc2.launcherNone')
+        lista.append(p)
+        return
+    }
+    for(const e of entradas){
+        lista.append(scNovServArticulo(e))
     }
 }
 
@@ -528,6 +575,7 @@ function scNovServRefrescarVista(){
         scNoticiasVistas()
         scNovServMarcarVistas()
         scPintarNovServ()
+        scPintarLauncher()
         scNovServAvisos()
         scPintarTarjetaNovedades()
     } catch(err){

@@ -140,7 +140,7 @@
             <div id="sc2NewsSwitch" role="tablist">
                 <button class="sc2NewsSwitchBtn" id="sc2NewsTabServidor" type="button" role="tab" aria-selected="true"><%- lang('landing.sc2.newsTabServer') %><span id="sc2NovServPunto" hidden></span></button>
                 <button class="sc2NewsSwitchBtn" id="sc2NewsTabNoticias" type="button" role="tab" aria-selected="false"><%- lang('landing.sc2.newsTabNews') %></button>
-                <button class="sc2NewsSwitchBtn" id="sc2NewsTabModpack" type="button" role="tab" aria-selected="false"><%- lang('landing.sc2.newsTabModpack') %></button>
+                <button class="sc2NewsSwitchBtn" id="sc2NewsTabModpack" type="button" role="tab" aria-selected="false"><%- lang('landing.sc2.newsTabModpack') %><span id="sc2LauncherPunto" hidden></span></button>
             </div>
             <!-- Player-facing release notes from launcher/novedades.json (novedades.js). -->
             <div id="sc2NovServPanel">
@@ -149,6 +149,9 @@
                 <div id="sc2NovServLista"></div>
             </div>
             <div id="sc2ModpackPanel" hidden>
+                <!-- 1.16.13: las novedades del launcher viven aquí, no en "Novedades del servidor" (Felix 18-10). -->
+                <span id="sc2LauncherTitulo"><%- lang('landing.sc2.launcherTitle') %></span>
+                <div id="sc2LauncherLista"></div>
                 <span id="sc2ModpackTitulo"></span>
                 <span id="sc2ModpackFecha"></span>
                 <div id="sc2ModpackLista"></div>

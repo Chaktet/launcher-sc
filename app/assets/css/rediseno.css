@@ -1231,6 +1231,29 @@ body {
     background: rgba(16, 31, 40, 0.7);
     border-left: 2px solid var(--sc2-ink-3);
 }
+/* 1.16.13: novedades del launcher arriba de la pestaña "Launcher y modpack", con los
+   mismos estilos que "Novedades del servidor" (sc2NovServItem) y su mismo puntito. */
+#sc2LauncherTitulo {
+    font-size: calc(var(--px) * 22);
+    font-weight: 700;
+    color: var(--sc2-ink);
+}
+#sc2LauncherLista {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--px) * 10);
+    margin: calc(var(--px) * 4) 0 calc(var(--px) * 18);
+}
+#sc2LauncherPunto {
+    position: absolute;
+    top: calc(var(--px) * -6);
+    right: calc(var(--px) * -10);
+    width: calc(var(--px) * 8);
+    height: calc(var(--px) * 8);
+    border-radius: 50%;
+    background: var(--sc2-orange);
+}
+#sc2LauncherPunto[hidden] { display: none; }
 .sc2Mp-nuevo { border-left-color: #7cc56f; }
 .sc2Mp-actualizado, .sc2Mp-pack { border-left-color: var(--sc2-blue); }
 .sc2Mp-quitado { border-left-color: #a65a52; }
