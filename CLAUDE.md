@@ -3,7 +3,10 @@
 > Router slim. El detalle está en `docs/`. No cargues todo: lee solo lo que pida la tarea.
 
 Launcher oficial de `servidorcobblemon.es`. Fork de [Helios Launcher](https://github.com/dscalzi/HeliosLauncher)
-(MIT) en Electron. Versión actual: `1.7.4` ([package.json](package.json)).
+(MIT) en Electron. Versión actual: mira `version` en [package.json](package.json).
+
+**GitHub muestra la rama `main` por defecto** (es la que ve y descarga la gente, y la que enlaza Certum). Al subir,
+sube `master` y `main` juntas: `git push origin master master:main` (Felix 18-10: `main` se quedó en la 1.7.2 un mes).
 
 Infra del ecosistema: `E:\cobblemon-web\infra\INFRA-MAP.md` (del 22/05/2026, verifica antes de fiarte).
 
