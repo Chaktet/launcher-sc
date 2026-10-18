@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-17-pack-SC-3.2.74",
+      "fecha": "2026-10-17",
+      "tipo": "pack",
+      "version": "SC-3.2.74",
+      "titulo": "El juego arranca con mucha menos memoria",
+      "puntos": [
+        "Los Pokémon y sus skins se preparan la primera vez que aparecen, no todos al abrir el juego: hace falta mucha menos memoria y entran ordenadores más modestos.",
+        "Se ve todo exactamente igual que antes.",
+        "Arreglado el cierre del juego en el perfil LITE al ver algunas skins de gimnasio, como la de Maushold.",
+        "Heatran, Zeraora y Alcremie Gigamax de gimnasio ya se mueven bien."
+      ]
+    },
+    {
       "id": "2026-10-17-servidor-Discord-pack-ligero-y-avisos-por-privado-completos",
       "fecha": "2026-10-17",
       "tipo": "servidor",
