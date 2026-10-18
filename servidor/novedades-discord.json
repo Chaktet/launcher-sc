@@ -73,7 +73,8 @@
     "2026-10-17-launcher-1.16.0",
     "2026-10-17-servidor-Community-Day-renovado-mas-Pokemon-y-mejores-premios",
     "2026-10-18-launcher-1.16.9",
-    "2026-10-18-pack-SC-3.2.76"
+    "2026-10-18-pack-SC-3.2.76",
+    "2026-10-18-servidor-Raids-sin-movimientos-prohibidos"
   ],
   "mensajes": [
     {
@@ -197,6 +198,13 @@
       "entradas": [
         "2026-10-18-launcher-1.16.9",
         "2026-10-18-pack-SC-3.2.76"
+      ]
+    },
+    {
+      "fecha": "2026-10-18",
+      "mensaje": "1561329257421082799",
+      "entradas": [
+        "2026-10-18-servidor-Raids-sin-movimientos-prohibidos"
       ]
     }
   ]
