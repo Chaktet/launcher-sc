@@ -53,7 +53,13 @@
     "2026-10-16-servidor-Medallas-1.9.170",
     "2026-10-17-launcher-1.16.7",
     "2026-10-17-movil-2.3.5",
-    "2026-10-17-pack-SC-3.2.75"
+    "2026-10-17-pack-SC-3.2.75",
+    "2026-10-17-movil-2.3.4",
+    "2026-10-17-pack-SC-3.2.74",
+    "2026-10-17-servidor-Discord-pack-ligero-y-avisos-por-privado-completos",
+    "2026-10-17-servidor-Tienda-web-codigo-de-creador-y-salir-del-pago",
+    "2026-10-17-servidor-Iconos-de-rango-con-sus-colores-y-consejos-del-PokeNav",
+    "2026-10-17-servidor-Tus-Pokemon-a-salvo-al-volver-a-otra-region"
   ],
   "mensajes": [
     {
@@ -133,6 +139,18 @@
         "2026-10-17-launcher-1.16.7",
         "2026-10-17-movil-2.3.5",
         "2026-10-17-pack-SC-3.2.75"
+      ]
+    },
+    {
+      "fecha": "2026-10-18",
+      "mensaje": "1561246596430307370",
+      "entradas": [
+        "2026-10-17-movil-2.3.4",
+        "2026-10-17-pack-SC-3.2.74",
+        "2026-10-17-servidor-Discord-pack-ligero-y-avisos-por-privado-completos",
+        "2026-10-17-servidor-Tienda-web-codigo-de-creador-y-salir-del-pago",
+        "2026-10-17-servidor-Iconos-de-rango-con-sus-colores-y-consejos-del-PokeNav",
+        "2026-10-17-servidor-Tus-Pokemon-a-salvo-al-volver-a-otra-region"
       ]
     }
   ]
