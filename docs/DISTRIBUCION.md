@@ -227,7 +227,7 @@ gh release create vX.Y.Z --repo Chaktet/launcher-sc \
   dist/SC-Launcher-setup-X.Y.Z.exe.blockmap \
   dist/latest.yml
 
-# 4. el .exe versionado al VPS — NUNCA el estable, que va congelado
+# 4. el .exe al VPS: el versionado Y el estable (SC-Launcher-setup.exe y -1.0.0.exe), que el VPS baja de GitHub
 
 # 5. la entrada para jugadores en «Novedades del servidor» (launcher/novedades.json)
 node E:/RESOURCE-MC/herramientas/anade_novedad.js --tipo launcher --version X.Y.Z \
@@ -295,28 +295,24 @@ El otro vhost de la máquina (`redireccion_tienda.conf`) solo redirige `servidor
 │  └─ stats.html
 ├─ movil/                           ← versión móvil
 ├─ pruebas/  ·  .congelado/         ← pruebas y material congelado
-├─ SC-Launcher-setup.exe            ← CONGELADO en 1.5.2 · no se toca (ver abajo)
+├─ SC-Launcher-setup.exe            ← SIEMPRE la última versión (desde el 18/10/2026, ver abajo)
 ├─ SC-Launcher-setup-<version>.exe  ← histórico, uno por versión
 └─ SC-<version>.zip                 ← paquetes sueltos
 ```
 
-> ⛔ **`SC-Launcher-setup.exe` está CONGELADO en la 1.5.2 a propósito. No lo sobrescribas.**
-> (`sha256 f8b4fd56f99236f8c9a9aebc03d34f0d062cb9c2fe6b40522a179a3d071ffb22`)
+> **`SC-Launcher-setup.exe` (y su gemelo `SC-Launcher-setup-1.0.0.exe`) se renuevan en CADA versión desde la 1.16.11**
+> (Felix, 18/10/2026). Estuvo congelado en la 1.5.2 (`sha256 f8b4fd56…`, copia en
+> `/home/ubuntu/_backups/launcher-exe-congelado-1.5.2/` de OVH-A) para acumular reputación de SmartScreen por hash,
+> pero el jugador nuevo instalaba la 1.5.2, con sus pantallas viejas, y nada más abrirla se actualizaba y se
+> volvía a instalar. Felix eligió que no se instale dos veces aunque el aviso *"Windows protegió su PC"* salga
+> mientras el exe no esté firmado (el certificado Certum está comprado, pendiente de activar).
 >
-> La reputación de SmartScreen se acumula **por hash de binario**. Al reemplazar el `.exe` del enlace
-> estable en cada versión (se llegaron a publicar 20 en un día), cada descarga empezaba de cero y el
-> aviso *"Windows protegió su PC"* no desaparecía nunca. Congelado, sus descargas se acumulan sobre el
-> mismo hash y la reputación sí crece.
->
-> **No perjudica al jugador**: el aviso lo dispara la marca de la web (MOTW), que solo ponen los
-> navegadores. electron-updater descarga por su propio cliente HTTP, sin MOTW, así que las
-> auto-actualizaciones no pasan por SmartScreen. El usuario nuevo instala la 1.5.2 y en el primer
-> arranque se pone al día solo.
->
-> Descongelar solo si (a) la 1.5.2 no puede auto-actualizarse por un cambio incompatible del updater,
-> o (b) ya hay certificado de firma. Si se descongela, la reputación vuelve a cero.
+> Ya **no** llevan `chattr +i` (lo tenían para que nadie los pisara mientras estaban congelados). Se sustituyen
+> copiando el versionado a `<nombre>.nuevo` con el dueño y permisos del actual, y `mv -f` encima: así una
+> descarga en curso no recibe un fichero a medias. Comprobar después por Cloudflare que `Content-Length`
+> coincide con el del versionado (el vhost manda `no-cache` para los .exe).
 
-Por eso, al publicar se sube **solo el versionado** `SC-Launcher-setup-X.Y.Z.exe`.
+Al publicar se suben **el versionado y los dos estables**.
 
 ### ⚠️ La caché: la trampa importante
 
