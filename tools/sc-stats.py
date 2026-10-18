@@ -106,6 +106,9 @@ def contar():
     for d, n in contar_unicos().items():
         dias.setdefault(d, vacio())['unicos'] = n
 
+    for d, campos in contar_informes().items():
+        dias.setdefault(d, vacio()).update(campos)
+
     return dias
 
 
@@ -145,11 +148,109 @@ def contar_unicos():
 
 
 def fusionar(hist, nuevos):
-    """Se queda con el valor mas alto de cada dia: al rotar el log no se pierde."""
+    """Se queda con el valor mas alto de cada dia: al rotar el log no se pierde.
+    Ademas de CAMPOS, las claves 'inf_*' de los avisos de error (1.16.12)."""
     for d, v in nuevos.items():
         prev = hist.get(d, {})
-        hist[d] = {c: max(prev.get(c, 0), v.get(c, 0)) for c in CAMPOS}
+        claves = set(CAMPOS) | {k for k in list(prev) + list(v) if k.startswith('inf_')}
+        hist[d] = {c: max(prev.get(c, 0), v.get(c, 0)) for c in claves}
     return hist
+
+
+# Avisos de error anonimos del launcher (1.16.12): GET /launcher/informe.txt?c=SC-04&v=...&p=...&r=...
+# Solo se cuentan codigos y versiones con forma conocida; el resto de la query se ignora.
+RE_INFORME = re.compile(r'"GET /launcher/informe\.txt\?(\S*) HTTP')
+RE_CODIGO = re.compile(r'^SC-\d{2}$')
+RE_VERSION = re.compile(r'^\d+\.\d+\.\d+$')
+RE_PISTA = re.compile(r'^[A-Za-z0-9._-]{1,60}$')
+RE_MOMENTO = re.compile(r'\[(\d{2}/[A-Za-z]{3}/\d{4}:\d{2}:\d{2}:\d{2}) ([+-]\d{4})\]')
+
+
+def _query(linea):
+    m = RE_INFORME.search(linea)
+    if not m:
+        return None
+    q = {}
+    for par in m.group(1).split('&'):
+        k, _, v = par.partition('=')
+        q[k] = v
+    # SC-99 es el codigo de las pruebas a mano: no cuenta.
+    if not RE_CODIGO.match(q.get('c', '')) or q.get('c') == 'SC-99':
+        return None
+    return q
+
+
+def contar_informes():
+    """Jugadores DISTINTOS con cada codigo de error, por dia.
+
+    ⚠ Igual que contar_unicos: las IP viven solo en memoria y al historico va el
+    numero. Se leen packs_cf.log* (IP real) y packs_directo.log*; packs_access.log
+    repetiria las peticiones de Cloudflare con la IP de Cloudflare.
+    Devuelve {dia: {'inf_total': n, 'inf_SC-04': n, 'inf_directa': n, 'inf_v_1.16.12': n}}.
+    """
+    por_dia = {}
+    for patron in (LOG_CF_GLOB, LOG_DIRECTO):
+        for ruta in glob.glob(patron):
+            try:
+                with abrir(ruta) as f:
+                    for linea in f:
+                        if 'informe.txt' not in linea:
+                            continue
+                        q = _query(linea)
+                        d = fecha_de(linea)
+                        if q is None or d is None:
+                            continue
+                        ip = linea.split(' ', 1)[0].strip()
+                        s = por_dia.setdefault(d, {})
+                        s.setdefault('inf_total', set()).add(ip)
+                        s.setdefault('inf_' + q['c'], set()).add(ip)
+                        if q.get('r') == 'directa':
+                            s.setdefault('inf_directa', set()).add(ip)
+                        if RE_VERSION.match(q.get('v', '')):
+                            s.setdefault('inf_v_' + q['v'], set()).add(ip)
+                        # SC-90 = cierre con error a media partida: paquete del mod sospechoso
+                        # (m) y tipo de excepcion (x), ya saneados por el launcher.
+                        if q['c'] == 'SC-90':
+                            for campo in ('m', 'x'):
+                                if RE_PISTA.match(q.get(campo, '')):
+                                    s.setdefault('inf_%s_%s' % (campo, q[campo]), set()).add(ip)
+            except Exception:
+                continue
+    return {d: {k: len(v) for k, v in s.items()} for d, s in por_dia.items()}
+
+
+def informes_ultima_hora():
+    """Jugadores distintos por codigo en los ultimos 60 minutos: lo que vigila la
+    alerta de Discord (mc-monitor en Hetzner). Mismas reglas para las IP."""
+    limite = datetime.now(timezone.utc) - timedelta(hours=1)
+    por_codigo = {}
+    # Tambien el .1: justo despues de rotar, la ultima hora esta repartida entre los dos
+    # (revision de Codex). El filtro de hora deja fuera lo viejo del .1.
+    for ruta in (LOG_CF, LOG_CF + '.1', LOG_DIRECTO_HOY, LOG_DIRECTO_HOY + '.1'):
+        try:
+            with open(ruta, 'r', errors='ignore') as f:
+                for linea in f:
+                    if 'informe.txt' not in linea:
+                        continue
+                    q = _query(linea)
+                    m = RE_MOMENTO.search(linea)
+                    if q is None or not m:
+                        continue
+                    try:
+                        cuando = datetime.strptime(m.group(1) + ' ' + m.group(2), '%d/%b/%Y:%H:%M:%S %z')
+                    except ValueError:
+                        continue
+                    if cuando >= limite:
+                        por_codigo.setdefault(q['c'], set()).add(linea.split(' ', 1)[0])
+        except Exception:
+            continue
+    return {c: len(ips) for c, ips in sorted(por_codigo.items())}
+
+
+def informes_de(dia, prefijo):
+    """{'SC-04': 3} o {'1.16.12': 2} a partir de las claves inf_* de un dia."""
+    corte = len('inf_') if prefijo == 'inf_SC-' else len(prefijo)
+    return {k[corte:]: v for k, v in sorted(dia.items()) if k.startswith(prefijo)}
 
 
 def launchers_activos():
@@ -253,6 +354,20 @@ def main():
             'maximo': max((v.get('unicos', 0) for v in hist.values()), default=0),
         },
         'activos_2h': launchers_activos(),
+        # Avisos de error del launcher (1.16.12): jugadores distintos por codigo.
+        # 'ultima_hora' es lo que vigila la alerta de Discord; 'versiones_hoy'
+        # delata una version nueva que falla.
+        'informes': {
+            'hoy': informes_de(hist.get(hoy, {}), 'inf_SC-'),
+            'ayer': informes_de(hist.get(ayer, {}), 'inf_SC-'),
+            'versiones_hoy': informes_de(hist.get(hoy, {}), 'inf_v_'),
+            'directa_hoy': hist.get(hoy, {}).get('inf_directa', 0),
+            'total_hoy': hist.get(hoy, {}).get('inf_total', 0),
+            'ultima_hora': informes_ultima_hora(),
+            # Crasheos a media partida (SC-90) de hoy: mods sospechosos y excepciones.
+            'crash_mods_hoy': informes_de(hist.get(hoy, {}), 'inf_m_'),
+            'crash_excepciones_hoy': informes_de(hist.get(hoy, {}), 'inf_x_'),
+        },
         'serie': serie,
     }
 

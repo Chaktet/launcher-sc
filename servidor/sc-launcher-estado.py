@@ -150,6 +150,100 @@ def eventos():
     return lista
 
 
+# Fixed game schedules, read straight from the plugin configs on this host (the source the plugins themselves use),
+# so the launcher can never drift from the game. Discord's calendar (SC Guardian, horarios.json) shows the same events.
+CONFIG_RAIDS = '/home/ubuntu/AVelocity/plugins/customraidvelocity/config.yml'
+# The mod's config (its ConfigLoader), not plugins/CustomCommunityDay/: that one is a stale copy from May (Codex review).
+CONFIG_COMMUNITY = '/home/ubuntu/Kanto/config/CustomCommunityMod/config.yml'
+DIAS_SEMANA = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']
+DURACION_RAID_MIN = 30  # same as SC Guardian's Discord events
+
+
+def offset_min(zona, defecto_horas=0):
+    """'GMT-5' / 'UTC+2' / '-5' / '-05:00' -> minutes."""
+    if zona is None:
+        return int(round(float(defecto_horas) * 60))
+    s = str(zona).strip().upper().replace('GMT', '').replace('UTC', '')
+    if not s:
+        return 0
+    signo = -1 if s.startswith('-') else 1
+    s = s.lstrip('+-')
+    h, _, m = s.partition(':')
+    return signo * (int(h) * 60 + int(m or 0))
+
+
+def hora_min(texto):
+    """'6:00PM', '12:00PM', '3:00:PM', '18:00' -> minutes after midnight."""
+    s = str(texto).strip().upper().replace(' ', '')
+    pm, am = s.endswith('PM'), s.endswith('AM')
+    s = s[:-2].rstrip(':') if pm or am else s
+    h, _, m = s.partition(':')
+    h, m = int(h), int(m or 0)
+    if pm and h != 12:
+        h += 12
+    if am and h == 12:
+        h = 0
+    return h * 60 + m
+
+
+def dias_locales(desde_ms, hasta_ms, off):
+    """(UTC ms of local midnight, weekday 0 = Monday) for every local day touching the window."""
+    dia = 86400000
+    d = (desde_ms + off * 60000) // dia * dia
+    while d <= hasta_ms + off * 60000:
+        yield d - off * 60000, (d // dia + 3) % 7  # 1970-01-01 was a Thursday
+        d += dia
+
+
+def eventos_fijos(ahora):
+    """Legendary raids (tier 5, not the hourly ones) and Community Days for the next DIAS days, same shape as eventos()
+    plus 'fijo': true. Each config is read on its own: a broken one only drops its own events."""
+    desde, hasta = ahora - 86400000, ahora + DIAS * 86400000
+    lista = []
+    try:
+        with open(CONFIG_RAIDS, encoding='utf8') as f:
+            cfg = yaml.safe_load(f) or {}
+        rh = cfg.get('raid-hours') or {}
+        off = offset_min(rh.get('timezone'), cfg.get('zone-offset-hours', 0))
+        for medianoche, dow in dias_locales(desde, hasta, off):
+            for hueco in ((rh.get('days') or {}).get(DIAS_SEMANA[dow]) or {}).values():
+                if not isinstance(hueco, dict) or hueco.get('every-hour') or 5 not in (hueco.get('tier-spawn') or []):
+                    continue
+                inicio = medianoche + hora_min(hueco.get('hour', '0:00')) * 60000
+                fin = inicio + DURACION_RAID_MIN * 60000
+                if fin <= ahora or inicio > hasta:
+                    continue
+                prob = int(hueco.get('chance', 100))
+                lista.append({'id': 'raid:%d' % inicio, 'fijo': True, 'inicio': inicio, 'fin': fin,
+                              'nombre': 'Raid legendaria' + (' (%d %% de probabilidad)' % prob if prob < 100 else ''),
+                              'descripcion': 'Raid de un Pokémon legendario en una región al azar. Únete en el juego con /raid.'
+                                             + (' Ese día sale con un %d %% de probabilidad.' % prob if prob < 100 else ''),
+                              'region': 'Kanto o Kalos'})
+    except Exception as e:
+        print('raids fijas:', type(e).__name__, file=sys.stderr)
+    try:
+        with open(CONFIG_COMMUNITY, encoding='utf8') as f:
+            eh = (yaml.safe_load(f) or {}).get('event-hour') or {}
+        off = offset_min(eh.get('zone'))
+        dias = {DIAS_SEMANA.index(str(d).upper()) for d in (eh.get('days') or []) if str(d).upper() in DIAS_SEMANA}
+        for medianoche, dow in dias_locales(desde, hasta, off):
+            if dow not in dias:
+                continue
+            inicio = medianoche + hora_min(eh.get('start')) * 60000
+            fin = medianoche + hora_min(eh.get('end')) * 60000
+            if fin <= inicio:
+                fin += 86400000
+            if fin <= ahora or inicio > hasta:
+                continue
+            lista.append({'id': 'cd:%d' % inicio, 'fijo': True, 'inicio': inicio, 'fin': fin, 'nombre': 'Community Day',
+                          'descripcion': 'El Pokémon de la semana aparece en las zonas especiales. La última hora trae el '
+                                         'doble de shinys. En el juego: /community',
+                          'region': 'Kanto y Kalos'})
+    except Exception as e:
+        print('community day:', type(e).__name__, file=sys.stderr)
+    return sorted(lista, key=lambda e: e['inicio'])
+
+
 def aviso():
     try:
         with open(AVISO, encoding='utf8') as f:
@@ -176,6 +270,9 @@ def main():
     except Exception as e:
         # null = "could not read" (the launcher says so), [] = "no events".
         estado['error_eventos'] = type(e).__name__
+    # Separate key (1.16.12): launchers before it ignore it, so they do not start sending a Windows notice for the
+    # near-daily legendary raids; the new launcher shows them in the calendar and the card without notifying.
+    estado['fijos'] = eventos_fijos(estado['actualizado'])
     fd, tmp = tempfile.mkstemp(prefix='.estado-', suffix='.json', dir=os.path.dirname(SALIDA))
     try:
         with os.fdopen(fd, 'w', encoding='utf8') as f:
