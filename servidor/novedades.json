@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-19-pack-SC-3.2.77",
+      "fecha": "2026-10-19",
+      "tipo": "pack",
+      "version": "SC-3.2.77",
+      "titulo": "Las armaduras de cosméticos ya se ven bien con shaders",
+      "puntos": [
+        "Antes, al activar shaders, las armaduras de cosméticos salían como armadura de cuero marrón; ahora se ven con su diseño de verdad",
+        "Se arregla solo al actualizar el launcher, no tienes que hacer nada"
+      ]
+    },
+    {
       "id": "2026-10-18-launcher-1.16.13",
       "fecha": "2026-10-18",
       "tipo": "launcher",
