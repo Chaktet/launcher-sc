@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-19-servidor-Bienvenidas-en-el-chat-y-tambien-a-quien-vuelve",
+      "fecha": "2026-10-19",
+      "tipo": "servidor",
+      "titulo": "Bienvenidas en el chat y también a quien vuelve",
+      "puntos": [
+        "Cuando pulsas ¡Bienvenido!, tu saludo sale en el chat para que el jugador nuevo lo vea.",
+        "También sale el aviso de bienvenida cuando vuelve alguien que llevaba mucho tiempo sin jugar."
+      ]
+    },
+    {
       "id": "2026-10-19-servidor-Los-puntos-rojos-del-PokeNav-ya-se-quitan",
       "fecha": "2026-10-19",
       "tipo": "servidor",
