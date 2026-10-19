@@ -2,6 +2,20 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-19-servidor-Raids-oleadas-de-refuerzos-y-jefes-a-tu-medida",
+      "fecha": "2026-10-19",
+      "tipo": "servidor",
+      "titulo": "Raids: oleadas de refuerzos y jefes a tu medida",
+      "puntos": [
+        "Ya no hay habilidades prohibidas: las que suben el daño dan como mucho un 20 % más contra el jefe y sus ataques ignoran las que te protegen. No se entra con Escudo Habilidad.",
+        "Los tipos pesan menos contra el jefe: lo súper eficaz pega algo menos, lo poco eficaz algo más y ningún ataque se queda en cero. Casi cualquier equipo sirve.",
+        "Cada cierto daño llega una oleada de refuerzos: sales del combate y tenéis 90 segundos para derrotarlos a golpes; si no lo conseguís, el jefe se cura un poco.",
+        "Cada refuerzo que derribas te da puntos de raid. Al acabar la oleada vuelves al combate con clic derecho al jefe.",
+        "La vida del jefe se ajusta a cuántos lo peleáis: si sois pocos, dura menos.",
+        "Los mensajes de las raids son más cortos y ya no sale una línea en el chat por cada golpe."
+      ]
+    },
+    {
       "id": "2026-10-19-launcher-1.16.16",
       "fecha": "2026-10-19",
       "tipo": "launcher",
