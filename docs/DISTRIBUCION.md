@@ -198,7 +198,7 @@ Flujo en [.github/workflows/build.yml](../.github/workflows/build.yml), sobre `w
 
 **A día de hoy los pasos de firma se saltan**: SignPath Foundation aún no ha aprobado el proyecto,
 el secreto no existe y `SIGNPATH_CONFIGURADO` evalúa a `false`. El flujo sigue siendo válido; el
-`.exe` sale sin firmar y Windows SmartScreen avisará.
+`.exe` de CI sale sin firmar. **Las releases se compilan y firman en local** con `npm run dist:win:firmado` (ver abajo); el artefacto de CI no se publica.
 
 **La release se publica a mano** (`--publish never` es deliberado): el `.exe` firmado se sube después.
 
@@ -216,6 +216,7 @@ GitHub Actions siguen compilando sin firmar.
 2. `npm run dist:win:firmado` en lugar de `npm run dist:win` (firma solo SHA-256, sello de tiempo de Certum). Si
    SimplySign no está conectado falla con `Cannot find certificate BCC98A…`.
 3. Comprobar la firma: `Get-AuthenticodeSignature dist/SC-Launcher-setup-X.Y.Z.exe` → `Status: Valid`.
+   Primera release firmada: **1.16.16** (19/10/2026), verificada también descargándola por Cloudflare.
 
 Al firmar, electron-builder escribe `publisherName` en `app-update.yml`: a partir de la primera versión firmada,
 electron-updater **rechaza** actualizaciones que no vengan firmadas con ese mismo nombre. Desde entonces todas las
@@ -324,7 +325,7 @@ El otro vhost de la máquina (`redireccion_tienda.conf`) solo redirige `servidor
 > `/home/ubuntu/_backups/launcher-exe-congelado-1.5.2/` de OVH-A) para acumular reputación de SmartScreen por hash,
 > pero el jugador nuevo instalaba la 1.5.2, con sus pantallas viejas, y nada más abrirla se actualizaba y se
 > volvía a instalar. Felix eligió que no se instale dos veces aunque el aviso *"Windows protegió su PC"* salga
-> mientras el exe no esté firmado (el certificado Certum está comprado, pendiente de activar).
+> mientras el exe no esté firmado. Desde la **1.16.16 (19/10/2026)** sale firmado con Certum: la reputación de SmartScreen va al editor y se conserva entre versiones.
 >
 > Ya **no** llevan `chattr +i` (lo tenían para que nadie los pisara mientras estaban congelados). Se sustituyen
 > copiando el versionado a `<nombre>.nuevo` con el dueño y permisos del actual, y `mv -f` encima: así una
