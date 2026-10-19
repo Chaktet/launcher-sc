@@ -202,6 +202,25 @@ el secreto no existe y `SIGNPATH_CONFIGURADO` evalúa a `false`. El flujo sigue 
 
 **La release se publica a mano** (`--publish never` es deliberado): el `.exe` firmado se sube después.
 
+### Firma con el certificado Certum (desde 2026-10-19)
+
+Certificado **Certum Open Source Code Signing in the cloud**, `CN=Open Source Developer Félix Pareja Valdivia`,
+válido del **2026-10-19 al 2027-10-19** (renovar antes), huella `BCC98A0B2259C3B97404980830D97999981DB769`. La
+clave privada vive en la nube de SimplySign; Windows solo la ve con **SimplySign Desktop conectado** (código de la
+app SimplySign del móvil de Felix + PIN). Por eso la firma va en un config aparte,
+[electron-builder.firmado.yml](../electron-builder.firmado.yml), que hereda del principal: `npm run dist:win` y
+GitHub Actions siguen compilando sin firmar.
+
+1. Felix conecta SimplySign Desktop; `pwsh -File tools/comprueba-certificado.ps1` debe listar el certificado con
+   `ConClave: True`.
+2. `npm run dist:win:firmado` en lugar de `npm run dist:win` (firma solo SHA-256, sello de tiempo de Certum). Si
+   SimplySign no está conectado falla con `Cannot find certificate BCC98A…`.
+3. Comprobar la firma: `Get-AuthenticodeSignature dist/SC-Launcher-setup-X.Y.Z.exe` → `Status: Valid`.
+
+Al firmar, electron-builder escribe `publisherName` en `app-update.yml`: a partir de la primera versión firmada,
+electron-updater **rechaza** actualizaciones que no vengan firmadas con ese mismo nombre. Desde entonces todas las
+releases tienen que salir firmadas (y una renovación debe mantener el mismo CN).
+
 ### `latest.yml` y la auto-actualización
 
 El launcher se auto-actualiza con `electron-updater`, que lee `latest.yml` del feed de releases de

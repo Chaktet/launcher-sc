@@ -21,6 +21,7 @@ files:
   - '!tools{,/**}'
   - '!diseno*{,/**}'
   - '!{CLAUDE.md,AGENTS.md,PRIVACY.md}'
+  - '!electron-builder.firmado.yml'
 
 extraResources:
   - 'libraries'

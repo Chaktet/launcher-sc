@@ -1,0 +1,19 @@
+# Compilación firmada del instalador de Windows (npm run dist:win:firmado).
+# Hereda todo de electron-builder.yml y solo añade la firma con el certificado Certum
+# "Open Source Code Signing in the cloud" (válido 2026-10-19 → 2027-10-19).
+# Va aparte porque la clave vive en la nube de SimplySign: solo existe en un PC con
+# SimplySign Desktop conectado. En el yml principal rompería `npm run dist:win` y el
+# flujo de GitHub Actions, que no tienen el certificado.
+# Comprobar que Windows lo ve: pwsh -File tools/comprueba-certificado.ps1
+extends: './electron-builder.yml'
+
+win:
+  signtoolOptions:
+    # Huella (SHA1) del certificado: CN=Open Source Developer Félix Pareja Valdivia.
+    # Al renovarlo cambia; se saca con tools/comprueba-certificado.ps1.
+    certificateSha1: 'BCC98A0B2259C3B97404980830D97999981DB769'
+    # Sello de tiempo de Certum: la firma sigue siendo válida después de que caduque el certificado.
+    rfc3161TimeStampServer: 'http://time.certum.pl'
+    # Solo SHA-256: SHA-1 está obsoleto y duplicaría las peticiones (y los PIN) a SimplySign.
+    signingHashAlgorithms:
+      - 'sha256'
