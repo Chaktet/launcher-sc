@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-19-servidor-Tienda-Nocturna-renovacion-puntual-y-sin-tirones",
+      "fecha": "2026-10-19",
+      "tipo": "servidor",
+      "titulo": "Tienda Nocturna: renovación puntual y sin tirones",
+      "puntos": [
+        "La Tienda Nocturna se renueva a las 00:00 del lunes (hora del servidor). Antes podía tardar casi una hora.",
+        "La renovación semanal ya no congela el servidor ni desconecta a nadie: tus ofertas nuevas se preparan al entrar o al abrir la tienda. Si el lunes notas algo raro, avísanos por ticket."
+      ]
+    },
+    {
       "id": "2026-10-19-servidor-Raids-oleadas-de-refuerzos-y-jefes-a-tu-medida",
       "fecha": "2026-10-19",
       "tipo": "servidor",
