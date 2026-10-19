@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-19-launcher-1.16.14",
+      "fecha": "2026-10-19",
+      "tipo": "launcher",
+      "version": "1.16.14",
+      "titulo": "Armaduras de cosméticos bien con shaders",
+      "puntos": [
+        "Trae lo necesario para que las armaduras de cosméticos se vean bien con shaders"
+      ]
+    },
+    {
       "id": "2026-10-19-pack-SC-3.2.77",
       "fecha": "2026-10-19",
       "tipo": "pack",
