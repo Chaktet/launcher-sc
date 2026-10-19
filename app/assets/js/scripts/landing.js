@@ -3297,6 +3297,7 @@ async function scDlAsyncInterno(login = true) {
             scAplicarPantallaCompleta()
             scCorregirTeclasEnConflicto()
             scActivarPacksInternosDeMods()
+            sc$asegurarPackOficial()
 
             // Build Minecraft process.
             proc = pb.build()

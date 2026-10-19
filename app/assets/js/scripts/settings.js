@@ -2181,6 +2181,46 @@ async function sc$repararPacksBorradosPorElJuego(){
     }
 }
 
+/**
+ * El SC-Pack siempre activo y el último de la lista (el que manda), antes de
+ * cada partida (Felix, 19-10-2026). sc$repararPacksBorradosPorElJuego solo
+ * actúa cuando la lista queda vacía y respeta lo apagado desde Ajustes; esto
+ * cubre lo demás: el jugador que lo apagó, o el juego que lo quitó junto a
+ * otros (pasó con Lithium + MoreCulling al montar modelos).
+ *
+ * Síncrona y con sc$juegoAbierto() pasivo, como scActivarPacksInternosDeMods:
+ * va justo antes de pb.build().
+ */
+function sc$asegurarPackOficial(){
+    if(sc$juegoAbierto()){
+        return
+    }
+    const nodeFs = require('fs')
+    const nodePath = require('path')
+    try {
+        if(!ConfigManager.getSelectedServer()){
+            return
+        }
+        const d = sc$rpDirs()
+        // Sin options.txt no se crea uno a medias (ver sc$repararPacksBorradosPorElJuego),
+        // ni se apunta un pack que aún no se ha descargado.
+        if(!nodeFs.existsSync(d.options) || !nodeFs.existsSync(nodePath.join(d.packs, SC_PACK_OFICIAL))){
+            return
+        }
+        const { base, enabled } = sc$readOptionsPacks()
+        if(enabled[enabled.length - 1] === SC_PACK_OFICIAL){
+            return
+        }
+        // Una lista vaciada por el juego tampoco trae vanilla ni fabric.
+        sc$writeOptionsPacks(base.length > 0 ? base : ['vanilla', 'fabric'],
+            [...enabled.filter(p => p !== SC_PACK_OFICIAL), SC_PACK_OFICIAL])
+        sc$apuntarDecision(SC_PACK_OFICIAL, true)
+        console.log('SC-Pack reactivado antes de la partida')
+    } catch(e){
+        console.warn('No se pudo asegurar el SC-Pack', e)
+    }
+}
+
 async function populateResourcepacksTab(){
     const nodeFs = require('fs')
     const oficiales = await sc$officialPackNames()
@@ -2221,6 +2261,14 @@ async function populateResourcepacksTab(){
     const bloqueado = await sc$juegoAbiertoConfirmado()
     document.getElementById('settingsRpGameNotice').style.display = bloqueado ? 'block' : 'none'
     Array.from(list.getElementsByClassName('settingsRpToggle')).forEach(inp => {
+        // El SC-Pack no se apaga: sin él no hay menús, cosméticos ni skins del
+        // servidor, y sc$asegurarPackOficial lo vuelve a encender en cada partida.
+        if(inp.getAttribute('packname') === SC_PACK_OFICIAL){
+            inp.checked = true
+            inp.disabled = true
+            inp.title = Lang.queryJS('settings.rpOfficialLocked')
+            return
+        }
         inp.disabled = bloqueado
         inp.onchange = async () => {
             // La pestaña pudo pintarse antes de abrir el juego: se confirma otra vez.

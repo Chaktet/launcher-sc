@@ -608,6 +608,7 @@ selectAnotherAccountButton = "Elegir otra cuenta"
 [js.settings]
 rpEmpty = "Todavía no hay paquetes. Usa \"Importar paquete\" para añadir el tuyo."
 rpOfficial = "OFICIAL"
+rpOfficialLocked = "El paquete del servidor va siempre activado: sin él no se ven los menús, los cosméticos ni las skins."
 rpDelete = "Quitar"
 rpImportTitle = "Selecciona paquetes de recursos (.zip) para importar"
 rpDeleteTitle = "¿Quitar este paquete?"
