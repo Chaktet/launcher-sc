@@ -114,6 +114,17 @@ abrir Ajustes → Paquetes. Las reglas importan:
   `.sc-packs-apagados.json`, al lado de `options.txt`.
 - Nunca escribe con el juego abierto (`sc$juegoAbierto()`).
 
+### El SC-Pack, siempre activo · `sc$asegurarPackOficial()` (1.16.15)
+
+Felix (19-10-2026): el `SC-Pack.zip` va siempre activado, también si el jugador lo apagó. Justo antes de
+`pb.build()` el launcher lo deja activo y **el último** de la lista (el que manda), sin tocar el resto de
+paquetes; en Ajustes → Paquetes su interruptor sale fijo en activado. No actúa sin `options.txt`, sin el zip
+descargado o con el juego abierto.
+
+Pasó otra vez el 19-10-2026 sin culpa del pack: Lithium (`mixin.shapes.shape_merging`) + MoreCulling lanzan a
+veces `IncompatibleClassChangeError` al montar modelos. El modpack lleva desde entonces
+`config/lithium.properties` con esa opción apagada ([tools/lithium-config](../tools/lithium-config)).
+
 ⚠️ Un pack que **fuerce una región** desde `server.properties` gana al del launcher y puede provocar
 lo mismo con una versión vieja. Está en [DISTRIBUCION.md](DISTRIBUCION.md).
 
