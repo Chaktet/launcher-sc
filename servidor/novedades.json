@@ -2,6 +2,15 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-19-servidor-Los-puntos-rojos-del-PokeNav-ya-se-quitan",
+      "fecha": "2026-10-19",
+      "tipo": "servidor",
+      "titulo": "Los puntos rojos del PokéNav ya se quitan",
+      "puntos": [
+        "Algunos puntos rojos del PokéNav seguían encendidos al cambiar de servidor aunque ya hubieras abierto esa sección. Ya se quitan bien; si ves alguno que no se va, avísanos por ticket."
+      ]
+    },
+    {
       "id": "2026-10-19-servidor-Tienda-Nocturna-renovacion-puntual-y-sin-tirones",
       "fecha": "2026-10-19",
       "tipo": "servidor",
