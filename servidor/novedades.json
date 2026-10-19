@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-19-launcher-1.16.16",
+      "fecha": "2026-10-19",
+      "tipo": "launcher",
+      "version": "1.16.16",
+      "titulo": "Launcher firmado digitalmente",
+      "puntos": [
+        "El launcher va firmado: Windows puede comprobar que es el original y que nadie lo ha modificado",
+        "El aviso azul de Windows al instalarlo irá desapareciendo con el tiempo"
+      ]
+    },
+    {
       "id": "2026-10-19-launcher-1.16.15",
       "fecha": "2026-10-19",
       "tipo": "launcher",
