@@ -49,11 +49,19 @@ el launcher envía un aviso con:
   (sin conexión, certificado, disco u otro).
 - si el juego se cerró a media partida: el **tipo de error** de Java (por ejemplo, `OutOfMemoryError`) y el
   **nombre del paquete del mod** que aparece como causa en el informe de fallo (por ejemplo, `com.cobblemon.mod`).
+- desde la versión 1.16.18, cuando lo hay, también: el **nombre interno de la función o clase que falta**
+  (por ejemplo, `battle.BattleGUI.renderTypeIcon`), el **identificador del mod** que la modifica (por ejemplo,
+  `cobblemonextendedbattleui`), el **nombre del archivo del sistema** donde se cerró el juego (por ejemplo,
+  `nvoglv64.dll`, el controlador de la tarjeta gráfica), el **código de salida** del juego, el **código del error del
+  sistema** (por ejemplo, `ECONNRESET`) y el **código HTTP** de una descarga fallida (por ejemplo, `403`). Son
+  nombres de programa, nunca rutas ni nada de tu equipo.
 
 Desde la versión 1.16.13, el juego también puede enviar un aviso igual de anónimo cuando, dentro de la partida,
 algo del paquete de recursos no carga: si el **paquete del servidor (SC-Pack) no está activo**, si **faltan texturas**
 (cuántas y el nombre interno de la primera, por ejemplo `cobblemon:item/poke_ball`) o si **un modelo de Pokémon falla**
-(el nombre interno del modelo o de la pieza, por ejemplo `wartortle`). Lo envía un pequeño mod incluido en el modpack,
+(el nombre interno del modelo o de la pieza, por ejemplo `wartortle`). Desde la versión 1.1.0 del mod, también de qué
+**tipo de paquete** viene lo que falla (el oficial, una copia antigua del oficial, otro paquete o un mod), nunca su
+nombre. Lo envía un pequeño mod incluido en el modpack,
 como mucho una vez por partida y por tipo de aviso, con la versión del launcher, el perfil y la versión del propio mod.
 Solo lo hace si el launcher lo abrió con esta opción activada; también se puede apagar en ese ordenador poniendo
 `enviar=false` en `config/sc_avisos_cliente.properties`.

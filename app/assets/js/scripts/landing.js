@@ -1097,7 +1097,11 @@ function scAnalizarCierreDelJuego(code, salida){
     // El informe de fallo de Minecraft suele contener la causa real cuando el
     // problema es de gráficos, porque ahí no llega nada por la salida de error.
     const crash = scUltimoCrashReport()
+    // Un cierre nativo no deja crash report, pero la JVM sí escribe el marco donde murió:
+    // con él los patrones de gráficos de abajo reconocen nvoglv64.dll, atio6axx.dll...
+    const hsErr = scHsErrDe(ConfigManager.getSelectedServer(), Date.now() - 300000)
     const txt = (salida || '') + (crash ? '\n\n--- INFORME DE FALLO DE MINECRAFT ---\n' + crash : '')
+        + (hsErr.linea ? '\n\n--- FALLO FATAL DE JAVA ---\nProblematic frame: ' + hsErr.linea : '')
 
     // Sodium comprueba el driver ANTES de arrancar y se niega a seguir con los
     // que sabe que cuelgan o corrompen el juego. Va antes que el bloque genérico
@@ -1236,6 +1240,14 @@ function scAnalizarCierreDelJuego(code, salida){
             return
         }
         scFalloArranque(SC_ERR.MEMORIA, Lang.queryJS('landing.launch.errMemoria'), new Error(txt.slice(-3000)))
+        return
+    }
+
+    // Murió de golpe sin dejar nada que reconocer: casi siempre driver o superposición.
+    if(SC_CODIGOS_NATIVOS.has(code)){
+        const marca = scMarcaGraficos(hsErr.dll || '')
+        scFalloArranque(SC_ERR.GRAFICOS, Lang.queryJS('landing.launch.errCierreNativo') + (marca ? '<br><br>' + marca : ''),
+            new Error(`Código de salida ${code}\n\n${txt.slice(-3000)}`))
         return
     }
 
@@ -1874,7 +1886,69 @@ function scPistaCrash(texto){
             break
         }
     }
+    // Qué falta, en los errores de "esto no existe" (1.16.18). Con solo el tipo, un
+    // NoSuchMethodError en com.cobblemon (2 jugadores LITE, 19-20/10) no se podía
+    // arreglar: hacía falta saber QUÉ método. Su mensaje es un nombre de clase o de
+    // método, nunca una ruta; aun así solo pasa si es un identificador limpio.
+    const falta = /(?:NoSuchMethodError|NoSuchFieldError|AbstractMethodError|NoClassDefFoundError|ClassNotFoundException|IncompatibleClassChangeError):\s*'?(?:[\w$[\]<>]+ )?([\w$/.]+)/.exec(lineas.join('\n'))
+    if(falta){
+        let id = falta[1].replace(/[/$]/g, '.').replace(/\.+/g, '.').replace(/^\.|\.$/g, '')
+        // Por el final, que es donde está la clase y el método; sin dejar un nombre partido.
+        if(id.length > 60){
+            id = id.slice(-60).replace(/^[^.]*\./, '')
+        }
+        // Un nombre de clase siempre lleva paquete (un punto): lo demás no es lo que buscamos.
+        if(/^[A-Za-z0-9_-]+(\.[A-Za-z0-9_-]+)+$/.test(id) && !/^(Users|home)\./i.test(id)){
+            pista.d = id
+        }
+    }
+    // Un mixin mete código de OTRO mod dentro de las clases de Cobblemon: el marco
+    // dice com.cobblemon pero el culpable es el mod del mixin. Minecraft lo lista en
+    // "Mixins in Stacktrace", y el nombre del método inyectado lleva el id del mod
+    // (handler$zxx000$modid$metodo).
+    const todo = String(texto)
+    const seccion = /Mixins in Stacktrace:([\s\S]{0,3000})/.exec(todo)
+    const mixin = (seccion && /([A-Za-z0-9_-]+)(?:\.[A-Za-z0-9_-]+)*\.mixins?\.json/i.exec(seccion[1]))
+        || /\$z[a-z]{2}\d{3}\$([a-z0-9_]{2,40})\$/.exec(todo)
+    if(mixin){
+        pista.y = mixin[1].slice(0, 60)
+    }
     return pista
+}
+
+/**
+ * Pista anónima de un fallo de arranque (1.16.18). Hasta ahora SC-04 "otro", SC-05 y
+ * SC-06 llegaban sin nada más que el código y no había forma de saber qué arreglar.
+ * Solo identificadores: el código de error del sistema (ENOENT, EPERM, ECONNRESET...),
+ * el estado HTTP, el código de salida y la pista Java de scPistaCrash. Ni mensajes ni
+ * rutas: el texto se usa aquí y no sale.
+ *
+ * @returns {Object<string, string>} Campos ya saneados para scEnviarAvisoError.
+ */
+function scPistaError(err){
+    try {
+        const texto = scErrorLegible(err)
+        const pista = scPistaCrash(texto)
+        const codigoSistema = err && (err.code || (err.error && err.error.code))
+        if(typeof codigoSistema === 'string' && /^[A-Z][A-Z0-9_]{1,30}$/.test(codigoSistema)){
+            pista.x = codigoSistema
+        }
+        const salida = /(?:exited with code|Código de salida)\s+(-?\d{1,11})/i.exec(texto)
+        if(salida){
+            pista.e = salida[1]
+        }
+        const http = /\b(?:status(?:Code)?|HTTP)\D{0,4}([1-5]\d\d)\b/i.exec(texto)
+        if(http){
+            pista.h = http[1]
+        }
+        const dll = /Problematic frame: .*?\[([A-Za-z0-9_.-]+\.dll)\+/i.exec(texto)
+        if(dll){
+            pista.l = dll[1].slice(0, 60)
+        }
+        return pista
+    } catch(e){
+        return {}
+    }
 }
 
 /** El crash report más reciente de un perfil escrito desde `desde` (ms), o ''. */
@@ -1897,6 +1971,80 @@ function scCrashReportDe(perfil, desde){
     }
 }
 
+/**
+ * Códigos de salida de Windows que no son de Java ni de Minecraft: el proceso murió
+ * de golpe, sin crash report (1.16.18). 0xC0000409 (fail-fast) fue el 25 % de los
+ * cierres a media partida del 18-20/10, todos en LITE, y el jugador no veía nada. En
+ * Minecraft casi siempre es el driver gráfico o un programa que se mete en la ventana
+ * del juego (superposiciones). Node los da sin signo; se aceptan las dos formas.
+ */
+const SC_CODIGOS_NATIVOS = new Set([
+    3221226505, -1073740791, // 0xC0000409 fail-fast / desbordamiento de pila
+    3221225477, -1073741819, // 0xC0000005 violación de acceso
+    3221225725, -1073741571  // 0xC00000FD pila agotada
+])
+
+/**
+ * Del registro de fallo fatal de la JVM (hs_err_pid*.log, en la carpeta del perfil),
+ * escrito desde `desde`: solo el nombre de la biblioteca donde murió ("Problematic
+ * frame"). El resto del fichero lleva rutas y variables de entorno: no sale de aquí.
+ *
+ * @returns {{dll: string|null, linea: string}} linea = el marco, para el análisis local.
+ */
+function scHsErrDe(perfil, desde){
+    const vacio = { dll: null, linea: '' }
+    try {
+        const nodeFs = require('fs')
+        const nodePath = require('path')
+        const dir = nodePath.join(ConfigManager.getInstanceDirectory(), String(perfil || ''))
+        if(!perfil || !nodeFs.existsSync(dir)){
+            return vacio
+        }
+        const ultimo = nodeFs.readdirSync(dir)
+            .filter(f => /^hs_err_pid\d+\.log$/.test(f))
+            .map(f => ({ f, t: nodeFs.statSync(nodePath.join(dir, f)).mtimeMs }))
+            .filter(x => x.t >= desde)
+            .sort((a, b) => b.t - a.t)[0]
+        if(!ultimo){
+            return vacio
+        }
+        const txt = nodeFs.readFileSync(nodePath.join(dir, ultimo.f), 'utf8').slice(0, 20000)
+        const marco = /Problematic frame:\s*\n#\s*(.+)/.exec(txt)
+        const linea = marco ? marco[1].trim().slice(0, 200) : ''
+        const dll = (/\[([A-Za-z0-9_.-]+\.(?:dll|so))\+/i.exec(linea) || [])[1] || null
+        return { dll, linea }
+    } catch(e){
+        return vacio
+    }
+}
+
+/** Marca del driver a partir del nombre de la DLL o del texto, para el enlace concreto. */
+function scMarcaGraficos(txt){
+    if(/nvidia|geforce|nvogl|nvd3d|nvwgf|nvapi|quadro/i.test(txt)){
+        return Lang.queryJS('landing.launch.errGraficosNvidia')
+    }
+    if(/\bamd\b|radeon|\bati\b|atio|amdvlk|aticfx|amdocl|amdxc/i.test(txt)){
+        return Lang.queryJS('landing.launch.errGraficosAmd')
+    }
+    if(/intel|ig[0-9]{1,2}icd|igdumd|igdrcl|igxelp|iris xe|\barc\b|igvk/i.test(txt)){
+        return Lang.queryJS('landing.launch.errGraficosIntel')
+    }
+    return ''
+}
+
+/**
+ * Cierre de golpe a media partida (código nativo, ver SC_CODIGOS_NATIVOS): antes el
+ * juego desaparecía y volvía el botón JUGAR sin una palabra. Se explica con el código
+ * de gráficos (SC-12) para que soporte lo reconozca, pero sin mandar un segundo aviso:
+ * ya cuenta como SC-90.
+ */
+function scDialogoCierreNativo(code, dll){
+    const marca = scMarcaGraficos(dll || '')
+    const mensaje = Lang.queryJS('landing.launch.errCierreNativo') + (marca ? '<br><br>' + marca : '')
+    scFalloArranque(SC_ERR.GRAFICOS, mensaje,
+        new Error(`El juego se cerró de golpe con el código ${code}` + (dll ? ` en ${dll}` : '')), false, { sinAviso: true })
+}
+
 /** Cierre con error después de haber entrado al juego: aviso anónimo con la pista del crash report. */
 function scAvisoCrashPartida(code, perfilJugado, inicio){
     try {
@@ -1906,9 +2054,16 @@ function scAvisoCrashPartida(code, perfilJugado, inicio){
         const pista = scPistaCrash(scCrashReportDe(perfilJugado, inicio))
         pista.e = String(code).replace(/[^0-9-]/g, '').slice(0, 11) || 'x'
         pista.p = /superlite/i.test(perfilJugado) ? 'superlite' : (/lite/i.test(perfilJugado) ? 'lite' : 'pro')
+        // Cierre nativo: la biblioteca donde murió es la pista (nvoglv64.dll = driver NVIDIA).
+        const hsErr = scHsErrDe(perfilJugado, inicio)
+        if(hsErr.dll){
+            pista.l = hsErr.dll.slice(0, 60)
+        }
         scEnviarAvisoError(SC_CRASH_PARTIDA, null, pista)
+        return hsErr
     } catch(e){
         loggerLanding.debug('Aviso de crash no enviado', e)
+        return { dll: null, linea: '' }
     }
 }
 
@@ -1974,13 +2129,15 @@ function scEnviarAvisoError(codigo, err, extra = null){
  * @param {string} explicacion Qué le pasa y qué puede intentar, en cristiano.
  * @param {Error|string} err Error real, para el informe.
  */
-function scFalloArranque(codigo, explicacion, err, reintentable = false){
+function scFalloArranque(codigo, explicacion, err, reintentable = false, opciones = {}){
     // Tras cualquier fallo, el siguiente intento vuelve a comprobar TODOS los ficheros
     // de verdad (sin fiarse de la caché de validación). Ver scInvalidarCacheValidacion.
     scInvalidarCacheValidacion(codigo)
     const informe = scInformeDiagnostico(codigo, err)
     const ruta = scGuardarInforme(codigo, informe)
-    scEnviarAvisoError(codigo, err)
+    if(!opciones.sinAviso){
+        scEnviarAvisoError(codigo, err, scPistaError(err))
+    }
     // En launcher.log solo el resumen y dónde está el informe. Antes se escribía el
     // error entero, y en los fallos del juego ese error lleva dentro 3.000-4.000
     // caracteres de la salida de Minecraft: el "registro del launcher" acababa
@@ -2975,7 +3132,17 @@ async function scDlAsyncInterno(login = true) {
             loggerLanding.error('You must be logged into an account.')
             // Sin esto el jugador volvía a la pantalla principal SIN botón de
             // JUGAR: la barra de progreso ya estaba puesta y nadie la quitaba.
-            scFalloArranque(SC_ERR.CUENTA, Lang.queryJS('landing.launch.errCuenta'), new Error('No account selected'))
+            // Desde la 1.16.18 no se le manda a buscar Ajustes → Cuenta (2 jugadores
+            // en un día se quedaron en este error): se le lleva directo a iniciar
+            // sesión y, al terminar, vuelve aquí para pulsar JUGAR. El aviso
+            // anónimo se sigue contando para ver si baja.
+            scEnviarAvisoError(SC_ERR.CUENTA, null, { x: 'sincuenta' })
+            toggleLaunchArea(false)
+            loginOptionsCancelEnabled(true)
+            loginOptionsViewOnLoginSuccess = VIEWS.landing
+            loginOptionsViewOnLoginCancel = VIEWS.landing
+            loginOptionsViewOnCancel = VIEWS.landing
+            switchView(getCurrentView(), VIEWS.loginOptions)
             return
         }
     }
@@ -3362,11 +3529,16 @@ async function scDlAsyncInterno(login = true) {
                     scAnalizarCierreDelJuego(code, scSalidaError.join('\n'))
                 } else {
                     // Se cerró con error a media partida: aviso anónimo (SC-90) con la pista del crash report.
+                    let hsErr = null
                     if(code !== 0){
-                        scAvisoCrashPartida(code, scPerfilJugado, scInicioPartida)
+                        hsErr = scAvisoCrashPartida(code, scPerfilJugado, scInicioPartida)
                     }
                     // Partida jugada: si acabó sin memoria (o sin pack por falta de memoria), ofrecer un perfil más ligero.
-                    scOfrecerPerfilMasLigero(false, scPerfilJugado, scInicioPartida)
+                    const ofrecido = scOfrecerPerfilMasLigero(false, scPerfilJugado, scInicioPartida)
+                    // Cierre de golpe (driver o superposición): explicarlo en vez de callar.
+                    if(!ofrecido && SC_CODIGOS_NATIVOS.has(code)){
+                        scDialogoCierreNativo(code, hsErr && hsErr.dll)
+                    }
                 }
             })
 

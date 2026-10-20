@@ -368,6 +368,28 @@ mismo código cuenta una vez por minuto. Se apaga en Ajustes → Launcher (`envi
   `m` (paquete del primer marco de la traza que no es de Java, Minecraft ni Fabric, p. ej. `com.cobblemon.mod`),
   `x` (tipo de excepción) y `e` (código de salida), sacados por `scPistaCrash()` del crash report más reciente.
   En `stats.json`: `crash_mods_hoy` y `crash_excepciones_hoy`. Nunca el mensaje ni el informe: llevan rutas y usuario.
+- **Pistas (desde 1.16.18).** Con solo el código no se podía arreglar casi nada (revisión del 20-10: 2 `NoSuchMethodError`
+  en LITE sin saber qué método, SC-04 «otro», SC-05 y SC-06 sin más dato). Ahora SC-90 y todos los fallos de arranque
+  llevan, cuando los hay y siempre como identificadores limpios (`[A-Za-z0-9._-]`, 60 caracteres):
+
+  | Campo | Qué es | De dónde sale |
+  |---|---|---|
+  | `d` | Lo que falta en un `NoSuchMethodError`, `NoClassDefFoundError`… (`…battle.BattleGUI.renderTypeIcon`) | `scPistaCrash()` |
+  | `y` | Mod del mixin que mete código en la clase que falla (`cobblemonextendedbattleui`) | «Mixins in Stacktrace» o `handler$zxx000$modid$` |
+  | `l` | DLL donde murió Java (`nvoglv64.dll` = driver NVIDIA) | `Problematic frame` de `hs_err_pid*.log` (`scHsErrDe()`) |
+  | `x` | En arranque, el error del sistema (`ECONNRESET`, `EPERM`…) o la excepción Java | `scPistaError()` |
+  | `e` / `h` | Código de salida / estado HTTP | `scPistaError()` |
+
+  `sc-stats.py` los guarda como `inf_p_<código>_<campo>_<valor>` (tope de 50 valores por código, campo y día) y publica
+  `informes.pistas_hoy` / `pistas_ayer` (`{código: {campo: {valor: jugadores}}}`) e `informes.serie` (30 días de jugadores
+  por código, para ver si un arreglo hace bajar un fallo).
+- **Cierres nativos (desde 1.16.18).** Los códigos de salida `3221226505` (0xC0000409), `3221225477` (0xC0000005) y
+  `3221225725` (0xC00000FD), y sus formas negativas, son un cierre de golpe sin crash report: driver gráfico o una
+  superposición (Discord, RivaTuner, barra de juego). Antes del 20-10 el jugador no veía nada a media partida y SC-06
+  genérico al arrancar; ahora sale el aviso de gráficos (SC-12, texto `errCierreNativo`) con el enlace de su marca si la
+  DLL la delata. A media partida no se manda un segundo aviso: ya cuenta como SC-90.
+- **SC-09 (desde 1.16.18):** sin cuenta seleccionada, JUGAR abre directamente la pantalla de iniciar sesión (y vuelve a la
+  principal al terminar) en vez del error que mandaba a Ajustes → Cuenta. Se sigue contando con `x=sincuenta`.
 - **Privacidad:** viaja solo lo de arriba. Está en `PRIVACY.md`.
 
 ## Recursos rotos dentro del juego: SC-91, SC-92 y SC-93 (desde 1.16.13)
@@ -391,6 +413,14 @@ anónimo, con códigos que **no se enseñan al jugador**:
   de objetos de plugins) y los `Unable to load model: 'zcrystals:item/tera_orb' referenced from …` de modelos de
   objetos. Si se arregla o aparece ruido nuevo de ese tipo, se cambia `Detector.BASE` / `NS_IGNORADOS`.
 - **Si el jugador apagó el SC-Pack a propósito** (Ajustes → Paquetes, `.sc-packs-apagados.json`) no hay SC-91.
+- **Origen del recurso (`o`, mod 1.1.0).** SC-92 y SC-93 (`geo` y `modelo`) dicen qué clase de pack sirve el fichero:
+  `sc` (nuestro `SC-Pack.zip`), `sc-viejo` (otro zip `SC-…` en la carpeta del jugador: una copia vieja nuestra),
+  `otro` (un pack que añadió el jugador), `mod`, `juego` o `nada` (nadie lo trae). Nunca el nombre del pack. Motivo: los
+  primeros avisos (18-20/10: `shedinja_anime2026` ×3, una pose de Greninja, Sudowoodo) no estaban en NINGÚN SC-Pack
+  publicado (3.2.73–3.2.77 comprobados) ni fallaban en el cliente de Felix; sin `o` parecían fallos nuestros.
+- **SC-91 `apagado` (mod 1.1.0):** además del aviso, el jugador ve una notificación en pantalla, una vez por partida, que
+  le dice que sin el SC-Pack no verá skins ni menús y dónde activarlo. El launcher ya lo reactiva antes de cada partida
+  desde la 1.16.15, así que esto cubre al que lo apaga a media partida desde la pantalla de paquetes del juego.
 - **Interruptor:** el launcher pasa `-Dsc.avisos=1` solo con «Enviar avisos de error anónimos» activado
   (`sc$argsAvisos()` en `processbuilder.js`, junto a `-Dsc.launcher` y `-Dsc.perfil`). Sin esa propiedad (otro
   launcher, la 1.16.12 o anteriores) el mod no envía nada. Además, `config/sc_avisos_cliente.properties` →

@@ -152,14 +152,14 @@ def fusionar(hist, nuevos):
     Ademas de CAMPOS, las claves 'inf_*' de los avisos de error (1.16.12)."""
     for d, v in nuevos.items():
         prev = hist.get(d, {})
-        claves = set(CAMPOS) | {k for k in list(prev) + list(v) if k.startswith('inf_') and not k.startswith('inf_r_')}
+        claves = set(CAMPOS) | {k for k in list(prev) + list(v) if k.startswith('inf_') and not k.startswith(CON_TOPE)}
         # Las de recursos (inf_r_<codigo>_<campo>_<valor>) con el mismo tope por dia que contar_informes:
         # primero las ya guardadas y luego las nuevas mientras quepan (revision de Codex).
         por_prefijo = {}
         for k in list(prev) + sorted(set(v) - set(prev)):
-            if not k.startswith('inf_r_'):
+            if not k.startswith(CON_TOPE):
                 continue
-            prefijo = '_'.join(k.split('_', 4)[:4])  # inf_r_SC-93_m
+            prefijo = '_'.join(k.split('_', 4)[:4])  # inf_r_SC-93_m / inf_p_SC-90_d
             n = por_prefijo.setdefault(prefijo, set())
             if k in n or len(n) < MAX_VALORES:
                 n.add(k)
@@ -178,6 +178,13 @@ RE_PISTA = re.compile(r'^[A-Za-z0-9._-]{1,60}$')
 CODIGOS_RECURSOS = ('SC-91', 'SC-92', 'SC-93')
 X_VALIDOS = {'SC-91': ('error', 'apagado', 'falta'), 'SC-92': (), 'SC-93': ('parte', 'modelo', 'pose', 'geo')}
 MAX_VALORES = 50
+# Pistas de los fallos del launcher (1.16.18), para SC-90 (cierre a media partida) y los codigos de
+# arranque: x error del sistema o de Java, m paquete del mod, d lo que falta, y mod del mixin,
+# l biblioteca nativa, e codigo de salida, h estado HTTP, t tipo de fallo de descarga. Mismas reglas
+# que las de recursos: identificadores ya saneados y como mucho MAX_VALORES por codigo, campo y dia.
+CAMPOS_PISTA = ('x', 'm', 'd', 'y', 'l', 'e', 'h', 't')
+# Claves con tope de valores por prefijo: recursos (inf_r_) y pistas (inf_p_).
+CON_TOPE = ('inf_r_', 'inf_p_')
 RE_MOMENTO = re.compile(r'\[(\d{2}/[A-Za-z]{3}/\d{4}:\d{2}:\d{2}:\d{2}) ([+-]\d{4})\]')
 
 
@@ -235,6 +242,16 @@ def contar_informes():
                         # La query la puede escribir cualquiera (revision de Codex): x solo con los valores
                         # que existen y como mucho MAX_VALORES valores distintos de m/t por codigo y dia,
                         # para que nadie llene el historico de claves inventadas.
+                        if q['c'] not in CODIGOS_RECURSOS:
+                            for campo in CAMPOS_PISTA:
+                                val = q.get(campo, '')
+                                if not RE_PISTA.match(val):
+                                    continue
+                                clave = 'inf_p_%s_%s_%s' % (q['c'], campo, val)
+                                prefijo = 'inf_p_%s_%s_' % (q['c'], campo)
+                                if clave not in s and sum(1 for k in s if k.startswith(prefijo)) >= MAX_VALORES:
+                                    continue
+                                s.setdefault(clave, set()).add(ip)
                         if q['c'] in CODIGOS_RECURSOS:
                             for campo in ('m', 'x', 't'):
                                 val = q.get(campo, '')
@@ -286,14 +303,15 @@ def informes_de(dia, prefijo):
     return {k[corte:]: v for k, v in sorted(dia.items()) if k.startswith(prefijo)}
 
 
-def recursos_de(dia):
-    """{'SC-93': {'m': {'wartortle': 4}, 'x': {'parte': 4}}} a partir de las claves inf_r_* de un dia."""
+def recursos_de(dia, prefijo='inf_r_'):
+    """{'SC-93': {'m': {'wartortle': 4}, 'x': {'parte': 4}}} a partir de las claves inf_r_* de un dia.
+    Con prefijo='inf_p_', lo mismo para las pistas de los fallos del launcher (cualquier codigo)."""
     out = {}
     for k, v in sorted(dia.items()):
-        if not k.startswith('inf_r_'):
+        if not k.startswith(prefijo):
             continue
-        partes = k[len('inf_r_'):].split('_', 2)
-        if len(partes) == 3 and partes[0] in CODIGOS_RECURSOS:
+        partes = k[len(prefijo):].split('_', 2)
+        if len(partes) == 3 and (prefijo != 'inf_r_' or partes[0] in CODIGOS_RECURSOS):
             out.setdefault(partes[0], {}).setdefault(partes[1], {})[partes[2]] = v
     return out
 
@@ -415,6 +433,11 @@ def main():
             # Recursos rotos dentro del juego (SC-91/92/93, mod SC Avisos Cliente) de hoy:
             # por codigo, jugadores distintos por cada valor de x, m y t.
             'recursos_hoy': recursos_de(hist.get(hoy, {})),
+            # Pistas de cada fallo (1.16.18, ver CAMPOS_PISTA), hoy y ayer.
+            'pistas_hoy': recursos_de(hist.get(hoy, {}), 'inf_p_'),
+            'pistas_ayer': recursos_de(hist.get(ayer, {}), 'inf_p_'),
+            # 30 dias de jugadores distintos por codigo, para ver si un arreglo hace bajar un fallo.
+            'serie': [dict(d=s['d'], **informes_de(hist.get(s['d'], {}), 'inf_SC-')) for s in serie],
         },
         'serie': serie,
     }
