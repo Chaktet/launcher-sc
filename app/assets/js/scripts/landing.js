@@ -1097,7 +1097,9 @@ function scMostrarOfertaPerfil(servSig){
 function scAnalizarCierreDelJuego(code, salida, desde = Date.now() - 300000){
     // El informe de fallo de Minecraft suele contener la causa real cuando el
     // problema es de gráficos, porque ahí no llega nada por la salida de error.
-    const crash = scUltimoCrashReport()
+    // Solo un informe escrito en ESTE intento (segunda ronda de Codex: uno anterior de NVIDIA
+    // convertía un OutOfMemoryError de ahora en SC-12).
+    const crash = scCrashReportDe(ConfigManager.getSelectedServer(), desde)
     // Un cierre nativo no deja crash report, pero la JVM sí escribe el marco donde murió:
     // con él los patrones de gráficos de abajo reconocen nvoglv64.dll, atio6axx.dll...
     const hsErr = scHsErrDe(ConfigManager.getSelectedServer(), desde)
@@ -1867,13 +1869,25 @@ const SC_PAQUETES_COMUNES = /^(java|javax|jdk|sun|com\.sun|kotlin|kotlinx|scala|
  * ser un identificador Java (no empieza por número), el primero en minúsculas (un paquete),
  * y fuera nombres de carpetas personales y extensiones de fichero.
  */
-function scEsNombreJava(s){
+function scEsNombreJava(s, siguiente, esMetodo){
+    // Segunda ronda de Codex: "backups/Alice-private/x.jar" daba "backups.Alice" y
+    // "profiles/Alice/settings.json" pasaba entero. Ahora tiene que ser el token COMPLETO
+    // (nada pegado detrás salvo fin, comilla, espacio o el paréntesis de los argumentos),
+    // con un paquete Java de verdad (raíz de dominio o de mod conocida y al menos tres
+    // trozos) y la clase empezando por mayúscula. Lo que no cumple no se manda: d es una
+    // ayuda, no hace falta en todos los casos.
     const trozos = String(s).split(/[/.]/)
-    return s.length <= 300 && trozos.length >= 2
-        && /^[a-z]/.test(trozos[0])
+    const clase = esMetodo ? trozos[trozos.length - 2] : trozos[trozos.length - 1]
+    return s.length <= 300 && trozos.length >= 3
+        && (siguiente == null || /^[\s'"(:;,]?$/.test(siguiente))
+        && SC_RAICES_JAVA.test(trozos[0])
         && trozos.every(t => /^[A-Za-z_][A-Za-z0-9_$]*$/.test(t))
-        && !trozos.some(t => /^(users|home|documents|documentos|desktop|escritorio|appdata|onedrive|jar|zip|class|exe|dll)$/i.test(t))
+        && /^[A-Z]/.test(clase || '')
+        && !trozos.some(t => /^(users|home|documents|documentos|desktop|escritorio|appdata|onedrive|jar|zip|class|exe|dll|json|txt|log)$/i.test(t))
 }
+
+// Raíces de paquete Java: dominios invertidos y las de mods sin dominio que hay en el modpack.
+const SC_RAICES_JAVA = /^(com|net|org|io|dev|me|de|es|fr|it|eu|uk|ca|us|xyz|gg|tech|team|fi|nl|pl|ru|br|cn|jp|kr|au|info|co|app|cc|top|moe|one|pro|kotlin|kotlinx|java|javax|jdk|sun|mezz|snownee|xaero|fuzs|ladysnake|vazkii|journeymap|tschipp|tfar|shadows|squeek)$/
 
 /**
  * Pista anónima de un crash report de Minecraft (1.16.12, Felix 18-10): el tipo de
@@ -1914,7 +1928,9 @@ function scPistaCrash(texto){
     // arreglar: hacía falta saber QUÉ método. Su mensaje es un nombre de clase o de
     // método, nunca una ruta; aun así solo pasa si es un identificador limpio.
     const falta = /(?:NoSuchMethodError|NoSuchFieldError|AbstractMethodError|NoClassDefFoundError|ClassNotFoundException|IncompatibleClassChangeError):\s*'?(?:[\w$.[\]<>]+ )?([\w$/.]+)/.exec(lineas.join('\n'))
-    if(falta && scEsNombreJava(falta[1])){
+    const todoTexto = lineas.join('\n')
+    const esMetodo = falta != null && /NoSuchMethodError|NoSuchFieldError|AbstractMethodError/.test(falta[0])
+    if(falta && scEsNombreJava(falta[1], todoTexto.charAt(falta.index + falta[0].length) || null, esMetodo)){
         let id = falta[1].replace(/[/$]/g, '.').replace(/\.+/g, '.').replace(/^\.|\.$/g, '')
         // Por el final, que es donde está la clase y el método; sin dejar un nombre partido.
         if(id.length > 60){
