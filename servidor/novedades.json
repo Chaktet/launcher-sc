@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-19-modpack-SC-Memoria-1.3.0",
+      "fecha": "2026-10-19",
+      "tipo": "modpack",
+      "version": "SC Memoria 1.3.0",
+      "titulo": "Menús, chat e inventario sin tirones",
+      "puntos": [
+        "Abrir el menú de pausa (Esc), el chat (T) o el inventario (E) ya no congela el juego durante casi un segundo: ahora se abren al instante.",
+        "Se actualiza solo al pulsar Jugar en el launcher."
+      ]
+    },
+    {
       "id": "2026-10-19-servidor-Bienvenidas-en-el-chat-y-tambien-a-quien-vuelve",
       "fecha": "2026-10-19",
       "tipo": "servidor",
