@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-20-modpack-Fuera-el-mod-de-efectividad-de-tipos",
+      "fecha": "2026-10-20",
+      "tipo": "modpack",
+      "titulo": "Fuera el mod de efectividad de tipos",
+      "puntos": [
+        "Hemos quitado Cobblemon Effectiveness: chocaba con la interfaz de combate y daba problemas.",
+        "Se quita solo al pulsar Jugar en el launcher. Si usas Modrinth App o Prism, vuelve a descargar el modpack (1.1.9)."
+      ]
+    },
+    {
       "id": "2026-10-19-launcher-1.16.17",
       "fecha": "2026-10-19",
       "tipo": "launcher",
