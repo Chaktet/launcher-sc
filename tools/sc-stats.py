@@ -159,7 +159,7 @@ def fusionar(hist, nuevos):
         for k in list(prev) + sorted(set(v) - set(prev)):
             if not k.startswith(CON_TOPE):
                 continue
-            prefijo = '_'.join(k.split('_', 4)[:4])  # inf_r_SC-93_m / inf_p_SC-90_d
+            prefijo = prefijo_de(k)
             n = por_prefijo.setdefault(prefijo, set())
             if k in n or len(n) < MAX_VALORES:
                 n.add(k)
@@ -180,11 +180,32 @@ X_VALIDOS = {'SC-91': ('error', 'apagado', 'falta'), 'SC-92': (), 'SC-93': ('par
 MAX_VALORES = 50
 # Pistas de los fallos del launcher (1.16.18), para SC-90 (cierre a media partida) y los codigos de
 # arranque: x error del sistema o de Java, m paquete del mod, d lo que falta, y mod del mixin,
-# l biblioteca nativa, e codigo de salida, h estado HTTP, t tipo de fallo de descarga. Mismas reglas
-# que las de recursos: identificadores ya saneados y como mucho MAX_VALORES por codigo, campo y dia.
-CAMPOS_PISTA = ('x', 'm', 'd', 'y', 'l', 'e', 'h', 't')
-# Claves con tope de valores por prefijo: recursos (inf_r_) y pistas (inf_p_).
-CON_TOPE = ('inf_r_', 'inf_p_')
+# l biblioteca nativa, e codigo de salida, h estado HTTP, t tipo de fallo de descarga, z cuantos mods
+# propios activos tiene el jugador (solo el numero). Mismas reglas que las de recursos: identificadores
+# ya saneados y como mucho MAX_VALORES por codigo, campo y dia.
+CAMPOS_PISTA = ('x', 'm', 'd', 'y', 'l', 'e', 'h', 't', 'z')
+# Claves con tope de valores por prefijo: recursos (inf_r_), pistas (inf_p_) y, desde el 20-10, tambien
+# versiones (inf_v_) y las de SC-90 de la 1.16.12 (inf_m_, inf_x_): antes, variando v, m o x en una query
+# hecha a mano se creaban claves sin limite que fusionar() guardaba para siempre (revision de Codex).
+CON_TOPE = ('inf_r_', 'inf_p_', 'inf_v_', 'inf_m_', 'inf_x_')
+# Origen del recurso roto (mod SC Avisos Cliente 1.1.0): que clase de pack lo sirve, nunca su nombre.
+O_VALIDOS = ('sc', 'sc-viejo', 'otro', 'mod', 'juego', 'nada')
+
+
+def prefijo_de(k):
+    """Grupo al que se aplica el tope: inf_r_SC-93_m, inf_p_SC-90_d, inf_v_ ..."""
+    if k.startswith(('inf_r_', 'inf_p_')):
+        return '_'.join(k.split('_', 4)[:4])
+    return k[:6]
+
+
+def anadir(s, clave, ip):
+    """Cuenta ip en clave salvo que su grupo ya tenga MAX_VALORES valores distintos ese dia."""
+    if clave not in s and clave.startswith(CON_TOPE):
+        prefijo = prefijo_de(clave)
+        if sum(1 for k in s if k.startswith(prefijo)) >= MAX_VALORES:
+            return
+    s.setdefault(clave, set()).add(ip)
 RE_MOMENTO = re.compile(r'\[(\d{2}/[A-Za-z]{3}/\d{4}:\d{2}:\d{2}:\d{2}) ([+-]\d{4})\]')
 
 
@@ -229,13 +250,13 @@ def contar_informes():
                         if q.get('r') == 'directa':
                             s.setdefault('inf_directa', set()).add(ip)
                         if RE_VERSION.match(q.get('v', '')):
-                            s.setdefault('inf_v_' + q['v'], set()).add(ip)
+                            anadir(s, 'inf_v_' + q['v'], ip)
                         # SC-90 = cierre con error a media partida: paquete del mod sospechoso
                         # (m) y tipo de excepcion (x), ya saneados por el launcher.
                         if q['c'] == 'SC-90':
                             for campo in ('m', 'x'):
                                 if RE_PISTA.match(q.get(campo, '')):
-                                    s.setdefault('inf_%s_%s' % (campo, q[campo]), set()).add(ip)
+                                    anadir(s, 'inf_%s_%s' % (campo, q[campo]), ip)
                         # SC-91/92/93 = recursos rotos vistos DENTRO del juego por el mod SC Avisos
                         # Cliente (1.16.13): que (x), cual (m) y la primera textura (t), ya saneados.
                         # Clave propia por codigo para no mezclarlas con las de SC-90.
@@ -247,23 +268,17 @@ def contar_informes():
                                 val = q.get(campo, '')
                                 if not RE_PISTA.match(val):
                                     continue
-                                clave = 'inf_p_%s_%s_%s' % (q['c'], campo, val)
-                                prefijo = 'inf_p_%s_%s_' % (q['c'], campo)
-                                if clave not in s and sum(1 for k in s if k.startswith(prefijo)) >= MAX_VALORES:
-                                    continue
-                                s.setdefault(clave, set()).add(ip)
+                                anadir(s, 'inf_p_%s_%s_%s' % (q['c'], campo, val), ip)
                         if q['c'] in CODIGOS_RECURSOS:
-                            for campo in ('m', 'x', 't'):
+                            for campo in ('m', 'x', 't', 'o'):
                                 val = q.get(campo, '')
                                 if not RE_PISTA.match(val):
                                     continue
                                 if campo == 'x' and val not in X_VALIDOS[q['c']]:
                                     continue
-                                clave = 'inf_r_%s_%s_%s' % (q['c'], campo, val)
-                                prefijo = 'inf_r_%s_%s_' % (q['c'], campo)
-                                if clave not in s and sum(1 for k in s if k.startswith(prefijo)) >= MAX_VALORES:
+                                if campo == 'o' and val not in O_VALIDOS:
                                     continue
-                                s.setdefault(clave, set()).add(ip)
+                                anadir(s, 'inf_r_%s_%s_%s' % (q['c'], campo, val), ip)
             except Exception:
                 continue
     return {d: {k: len(v) for k, v in s.items()} for d, s in por_dia.items()}

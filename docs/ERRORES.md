@@ -1,4 +1,4 @@
-# Códigos de error de arranque (SC-01 … SC-17) y del juego (SC-90 … SC-93)
+# Códigos de error de arranque (SC-01 … SC-18) y del juego (SC-90 … SC-93)
 
 > Estado verificado: 2026-08-06. Definidos en [landing.js](../app/assets/js/scripts/landing.js),
 > constante `SC_ERR`.
@@ -28,6 +28,7 @@ una explicación en cristiano y un botón que copia un informe completo al porta
 | **SC-15** | `MOD_ILEGIBLE` | El juego no pudo abrir un archivo del pack | Que **reintente**. Ver abajo |
 | **SC-16** | `DISCO` | No cabe en el disco lo que falta por descargar (más 512 MB de margen) | Liberar espacio; el mensaje dice cuánto queda y la carpeta |
 | **SC-17** | `NATIVAS` | Falta `lwjgl.dll` (u otra nativa) al arrancar: Sodium muere en preLaunch con `UnsatisfiedLinkError: Failed to locate library` | Reintentar; si se repite, excluir la carpeta del launcher y `%TEMP%` del antivirus y cerrar limpiadores |
+| **SC-18** | `MODS_PROPIOS` | Algo no casa (`NoSuchMethodError`, clase que falta, mixin, mod repetido) y el jugador tiene mods añadidos por su cuenta en `mods/` (Ajustes → Mods). Sale al arrancar y a media partida | El diálogo le lista sus mods: que los desactive y los active de uno en uno |
 
 ## El informe de diagnóstico
 
@@ -379,6 +380,7 @@ mismo código cuenta una vez por minuto. Se apaga en Ajustes → Launcher (`envi
   | `l` | DLL donde murió Java (`nvoglv64.dll` = driver NVIDIA) | `Problematic frame` de `hs_err_pid*.log` (`scHsErrDe()`) |
   | `x` | En arranque, el error del sistema (`ECONNRESET`, `EPERM`…) o la excepción Java | `scPistaError()` |
   | `e` / `h` | Código de salida / estado HTTP | `scPistaError()` |
+  | `z` | Cuántos mods propios activos tiene en `mods/` (solo el número, máx. 99) | `scModsPropios()` |
 
   `sc-stats.py` los guarda como `inf_p_<código>_<campo>_<valor>` (tope de 50 valores por código, campo y día) y publica
   `informes.pistas_hoy` / `pistas_ayer` (`{código: {campo: {valor: jugadores}}}`) e `informes.serie` (30 días de jugadores
@@ -426,4 +428,4 @@ anónimo, con códigos que **no se enseñan al jugador**:
   launcher, la 1.16.12 o anteriores) el mod no envía nada. Además, `config/sc_avisos_cliente.properties` →
   `enviar=false` lo apaga en ese PC. Lo que detecta siempre queda en `latest.log` con `[SC Avisos]`.
 - **Recuento y alerta:** `sc-stats.py` los cuenta como los demás y además publica `informes.recursos_hoy`
-  (`{código: {x|m|t: {valor: jugadores}}}`); `mc-monitor` manda el privado con los tres valores más repetidos.
+  (`{código: {x|m|t|o: {valor: jugadores}}}`); `mc-monitor` manda el privado con los tres valores más repetidos.

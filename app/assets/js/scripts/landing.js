@@ -534,7 +534,8 @@ const SC_ERR = {
     JAVA_BLOQUEADO: 'SC-14', // Java se instaló pero el sistema no le deja ejecutarse
     MOD_ILEGIBLE:   'SC-15', // el juego no ha podido abrir un archivo del pack
     DISCO:          'SC-16', // no queda espacio libre suficiente en el disco de datos
-    NATIVAS:        'SC-17'  // falta lwjgl.dll (u otra nativa) al arrancar: antivirus o carpeta temporal
+    NATIVAS:        'SC-17', // falta lwjgl.dll (u otra nativa) al arrancar: antivirus o carpeta temporal
+    MODS_PROPIOS:   'SC-18'  // el juego falla por código que no casa y el jugador tiene mods añadidos por su cuenta
 }
 
 // Cuántas veces se ha intentado ya arreglar cada fichero en ESTA sesión.
@@ -1093,13 +1094,13 @@ function scMostrarOfertaPerfil(servSig){
     return true
 }
 
-function scAnalizarCierreDelJuego(code, salida){
+function scAnalizarCierreDelJuego(code, salida, desde = Date.now() - 300000){
     // El informe de fallo de Minecraft suele contener la causa real cuando el
     // problema es de gráficos, porque ahí no llega nada por la salida de error.
     const crash = scUltimoCrashReport()
     // Un cierre nativo no deja crash report, pero la JVM sí escribe el marco donde murió:
     // con él los patrones de gráficos de abajo reconocen nvoglv64.dll, atio6axx.dll...
-    const hsErr = scHsErrDe(ConfigManager.getSelectedServer(), Date.now() - 300000)
+    const hsErr = scHsErrDe(ConfigManager.getSelectedServer(), desde)
     const txt = (salida || '') + (crash ? '\n\n--- INFORME DE FALLO DE MINECRAFT ---\n' + crash : '')
         + (hsErr.linea ? '\n\n--- FALLO FATAL DE JAVA ---\nProblematic frame: ' + hsErr.linea : '')
 
@@ -1240,6 +1241,13 @@ function scAnalizarCierreDelJuego(code, salida){
             return
         }
         scFalloArranque(SC_ERR.MEMORIA, Lang.queryJS('landing.launch.errMemoria'), new Error(txt.slice(-3000)))
+        return
+    }
+
+    // Algo no casa (método, clase o mixin) y el jugador tiene mods propios: lo más probable es uno de ellos.
+    const propios = scModsPropios(ConfigManager.getSelectedServer())
+    if(propios.length > 0 && SC_RE_NO_CASA.test(txt)){
+        scDialogoModsPropios(propios, new Error(`Código de salida ${code}\n\n${txt.slice(-3000)}`))
         return
     }
 
@@ -1853,6 +1861,21 @@ const SC_CRASH_PARTIDA = 'SC-90'
 const SC_PAQUETES_COMUNES = /^(java|javax|jdk|sun|com\.sun|kotlin|kotlinx|scala|net\.minecraft|com\.mojang|net\.fabricmc|org\.spongepowered|org\.lwjgl|io\.netty|com\.google|org\.apache|it\.unimi|cpw|knot|sodium\.common\.util)\b/
 
 /**
+ * ¿Es un nombre binario de Java (com/cobblemon/X$Y.metodo) y nada más? Un ClassNotFoundException
+ * puede traer una ruta (//192.168.1.25/Users/Alice/x.jar, revisión de Codex del 20-10): con
+ * solo sustituir / por . se habría mandado la IP y el usuario de Windows. Cada trozo tiene que
+ * ser un identificador Java (no empieza por número), el primero en minúsculas (un paquete),
+ * y fuera nombres de carpetas personales y extensiones de fichero.
+ */
+function scEsNombreJava(s){
+    const trozos = String(s).split(/[/.]/)
+    return s.length <= 300 && trozos.length >= 2
+        && /^[a-z]/.test(trozos[0])
+        && trozos.every(t => /^[A-Za-z_][A-Za-z0-9_$]*$/.test(t))
+        && !trozos.some(t => /^(users|home|documents|documentos|desktop|escritorio|appdata|onedrive|jar|zip|class|exe|dll)$/i.test(t))
+}
+
+/**
  * Pista anónima de un crash report de Minecraft (1.16.12, Felix 18-10): el tipo de
  * excepción y el paquete del primer marco de la traza que no es de Java, Minecraft o
  * Fabric (normalmente, el mod culpable: com.cobblemon en el crash de Wartortle del
@@ -1890,15 +1913,14 @@ function scPistaCrash(texto){
     // NoSuchMethodError en com.cobblemon (2 jugadores LITE, 19-20/10) no se podía
     // arreglar: hacía falta saber QUÉ método. Su mensaje es un nombre de clase o de
     // método, nunca una ruta; aun así solo pasa si es un identificador limpio.
-    const falta = /(?:NoSuchMethodError|NoSuchFieldError|AbstractMethodError|NoClassDefFoundError|ClassNotFoundException|IncompatibleClassChangeError):\s*'?(?:[\w$[\]<>]+ )?([\w$/.]+)/.exec(lineas.join('\n'))
-    if(falta){
+    const falta = /(?:NoSuchMethodError|NoSuchFieldError|AbstractMethodError|NoClassDefFoundError|ClassNotFoundException|IncompatibleClassChangeError):\s*'?(?:[\w$.[\]<>]+ )?([\w$/.]+)/.exec(lineas.join('\n'))
+    if(falta && scEsNombreJava(falta[1])){
         let id = falta[1].replace(/[/$]/g, '.').replace(/\.+/g, '.').replace(/^\.|\.$/g, '')
         // Por el final, que es donde está la clase y el método; sin dejar un nombre partido.
         if(id.length > 60){
             id = id.slice(-60).replace(/^[^.]*\./, '')
         }
-        // Un nombre de clase siempre lleva paquete (un punto): lo demás no es lo que buscamos.
-        if(/^[A-Za-z0-9_-]+(\.[A-Za-z0-9_-]+)+$/.test(id) && !/^(Users|home)\./i.test(id)){
+        if(/^[A-Za-z0-9_-]+(\.[A-Za-z0-9_-]+)+$/.test(id)){
             pista.d = id
         }
     }
@@ -2018,6 +2040,41 @@ function scHsErrDe(perfil, desde){
     }
 }
 
+/**
+ * Mods que el jugador ha añadido por su cuenta a la carpeta mods/ del perfil (Ajustes → Mods)
+ * y siguen activos. Fabric los carga además de los del modpack.
+ *
+ * Por qué (1.16.18): los NoSuchMethodError «dentro de Cobblemon» de LITE (19-20/10) no salían
+ * de ningún mod del modpack (comprobado método a método contra Cobblemon 1.8.2 y Kotlin), y la
+ * propia instancia de pruebas tenía un Extended Battle UI duplicado y un Flashback en mods/.
+ * Un mod añadido de otra versión es la causa típica.
+ *
+ * @returns {string[]} Nombres de fichero; vacío si no hay o no se pueden leer.
+ */
+function scModsPropios(perfil){
+    try {
+        const dir = require('path').join(ConfigManager.getInstanceDirectory(), String(perfil || ''), 'mods')
+        if(!perfil || !require('fs').existsSync(dir)){
+            return []
+        }
+        return DropinModUtil.scanForDropinMods(dir, '1.21.1').filter(m => !m.disabled).map(m => m.fullName)
+    } catch(e){
+        return []
+    }
+}
+
+/** Errores de "esto no existe / no casa": los que provoca un mod de otra versión. */
+const SC_RE_NO_CASA = /NoSuchMethodError|NoSuchFieldError|AbstractMethodError|NoClassDefFoundError|ClassNotFoundException|IncompatibleClassChangeError|InvalidInjectionException|MixinApplyError|MixinTransformerError|Mod resolution failed|Incompatible mods? (set|found)|[Dd]uplicate mods?/
+
+/**
+ * El juego ha fallado por algo que no casa y hay mods propios: se le dicen cuáles (solo en su
+ * pantalla; al aviso anónimo va únicamente cuántos) y dónde quitarlos.
+ */
+function scDialogoModsPropios(mods, err, opciones = {}){
+    const lista = mods.slice(0, 8).map(m => '• ' + sc$escapeHtml(m)).join('<br>') + (mods.length > 8 ? '<br>…' : '')
+    scFalloArranque(SC_ERR.MODS_PROPIOS, Lang.queryJS('landing.launch.errModsPropios').replace('{lista}', lista), err, false, opciones)
+}
+
 /** Marca del driver a partir del nombre de la DLL o del texto, para el enlace concreto. */
 function scMarcaGraficos(txt){
     if(/nvidia|geforce|nvogl|nvd3d|nvwgf|nvapi|quadro/i.test(txt)){
@@ -2051,7 +2108,8 @@ function scAvisoCrashPartida(code, perfilJugado, inicio){
         // Del perfil que se jugó (el jugador puede haber cambiado el seleccionado con
         // el juego abierto) y solo un informe escrito durante ESTA partida, no uno de
         // una anterior (revisión de Codex).
-        const pista = scPistaCrash(scCrashReportDe(perfilJugado, inicio))
+        const crash = scCrashReportDe(perfilJugado, inicio)
+        const pista = scPistaCrash(crash)
         pista.e = String(code).replace(/[^0-9-]/g, '').slice(0, 11) || 'x'
         pista.p = /superlite/i.test(perfilJugado) ? 'superlite' : (/lite/i.test(perfilJugado) ? 'lite' : 'pro')
         // Cierre nativo: la biblioteca donde murió es la pista (nvoglv64.dll = driver NVIDIA).
@@ -2059,11 +2117,14 @@ function scAvisoCrashPartida(code, perfilJugado, inicio){
         if(hsErr.dll){
             pista.l = hsErr.dll.slice(0, 60)
         }
+        // Cuántos mods propios activos (solo el número): separa nuestros fallos de los suyos.
+        const propios = scModsPropios(perfilJugado)
+        pista.z = String(Math.min(propios.length, 99))
         scEnviarAvisoError(SC_CRASH_PARTIDA, null, pista)
-        return hsErr
+        return { hsErr, crash, propios }
     } catch(e){
         loggerLanding.debug('Aviso de crash no enviado', e)
-        return { dll: null, linea: '' }
+        return { hsErr: { dll: null, linea: '' }, crash: '', propios: [] }
     }
 }
 
@@ -2136,7 +2197,10 @@ function scFalloArranque(codigo, explicacion, err, reintentable = false, opcione
     const informe = scInformeDiagnostico(codigo, err)
     const ruta = scGuardarInforme(codigo, informe)
     if(!opciones.sinAviso){
-        scEnviarAvisoError(codigo, err, scPistaError(err))
+        const pista = scPistaError(err)
+        // Solo el número de mods propios activos, nunca sus nombres.
+        pista.z = String(Math.min(scModsPropios(ConfigManager.getSelectedServer()).length, 99))
+        scEnviarAvisoError(codigo, err, pista)
     }
     // En launcher.log solo el resumen y dónde está el informe. Antes se escribía el
     // error entero, y en los fallos del juego ese error lleva dentro 3.000-4.000
@@ -3526,18 +3590,22 @@ async function scDlAsyncInterno(login = true) {
                 // hay que explicarlo: antes simplemente volvía el botón JUGAR
                 // y el jugador se quedaba sin saber qué había pasado.
                 if(code !== 0 && !scJuegoArranco){
-                    scAnalizarCierreDelJuego(code, scSalidaError.join('\n'))
+                    // Solo ficheros de fallo de ESTE intento (revisión de Codex: un hs_err de hace
+                    // 4 minutos convertía un OutOfMemoryError de ahora en SC-12).
+                    scAnalizarCierreDelJuego(code, scSalidaError.join('\n'), scInicioPartida)
                 } else {
                     // Se cerró con error a media partida: aviso anónimo (SC-90) con la pista del crash report.
-                    let hsErr = null
-                    if(code !== 0){
-                        hsErr = scAvisoCrashPartida(code, scPerfilJugado, scInicioPartida)
-                    }
+                    const cierre = code !== 0 ? scAvisoCrashPartida(code, scPerfilJugado, scInicioPartida) : null
                     // Partida jugada: si acabó sin memoria (o sin pack por falta de memoria), ofrecer un perfil más ligero.
                     const ofrecido = scOfrecerPerfilMasLigero(false, scPerfilJugado, scInicioPartida)
-                    // Cierre de golpe (driver o superposición): explicarlo en vez de callar.
-                    if(!ofrecido && SC_CODIGOS_NATIVOS.has(code)){
-                        scDialogoCierreNativo(code, hsErr && hsErr.dll)
+                    if(!ofrecido && cierre != null){
+                        if(SC_CODIGOS_NATIVOS.has(code)){
+                            // Cierre de golpe (driver o superposición): explicarlo en vez de callar.
+                            scDialogoCierreNativo(code, cierre.hsErr.dll)
+                        } else if(cierre.propios.length > 0 && SC_RE_NO_CASA.test(cierre.crash)){
+                            // Algo no casa y tiene mods propios: decirle cuáles. Ya contó como SC-90.
+                            scDialogoModsPropios(cierre.propios, new Error(cierre.crash.slice(0, 3000)), { sinAviso: true })
+                        }
                     }
                 }
             })

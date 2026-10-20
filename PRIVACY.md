@@ -53,8 +53,9 @@ el launcher envía un aviso con:
   (por ejemplo, `battle.BattleGUI.renderTypeIcon`), el **identificador del mod** que la modifica (por ejemplo,
   `cobblemonextendedbattleui`), el **nombre del archivo del sistema** donde se cerró el juego (por ejemplo,
   `nvoglv64.dll`, el controlador de la tarjeta gráfica), el **código de salida** del juego, el **código del error del
-  sistema** (por ejemplo, `ECONNRESET`) y el **código HTTP** de una descarga fallida (por ejemplo, `403`). Son
-  nombres de programa, nunca rutas ni nada de tu equipo.
+  sistema** (por ejemplo, `ECONNRESET`), el **código HTTP** de una descarga fallida (por ejemplo, `403`) y
+  **cuántos mods has añadido por tu cuenta** (solo el número, no cuáles). Son nombres de programa, nunca rutas
+  ni nada de tu equipo.
 
 Desde la versión 1.16.13, el juego también puede enviar un aviso igual de anónimo cuando, dentro de la partida,
 algo del paquete de recursos no carga: si el **paquete del servidor (SC-Pack) no está activo**, si **faltan texturas**
@@ -93,8 +94,12 @@ estándar: dirección IP, fecha, archivo solicitado y navegador o programa que l
 únicamente para dos cosas: detectar fallos de descarga y contar cuántas instalaciones activas hay
 (una cifra agregada, sin identificar a nadie).
 
+Los **avisos anónimos de error** también quedan en este registro como cualquier otra petición (con la
+dirección IP y los datos del aviso descritos arriba) hasta que se borra; los recuentos que guardamos a partir
+de ellos solo llevan cifras, nunca la IP.
+
 Estos registros **no se cruzan con cuentas de juego, no se venden ni se ceden a terceros**, y se
-rotan y eliminan automáticamente siguiendo la configuración estándar del sistema.
+rotan y eliminan automáticamente siguiendo la configuración estándar del sistema (unos 14 días).
 
 ## Menores de edad
 
