@@ -85,7 +85,11 @@
     "2026-10-21-modpack-1.1.10",
     "2026-10-21-movil-2.3.8",
     "rework-1-energia",
-    "rework-2-raids"
+    "rework-2-raids",
+    "rework-3-minijuegos",
+    "rework-4-pokebuilder",
+    "rework-5-precios",
+    "rework-6-pase-cacerias-bingo"
   ],
   "mensajes": [
     {
@@ -239,6 +243,16 @@
         "2026-10-21-movil-2.3.8",
         "rework-1-energia",
         "rework-2-raids"
+      ]
+    },
+    {
+      "fecha": "2026-10-21",
+      "mensaje": "1562389598548787265",
+      "entradas": [
+        "rework-3-minijuegos",
+        "rework-4-pokebuilder",
+        "rework-5-precios",
+        "rework-6-pase-cacerias-bingo"
       ]
     }
   ]
