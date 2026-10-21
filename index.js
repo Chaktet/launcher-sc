@@ -73,7 +73,13 @@ function initAutoUpdater(event, data) {
         scEnviarUpdate('checking-for-update')
     })
     autoUpdater.on('error', (err) => {
-        scEnviarUpdate('realerror', err)
+        // Un Error no siempre cruza el IPC entero (se perdía el mensaje) y el proceso
+        // principal no lo apuntaba en ningún sitio: la 1.16.16-1.16.18 rechazaban cada
+        // actualización por la firma y launcher.log no decía nada (21-10-2026). Se manda
+        // como objeto plano y se escribe aquí también.
+        const plano = { message: String(err && err.message || err), code: err && err.code || null, stack: err && err.stack || null }
+        console.error('[autoUpdater] ' + (plano.code || '') + ' ' + plano.message)
+        scEnviarUpdate('realerror', plano)
     })
 }
 
@@ -88,7 +94,9 @@ ipcMain.on('autoUpdateAction', (event, arg, data) => {
         case 'checkForUpdate':
             autoUpdater.checkForUpdates()
                 .catch(err => {
-                    event.sender.send('autoUpdateNotification', 'realerror', err)
+                    console.error('[autoUpdater] ' + (err && err.code || '') + ' ' + String(err && err.message || err))
+                    event.sender.send('autoUpdateNotification', 'realerror',
+                        { message: String(err && err.message || err), code: err && err.code || null })
                 })
             break
         case 'allowPrereleaseChange':

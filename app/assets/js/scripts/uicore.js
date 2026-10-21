@@ -119,15 +119,14 @@ if(!isDev){
                 scBuscarActualizacion()
                 break
             case 'realerror':
-                if(info != null && info.code != null){
-                    if(info.code === 'ERR_UPDATER_INVALID_RELEASE_FEED'){
-                        loggerAutoUpdater.info('No suitable releases found.')
-                    } else if(info.code === 'ERR_XML_MISSED_ELEMENT'){
-                        loggerAutoUpdater.info('No releases found.')
-                    } else {
-                        loggerAutoUpdater.error('Error during update check..', info)
-                        loggerAutoUpdater.debug('Error Code:', info.code)
-                    }
+                if(info != null && info.code === 'ERR_UPDATER_INVALID_RELEASE_FEED'){
+                    loggerAutoUpdater.info('No suitable releases found.')
+                } else if(info != null && info.code === 'ERR_XML_MISSED_ELEMENT'){
+                    loggerAutoUpdater.info('No releases found.')
+                } else {
+                    // Siempre al registro, con código y mensaje en texto: antes un error sin
+                    // código (o con el Error mal serializado) no dejaba ni una línea.
+                    loggerAutoUpdater.error(`Fallo de actualización [${(info && info.code) || 'sin código'}]: ${String((info && info.message) || info).slice(0, 1500)}`)
                 }
                 // Sin esto, si la descarga fallaba el botón se quedaba bloqueado
                 // en "Descargando X%" para siempre.

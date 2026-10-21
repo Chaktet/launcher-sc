@@ -17,3 +17,10 @@ win:
     # Solo SHA-256: SHA-1 está obsoleto y duplicaría las peticiones (y los PIN) a SimplySign.
     signingHashAlgorithms:
       - 'sha256'
+    # El nombre que cada launcher instalado exige en la firma de la siguiente versión (va a
+    # app-update.yml). FIJO y escrito aquí: si electron-builder lo saca solo del certificado,
+    # la «é» llegaba rota (F�lix) y electron-updater, que compara el CN EXACTO, rechazaba
+    # TODAS las actualizaciones de la 1.16.16 a la 1.16.18 (ERR_UPDATER_INVALID_SIGNATURE,
+    # 21-10-2026). tools/comprueba-publisher.js lo verifica tras cada compilación firmada.
+    publisherName:
+      - 'Open Source Developer Félix Pareja Valdivia'
