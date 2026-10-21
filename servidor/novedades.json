@@ -9,7 +9,7 @@
       "puntos": [
         "Ya puedes escribir con /msg (y responder con /r) a cualquiera del servidor, esté en Kanto o en Kalos",
         "Con /tpa puedes pedir ir al lado de alguien de la otra región: si acepta, viajas con tu equipo y apareces a su lado",
-        "¿No quieres mensajes o peticiones? Usa /msgtoggle o /tptoggle"
+        "¿No quieres mensajes privados? Desactívalos con /msgtoggle"
       ]
     },
     {
