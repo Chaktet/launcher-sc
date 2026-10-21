@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-21-servidor-Mensajes-y-tpa-a-jugadores-de-otra-region",
+      "fecha": "2026-10-21",
+      "tipo": "servidor",
+      "titulo": "Mensajes y /tpa a jugadores de otra región",
+      "puntos": [
+        "Ya puedes escribir con /msg (y responder con /r) a cualquiera del servidor, esté en Kanto o en Kalos",
+        "Con /tpa puedes pedir ir al lado de alguien de la otra región: si acepta, viajas con tu equipo y apareces a su lado",
+        "¿No quieres mensajes o peticiones? Usa /msgtoggle o /tptoggle"
+      ]
+    },
+    {
       "id": "2026-10-21-servidor-Ya-puedes-criar-con-todos-tus-Pokemon",
       "fecha": "2026-10-21",
       "tipo": "servidor",
