@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-21-modpack-El-launcher-vuelve-a-actualizarse-solo",
+      "fecha": "2026-10-21",
+      "tipo": "modpack",
+      "titulo": "El launcher vuelve a actualizarse solo",
+      "puntos": [
+        "Si tu launcher decía «No se pudo descargar la actualización», entra al juego una vez: al cerrarlo, el launcher se reinicia y se pone al día él solo.",
+        "Verás un aviso dentro del juego cuando vaya a pasar."
+      ]
+    },
+    {
       "id": "2026-10-20-launcher-1.16.19",
       "fecha": "2026-10-20",
       "tipo": "launcher",
