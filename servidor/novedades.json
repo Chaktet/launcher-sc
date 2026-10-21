@@ -2,6 +2,15 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-21-servidor-Las-cacerias-ya-cuentan-tus-capturas",
+      "fecha": "2026-10-21",
+      "tipo": "servidor",
+      "titulo": "Las cacerías ya cuentan tus capturas",
+      "puntos": [
+        "Las cacerías diarias y la cacería de la red no sumaban las capturas desde el lanzamiento. Ya está arreglado: cada captura cuenta al momento."
+      ]
+    },
+    {
       "id": "2026-10-21-servidor-TAB-ya-sugiere-jugadores-de-la-otra-region",
       "fecha": "2026-10-21",
       "tipo": "servidor",
