@@ -89,7 +89,11 @@
     "rework-3-minijuegos",
     "rework-4-pokebuilder",
     "rework-5-precios",
-    "rework-6-pase-cacerias-bingo"
+    "rework-6-pase-cacerias-bingo",
+    "rework-7-torre-mineria-clanes",
+    "rework-8-casino",
+    "rework-9-mas-formas-de-ganar",
+    "rework-10-shop-crianza-lujo"
   ],
   "mensajes": [
     {
@@ -253,6 +257,16 @@
         "rework-4-pokebuilder",
         "rework-5-precios",
         "rework-6-pase-cacerias-bingo"
+      ]
+    },
+    {
+      "fecha": "2026-10-21",
+      "mensaje": "1562389633084686416",
+      "entradas": [
+        "rework-7-torre-mineria-clanes",
+        "rework-8-casino",
+        "rework-9-mas-formas-de-ganar",
+        "rework-10-shop-crianza-lujo"
       ]
     }
   ]
