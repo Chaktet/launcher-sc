@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-20-launcher-1.16.18",
+      "fecha": "2026-10-20",
+      "tipo": "launcher",
+      "version": "1.16.18",
+      "titulo": "Te explicamos por qué se cerró el juego",
+      "puntos": [
+        "Si el juego se cierra de golpe, el launcher te dice la causa más probable (drivers de la gráfica o programas superpuestos) y te da el enlace de tu driver.",
+        "Si un mod que añadiste tú no encaja, te dice cuál y cómo desactivarlo en Ajustes, Mods.",
+        "Sin cuenta elegida, JUGAR te lleva directo a iniciar sesión."
+      ]
+    },
+    {
       "id": "2026-10-20-modpack-Fuera-el-mod-de-efectividad-de-tipos",
       "fecha": "2026-10-20",
       "tipo": "modpack",
