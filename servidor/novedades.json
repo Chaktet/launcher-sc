@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-21-launcher-1.16.20",
+      "fecha": "2026-10-21",
+      "tipo": "launcher",
+      "version": "1.16.20",
+      "titulo": "«Jugar sin actualizar» ya te deja jugar",
+      "puntos": [
+        "Si una actualización falla y eliges jugar sin ella, el aviso ya no vuelve a tapar el botón de JUGAR cada pocos minutos.",
+        "Para volver a intentarlo, pulsa «Actualización pendiente» abajo a la izquierda o cierra y abre el launcher."
+      ]
+    },
+    {
       "id": "2026-10-21-modpack-El-launcher-vuelve-a-actualizarse-solo",
       "fecha": "2026-10-21",
       "tipo": "modpack",
