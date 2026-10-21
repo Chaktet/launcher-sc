@@ -2,6 +2,205 @@
   "version": 1,
   "entradas": [
     {
+      "id": "rework-1-energia",
+      "fecha": "2026-10-21",
+      "tipo": "servidor",
+      "titulo": "Energía para raids, Torre Batalla y expediciones",
+      "puntos": [
+        "Energía diaria: +1 cada 20 minutos jugando, hasta 18. Se gasta primero esta. La ves en el PokéNav › Mi cartera.",
+        "Reserva de hasta 200: la llenan el pase, el calendario, la pesca, tus tareas del día y las compras (1 por 5 SCC, hasta 12 al día).",
+        "Raids: T1 1, T2 2, T3 3, T4 4 y T5 6, al cobrar el premio. Sin energía puedes ayudar igual, pero no cobras.",
+        "Torre Batalla: 2 o 3 según la zona (se devuelve si no llegas al primer combate). Expediciones: 2 al entrar.",
+        "Las llaves de expedición desaparecen: cada una que tenías se cambia por 2 de energía en tu reserva (hasta 200).",
+        "¿Solo quieres ayudar? Pon «Cobrar premios: No» en Raids o «Ayudar sin premio» en expediciones: no gastas energía ni cobras. Hasta 10 veces por semana."
+      ]
+    },
+    {
+      "id": "rework-2-raids",
+      "fecha": "2026-10-21",
+      "tipo": "servidor",
+      "titulo": "Raids: una cada hora y premio para todos",
+      "puntos": [
+        "Una raid cada hora a y media, las 24 horas, en una región. Pulsa [Ir a la raid] desde la otra: vuelves solo al acabar.",
+        "Raids T5 a las 23:30 y a las 03:30. Los miércoles a las 22:00, el legendario de la semana: si cobras, te lo llevas seguro.",
+        "Todo el que cobra gana dinero y tokens: de 3.000 ₽ + 10 tokens en T1 a 12.000 ₽ + 50 tokens en T5.",
+        "Premio especial con contador que lo asegura: shiny del jefe (T1), Peluche grande de Zacian, Máscara de Ogerpon, Espada de Rayquaza y Alas del Esqueleto Eterno (T5).",
+        "Al cobrar puede tocarte un Teralito del tipo del jefe (del 3 % en T1 al 12 % en T5).",
+        "En Raids › Recompensas ves lo que cuesta cada tier y la probabilidad de cada premio."
+      ]
+    },
+    {
+      "id": "rework-3-minijuegos",
+      "fecha": "2026-10-21",
+      "tipo": "servidor",
+      "titulo": "Minijuegos de toda la red y Royale nuevo",
+      "puntos": [
+        "Royale, Escondite y Ditto Party son una sola partida para toda la red: te apuntas desde tu región y viajas y vuelves solo, con tus cosas.",
+        "Apúntate desde el PokéNav en Minijuegos en cualquier momento, o con el botón del chat 10 minutos antes.",
+        "El premio sube con la gente real que juega. Solo por jugar: 5.000 ₽ + 10 tokens y una llave de evento en la primera del día.",
+        "Royale renovado: partidas de 18-22 minutos, Individual, Dúos o Equipos, botín propio de la partida y premios del 1.º al 5.º puesto y por cada KO.",
+        "Liga relámpago de Sumo y ¿Quién es Quién? en cada región, con premio para los 3 primeros."
+      ]
+    },
+    {
+      "id": "rework-4-pokebuilder",
+      "fecha": "2026-10-21",
+      "tipo": "servidor",
+      "titulo": "PokéBuilder, mentas, MTs y Teralitos",
+      "puntos": [
+        "Las mentas se usan ahora en el PokéBuilder, en la pestaña Naturaleza, en lugar de pagar tokens. Ya no se ponen con clic derecho.",
+        "Solo valen las mentas que da el servidor desde hoy: las que tenías de antes ya no sirven. Los Pokémon que ya tienen menta se quedan igual.",
+        "«Menta a elegir» en las tiendas de Torre Batalla, Raids, Cacerías, Pesca, Minería, Día comunitario y Fútbol, y en el nivel 35 del pase (2 con VIP).",
+        "Gemas de tipo para la Máquina de MTs: salen minando, pescando, en raids, cacerías y expediciones (hasta 40 al día).",
+        "Teralitos jugando: en raids, como «Teralito a elegir» en las tiendas de Torre Batalla, Raids, Cacerías y Día comunitario, y en el nivel 65 del pase. Ya no están en /shop."
+      ]
+    },
+    {
+      "id": "rework-5-precios",
+      "fecha": "2026-10-21",
+      "tipo": "servidor",
+      "titulo": "Precios más bajos en la Tienda SCC",
+      "puntos": [
+        "Pase VIP: de 1.340 a 860 SCC. Con Hunts y Community: de 1.740 a 1.110 SCC.",
+        "Legendarios desde 500 SCC (antes 1.000) y shiny desde 700 (antes 1.400). Megapiedras desde 150 (antes 490).",
+        "Ditto 6 IV: de 3.420 a 1.190 SCC. Master Ball x4: de 80 a 40. Llave de evento: de 120 a 40.",
+        "Cosméticos en SCC y por packs: tus EC pasan a 9 SCC cada uno, y un sombrero baja de 900 a 250 SCC y unas alas de 1.800 a 500. El pack completo, un 25 % menos.",
+        "Llaves en packs de 5, 10 y 25 con un 5, 10 y 15 % menos. Una sola Llave Pokémon, y en todas las cajas un premio estrella que acaba saliendo seguro.",
+        "Tienda SCC dentro del PokéNav: recarga SCC, mejora tu rango o haz un regalo desde el juego."
+      ]
+    },
+    {
+      "id": "rework-6-pase-cacerias-bingo",
+      "fecha": "2026-10-21",
+      "tipo": "servidor",
+      "titulo": "Pase, cacerías y bingo, rehechos",
+      "puntos": [
+        "Pase: ahora hay premio en los 150 niveles, también en la fila gratis (antes, solo cada 5 niveles).",
+        "Cada mes, directo y sin cajas al azar: skin del mes a elegir en el nivel 50, muebles, cosméticos y un legendario 5 IV en el 100 (shiny con el VIP).",
+        "Cacerías nuevas: 3 al día con Pokémon de la zona en la que estás, nada de especies imposibles, y 1 cambio gratis al día.",
+        "Racha diaria, Cofre del cazador, la skin del cazador del mes y una cacería semanal de toda la red por tipo.",
+        "Bingo individual y semanal: tu cartón se rellena solo capturando, pescando y minando. Ya no hay que juntar a 4 personas.",
+        "Bingo: cada línea 6.250 ₽ + 50 tokens; cartón completo 12.500 ₽ + 100 tokens y una tirada."
+      ]
+    },
+    {
+      "id": "rework-7-torre-mineria-clanes",
+      "fecha": "2026-10-21",
+      "tipo": "servidor",
+      "titulo": "Torre Batalla, minería, clanes y más",
+      "puntos": [
+        "Torre Batalla: series de 7 pisos con jefe, y los BP se guardan piso a piso: si caes, no pierdes lo ganado. Escalera semanal con premios.",
+        "Minería: lo que vendes en el mercado vale 5 veces más, los picos cuestan 4,5 veces menos y hay 3 contratos al día con bono.",
+        "Clanes: adiós al impuesto semanal. Cada lunes el banco del clan recibe dinero según las horas que jugáis, y ganáis Sellos para la tienda del clan.",
+        "Expediciones con 4 dificultades, premio seguro y sorpresas, hasta 6 al día y sin llaves. En la pesca, botín en cada captura.",
+        "Lotería semanal de toda la red: boleto 10.000 ₽, sorteo el domingo a las 21:00 y el ganador cobra el bote menos un 5 %. Y una Parada dorada cada lunes.",
+        "Metas de 1 a 2.000 horas jugadas (inicial shiny a elegir a las 1.000 h). Placas y títulos en PokéNav › Estilo. /pay: 2 % de lo que pase de 250.000 ₽ al día."
+      ]
+    },
+    {
+      "id": "rework-8-casino",
+      "fecha": "2026-10-21",
+      "tipo": "servidor",
+      "titulo": "Casino renovado",
+      "puntos": [
+        "Adiós a las fichas: juegas con ₽ directamente desde la pantalla de cada juego.",
+        "La ruleta, con un tapete como el de un casino de verdad.",
+        "Fuera las máquinas de Vegas.",
+        "La casa se queda un 5 % del premio entero, también en la ruleta del vestíbulo y en el bote de la lotería semanal.",
+        "Los duelos no cambian.",
+        "Las fichas que tenías se te devuelven a 0,95 ₽ cada una."
+      ]
+    },
+    {
+      "id": "rework-9-mas-formas-de-ganar",
+      "fecha": "2026-10-21",
+      "tipo": "servidor",
+      "titulo": "Más formas de ganar",
+      "puntos": [
+        "Tiendas especiales de Raids, Torre Batalla, Cacerías, Pesca, Minería, Clanes y Día comunitario: lo más buscado, a precios pensados en horas de juego.",
+        "¿Eres nuevo? La guía te enseña a ganar tus primeras monedas (pesca, Torre Batalla, cacerías) y tu calendario de bienvenida no caduca.",
+        "Ranked: 25 tokens en cada una de las 5 primeras victorias del día, una llave de Combate en la primera y un premio exclusivo de cada temporada.",
+        "Día comunitario: metas de 250, 500 y 1.000 capturas entre todos, con la barra siempre a la vista. Cada meta premia a quien capturó 3, 6 o 10.",
+        "Pesca: Red de tesoros (25.000 ₽, botín ×2 durante 1 hora, 3 al día) y mini-jefes del mar con premio para el grupo."
+      ]
+    },
+    {
+      "id": "rework-10-shop-crianza-lujo",
+      "fecha": "2026-10-21",
+      "tipo": "servidor",
+      "titulo": "/shop, crianza, /fly, lujo y fidelidad",
+      "puntos": [
+        "/shop: sección de Curación, vitaminas y piedras evolutivas, y ya puedes vender desde el PokéNav.",
+        "Huecos de crianza 4, 5 y 6: 50.000, 100.000 y 200.000 ₽, o 84, 168 y 336 SCC.",
+        "/fly temporal: 2 horas en el nivel 20 del pase, 1 día en el 60 (2 días más con el VIP) y 1 día al llegar a 10 horas jugadas.",
+        "Lujo: 9 estelas de partículas que se compran con ₽, de 500.000 a 2.000.000.",
+        "Fidelidad: 10 monedas por cada euro con el que apoyas al servidor, para skins y el set Charizard. Nada que dé ventaja. En Mi cartera › Fidelidad."
+      ]
+    },
+    {
+      "id": "rework-11-crianza",
+      "fecha": "2026-10-21",
+      "tipo": "servidor",
+      "titulo": "Crianza: permiso de cría",
+      "puntos": [
+        "Todos los Pokémon están castrados, también los que ya tenías. Para criar basta con que uno de los dos padres pueda criar.",
+        "Permiso de cría: 500 SCC por 30 días, con 100 descastraciones para los Pokémon de tu equipo que elijas. Renovarlo suma 30 días y 100 más.",
+        "Un Pokémon descastrado puede criar para siempre, también si lo vendes o lo cambias. En el GTS verás «Puede criar ✔».",
+        "Las crías nacen siempre castradas. Los Ditto de las tiendas ya vienen listos para criar.",
+        "Está en el PokéNav › Crianza › Permiso de cría, y también en la Tienda SCC."
+      ]
+    },
+    {
+      "id": "rework-12-bienvenida",
+      "fecha": "2026-10-21",
+      "tipo": "servidor",
+      "titulo": "Bienvenida nueva para los que empiezan",
+      "puntos": [
+        "Kit de bienvenida al entrar por primera vez: 80 Poké Balls, 30 Super Balls, 10 Ultra Balls, pociones, revivir, bayas, Repartir Exp y Huevo Suerte.",
+        "También la Pokédex, la Poké Rod con cebo para pescar Pokémon, la Caña de Pescador Aprendiz con 20 cebos, herramientas de hierro, antorchas, pan, cama, mesa de trabajo y horno.",
+        "Una vez por cuenta. Si no te cabe, haz sitio y escribe /guia kit. Lo ves en el PokéNav › Ayuda › Guía › Bienvenida.",
+        "La guía es más clara: el paso que toca en grande, un botón «Llévame» que te lleva a cada sitio y el tour siempre a mano.",
+        "Vende tus objetos al servidor desde el PokéNav › Comercio › Tienda › «Vender objetos»."
+      ]
+    },
+    {
+      "id": "rework-13-gts",
+      "fecha": "2026-10-21",
+      "tipo": "servidor",
+      "titulo": "GTS nuevo: precios de referencia y alertas",
+      "puntos": [
+        "El GTS del PokéNav se ordena en una columna: Comprar, Vender, Mis anuncios, Ventas recientes, Subastas, Alertas y Favoritos.",
+        "Busca por especie y filtra por shiny, IV, naturaleza, si puede criar y precio. Pulsa un Pokémon para ver todas sus variantes en venta.",
+        "Al vender ves el precio medio de la última semana de un Pokémon igual que el tuyo, con el mínimo, el máximo y la última venta. Si tu precio se aleja mucho, te avisamos.",
+        "Compara 10 anuncios parecidos, mira las ventas recientes de toda la red y el historial de precios de cada variante.",
+        "Alertas de precio: te avisamos cuando haya lo que buscas por debajo de tu precio. Guarda anuncios con la estrella en Favoritos.",
+        "Publicar cuesta un 3 % del precio (mínimo 100 ₽) y al venderse recibes el precio entero. Si retiras el anuncio, no se devuelve."
+      ]
+    },
+    {
+      "id": "2026-10-21-modpack-PokeNav-del-lanzamiento-y-el-juego-arranca-antes",
+      "fecha": "2026-10-21",
+      "tipo": "modpack",
+      "titulo": "PokéNav del lanzamiento y el juego arranca antes",
+      "puntos": [
+        "Las pantallas nuevas del PokéNav se descargan solas: cierra el launcher del todo y vuelve a abrirlo.",
+        "El juego arranca bastante más rápido que antes."
+      ]
+    },
+    {
+      "id": "2026-10-21-pack-SC-3.2.82",
+      "fecha": "2026-10-21",
+      "tipo": "pack",
+      "version": "SC-3.2.82",
+      "titulo": "Estandartes de clan, placas y la skin del cazador del mes",
+      "puntos": [
+        "Estandartes de clan con el color de tu clan, y el dorado del clan campeón.",
+        "Las placas y los títulos de PokéNav › Estilo se ven junto a tu nombre, también los 20 títulos nuevos de la tienda.",
+        "Las monedas SCC, la energía, las tiradas de ruleta y las monedas de fidelidad tienen su propio dibujo.",
+        "Skin exclusiva de Chien-Pao «Ronin de las nieves», el premio del cazador del mes, con animaciones propias."
+      ]
+    },
+    {
       "id": "2026-10-21-launcher-1.16.20",
       "fecha": "2026-10-21",
       "tipo": "launcher",
