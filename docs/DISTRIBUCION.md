@@ -230,6 +230,9 @@ Desde entonces todas las releases tienen que salir firmadas (y una renovación d
 > pasaron por esas versiones tienen que instalar la 1.16.19 a mano UNA vez («Descargar el launcher desde la web»
 > abre la release, cuyas notas lo explican; novedad `2026-10-20-launcher-1.16.19`). No hay forma de arreglarlo desde
 > fuera: la comprobación la hace el launcher viejo con su propio `app-update.yml`.
+> **Arreglo automático (21/10, aprobado por Felix):** el mod `sc-avisos-cliente` 1.2.0 (`ArreglaActualizador`), al abrir
+> el juego, corrige SOLO ese nombre en `%LOCALAPPDATA%\Programs\SC Launcher\resources\app-update.yml`; la próxima vez
+> que el jugador abre el launcher, se actualiza solo (probado en el PC de Felix). Cuenta en `SC-94 x=arreglado`.
 > Desde la 1.16.19 el error del actualizador queda en `launcher.log` («Fallo de actualización [código]: …»).
 
 ### `latest.yml` y la auto-actualización

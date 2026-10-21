@@ -415,6 +415,8 @@ anónimo, con códigos que **no se enseñan al jugador**:
   de objetos de plugins) y los `Unable to load model: 'zcrystals:item/tera_orb' referenced from …` de modelos de
   objetos. Si se arregla o aparece ruido nuevo de ese tipo, se cambia `Detector.BASE` / `NS_IGNORADOS`.
 - **Si el jugador apagó el SC-Pack a propósito** (Ajustes → Paquetes, `.sc-packs-apagados.json`) no hay SC-91.
+- **SC-94 (mod 1.2.0):** `x=arreglado` cuando el mod corrige el `app-update.yml` roto de un launcher 1.16.16–1.16.18 (ver
+  `DISTRIBUCION.md`, incidente del 21/10). Debe subir unos días y luego quedarse a cero.
 - **Origen del recurso (`o`, mod 1.1.0).** SC-92 y SC-93 (`geo` y `modelo`) dicen qué clase de pack sirve el fichero:
   `sc` (nuestro `SC-Pack.zip`), `sc-viejo` (otro zip `SC-…` en la carpeta del jugador: una copia vieja nuestra),
   `otro` (un pack que añadió el jugador), `mod`, `juego` o `nada` (nadie lo trae). Nunca el nombre del pack. Motivo: los
