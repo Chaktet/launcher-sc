@@ -416,7 +416,9 @@ anónimo, con códigos que **no se enseñan al jugador**:
   objetos. Si se arregla o aparece ruido nuevo de ese tipo, se cambia `Detector.BASE` / `NS_IGNORADOS`.
 - **Si el jugador apagó el SC-Pack a propósito** (Ajustes → Paquetes, `.sc-packs-apagados.json`) no hay SC-91.
 - **SC-94 (mod 1.2.0):** `x=arreglado` cuando el mod corrige el `app-update.yml` roto de un launcher 1.16.16–1.16.18 (ver
-  `DISTRIBUCION.md`, incidente del 21/10). Debe subir unos días y luego quedarse a cero.
+  `DISTRIBUCION.md`, incidente del 21/10). Debe subir unos días y luego quedarse a cero. Solo se manda con los avisos
+  anónimos activos (`-Dsc.avisos=1`): hasta el 21/10 06:00 no había llegado ninguno. Desde el mod **1.2.1**, si el
+  launcher que lanzó el juego aún tiene el nombre roto en memoria, se reinicia solo al cerrar el juego (mismo apartado).
 - **Origen del recurso (`o`, mod 1.1.0).** SC-92 y SC-93 (`geo` y `modelo`) dicen qué clase de pack sirve el fichero:
   `sc` (nuestro `SC-Pack.zip`), `sc-viejo` (otro zip `SC-…` en la carpeta del jugador: una copia vieja nuestra),
   `otro` (un pack que añadió el jugador), `mod`, `juego` o `nada` (nadie lo trae). Nunca el nombre del pack. Motivo: los

@@ -234,6 +234,23 @@ Desde entonces todas las releases tienen que salir firmadas (y una renovación d
 > el juego, corrige SOLO ese nombre en `%LOCALAPPDATA%\Programs\SC Launcher\resources\app-update.yml`; la próxima vez
 > que el jugador abre el launcher, se actualiza solo (probado en el PC de Felix). Cuenta en `SC-94 x=arreglado`.
 > Desde la 1.16.19 el error del actualizador queda en `launcher.log` («Fallo de actualización [código]: …»).
+> **Por qué el 1.2.0 no bastaba (21/10, reproducido en `E:/tmp/launcher-urgente` con el 1.16.18 publicado):**
+> electron-updater lee `app-update.yml` UNA vez al arrancar (`configOnDisk`, perezoso) y lo guarda en memoria. Mientras
+> se juega, el launcher espera escondido en la bandeja; al cerrar el juego vuelve EL MISMO proceso, que sigue rechazando
+> la 1.16.19, y la puerta sale otra vez cada 5 min o al volver a la ventana (`update-available` pone
+> `scPuertaSinActualizar=false`), bloqueando JUGAR aunque le dieran a «Jugar sin actualizar». Abrir el launcher otra
+> vez solo trae al frente ese proceso. Medido: mismo proceso tras el arreglo → error de firma; reiniciado → «Signature
+> validated» y la 1.16.19 lista en 6 s. **Mod 1.2.1** (`ReiniciaLanzador` + `AyudanteReinicio`): si el launcher que
+> lanzó el juego arrancó ANTES de la última escritura del `app-update.yml`, una JVM pequeña (`javaw` del propio juego,
+> solo el jar del mod) espera a que se cierre el juego, cierra ese launcher y lo vuelve a abrir con los mismos
+> argumentos; un aviso en el juego lo explica. Un launcher arrancado después del arreglo nunca se toca. Probado
+> separado y sin separar (`launchDetached`), y que una segunda partida ya no reinicia nada. Un primer borrador con
+> PowerShell oculto por WMI se descartó: Defender tiene una regla que bloquea procesos creados por WMI (Codex).
+> **Ojo al probar actualizaciones:** un launcher aislado con `--user-data-dir` instala igual en la carpeta del
+> registro (la de verdad); bloquea `scPuertaInstalar`/`scInstalarAhora` por CDP antes de que llegue a «lista» y mata
+> cualquier `*setup*` que salga de la carpeta de prueba (el 21/10 se reinstaló así la 1.16.19 del PC de Felix).
+> Además, una descarga ya validada en `sclauncher-updater/pending` se acepta sin volver a comprobar la firma: bórrala
+> entre pruebas.
 
 ### `latest.yml` y la auto-actualización
 
