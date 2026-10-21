@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-21-servidor-Las-crias-vuelven-a-poder-criar",
+      "fecha": "2026-10-21",
+      "tipo": "servidor",
+      "titulo": "Las crías vuelven a poder criar",
+      "puntos": [
+        "Las crías vuelven a poder criar, sin pagar nada.",
+        "Ahora puedes criar hasta 10 huevos al día (se reinicia a las 00:00)."
+      ]
+    },
+    {
       "id": "2026-10-21-servidor-Las-cacerias-ya-cuentan-tus-capturas",
       "fecha": "2026-10-21",
       "tipo": "servidor",
