@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-21-servidor-Ya-puedes-criar-con-todos-tus-Pokemon",
+      "fecha": "2026-10-21",
+      "tipo": "servidor",
+      "titulo": "Ya puedes criar con todos tus Pokémon",
+      "puntos": [
+        "Todos tus Pokémon pueden criar de nuevo, sin necesidad de descastrarlos.",
+        "Sin permiso de cría, las crías nacen castradas y no podrán criar. Con el permiso nacen listas para criar."
+      ]
+    },
+    {
       "id": "2026-10-21-modpack-1.1.10",
       "fecha": "2026-10-21",
       "tipo": "modpack",
