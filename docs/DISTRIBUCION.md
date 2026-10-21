@@ -251,6 +251,13 @@ Desde entonces todas las releases tienen que salir firmadas (y una renovación d
 > cualquier `*setup*` que salga de la carpeta de prueba (el 21/10 se reinstaló así la 1.16.19 del PC de Felix).
 > Además, una descarga ya validada en `sclauncher-updater/pending` se acepta sin volver a comprobar la firma: bórrala
 > entre pruebas.
+> **1.16.20 (21/10):** «Jugar sin actualizar» dura hasta cerrar el launcher. `autoDownload` va a `false` y la descarga la
+> arranca `index.js` en `update-available`, salvo para la versión saltada (`skipVersion` por IPC; llega
+> `update-skipped` y la insignia dice «Actualización pendiente · pulsa para reintentar»). Reintentar, el botón de
+> Ajustes y la insignia la borran. Probado con un feed `generic` local (`E:/tmp/launcher-urgente/tools/feed.js`) y un
+> `app-update.yml` de prueba: saltar → 3 comprobaciones sin bajar nada; insignia → vuelve a bajar; versión más nueva →
+> puerta; firma buena → «lista». Codex: arreglados un error síncrono de `downloadUpdate` y la descarga que termina
+> tras saltarla (ya no tapa JUGAR; se instala al cerrar).
 
 ### `latest.yml` y la auto-actualización
 
