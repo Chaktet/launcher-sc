@@ -140,6 +140,11 @@ function scPuertaNodo(){
     })
     n.querySelector('#scPuertaSaltar').addEventListener('click', () => {
         scPuertaSinActualizar = true
+        // 1.16.20: hasta cerrar el launcher no se vuelve a bajar esta versión ni sale la puerta por ella. Antes la
+        // comprobación de cada 5 minutos la tapaba otra vez y "Jugar sin actualizar" no servía (21-10-2026).
+        if(scPuertaVersion){
+            ipcRenderer.send('autoUpdateAction', 'skipVersion', scPuertaVersion)
+        }
         scPuertaPinta('oculta')
     })
     n.querySelector('#scPuertaBoton').addEventListener('click', scPuertaPulsaBoton)
@@ -169,6 +174,7 @@ function scPuertaPulsaBoton(){
         scPuertaInstalar()
     } else if(scPuertaEstado === 'error'){
         scPuertaPinta('disponible', { reintento: true })
+        ipcRenderer.send('autoUpdateAction', 'skipVersion', '')
         ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
     }
 }
@@ -379,9 +385,20 @@ function scPuerta(evento, info){
                 if(scPuertaEstado === 'lista' && info != null && String(info.version) === scPuertaVersion){
                     break
                 }
+                // Saltada con "Jugar sin actualizar" mientras seguía bajando (revisión de Codex, 1.16.20): no se tapa
+                // JUGAR otra vez; avisa la insignia de abajo y se instala al cerrar el launcher.
+                if(scPuertaSinActualizar && info != null && String(info.version) === scPuertaVersion){
+                    break
+                }
                 scPuertaVersion = info != null && info.version ? String(info.version) : scPuertaVersion
                 scPuertaSinActualizar = false
                 scPuertaPinta('lista')
+                break
+            case 'update-skipped':
+                // La versión que el jugador saltó (1.16.20): sin puerta hasta que cierre el launcher o pida buscar.
+                if(scPuertaEstado !== 'lista'){
+                    scPuertaPinta('oculta')
+                }
                 break
             case 'update-not-available':
                 if(scPuertaEstado !== 'lista'){

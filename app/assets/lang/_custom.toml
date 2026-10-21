@@ -634,6 +634,7 @@ checkForUpdatesButton = "Buscar actualizaciones"
 downloadingProgress = "Descargando"
 insigniaAlDia = "· Estás al día"
 insigniaBuscando = "Buscando actualizaciones…"
+insigniaSaltada = "Actualización pendiente · pulsa para reintentar"
 insigniaLista = "Actualizar a {v}"
 
 [js.uicore.puerta]

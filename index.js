@@ -22,6 +22,12 @@ LangLoader.setupLanguage()
 // intervalos repetidos. Los eventos van siempre a la ventana de la última llamada.
 let scUpdaterSender = null
 let scUpdaterListeners = false
+// 1.16.20: versión que el jugador saltó con "Jugar sin actualizar" (hasta cerrar el launcher). Antes la comprobación
+// de cada 5 minutos la volvía a bajar (~100 MB), volvía a fallar y la puerta tapaba otra vez JUGAR: con el
+// publisherName roto de la 1.16.16-1.16.18, "Jugar sin actualizar" duraba 5 minutos (21-10-2026).
+let scVersionSaltada = null
+let scDescargando = false
+let scUltimoErrorUpdater = null
 
 function scEnviarUpdate(...args){
     if(scUpdaterSender != null && !scUpdaterSender.isDestroyed()){
@@ -47,7 +53,8 @@ function initAutoUpdater(event, data) {
     } else {
         // Descarga en segundo plano y, si el jugador simplemente cierra el
         // launcher, la actualización se aplica sola sin pedirle nada.
-        autoUpdater.autoDownload = true
+        // La descarga la arranca 'update-available' (más abajo, 1.16.20): así una versión saltada no se vuelve a bajar.
+        autoUpdater.autoDownload = false
         autoUpdater.autoInstallOnAppQuit = true
     }
     if(process.platform === 'darwin'){
@@ -58,7 +65,24 @@ function initAutoUpdater(event, data) {
     }
     scUpdaterListeners = true
     autoUpdater.on('update-available', (info) => {
+        if(info != null && scVersionSaltada != null && String(info.version) === scVersionSaltada){
+            scEnviarUpdate('update-skipped', info)
+            return
+        }
         scEnviarUpdate('update-available', info)
+        if(process.platform !== 'darwin' && !isDev && !scDescargando){
+            scDescargando = true
+            // Promise.resolve().then: un error síncrono de downloadUpdate (revisión de Codex: ERR_UPDATER_NO_CHECKSUM)
+            // dejaba scDescargando en true y no se volvía a bajar nada. Lo normal es que el fallo llegue ya como
+            // evento 'error' (-> realerror); si no llegó, se avisa aquí.
+            Promise.resolve().then(() => autoUpdater.downloadUpdate())
+                .catch(err => {
+                    if(err !== scUltimoErrorUpdater){
+                        scEnviarUpdate('realerror', { message: String(err && err.message || err), code: err && err.code || null })
+                    }
+                })
+                .finally(() => { scDescargando = false })
+        }
     })
     autoUpdater.on('download-progress', (progress) => {
         scEnviarUpdate('download-progress', progress)
@@ -73,6 +97,7 @@ function initAutoUpdater(event, data) {
         scEnviarUpdate('checking-for-update')
     })
     autoUpdater.on('error', (err) => {
+        scUltimoErrorUpdater = err
         // Un Error no siempre cruza el IPC entero (se perdía el mensaje) y el proceso
         // principal no lo apuntaba en ningún sitio: la 1.16.16-1.16.18 rechazaban cada
         // actualización por la firma y launcher.log no decía nada (21-10-2026). Se manda
@@ -90,6 +115,10 @@ ipcMain.on('autoUpdateAction', (event, arg, data) => {
             console.log('Initializing auto updater.')
             initAutoUpdater(event, data)
             event.sender.send('autoUpdateNotification', 'ready')
+            break
+        case 'skipVersion':
+            // data = versión saltada con "Jugar sin actualizar"; vacío = volver a intentarla (Reintentar, búsqueda a mano).
+            scVersionSaltada = data ? String(data) : null
             break
         case 'checkForUpdate':
             autoUpdater.checkForUpdates()

@@ -47,6 +47,12 @@ function scBuscarActualizacion(){
     scUltimaBusquedaUpdate = Date.now()
     ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
 }
+
+/** Búsqueda que pide el jugador (botón o insignia): vuelve a intentar también la versión saltada (1.16.20). */
+function scBuscarActualizacionAMano(){
+    ipcRenderer.send('autoUpdateAction', 'skipVersion', '')
+    scBuscarActualizacion()
+}
 if(!isDev){
     ipcRenderer.on('autoUpdateNotification', (event, arg, info) => {
         // 1.16.0: aviso central que bloquea JUGAR hasta actualizar (scpuerta.js).
@@ -94,6 +100,18 @@ if(!isDev){
                 // puerta: aquí solo la insignia de abajo (1.16.11).
                 scInsigniaLista(info != null ? info.version : '')
                 break
+            case 'update-skipped':
+                // "Jugar sin actualizar" (1.16.20): no se descarga otra vez; la insignia deja reintentarlo.
+                loggerAutoUpdater.info('Actualización ' + (info && info.version) + ' saltada hasta cerrar el launcher.')
+                settingsUpdateButtonStatus(Lang.queryJS('uicore.autoUpdate.checkForUpdatesButton'), false, () => {
+                    scBuscarActualizacionAMano()
+                    settingsUpdateButtonStatus(Lang.queryJS('uicore.autoUpdate.checkingForUpdateButton'), true)
+                })
+                scInsigniaVersion('aldia', Lang.queryJS('uicore.autoUpdate.insigniaSaltada'), () => {
+                    scInsigniaVersion('buscando', Lang.queryJS('uicore.autoUpdate.insigniaBuscando'))
+                    scBuscarActualizacionAMano()
+                })
+                break
             case 'update-not-available':
                 loggerAutoUpdater.info('No new update found.')
                 settingsUpdateButtonStatus(Lang.queryJS('uicore.autoUpdate.checkForUpdatesButton'))
@@ -132,7 +150,7 @@ if(!isDev){
                 // en "Descargando X%" para siempre.
                 scInsigniaAlDia()
                 settingsUpdateButtonStatus(Lang.queryJS('uicore.autoUpdate.checkForUpdatesButton'), false, () => {
-                    ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
+                    scBuscarActualizacionAMano()
                     settingsUpdateButtonStatus(Lang.queryJS('uicore.autoUpdate.checkingForUpdateButton'), true)
                 })
                 break
@@ -182,7 +200,7 @@ function scInsigniaAlDia(){
         `v${remote.app.getVersion()} ${Lang.queryJS('uicore.autoUpdate.insigniaAlDia')}`,
         () => {
             scInsigniaVersion('buscando', Lang.queryJS('uicore.autoUpdate.insigniaBuscando'))
-            ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
+            scBuscarActualizacionAMano()
         }
     )
 }

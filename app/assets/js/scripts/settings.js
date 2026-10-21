@@ -1725,6 +1725,8 @@ function populateSettingsUpdateInformation(data){
         populateVersionInformation(remote.app.getVersion(), settingsUpdateVersionValue, settingsUpdateVersionTitle, settingsUpdateVersionCheck)
         settingsUpdateButtonStatus(Lang.queryJS('settings.updates.checkForUpdatesButton'), false, () => {
             if(!isDev){
+                // Búsqueda a mano: también vuelve a intentar una versión saltada (1.16.20).
+                ipcRenderer.send('autoUpdateAction', 'skipVersion', '')
                 ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
                 settingsUpdateButtonStatus(Lang.queryJS('settings.updates.checkingForUpdatesButton'), true)
             }
