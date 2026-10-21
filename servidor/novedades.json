@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-20-launcher-1.16.19",
+      "fecha": "2026-10-20",
+      "tipo": "launcher",
+      "version": "1.16.19",
+      "titulo": "Si no te deja actualizar, instálalo a mano una vez",
+      "puntos": [
+        "Las versiones 1.16.16 a 1.16.18 no podían actualizarse solas por un fallo nuestro al firmar el launcher.",
+        "Pulsa «Descargar el launcher desde la web», baja SC-Launcher-setup-1.16.19.exe y ábrelo: se instala encima sin perder nada.",
+        "Solo hace falta una vez: desde la 1.16.19 las actualizaciones vuelven a llegar solas."
+      ]
+    },
+    {
       "id": "2026-10-20-launcher-1.16.18",
       "fecha": "2026-10-20",
       "tipo": "launcher",
