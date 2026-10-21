@@ -215,12 +215,22 @@ GitHub Actions siguen compilando sin firmar.
    `ConClave: True`.
 2. `npm run dist:win:firmado` en lugar de `npm run dist:win` (firma solo SHA-256, sello de tiempo de Certum). Si
    SimplySign no está conectado falla con `Cannot find certificate BCC98A…`.
-3. Comprobar la firma: `Get-AuthenticodeSignature dist/SC-Launcher-setup-X.Y.Z.exe` → `Status: Valid`.
+3. **`node tools/comprueba-publisher.js`** (sale con 1 → NO publicar): firma `Valid` y que el `publisherName` de
+   `dist/win-unpacked/resources/app-update.yml` sea EXACTAMENTE el CN del firmante, sin caracteres rotos.
    Primera release firmada: **1.16.16** (19/10/2026), verificada también descargándola por Cloudflare.
 
 Al firmar, electron-builder escribe `publisherName` en `app-update.yml`: a partir de la primera versión firmada,
-electron-updater **rechaza** actualizaciones que no vengan firmadas con ese mismo nombre. Desde entonces todas las
-releases tienen que salir firmadas (y una renovación debe mantener el mismo CN).
+electron-updater **rechaza** actualizaciones que no vengan firmadas con ese mismo nombre (compara el CN exacto).
+Desde entonces todas las releases tienen que salir firmadas (y una renovación debe mantener el mismo CN).
+
+> ⛔ **Incidente 21/10/2026.** De la 1.16.16 a la 1.16.18 electron-builder sacó el nombre del certificado leyendo la
+> salida de PowerShell con la codificación equivocada y grabó `F�lix` en vez de `Félix`. Esos launchers rechazan
+> TODA actualización (`ERR_UPDATER_INVALID_SIGNATURE`; el jugador ve «No se pudo descargar la actualización»).
+> Arreglo: `publisherName` fijo en `electron-builder.firmado.yml` (1.16.19) y el paso 3. Los ~140 jugadores que
+> pasaron por esas versiones tienen que instalar la 1.16.19 a mano UNA vez («Descargar el launcher desde la web»
+> abre la release, cuyas notas lo explican; novedad `2026-10-20-launcher-1.16.19`). No hay forma de arreglarlo desde
+> fuera: la comprobación la hace el launcher viejo con su propio `app-update.yml`.
+> Desde la 1.16.19 el error del actualizador queda en `launcher.log` («Fallo de actualización [código]: …»).
 
 ### `latest.yml` y la auto-actualización
 
