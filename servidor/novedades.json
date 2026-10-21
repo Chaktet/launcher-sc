@@ -162,19 +162,6 @@
       ]
     },
     {
-      "id": "rework-11-crianza",
-      "fecha": "2026-10-21",
-      "tipo": "servidor",
-      "titulo": "Crianza: permiso de cría",
-      "puntos": [
-        "Todos los Pokémon están castrados, también los que ya tenías. Para criar basta con que uno de los dos padres pueda criar.",
-        "Permiso de cría: 500 SCC por 30 días, con 100 descastraciones para los Pokémon de tu equipo que elijas. Renovarlo suma 30 días y 100 más.",
-        "Un Pokémon descastrado puede criar para siempre, también si lo vendes o lo cambias. En el GTS verás «Puede criar ✔».",
-        "Las crías nacen siempre castradas. Los Ditto de las tiendas ya vienen listos para criar.",
-        "Está en el PokéNav › Crianza › Permiso de cría, y también en la Tienda SCC."
-      ]
-    },
-    {
       "id": "rework-12-bienvenida",
       "fecha": "2026-10-21",
       "tipo": "servidor",
@@ -243,6 +230,19 @@
       "puntos": [
         "Si tu launcher decía «No se pudo descargar la actualización», entra al juego una vez: al cerrarlo, el launcher se reinicia y se pone al día él solo.",
         "Verás un aviso dentro del juego cuando vaya a pasar."
+      ]
+    },
+    {
+      "id": "rework-11-crianza",
+      "fecha": "2026-10-20",
+      "tipo": "servidor",
+      "titulo": "Crianza: permiso de cría",
+      "puntos": [
+        "Todos tus Pokémon pueden criar. Sin permiso de cría, las crías nacen castradas y no podrán criar.",
+        "Permiso de cría: 500 SCC por 30 días. Tus crías nacen sin castrar y pueden criar para siempre, también si las vendes.",
+        "Con el permiso tienes además 100 descastraciones para las crías castradas que elijas. Renovarlo suma 30 días y 100 más.",
+        "En el GTS verás «Castrado» en las crías castradas. Los Ditto de las tiendas ya vienen listos para criar.",
+        "Está en el PokéNav › Crianza › Permiso de cría, y también en la Tienda SCC."
       ]
     },
     {
