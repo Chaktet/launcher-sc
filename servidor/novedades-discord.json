@@ -99,7 +99,11 @@
     "rework-13-gts",
     "2026-10-21-modpack-PokeNav-del-lanzamiento-y-el-juego-arranca-antes",
     "2026-10-21-pack-SC-3.2.82",
-    "2026-10-21-modpack-El-launcher-vuelve-a-actualizarse-solo"
+    "2026-10-21-modpack-El-launcher-vuelve-a-actualizarse-solo",
+    "2026-10-21-pack-SC-3.2.83",
+    "2026-10-21-servidor-Abre-tus-cajas-desde-el-menu",
+    "2026-10-21-servidor-Mensajes-y-tpa-a-jugadores-de-otra-region",
+    "2026-10-21-servidor-Ya-puedes-criar-con-todos-tus-Pokemon"
   ],
   "mensajes": [
     {
@@ -291,6 +295,16 @@
       "entradas": [
         "2026-10-21-pack-SC-3.2.82",
         "2026-10-21-modpack-El-launcher-vuelve-a-actualizarse-solo"
+      ]
+    },
+    {
+      "fecha": "2026-10-21",
+      "mensaje": "1562409998997262349",
+      "entradas": [
+        "2026-10-21-pack-SC-3.2.83",
+        "2026-10-21-servidor-Abre-tus-cajas-desde-el-menu",
+        "2026-10-21-servidor-Mensajes-y-tpa-a-jugadores-de-otra-region",
+        "2026-10-21-servidor-Ya-puedes-criar-con-todos-tus-Pokemon"
       ]
     }
   ]
