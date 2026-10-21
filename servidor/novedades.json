@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-21-servidor-Abre-tus-cajas-desde-el-menu",
+      "fecha": "2026-10-21",
+      "tipo": "servidor",
+      "titulo": "Abre tus cajas desde el menú",
+      "puntos": [
+        "Escribe /llaves o /cajas, o entra en Recompensas › Llaves y cajas, y pulsa «Abrir» en la caja que quieras.",
+        "Con 10 llaves o más, «Abrir x10» abre 10 de golpe.",
+        "Ya no hace falta ir a la zona de cajas."
+      ]
+    },
+    {
       "id": "2026-10-21-servidor-Mensajes-y-tpa-a-jugadores-de-otra-region",
       "fecha": "2026-10-21",
       "tipo": "servidor",
