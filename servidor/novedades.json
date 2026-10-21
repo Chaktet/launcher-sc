@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-21-pack-SC-3.2.83",
+      "fecha": "2026-10-21",
+      "tipo": "pack",
+      "version": "SC-3.2.83",
+      "titulo": "Set de Charizard y skin del clan campeón",
+      "puntos": [
+        "Nuevo set de Charizard en la tienda de fidelidad: casco, peto, pantalones, botas, espada-llama y alas.",
+        "La armadura de Charizard se ve en 3D.",
+        "Llega Cobalion «Comandante de la Alianza», la skin del clan campeón de la temporada."
+      ]
+    },
+    {
       "id": "2026-10-21-servidor-Abre-tus-cajas-desde-el-menu",
       "fecha": "2026-10-21",
       "tipo": "servidor",
