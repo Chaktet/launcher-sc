@@ -93,7 +93,11 @@
     "rework-7-torre-mineria-clanes",
     "rework-8-casino",
     "rework-9-mas-formas-de-ganar",
-    "rework-10-shop-crianza-lujo"
+    "rework-10-shop-crianza-lujo",
+    "rework-11-crianza",
+    "rework-12-bienvenida",
+    "rework-13-gts",
+    "2026-10-21-modpack-PokeNav-del-lanzamiento-y-el-juego-arranca-antes"
   ],
   "mensajes": [
     {
@@ -267,6 +271,16 @@
         "rework-8-casino",
         "rework-9-mas-formas-de-ganar",
         "rework-10-shop-crianza-lujo"
+      ]
+    },
+    {
+      "fecha": "2026-10-21",
+      "mensaje": "1562389660821360721",
+      "entradas": [
+        "rework-11-crianza",
+        "rework-12-bienvenida",
+        "rework-13-gts",
+        "2026-10-21-modpack-PokeNav-del-lanzamiento-y-el-juego-arranca-antes"
       ]
     }
   ]
