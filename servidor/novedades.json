@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-21-servidor-TAB-ya-sugiere-jugadores-de-la-otra-region",
+      "fecha": "2026-10-21",
+      "tipo": "servidor",
+      "titulo": "TAB ya sugiere jugadores de la otra región",
+      "puntos": [
+        "Al escribir /tpa, /msg o /tell y pulsar TAB ya salen también los jugadores que están en la otra región",
+        "En el chat normal, TAB completa también los nombres de quien juega en la otra región"
+      ]
+    },
+    {
       "id": "2026-10-21-pack-SC-3.2.83",
       "fecha": "2026-10-21",
       "tipo": "pack",
