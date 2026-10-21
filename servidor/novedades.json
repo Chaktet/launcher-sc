@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-21-movil-2.3.8",
+      "fecha": "2026-10-21",
+      "tipo": "movil",
+      "version": "2.3.8",
+      "titulo": "Móvil: listo para el lanzamiento",
+      "puntos": [
+        "La moneda SCC, la energía, la ruleta y las monedas de fidelidad ya se ven en el móvil.",
+        "Títulos y placas nuevos, estandartes de clan y la skin del Chien-Pao cazador del mes.",
+        "Muchas skins de Pokémon arregladas.",
+        "Para tenerlo, descarga otra vez el pack del móvil en descargas.servidorcobblemon.es/movil e impórtalo en FoldCraftLauncher (no se actualiza solo)."
+      ]
+    },
+    {
       "id": "rework-1-energia",
       "fecha": "2026-10-21",
       "tipo": "servidor",
