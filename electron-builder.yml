@@ -12,6 +12,15 @@ copyright: 'Servidor Cobblemon · basado en Helios Launcher (Daniel Scalzi)'
 asar: true
 compression: 'maximum'
 
+# Solo los idiomas de Chromium que usamos (menús nativos, diálogos de fichero, mensajes de
+# error del navegador). Los 55 .pak ocupaban 45 MB instalados; la interfaz del launcher va
+# entera en _custom.toml y no depende de esto. Con un Windows en otro idioma Chromium cae a
+# en-US, que debe quedarse SIEMPRE: sin él Electron no arranca.
+electronLanguages:
+  - 'es'
+  - 'es-419'
+  - 'en-US'
+
 files:
   - '!{dist,.gitignore,.vscode,docs,dev-app-update.yml,.nvmrc,eslint.config.mjs}'
   # Material de desarrollo que se colaba en el app.asar hasta la 1.6.2: la carpeta

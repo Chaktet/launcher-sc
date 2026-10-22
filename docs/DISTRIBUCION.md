@@ -576,3 +576,42 @@ Contrapartidas que hay que aceptar antes de hacerlo:
 > ⚠ Al añadir el vhost, cuidado con el orden: `packs.conf` es el **default server** de `*:80`. El
 > vhost nuevo va en `:443`, que es otro socket, pero conviene copiar la configuración antes y usar
 > `apache2ctl configtest` + `systemctl reload` (graceful, no corta descargas en curso).
+
+---
+
+## 5. Peso de la primera instalación (medido el 22-10-2026)
+
+Felix preguntó por qué «el launcher pesa 1,46 GB la primera vez». Esa cifra es la **descarga del juego con el perfil
+LITE** (1.451,7 MB), sin contar Java ni el propio launcher. Medido con el helios-core parcheado sobre una carpeta
+vacía (`FullRepair.verifyFiles`, los bytes pendientes que ve el jugador):
+
+| Pieza | Antes | Después (versión siguiente a la 1.16.20) | ¿Necesaria? |
+|---|---|---|---|
+| Instalador `.exe` | 101,3 MB | 93,5 MB | Sí |
+| Launcher instalado (`%LOCALAPPDATA%\Programs\SC Launcher`) | 346 MB | 303 MB | Sí; −43 MB al dejar solo los idiomas de Chromium `es`, `es-419`, `en-US` (`electronLanguages`) |
+| Java 21 (descarga / en disco) | JDK 205 / 329 MB | JRE 49 / 146 MB | Solo el JRE; el JDK trae compilador y `jmods` que el juego no usa |
+| Recursos de Minecraft (`common/assets`) | 826 MB | 743 MB | Música de fondo 545 MB + discos 55 MB: Felix decidió **dejarla**. Idiomas: 130 de 143 eran de otros idiomas (−83 MB) |
+| Cliente + librerías de Minecraft y Fabric | ~100 MB | igual | Sí |
+| Modpack PRO / LITE / SUPER LITE (`distribution.json`) | 651 / 532 / 445 MB | igual | Ver abajo |
+| **Juego total PRO / LITE / SUPER LITE** | 1.571 / 1.452 / 1.364 MB | 1.488 / 1.369 / 1.281 MB | |
+| **Total primera instalación LITE** (descarga, con Java e instalador) | ~1.758 MB | ~1.511 MB | −247 MB |
+
+Dentro del modpack PRO lo más gordo es Cobblemon (139 MB), `SC-Pack.zip` (125 MB), AmbientSounds (85 MB, opcional
+pero se baja aunque esté desactivado: helios valida todos los módulos; Felix decidió dejarlo), los layouts `.txt` de
+FancyMenu (88 MB en 6.048 ficheros) y sus imágenes (55 MB en 3.704). Duplicados por hash: ninguno relevante.
+
+Cómo se aplica:
+- **Idiomas del juego**: parche 6 de [tools/parche-helios.js](../tools/parche-helios.js). Solo se bajan
+  `minecraft/lang/es_*` y `en_*` (`en_us` va dentro del `client.jar`). Otro idioma elegido en el juego sale en inglés.
+  Lo ya descargado no se borra.
+- **JRE**: `scJavaDesdeCdn` (landing.js) lee primero `windows-x64-jre` del `java/manifest.json`; si no está, el
+  `windows-x64` (JDK) de siempre. La reserva de Adoptium (parche 7) también pide JRE antes que JDK. Los que ya tienen
+  Java no cambian. ⚠️ **Al publicar la versión que lleve esto hay que ejecutar antes `servidor/sc-java-cdn.py` en OVH-A** (sudo; se
+  puede repetir): ahora espeja el JDK y el JRE y añade `windows-x64-jre` al manifiesto. Sin eso el launcher nuevo
+  sigue bajando el JDK de nuestro CDN (funciona, pero sin el ahorro).
+- **Idiomas de Chromium**: `electronLanguages` en [electron-builder.yml](../electron-builder.yml).
+
+Comprobado: el launcher compilado arranca y carga la distribución; Minecraft 1.21.1 + Fabric + los mods del PRO
+arrancan con el JRE 21.0.12.1 y `lang:es_es` sobre una instalación desde cero (scripts de prueba en
+`E:/tmp/launcher-peso/scripts/`: `instalar.js` baja una instalación con el helios del worktree, `lanzar.js` arranca el
+juego sin cuenta).

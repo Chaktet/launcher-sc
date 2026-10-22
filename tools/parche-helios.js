@@ -38,6 +38,12 @@
 // 5. Bytes pendientes (1.7.4) · FullRepairReceiver
 //    validateComplete manda también cuántos bytes faltan por descargar, para que el
 //    launcher compruebe el espacio libre con lo que de verdad va a bajar.
+//
+// 6. Idiomas del juego (22-10-2026) · MojangIndexProcessor
+//    Solo se bajan los idiomas de Minecraft en español e inglés: −83 MB por instalación.
+//
+// 7. Java JRE en vez de JDK desde Adoptium (22-10-2026) · JavaGuard
+//    −156 MB de descarga y −183 MB en disco cuando falla nuestro CDN de Java.
 const fs = require('fs')
 const path = require('path')
 
@@ -303,3 +309,34 @@ parchear(path.join('dl', 'receivers', 'FullRepairReceiver.js'), MARCA_ESPACIO, s
     'process.send({ response: \'validateComplete\', invalidCount: this.assets.length });',
     MARCA_ESPACIO + ' process.send({ response: \'validateComplete\', invalidCount: this.assets.length, scBytesPendientes: (0, DownloadEngine_1.getExpectedDownloadSize)(this.assets) });',
     'FullRepairReceiver.js'), 'bytes pendientes de descarga en validateComplete')
+
+// --- 6. Idiomas del juego: solo español e inglés (peso de la primera instalación) ------
+// El índice de assets de la 1.21.1 trae 130 idiomas en minecraft/lang/ (83 MB) y helios
+// los bajaba todos. Decisión de Felix (22-10-2026): solo las variantes de español y de
+// inglés. Si alguien elige otro idioma en el juego, Minecraft lo muestra en inglés (en_us
+// va dentro del client.jar, no en assets), sin errores. Lo ya descargado no se borra.
+// El juego lee el índice entero pero no comprueba que estén todos los objetos, así que
+// basta con no validarlos (y por tanto no bajarlos) aquí.
+const MARCA_IDIOMAS = '/* sc-idiomas */'
+parchear(path.join('dl', 'mojang', 'MojangIndexProcessor.js'), MARCA_IDIOMAS, s => reemplazarLiteral(s,
+    'mapaConcurrente(Object.entries(assetIndex.objects), async (assetEntry) => {',
+    'mapaConcurrente(Object.entries(assetIndex.objects).filter(([id]) => ' + MARCA_IDIOMAS
+        + ' !id.startsWith(\'minecraft/lang/\') || id.startsWith(\'minecraft/lang/es_\') || id.startsWith(\'minecraft/lang/en_\')), async (assetEntry) => {',
+    'MojangIndexProcessor.js'), 'idiomas del juego: solo español e inglés')
+
+// --- 7. Java: JRE en vez de JDK cuando se baja de Adoptium (22-10-2026) ---------------
+// El JDK (205 MB, 329 MB instalado) trae compilador, jmods y herramientas que el juego no
+// usa; el JRE (49 MB, 146 MB) es lo mismo que necesita Minecraft, como el Java que monta el
+// launcher oficial de Mojang. Esto es la reserva: lo normal es el JRE de nuestro CDN
+// (scJavaDesdeCdn en landing.js). Si Adoptium no publicara JRE para esa versión, se
+// queda con el JDK en vez de quedarse sin Java.
+const MARCA_JRE = '/* sc-jre */'
+parchear(path.join('java', 'JavaGuard.js'), MARCA_JRE, s => reemplazarTramo(s,
+    'const targetBinary = res.body.find(entry => {',
+    '            if (targetBinary != null) {',
+    MARCA_JRE + ' const sirve = (entry, tipo) => entry.version.major === major\n'
+    + '                && entry.binary.os === sanitizedOS\n'
+    + '                && entry.binary.image_type === tipo\n'
+    + '                && entry.binary.architecture === arch;\n'
+    + '            const targetBinary = res.body.find(entry => sirve(entry, \'jre\')) ?? res.body.find(entry => sirve(entry, \'jdk\'));\n',
+    'image_type === \'jdk\'', 'JavaGuard.latestAdoptium'), 'Java de Adoptium: JRE antes que JDK')

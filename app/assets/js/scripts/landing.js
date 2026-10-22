@@ -2707,7 +2707,11 @@ async function scJavaDesdeCdn(major, dataDir){
         if(!res.ok){
             throw new Error('HTTP ' + res.status)
         }
-        const info = (await res.json())?.[String(major)]?.['windows-x64']
+        // El JRE (49 MB, 146 MB instalado) antes que el JDK (205 MB, 329 MB): el juego
+        // no usa nada que solo traiga el JDK (22-10-2026). `windows-x64` sigue siendo el
+        // JDK para los launchers anteriores, y sirve de reserva si el JRE no está publicado.
+        const porMajor = (await res.json())?.[String(major)]
+        const info = porMajor?.['windows-x64-jre'] ?? porMajor?.['windows-x64']
         if(info == null || !/^[\w.+-]+\.zip$/.test(info.name) || !/^[0-9a-f]{64}$/.test(info.sha256) || !(info.size > 0)){
             return null
         }
