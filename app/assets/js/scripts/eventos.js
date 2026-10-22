@@ -9,11 +9,12 @@
  * read (or is older than 5 minutes) the landing falls back to the single
  * total ping and the calendar says it could not check.
  *
- * Times: epoch ms in the file, shown in Spain's time (Europe/Madrid), like the
- * in-game messages of SCEventos.
+ * Horas: el fichero trae ms epoch. Al jugador NUNCA se le enseña una hora fija ni «hora de España» (Felix 22-10:
+ * juegan desde muchos países): solo cuánto falta («Empieza en 2 h 10 min», «termina en 35 min») y, para agrupar el
+ * calendario, el día en la zona horaria del propio jugador (sin hora).
  */
 const SC_ESTADO_URL = `https://${require('./assets/js/distromanager').SC_HOST_PRINCIPAL}/launcher/estado.json`
-const SC_ZONA = 'Europe/Madrid'
+const SC_ZONA = undefined   // zona del PC del jugador: los días del calendario son los suyos
 const SC_ESTADO_CADUCA = 5 * 60 * 1000
 const SC_AVISO_ANTES = 15 * 60 * 1000
 
@@ -42,7 +43,7 @@ function scRegionesEnVivo(){
     return scEstadoVigente() && Array.isArray(scEstado.regiones) && scEstado.regiones.length > 0
 }
 
-/** Date parts in Spain's time. */
+/** Partes de la fecha en la zona del jugador (la hora solo sirve para cálculos: nunca se enseña). */
 function scPartes(ms){
     const p = {}
     for(const x of new Intl.DateTimeFormat('es-ES', { timeZone: SC_ZONA, year: 'numeric', month: '2-digit', day: '2-digit',
@@ -72,6 +73,21 @@ function scNombreDia(ms){
     }
     const mes = new Intl.DateTimeFormat('es-ES', { timeZone: SC_ZONA, month: 'short' }).format(new Date(ms)).replace('.', '')
     return `${scMayus(p.diaSemana)} ${p.d} ${mes}`
+}
+
+/** "2 h" / "45 min" / "3 d" / "1 d 6 h": cuánto dura un evento (sin hora fija). */
+function scDuracion(ms){
+    const min = Math.max(1, Math.round(ms / 60000))
+    const d = Math.floor(min / 1440)
+    const h = Math.floor((min % 1440) / 60)
+    const m = min % 60
+    if(d > 0){
+        return h > 0 ? `${d} d ${h} h` : `${d} d`
+    }
+    if(h > 0){
+        return m > 0 ? `${h} h ${m} min` : `${h} h`
+    }
+    return `${m} min`
 }
 
 /** "02 d 04 h 18 min" / "04 h 18 min" / "18 min". */
@@ -177,9 +193,9 @@ function scPintarTarjeta(){
     scElem('sc2EventKicker').textContent = Lang.queryJS(enCurso ? 'landing.sc2.liveEvent' : 'landing.sc2.nextEvent')
     scElem('sc2EventTitle').textContent = ev.nombre
     scElem('sc2EventWhen').textContent = Lang.queryJS('landing.sc2.whenLine', {
-        dia: scNombreDia(ev.inicio), hora: scPartes(ev.inicio).hora, region: String(ev.region || '') })
+        dia: scNombreDia(ev.inicio), region: String(ev.region || '') })
     scElem('sc2EventCount').textContent = enCurso
-        ? Lang.queryJS('landing.sc2.endsAt', { h: scPartes(ev.fin).hora })
+        ? Lang.queryJS('landing.sc2.endsIn', { t: scCuentaAtras(ev.fin - ahora) })
         : Lang.queryJS('landing.sc2.startsIn', { t: scCuentaAtras(ev.inicio - ahora) })
     scElem('sc2EventCalendar').hidden = false
     card.hidden = false
@@ -295,12 +311,12 @@ function scPintarCalendario(){
         t.textContent = e.nombre
         const w = document.createElement('span')
         w.className = 'sc2CalEventoHora'
-        const pi = scPartes(e.inicio)
-        const pf = scPartes(e.fin)
-        w.textContent = Lang.queryJS('landing.sc2.calOrganiza', {
-            inicio: (pi.clave !== scCalDia ? scNombreDia(e.inicio) + ' ' : '') + pi.hora,
-            fin: (pf.clave !== pi.clave ? scNombreDia(e.fin) + ' ' : '') + pf.hora,
-            region: String(e.region || '') })
+        // cuánto falta y cuánto dura, nunca la hora (los jugadores están en muchas zonas horarias)
+        const ahora = Date.now()
+        w.textContent = e.inicio <= ahora
+            ? Lang.queryJS('landing.sc2.calEnCurso', { t: scCuentaAtras(e.fin - ahora), region: String(e.region || '') })
+            : Lang.queryJS('landing.sc2.calEmpieza', { t: scCuentaAtras(e.inicio - ahora), d: scDuracion(e.fin - e.inicio),
+                region: String(e.region || '') })
         art.append(t, w)
         if(typeof e.descripcion === 'string' && e.descripcion.trim()){
             const d = document.createElement('span')
@@ -403,7 +419,7 @@ function scAvisosEscritorio(){
         if(scYaAvisado(clave)){
             continue
         }
-        const datos = { nombre: e.nombre, hora: scPartes(e.inicio).hora, region: String(e.region || '') }
+        const datos = { nombre: e.nombre, region: String(e.region || '') }
         try {
             const n = new Notification(
                 Lang.queryJS(tipo === 'antes' ? 'landing.sc2.notifTitle' : 'landing.sc2.notifNowTitle', datos),
