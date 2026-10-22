@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-21-servidor-Mejoras-en-el-GTS-la-herreria-y-el-casino",
+      "fecha": "2026-10-21",
+      "tipo": "servidor",
+      "titulo": "Mejoras en el GTS, la herrería y el casino",
+      "puntos": [
+        "GTS: si has vendido algo o te devuelven una puja, el PokéNav te marca un punto rojo hasta que lo cobres.",
+        "Herrería: rompe tus megapiedras desde la mochila, sin tenerlas en la mano. Ya se puede romper la Absolita Z.",
+        "Ruleta: abajo ves cuánto te queda por apostar en la ronda y el máximo de cada tipo de apuesta."
+      ]
+    },
+    {
       "id": "2026-10-21-servidor-Las-crias-vuelven-a-poder-criar",
       "fecha": "2026-10-21",
       "tipo": "servidor",
