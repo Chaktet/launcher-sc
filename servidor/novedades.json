@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-21-servidor-Dia-comunitario-puntos-ajustados",
+      "fecha": "2026-10-21",
+      "tipo": "servidor",
+      "titulo": "Día comunitario: puntos ajustados",
+      "puntos": [
+        "Los puntos del Día comunitario salían mucho más altos de lo previsto y la tienda dejaba de tener sentido.",
+        "Desde el próximo Día comunitario: 1 punto por captura (3 si es shiny), racha de +1 como mucho e hitos a la mitad.",
+        "Así lo que compras en su tienda vuelve a valer lo que cuesta."
+      ]
+    },
+    {
       "id": "2026-10-21-servidor-Preguntas-del-chat-llaves-y-pase-de-batalla",
       "fecha": "2026-10-21",
       "tipo": "servidor",
