@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-21-servidor-Preguntas-del-chat-llaves-y-pase-de-batalla",
+      "fecha": "2026-10-21",
+      "tipo": "servidor",
+      "titulo": "Preguntas del chat, llaves y pase de batalla",
+      "puntos": [
+        "Preguntas del chat: si aciertas justo después de fallar, ya cuenta.",
+        "Llaves: cada llave tiene su ficha con los premios de su caja y la barra de garantía.",
+        "El pase de batalla dice su fecha real de fin en la tienda y en tu cartera: esta temporada, el 1 de diciembre.",
+        "Gimnasios: el medallero enseña el líder de cada medalla y cuándo la conseguiste."
+      ]
+    },
+    {
       "id": "2026-10-21-servidor-Mejoras-en-el-GTS-la-herreria-y-el-casino",
       "fecha": "2026-10-21",
       "tipo": "servidor",
