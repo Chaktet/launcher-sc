@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-22-servidor-Mochila-de-pesca-nueva-en-el-PokeNav",
+      "fecha": "2026-10-22",
+      "tipo": "servidor",
+      "titulo": "Mochila de pesca nueva en el PokéNav",
+      "puntos": [
+        "La mochila tiene su propia tarjeta en la primera página de pesca.",
+        "Mira lo que llevas guardado y lo que llevas encima, por pestañas.",
+        "Saca, guarda o vende cada objeto, o todo de golpe.",
+        "Usa cebos y tomos desde el menú eligiendo la caña, también la de pesca automática."
+      ]
+    },
+    {
       "id": "2026-10-22-launcher-1.17.0",
       "fecha": "2026-10-22",
       "tipo": "launcher",
