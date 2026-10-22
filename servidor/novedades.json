@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-21-servidor-Crianza-nueva-y-avisos-en-el-PokeNav",
+      "fecha": "2026-10-21",
+      "tipo": "servidor",
+      "titulo": "Crianza nueva y avisos en el PokéNav",
+      "puntos": [
+        "Criar es gratis: cada Pokémon tiene 5 puestas y la Hierba fértil le da más. Sale en raids, cacerías, pesca y PokéParadas.",
+        "Los huecos de crianza de pago duran 30 días y cada uno te dice cuántos le quedan. Mira Crianza › Cómo funciona.",
+        "Punto rojo cuando tienes algo por cobrar: ventas del GTS, premios de raids, minería, clanes, gimnasios y huevos listos.",
+        "Nueva pantalla Títulos gratis: qué hacer para conseguir cada título. Al ganar uno te avisa en el chat.",
+        "Los horarios ya no dicen una hora fija: te dicen cuánto falta, estés donde estés."
+      ]
+    },
+    {
       "id": "2026-10-21-servidor-Las-crias-vuelven-a-poder-criar",
       "fecha": "2026-10-21",
       "tipo": "servidor",
