@@ -111,7 +111,11 @@
     "2026-10-21-servidor-Criador-Pro-ventajas-en-el-GTS",
     "2026-10-21-servidor-Dia-comunitario-puntos-ajustados",
     "2026-10-21-servidor-Preguntas-del-chat-llaves-y-pase-de-batalla",
-    "2026-10-21-servidor-Mejoras-en-el-GTS-la-herreria-y-el-casino"
+    "2026-10-21-servidor-Mejoras-en-el-GTS-la-herreria-y-el-casino",
+    "2026-10-21-servidor-Mas-de-140-bloques-decorativos-nuevos-en-la-tienda",
+    "2026-10-22-servidor-Cosmetico-a-elegir-eliges-al-momento",
+    "2026-10-22-servidor-Los-titulos-del-pase-ya-salen-en-tus-placas",
+    "2026-10-22-pack-SC-3.2.84"
   ],
   "mensajes": [
     {
@@ -333,6 +337,16 @@
         "2026-10-21-servidor-Dia-comunitario-puntos-ajustados",
         "2026-10-21-servidor-Preguntas-del-chat-llaves-y-pase-de-batalla",
         "2026-10-21-servidor-Mejoras-en-el-GTS-la-herreria-y-el-casino"
+      ]
+    },
+    {
+      "fecha": "2026-10-22",
+      "mensaje": "1562888098126233652",
+      "entradas": [
+        "2026-10-21-servidor-Mas-de-140-bloques-decorativos-nuevos-en-la-tienda",
+        "2026-10-22-servidor-Cosmetico-a-elegir-eliges-al-momento",
+        "2026-10-22-servidor-Los-titulos-del-pase-ya-salen-en-tus-placas",
+        "2026-10-22-pack-SC-3.2.84"
       ]
     }
   ]
