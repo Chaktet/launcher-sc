@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-22-servidor-Packs-de-Halloween-edicion-limitada",
+      "fecha": "2026-10-22",
+      "tipo": "servidor",
+      "titulo": "Packs de Halloween: edición limitada",
+      "puntos": [
+        "Tres packs nuevos en la tienda: Cripta de la bruja, Salón encantado y Huerto de calabazas.",
+        "Cada uno trae una armadura completa con arma y 6 muebles de Halloween.",
+        "Cripta y Salón incluyen una skin: Sarcófago para Cofagrigus y Polilla farol para Iron Moth.",
+        "El Huerto incluye la skin de Ferrothorn en cuanto salga. Los encontrarás los primeros en Estilo, Packs."
+      ]
+    },
+    {
       "id": "2026-10-22-servidor-Mochila-de-pesca-nueva-en-el-PokeNav",
       "fecha": "2026-10-22",
       "tipo": "servidor",
