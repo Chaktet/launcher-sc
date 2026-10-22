@@ -103,7 +103,11 @@
     "2026-10-21-pack-SC-3.2.83",
     "2026-10-21-servidor-Abre-tus-cajas-desde-el-menu",
     "2026-10-21-servidor-Mensajes-y-tpa-a-jugadores-de-otra-region",
-    "2026-10-21-servidor-Ya-puedes-criar-con-todos-tus-Pokemon"
+    "2026-10-21-servidor-Ya-puedes-criar-con-todos-tus-Pokemon",
+    "2026-10-21-servidor-Las-crias-vuelven-a-poder-criar",
+    "2026-10-21-servidor-Crianza-nueva-y-avisos-en-el-PokeNav",
+    "2026-10-21-servidor-Las-cacerias-ya-cuentan-tus-capturas",
+    "2026-10-21-servidor-TAB-ya-sugiere-jugadores-de-la-otra-region"
   ],
   "mensajes": [
     {
@@ -305,6 +309,16 @@
         "2026-10-21-servidor-Abre-tus-cajas-desde-el-menu",
         "2026-10-21-servidor-Mensajes-y-tpa-a-jugadores-de-otra-region",
         "2026-10-21-servidor-Ya-puedes-criar-con-todos-tus-Pokemon"
+      ]
+    },
+    {
+      "fecha": "2026-10-22",
+      "mensaje": "1562633488400654397",
+      "entradas": [
+        "2026-10-21-servidor-Las-crias-vuelven-a-poder-criar",
+        "2026-10-21-servidor-Crianza-nueva-y-avisos-en-el-PokeNav",
+        "2026-10-21-servidor-Las-cacerias-ya-cuentan-tus-capturas",
+        "2026-10-21-servidor-TAB-ya-sugiere-jugadores-de-la-otra-region"
       ]
     }
   ]
