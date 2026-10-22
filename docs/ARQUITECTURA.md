@@ -32,6 +32,7 @@ distinguir de un vistazo el código heredado del propio y hacer merges del upstr
 | [app/assets/lang/_custom.toml](../app/assets/lang/_custom.toml) | Todos los textos. **Nada de cadenas literales en el JS de UI.** |
 | [app/assets/css/rediseno.css](../app/assets/css/rediseno.css) | **Propio.** Diseño v2 de la portada (marcos 9-slice, Inter, unidad `--px`). |
 | [app/assets/css/scpantallas.css](../app/assets/css/scpantallas.css) | **Propio.** Diseño v5 (1.16.9) de Ajustes, selector de perfil y de cuenta, avisos (`scTipoAviso()` en overlay.js), puerta de actualización y pantallas de entrada. Va la última y pisa launcher.css; unidad `--u` = 1 px a 1100×700. Nunca `display !important` en contenedores que jQuery oculta. |
+| [app/assets/css/scpokenav.css](../app/assets/css/scpokenav.css) | **Propio.** Diseño PokéNav (rama `claude/rework-tienda-a39596`, 22-10): el launcher con la marca de la tienda (carcasa roja, pantalla crema, Silkscreen + Source Sans 3). Va la última de todas y pisa las anteriores; colores en `--pk-*`, recetas de la marca en `E:/RESOURCE-MC/marca-pokenav`. El fondo elegido entra por `--sc-fondo` (lo pone `scfondos.js`). `scskin.css` se carga después en tiempo de ejecución: lo de `#scSkin` lleva `!important`. |
 | [app/scentrada.ejs](../app/scentrada.ejs) | **Propio.** Columna izquierda común de bienvenida, tipo de cuenta, login y espera de Microsoft. |
 
 ## Los dos perfiles: PRO y LITE
