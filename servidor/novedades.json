@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-22-launcher-1.17.0",
+      "fecha": "2026-10-22",
+      "tipo": "launcher",
+      "version": "1.17.0",
+      "titulo": "Launcher con diseño nuevo",
+      "puntos": [
+        "El launcher se viste como la tienda y el PokéNav.",
+        "El calendario de eventos te dice cuánto falta para cada uno y cuánto dura.",
+        "La primera instalación baja unos 247 MB menos."
+      ]
+    },
+    {
       "id": "2026-10-22-pack-SC-3.2.85",
       "fecha": "2026-10-22",
       "tipo": "pack",
