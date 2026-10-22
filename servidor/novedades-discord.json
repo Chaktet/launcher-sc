@@ -107,7 +107,11 @@
     "2026-10-21-servidor-Las-crias-vuelven-a-poder-criar",
     "2026-10-21-servidor-Crianza-nueva-y-avisos-en-el-PokeNav",
     "2026-10-21-servidor-Las-cacerias-ya-cuentan-tus-capturas",
-    "2026-10-21-servidor-TAB-ya-sugiere-jugadores-de-la-otra-region"
+    "2026-10-21-servidor-TAB-ya-sugiere-jugadores-de-la-otra-region",
+    "2026-10-21-servidor-Criador-Pro-ventajas-en-el-GTS",
+    "2026-10-21-servidor-Dia-comunitario-puntos-ajustados",
+    "2026-10-21-servidor-Preguntas-del-chat-llaves-y-pase-de-batalla",
+    "2026-10-21-servidor-Mejoras-en-el-GTS-la-herreria-y-el-casino"
   ],
   "mensajes": [
     {
@@ -319,6 +323,16 @@
         "2026-10-21-servidor-Crianza-nueva-y-avisos-en-el-PokeNav",
         "2026-10-21-servidor-Las-cacerias-ya-cuentan-tus-capturas",
         "2026-10-21-servidor-TAB-ya-sugiere-jugadores-de-la-otra-region"
+      ]
+    },
+    {
+      "fecha": "2026-10-22",
+      "mensaje": "1562638437528371242",
+      "entradas": [
+        "2026-10-21-servidor-Criador-Pro-ventajas-en-el-GTS",
+        "2026-10-21-servidor-Dia-comunitario-puntos-ajustados",
+        "2026-10-21-servidor-Preguntas-del-chat-llaves-y-pase-de-batalla",
+        "2026-10-21-servidor-Mejoras-en-el-GTS-la-herreria-y-el-casino"
       ]
     }
   ]
