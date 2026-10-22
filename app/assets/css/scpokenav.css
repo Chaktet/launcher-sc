@@ -1,0 +1,2384 @@
+/* =============================================================================
+ * SC Launcher · diseño PokéNav (1.17, Felix 22-10: «que se vea como la tienda»).
+ *
+ * Misma marca que store.servidorcobblemon.es: carcasa roja con lente y tres luces,
+ * pantalla crema, tarjetas de papel con borde navy + azul, Silkscreen para títulos
+ * cortos y Source Sans 3 para todo lo demás, sombras duras y esquinas pixeladas.
+ * Fuente de la marca: E:/RESOURCE-MC/marca-pokenav (tokens.css y componentes.css);
+ * maquetas aprobadas: variante A de Codex (E:/codex-work/launcher-rework).
+ *
+ * Va la ÚLTIMA y pisa launcher.css, rediseno.css, scpuerta.css y scpantallas.css: los
+ * marcos PNG 9-slice de antes se anulan aquí. No cambia ningún ID ni el JS; las reglas
+ * de mostrar/ocultar siguen en sus hojas. Nunca `display:… !important` en contenedores
+ * que jQuery oculta (los dejaría siempre visibles).
+ *
+ * Medidas en px de verdad, pensadas para 1100×700; a ≤980×610 se compacta.
+ * `clip-path` corta los bordes normales: el borde se pinta con `box-shadow: inset`.
+ * ========================================================================== */
+
+@font-face { font-family: 'Silkscreen'; src: url('../fonts/Silkscreen-Regular.woff2') format('woff2'); font-weight: 400; font-display: block; }
+@font-face { font-family: 'Silkscreen'; src: url('../fonts/Silkscreen-Bold.woff2') format('woff2'); font-weight: 700; font-display: block; }
+@font-face { font-family: 'Source Sans 3'; src: url('../fonts/SourceSans3.woff2') format('woff2'); font-weight: 200 900; font-display: block; }
+
+:root {
+    --pk-red: #B22839;
+    --pk-red-dark: #6E1B2C;
+    --pk-red-light: #D2404F;
+    --pk-cream: #F6F0DE;
+    --pk-paper: #FFFCF2;
+    --pk-ink: #16233E;
+    --pk-muted: #415875;
+    --pk-blue: #466D94;
+    --pk-blue-deep: #1F5FB8;
+    --pk-blue-deeper: #17488C;
+    --pk-blue-hover: #2A71CF;
+    --pk-tab: #A8CEEE;
+    --pk-tab-hover: #C5E3F6;
+    --pk-gold: #E7BF57;
+    --pk-gold-hover: #F3D584;
+    --pk-gold-dark: #9C7424;
+    --pk-offer: #2F6B2F;
+    --pk-offer-bg: #DDEFD6;
+    --pk-disabled: #D8D5C9;
+    --pk-night: #142238;
+    --pk-line: #E9F2FA;
+
+    --pk-font-pixel: 'Silkscreen', 'Courier New', monospace;
+    --pk-font-body: 'Source Sans 3', 'Segoe UI', system-ui, sans-serif;
+
+    --pk-corner-12: polygon(
+        12px 0, calc(100% - 12px) 0, calc(100% - 12px) 4px, calc(100% - 8px) 4px, calc(100% - 8px) 8px,
+        calc(100% - 4px) 8px, calc(100% - 4px) 12px, 100% 12px, 100% calc(100% - 12px), calc(100% - 4px) calc(100% - 12px),
+        calc(100% - 4px) calc(100% - 8px), calc(100% - 8px) calc(100% - 8px), calc(100% - 8px) calc(100% - 4px),
+        calc(100% - 12px) calc(100% - 4px), calc(100% - 12px) 100%, 12px 100%, 12px calc(100% - 4px), 8px calc(100% - 4px),
+        8px calc(100% - 8px), 4px calc(100% - 8px), 4px calc(100% - 12px), 0 calc(100% - 12px), 0 12px, 4px 12px, 4px 8px,
+        8px 8px, 8px 4px, 12px 4px);
+    --pk-corner-8: polygon(
+        8px 0, calc(100% - 8px) 0, calc(100% - 8px) 4px, calc(100% - 4px) 4px, calc(100% - 4px) 8px, 100% 8px,
+        100% calc(100% - 8px), calc(100% - 4px) calc(100% - 8px), calc(100% - 4px) calc(100% - 4px), calc(100% - 8px) calc(100% - 4px),
+        calc(100% - 8px) 100%, 8px 100%, 8px calc(100% - 4px), 4px calc(100% - 4px), 4px calc(100% - 8px), 0 calc(100% - 8px),
+        0 8px, 4px 8px, 4px 4px, 8px 4px);
+    --pk-corner-4: polygon(
+        4px 0, calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px),
+        calc(100% - 4px) 100%, 4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px), 0 4px, 4px 4px);
+
+    /* Recetas de la marca (componentes.css de la tienda). */
+    --pk-sh-btn: inset 0 0 0 3px var(--pk-ink), inset 0 5px 0 rgba(255, 255, 255, .45), inset 0 -7px 0 rgba(22, 35, 62, .28);
+    --pk-sh-tab: inset 0 0 0 3px var(--pk-ink), inset 0 4px 0 rgba(255, 255, 255, .5);
+    --pk-sh-tab-on: inset 0 0 0 3px var(--pk-ink), inset 0 -4px 0 var(--pk-gold);
+    --pk-sh-card: inset 0 0 0 3px var(--pk-ink), inset 0 0 0 5px var(--pk-blue), inset 0 0 0 7px var(--pk-line);
+    --pk-sh-frame: inset 0 0 0 3px var(--pk-ink), inset 0 0 0 7px var(--pk-blue), inset 0 0 0 9px var(--pk-line);
+    --pk-sh-screen: inset 0 0 0 3px var(--pk-ink), inset 0 0 0 6px var(--pk-blue);
+    --pk-sh-input: inset 0 0 0 3px var(--pk-ink), inset 0 6px 0 rgba(22, 35, 62, .08);
+    --pk-sh-focus: inset 0 0 0 3px var(--pk-ink), inset 0 0 0 6px var(--pk-gold);
+
+    /* Alturas de la carcasa (barra de ventana / cabecera / pestañas / pie). */
+    --sc2-bar: 28px;
+    --pk-cab: 68px;
+    --pk-tabs: 48px;
+    --pk-pie: 52px;
+    --pk-lado: 16px;
+    --pk-pad: 16px;
+    /* Las hojas anteriores leen estas variables: se reasignan a la paleta de la tienda
+       para que todo lo que no se repinta a mano abajo herede tinta navy sobre crema. */
+    --v5-azul: var(--pk-blue-deep);
+    --v5-naranja: var(--pk-gold-dark);
+    --v5-tinta: var(--pk-ink);
+    --v5-tinta-2: var(--pk-muted);
+    --v5-tinta-3: var(--pk-muted);
+    --v5-base: var(--pk-cream);
+    --v5-error: var(--pk-red);
+    --v5-linea: var(--pk-tab);
+    --sc2-blue: var(--pk-blue-deep);
+    --sc2-orange: var(--pk-gold-dark);
+    --sc2-ink: var(--pk-ink);
+    --sc2-ink-2: var(--pk-muted);
+    --sc2-ink-3: var(--pk-muted);
+    --sc2-panel: var(--pk-paper);
+    --sc2-base: var(--pk-cream);
+    --sc-accent: var(--pk-blue-deep);
+    --sc-ink: var(--pk-ink);
+    --sc-ink-dim: var(--pk-muted);
+    --sc-line: var(--pk-tab);
+    /* Fondo elegido (scfondos.js lo cambia); este es el que trae el instalador. */
+    --sc-fondo: url('../images/ui/fondo-1920.webp');
+}
+
+/* ---- Carcasa: la ventana entera es el aparato ---------------------------- */
+html, body {
+    background: var(--pk-red) !important;
+}
+body {
+    /* El fondo elegido se ve dentro de los marcos (--sc-fondo), no detrás de todo. */
+    background-image: none !important;
+    font-family: var(--pk-font-body);
+    -webkit-font-smoothing: antialiased;
+}
+body::before {
+    /* Brillo superior y sombra inferior de la carcasa, como .pk-device de la tienda. */
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    box-shadow: inset 0 4px 0 var(--pk-red-light), inset 0 -8px 0 var(--pk-red-dark);
+    z-index: 0;
+}
+#main {
+    background: none !important;
+}
+#main[overlay] {
+    opacity: 1 !important;
+}
+
+/* Los marcos PNG 9-slice del diseño anterior: fuera. */
+.sc2Frame, .sc2Btn, .sc2Tab, .sc2Link, .sc2Tool, .sc2NewsSwitchBtn {
+    border-image: none !important;
+    border: 0 !important;
+}
+
+/* ---- Barra de la ventana --------------------------------------------------- */
+#frameBar {
+    background: var(--pk-red) !important;
+    backdrop-filter: none !important;
+    border-bottom: 0 !important;
+}
+#frameMain {
+    height: var(--sc2-bar) !important;
+}
+#frameTitleText {
+    font-family: var(--pk-font-body) !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    letter-spacing: 1px !important;
+    color: var(--pk-cream) !important;
+}
+.frameButton {
+    height: var(--sc2-bar) !important;
+    background-image: none !important;
+    background-color: transparent;
+    position: relative;
+}
+.frameButton svg {
+    display: none !important;
+}
+.frameButton::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    transform: translate(-50%, -50%);
+    background: var(--pk-cream);
+}
+/* Iconos pixelados en CSS: guion, cuadro hueco y aspa de 2 px. */
+#frameButton_minimize::before { height: 2px; }
+#frameButton_restoredown::before { background: none; box-shadow: inset 0 0 0 2px var(--pk-cream); }
+#frameButton_close::before {
+    background:
+        linear-gradient(45deg, transparent 43%, var(--pk-cream) 43% 57%, transparent 57%),
+        linear-gradient(-45deg, transparent 43%, var(--pk-cream) 43% 57%, transparent 57%);
+}
+.frameButton:hover, .frameButton:focus-visible {
+    background-color: var(--pk-red-dark) !important;
+}
+#frameButton_close:hover, #frameButton_close:focus-visible {
+    background-color: var(--pk-ink) !important;
+}
+.frameButton:focus-visible {
+    outline: 3px solid var(--pk-gold) !important;
+    outline-offset: -3px;
+}
+
+/* ---- Piezas comunes (componentes.css de la tienda) ----------------------- */
+.pk-btn, .sc2Btn {
+    --bg: var(--pk-tab); --bg-hover: var(--pk-tab-hover); --fg: var(--pk-ink);
+}
+
+/* =============================================================================
+ * PORTADA
+ * ========================================================================== */
+#landingContainer {
+    font-family: var(--pk-font-body) !important;
+    color: var(--pk-ink) !important;
+    background: none !important;
+}
+#landingContainer :focus-visible {
+    outline: 3px solid var(--pk-gold) !important;
+    outline-offset: 0 !important;
+}
+/* La pantalla crema: un solo marco bajo la cabecera, del que cuelgan todas las vistas. */
+#landingContainer::before {
+    content: '' !important;
+    position: absolute !important;
+    left: var(--pk-lado) !important;
+    right: var(--pk-lado) !important;
+    top: calc(var(--pk-cab) + var(--pk-tabs)) !important;
+    bottom: var(--pk-pie) !important;
+    height: auto !important;
+    background: var(--pk-cream) !important;
+    box-shadow: var(--pk-sh-screen);
+    clip-path: var(--pk-corner-8);
+    z-index: 1 !important;
+}
+
+/* ---- Cabecera: lente + luces, marca, cuenta; pestañas debajo ------------- */
+#landingContainer > #upper {
+    position: absolute !important;
+    left: var(--pk-lado) !important;
+    right: var(--pk-lado) !important;
+    top: 0 !important;
+    height: calc(var(--pk-cab) + var(--pk-tabs)) !important;
+    margin: 0 !important;
+    border: 0 !important;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: var(--pk-cab) var(--pk-tabs);
+    align-items: center;
+    z-index: 3;
+}
+#sc2Brand {
+    position: static !important;
+    grid-column: 1;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px !important;
+}
+#sc2Brand::before {
+    /* Lente azul del PokéNav. */
+    content: '';
+    order: -2;
+    flex: none;
+    width: 40px;
+    height: 40px;
+    background: radial-gradient(circle at 35% 30%, #DDF3FF 0 10%, #5FB7F0 11% 34%, #1E73C8 35% 62%, #0D3F7A 63%);
+    clip-path: var(--pk-corner-12);
+    box-shadow: inset 0 0 0 3px var(--pk-ink), inset 0 0 0 6px var(--pk-cream);
+}
+#sc2Brand::after {
+    /* Tres luces: roja, amarilla y verde (decorativas). */
+    content: '';
+    order: -1;
+    flex: none;
+    align-self: flex-start;
+    margin: 6px 18px 0 4px;
+    width: 58px;
+    height: 16px;
+    background:
+        linear-gradient(#E5383B, #E5383B) 1px 1px / 14px 14px no-repeat,
+        linear-gradient(#F2C230, #F2C230) 22px 1px / 14px 14px no-repeat,
+        linear-gradient(#3BB54A, #3BB54A) 43px 1px / 14px 14px no-repeat,
+        linear-gradient(var(--pk-ink), var(--pk-ink)) 0 0 / 16px 16px no-repeat,
+        linear-gradient(var(--pk-ink), var(--pk-ink)) 21px 0 / 16px 16px no-repeat,
+        linear-gradient(var(--pk-ink), var(--pk-ink)) 42px 0 / 16px 16px no-repeat;
+}
+#image_seal_container {
+    width: 36px !important;
+    height: 36px !important;
+}
+#sc2BrandText {
+    line-height: 1 !important;
+}
+#sc2BrandKicker {
+    font: 700 11px/16px var(--pk-font-pixel) !important;
+    color: var(--pk-cream) !important;
+    letter-spacing: 0 !important;
+    margin: 0 !important;
+    text-transform: uppercase;
+}
+#sc2BrandName {
+    font: 700 21px/24px var(--pk-font-pixel) !important;
+    color: var(--pk-cream) !important;
+    text-shadow: 2px 2px 0 var(--pk-ink);
+    text-transform: uppercase;
+}
+
+/* Pestañas: la barra de la tienda, a lo ancho. */
+#sc2Nav {
+    position: static !important;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    align-self: start;
+    display: flex;
+    gap: 4px !important;
+}
+.sc2Tab {
+    flex: 1;
+    width: auto !important;
+    height: 40px !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 0 14px !important;
+    font: 700 17px/1 var(--pk-font-body) !important;
+    color: var(--pk-ink) !important;
+    background: var(--pk-tab) !important;
+    box-shadow: var(--pk-sh-tab) !important;
+    clip-path: var(--pk-corner-4);
+    transition: background-color .12s ease, transform .08s ease;
+}
+.sc2Tab:hover { background: var(--pk-tab-hover) !important; color: var(--pk-ink) !important; }
+.sc2Tab:active { transform: translateY(2px) !important; }
+.sc2Tab[aria-current] {
+    background: var(--pk-blue-deeper) !important;
+    color: #fff !important;
+    box-shadow: var(--pk-sh-tab-on) !important;
+}
+.sc2Tab:focus-visible, #landingContainer .sc2Tab:focus-visible {
+    outline: 0 !important;
+    box-shadow: var(--pk-sh-focus) !important;
+}
+/* Punto de «hay novedades»: cuadro oro, no círculo naranja. */
+#newsButtonAlert {
+    position: static !important;
+    display: inline-block;
+    width: 10px !important;
+    height: 10px !important;
+    margin-left: 10px;
+    border-radius: 0 !important;
+    background: var(--pk-gold-dark) !important;
+    box-shadow: 0 0 0 2px var(--pk-gold);
+}
+#newsButton { gap: 0; }
+
+/* Ficha de la cuenta: tarjeta de papel. */
+#user_content {
+    position: static !important;
+    grid-column: 3;
+    grid-row: 1;
+    max-width: 300px !important;
+    gap: 12px !important;
+    padding: 7px 14px 7px 8px;
+    min-height: 52px;
+    background: var(--pk-paper);
+    box-shadow: inset 0 0 0 3px var(--pk-ink);
+    clip-path: var(--pk-corner-4);
+    cursor: pointer;
+}
+#user_content:hover { background: #fff; }
+#avatarContainer {
+    width: 36px !important;
+    height: 36px !important;
+    background: var(--pk-tab) !important;
+    box-shadow: inset 0 0 0 2px var(--pk-ink);
+}
+#avatarContainer::before {
+    /* Silueta pixelada de jugador cuando aún no hay cabeza de skin. */
+    content: '';
+    position: absolute;
+    inset: 7px;
+    background: var(--pk-ink);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' shape-rendering='crispEdges'%3E%3Cpath d='M2 0h4v1h1v3H6v1H2V4H1V1h1zM1 6h6v1h1v1H0V7h1z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+#avatarContainer:has(#avatarCabeza:not([hidden]))::before { display: none; }
+#avatarCabeza {
+    left: 3px !important;
+    top: 3px !important;
+    width: calc(100% - 6px) !important;
+    height: calc(100% - 6px) !important;
+}
+#user_text {
+    font: 700 16px/22px var(--pk-font-body) !important;
+    color: var(--pk-ink) !important;
+}
+#user_role {
+    font: 400 14px/20px var(--pk-font-body) !important;
+    color: var(--pk-muted) !important;
+    margin: 0 !important;
+}
+#user_content:hover #user_role { color: var(--pk-blue-deeper) !important; }
+
+/* ---- Cuerpo de la portada (pestaña Jugar) -------------------------------- */
+#landingContainer > #lower {
+    position: absolute !important;
+    left: calc(var(--pk-lado) + var(--pk-pad)) !important;
+    right: calc(var(--pk-lado) + var(--pk-pad)) !important;
+    top: calc(var(--pk-cab) + var(--pk-tabs) + var(--pk-pad)) !important;
+    bottom: calc(var(--pk-pie) + var(--pk-pad)) !important;
+    inset: auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+    grid-template-rows: minmax(14px, .3fr) auto auto auto minmax(14px, .3fr) 12px minmax(262px, 1fr);
+    column-gap: 12px;
+    z-index: 2;
+}
+/* Marco del héroe con el fondo elegido dentro, fundido a crema por la izquierda. */
+#landingContainer > #lower::before,
+#landingContainer > #lower::after {
+    content: '';
+    grid-column: 1 / -1;
+    grid-row: 1 / 6;
+    clip-path: var(--pk-corner-8);
+}
+#landingContainer > #lower::before {
+    background: var(--sc-fondo) center 54% / cover no-repeat, var(--pk-cream);
+    box-shadow: var(--pk-sh-frame);
+    z-index: -1;
+}
+#landingContainer > #lower::after {
+    margin: 9px;
+    background: linear-gradient(90deg, var(--pk-cream) 0 39%, rgba(246, 240, 222, 0) 66%);
+    clip-path: none;
+    z-index: -1;
+}
+#landingContainer > #lower > #left {
+    display: contents !important;
+}
+#sc2Kicker, #sc2Hero, #sc2Sub {
+    grid-column: 1;
+    margin-left: 32px !important;
+    position: relative;
+    max-width: 440px;
+}
+#sc2Kicker {
+    grid-row: 2;
+    font: 800 14px/20px var(--pk-font-body) !important;
+    letter-spacing: .5px !important;
+    color: var(--pk-red) !important;
+    text-transform: uppercase;
+}
+#sc2Hero {
+    grid-row: 3;
+    margin-top: 4px !important;
+    margin-bottom: 8px !important;
+    font: 700 34px/1.2 var(--pk-font-pixel) !important;
+    letter-spacing: 0 !important;
+    color: var(--pk-ink) !important;
+    text-transform: uppercase;
+}
+#sc2Sub {
+    grid-row: 4;
+    margin-top: 0 !important;
+    font: 400 16px/22px var(--pk-font-body) !important;
+    color: var(--pk-ink) !important;
+}
+
+/* Panel de lanzamiento: regiones | perfil, JUGAR debajo, herramientas al pie. */
+#sc2Panel {
+    grid-column: 1;
+    grid-row: 7;
+    width: auto !important;
+    margin: 0 !important;
+    padding: 16px 20px 52px !important;
+    min-height: 0;
+    background: var(--pk-paper);
+    box-shadow: var(--pk-sh-card);
+    clip-path: var(--pk-corner-8);
+    display: grid;
+    grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+    grid-template-rows: auto auto auto;
+    align-content: center;
+    column-gap: 20px;
+    row-gap: 10px;
+}
+#sc2Panel::before { display: none !important; }
+#sc2Panel .sc2Rule { display: none; }
+#server_status_wrapper {
+    grid-column: 1;
+    grid-row: 1;
+    gap: 2px !important;
+    padding-right: 16px;
+    border-right: 2px solid var(--pk-tab);
+    min-width: 0;
+}
+#landingPlayerLabel {
+    font: 800 12px/20px var(--pk-font-body) !important;
+    letter-spacing: .5px !important;
+    color: var(--pk-ink) !important;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+#player_count, .sc2RegionNombre {
+    font: 700 15px/24px var(--pk-font-body) !important;
+    color: var(--pk-ink) !important;
+}
+.sc2RegionValor {
+    font: 400 15px/24px var(--pk-font-body) !important;
+    color: var(--pk-ink) !important;
+    text-align: right;
+    white-space: nowrap;
+}
+#sc2Regiones { gap: 0 !important; }
+.sc2Region {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    gap: 8px;
+}
+#player_count::before, .sc2Region::before {
+    border-radius: 0 !important;
+    background: var(--pk-offer) !important;
+}
+.sc2RegionOff::before { background: var(--pk-red) !important; }
+#sc2Profile {
+    grid-column: 2;
+    grid-row: 1;
+    gap: 8px !important;
+    min-width: 0;
+}
+#server_selection_button {
+    font: 700 18px/23px var(--pk-font-body) !important;
+    color: var(--pk-ink) !important;
+    max-width: 100% !important;
+}
+#profile_hint {
+    font: 400 14px/20px var(--pk-font-body) !important;
+    color: var(--pk-muted) !important;
+    margin-top: 0 !important;
+}
+#sc2ProfileChange {
+    width: auto !important;
+    min-height: 40px;
+    padding: 8px 12px !important;
+}
+
+/* Botones de la marca aplicados a los botones de la portada. */
+#landingContainer .sc2Btn,
+#landingContainer .sc2Link:not(.sc2Tool) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: auto !important;
+    min-height: 44px;
+    padding: 10px 20px !important;
+    font: 700 16px/1.1 var(--pk-font-body) !important;
+    color: var(--fg, var(--pk-ink)) !important;
+    background: var(--bg, var(--pk-tab)) !important;
+    box-shadow: var(--pk-sh-btn) !important;
+    clip-path: var(--pk-corner-4);
+    text-decoration: none;
+    transition: transform .08s ease, background-color .12s ease !important;
+}
+#landingContainer .sc2Btn:hover,
+#landingContainer .sc2Link:not(.sc2Tool):hover { background: var(--bg-hover, var(--pk-tab-hover)) !important; }
+#landingContainer .sc2Btn:active,
+#landingContainer .sc2Link:not(.sc2Tool):active { transform: translateY(3px) !important; padding-top: 10px !important; }
+#landingContainer .sc2Btn:disabled {
+    --bg: var(--pk-disabled); --bg-hover: var(--pk-disabled); --fg: var(--pk-muted);
+    transform: none !important;
+    cursor: not-allowed;
+}
+#landingContainer .sc2Btn:focus-visible,
+#landingContainer .sc2Link:focus-visible {
+    outline: 0 !important;
+    box-shadow: var(--pk-sh-focus) !important;
+}
+
+/* JUGAR: el botón principal azul de la marca, a lo ancho, con flecha. */
+#launch_content {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    margin: 0 !important;
+}
+#launch_button {
+    width: 100% !important;
+    height: 62px !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px !important;
+    background: var(--pk-blue-deep) !important;
+    box-shadow: var(--pk-sh-btn) !important;
+    clip-path: var(--pk-corner-4);
+    color: #fff !important;
+    font: 700 28px/32px var(--pk-font-body) !important;
+    letter-spacing: .5px;
+    cursor: pointer;
+    transition: transform .08s ease, background-color .12s ease !important;
+}
+#launch_button::before {
+    /* La etiqueta sale del aria-label (lo traduce el .ejs), sin cadena en el CSS. */
+    content: attr(aria-label);
+    text-transform: uppercase;
+}
+#launch_button::after {
+    content: '';
+    width: 16px;
+    height: 20px;
+    background: #fff;
+    clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+#launch_button:hover { background: var(--pk-blue-hover) !important; }
+#launch_button:active { transform: translateY(3px) !important; }
+#launch_button:disabled {
+    background: var(--pk-disabled) !important;
+    color: var(--pk-muted) !important;
+    transform: none !important;
+    cursor: not-allowed;
+}
+#launch_button:disabled::after { background: var(--pk-muted); }
+#launch_button:focus-visible { outline: 0 !important; box-shadow: var(--pk-sh-focus) !important; }
+
+/* Progreso de descarga: sustituye a JUGAR (lo muestra landing.js). */
+#launch_details {
+    grid-column: 1 / -1;
+    grid-row: 2 / 4;
+    margin: 0 !important;
+    min-height: 0 !important;
+    gap: 6px;
+}
+#launch_details_text {
+    font: 700 18px/24px var(--pk-font-body) !important;
+    color: var(--pk-ink) !important;
+}
+#launch_details_right { margin-top: 4px !important; }
+#sc2ProgressTrack {
+    width: 100% !important;
+    height: 22px !important;
+    border: 0 !important;
+    border-image: none !important;
+    background: #fff;
+    box-shadow: inset 0 0 0 3px var(--pk-ink);
+    padding: 5px;
+}
+#sc2ProgressFill {
+    height: 12px !important;
+    border: 0 !important;
+    border-image: none !important;
+    min-width: 4px;
+    background: repeating-linear-gradient(90deg, var(--pk-gold) 0 12px, #D9AC3E 12px 16px);
+}
+#sc2ProgressMeta, #sc2DlSpeed {
+    font: 400 14px/20px var(--pk-font-body) !important;
+    color: var(--pk-ink) !important;
+}
+#launch_progress_label { font-weight: 700; }
+#sc2DlSpeed { margin-top: 0 !important; font-weight: 700 !important; }
+
+/* Reparar archivos / ZIP de soporte: enlaces discretos al pie del panel. */
+#sc2Tools {
+    grid-column: 1;
+    grid-row: 7;
+    align-self: end;
+    justify-content: center;
+    gap: 12px !important;
+    margin: 0 0 10px !important;
+    position: relative;
+    z-index: 1;
+}
+.sc2Tool {
+    height: 36px !important;
+    padding: 0 8px !important;
+    background: none !important;
+    box-shadow: none !important;
+    clip-path: none !important;
+    font: 400 14px/1 var(--pk-font-body) !important;
+    color: var(--pk-muted) !important;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    gap: 6px;
+}
+.sc2Tool:hover { color: var(--pk-blue-deeper) !important; }
+.sc2Tool:disabled { opacity: 1 !important; text-decoration: none; cursor: not-allowed; }
+
+/* Iconos de la portada: pixelados en CSS, del color del texto. */
+.sc2LinkIcon {
+    width: 14px !important;
+    height: 14px !important;
+    background: currentColor !important;
+    -webkit-mask: center / contain no-repeat;
+}
+.sc2IconRepair { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' shape-rendering='crispEdges'%3E%3Cpath d='M5 0h2v1h1v2H6v1H5v1H4v1H3v1H2v1H0V6h1V5h1V4h1V3h1V1h1z'/%3E%3C/svg%3E"); }
+.sc2IconZip { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' shape-rendering='crispEdges'%3E%3Cpath d='M1 0h4l2 2v6H1zm1 1v6h4V3H4V1zm1 1h1v1H3zm0 2h1v1H3z'/%3E%3C/svg%3E"); }
+.sc2IconWeb { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' shape-rendering='crispEdges'%3E%3Cpath d='M2 0h4v1h1v1h1v4H7v1H6v1H2V7H1V6H0V2h1V1h1zm0 2v1h4V2zm0 3v1h4V5zM3 1v6h2V1z'/%3E%3C/svg%3E"); }
+.sc2IconShop { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h2v1h6v3H7v1H2v1h5v1H1V1H0z'/%3E%3C/svg%3E"); }
+.sc2IconDiscord { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' shape-rendering='crispEdges'%3E%3Cpath d='M1 1h2v1h2V1h2v1h1v4H7v1H5V6H3v1H1V6H0V2h1zm1 2v1h1V3zm3 0v1h1V3z'/%3E%3C/svg%3E"); }
+
+/* Tarjetas de la derecha: evento en curso y la gran novedad. */
+#landingContainer > #lower > #center {
+    position: static !important;
+    grid-column: 2;
+    grid-row: 7;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+}
+#sc2EventCard, #sc2NewsCard {
+    position: relative !important;
+    inset: auto !important;
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    flex: 1;
+    background: var(--pk-paper) !important;
+    box-shadow: var(--pk-sh-card) !important;
+    clip-path: var(--pk-corner-8);
+    filter: none !important;
+}
+#sc2EventCard[hidden] { display: none !important; }
+#sc2EventCard > *, #sc2NewsCard > * { flex: none; }
+#sc2NewsCard { border: 0 !important; }
+#sc2EventCard {
+    padding: 16px 72px 16px 20px !important;
+    justify-content: center;
+}
+#sc2EventCard::before, #sc2NewsCard::before { display: none !important; }
+#sc2NewsCard {
+    padding: 14px 40px 14px 20px !important;
+    justify-content: center;
+    gap: 2px;
+    cursor: pointer;
+}
+#sc2NewsCard:hover { background: #fff !important; }
+.sc2CardKicker {
+    font: 800 12px/20px var(--pk-font-body) !important;
+    letter-spacing: .5px !important;
+    text-transform: uppercase;
+}
+#sc2NewsCard .sc2CardKicker { color: var(--pk-red) !important; }
+#sc2EventCard .sc2CardKicker, #sc2EventCard.sc2EventLive .sc2CardKicker { color: var(--pk-offer) !important; }
+.sc2EventTitle {
+    margin-top: 0 !important;
+    font: 700 21px/27px var(--pk-font-body) !important;
+    color: var(--pk-ink) !important;
+}
+.sc2CardTitle {
+    margin-top: 0 !important;
+    font: 700 18px/22px var(--pk-font-body) !important;
+    color: var(--pk-ink) !important;
+}
+.sc2CardSub, #sc2EventWhen {
+    margin-top: 0 !important;
+    font: 400 14px/20px var(--pk-font-body) !important;
+    color: var(--pk-muted) !important;
+}
+#sc2EventWhen { font-size: 15px !important; line-height: 21px !important; }
+.sc2EventCount {
+    margin-top: 2px !important;
+    padding-left: 0 !important;
+    background: none !important;
+    font: 700 15px/21px var(--pk-font-body) !important;
+    color: var(--pk-muted) !important;
+}
+.sc2Chevron {
+    right: 16px !important;
+    width: 10px !important;
+    height: 14px !important;
+    margin-top: -7px !important;
+    background: var(--pk-ink) !important;
+    clip-path: polygon(0 0, 40% 0, 100% 50%, 40% 100%, 0 100%, 60% 50%);
+}
+#sc2EventCalendar {
+    right: 20px !important;
+    top: 50% !important;
+    bottom: auto !important;
+    margin-top: -22px;
+    width: 44px !important;
+    height: 44px !important;
+    background: var(--pk-tab) !important;
+    box-shadow: var(--pk-sh-btn) !important;
+    clip-path: var(--pk-corner-4);
+}
+#sc2EventCalendar::before {
+    content: '';
+    position: absolute;
+    inset: 12px;
+    background: var(--pk-ink);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' shape-rendering='crispEdges'%3E%3Cpath d='M3 0h2v2h6V0h2v2h3v14H0V2h3zm-1 6v8h12V6zM4 8h2v2H4zm3 0h2v2H7zm3 0h2v2h-2zM4 11h2v2H4zm3 0h2v2H7z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+#sc2EventCalendar:hover { background: var(--pk-tab-hover) !important; }
+#sc2EventCalendar:active { transform: translateY(3px); }
+#sc2EventCalendar:focus-visible { outline: 0 !important; box-shadow: var(--pk-sh-focus) !important; }
+
+/* ---- Pie: versión, web y accesos -------------------------------------------- */
+#sc2Footer {
+    left: var(--pk-lado) !important;
+    right: var(--pk-lado) !important;
+    height: var(--pk-pie) !important;
+    border: 0 !important;
+}
+#sc_version_badge {
+    font: 400 14px/20px var(--pk-font-body) !important;
+    color: var(--pk-cream) !important;
+    padding-left: 0 !important;
+}
+#sc_version_badge::before {
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 0 !important;
+    background: var(--pk-offer-bg) !important;
+}
+#sc_version_badge[estado="buscando"]::before,
+#sc_version_badge[estado="descargando"]::before { background: var(--pk-tab) !important; }
+#sc_version_badge[estado="lista"]::before { background: var(--pk-gold) !important; }
+#sc_version_badge[estado="lista"] { color: #fff !important; font-weight: 700 !important; text-decoration: underline; }
+#sc2Site {
+    font: 400 14px/20px var(--pk-font-body) !important;
+    color: var(--pk-cream) !important;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+#sc2Links { gap: 8px !important; }
+#landingContainer #sc2Links .sc2Link {
+    --bg: var(--pk-paper); --bg-hover: #fff;
+    min-width: 0 !important;
+    min-height: 36px !important;
+    padding: 6px 14px !important;
+    font-size: 14px !important;
+}
+#sc2Links .sc2LinkIcon { display: none; }
+#landingContainer #sc2Links #tiendaURL { --bg: var(--pk-gold); --bg-hover: var(--pk-gold-hover); }
+#landingContainer #sc2Links .sc2Link:active { padding-top: 6px !important; }
+
+/* =============================================================================
+ * VISTAS DE LA PORTADA: Eventos, Novedades, Galería (ocupan la pantalla crema)
+ * ========================================================================== */
+#sc2EventosView, #sc2GaleriaView, #newsContainer {
+    left: calc(var(--pk-lado) + var(--pk-pad)) !important;
+    right: calc(var(--pk-lado) + var(--pk-pad)) !important;
+    top: calc(var(--pk-cab) + var(--pk-tabs) + var(--pk-pad)) !important;
+    bottom: calc(var(--pk-pie) + var(--pk-pad)) !important;
+}
+#sc2EventosFrame, #sc2GaleriaFrame, #sc2NewsFrame {
+    background: var(--pk-paper) !important;
+    box-shadow: var(--pk-sh-frame) !important;
+    clip-path: var(--pk-corner-8);
+    padding: 20px 24px !important;
+    gap: 14px;
+}
+/* Botones cuadrados de flecha (mes y noticia anterior/siguiente). */
+#sc2CalPrev, #sc2CalNext, #newsNavigateLeft, #newsNavigateRight {
+    position: relative;
+    flex: none;
+    width: 44px !important;
+    height: 44px !important;
+    transform: none !important;
+    background: var(--pk-tab) !important;
+    box-shadow: var(--pk-sh-btn) !important;
+    clip-path: var(--pk-corner-4);
+}
+#sc2CalPrev::before, #sc2CalNext::before, #newsNavigateLeft::before, #newsNavigateRight::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 10px;
+    height: 14px;
+    margin: -7px 0 0 -5px;
+    background: var(--pk-ink);
+    clip-path: polygon(0 0, 40% 0, 100% 50%, 40% 100%, 0 100%, 60% 50%);
+}
+#sc2CalPrev::before, #newsNavigateLeft::before { transform: scaleX(-1); }
+#sc2CalPrev:hover, #sc2CalNext:hover, #newsNavigateLeft:hover, #newsNavigateRight:hover { background: var(--pk-tab-hover) !important; }
+#sc2CalPrev:active, #sc2CalNext:active, #newsNavigateLeft:active, #newsNavigateRight:active { transform: translateY(3px) !important; }
+#sc2CalPrev:focus-visible, #sc2CalNext:focus-visible, #newsNavigateLeft:focus-visible, #newsNavigateRight:focus-visible {
+    outline: 0 !important;
+    box-shadow: var(--pk-sh-focus) !important;
+}
+#sc2CalPrev:disabled, #sc2CalNext:disabled, #newsNavigateLeft:disabled, #newsNavigateRight:disabled {
+    background: var(--pk-disabled) !important;
+    transform: none !important;
+}
+
+/* ---- Eventos: calendario claro, día elegido en azul -------------------- */
+#sc2CalHeader {
+    padding: 0 0 14px !important;
+    border-bottom: 2px solid var(--pk-tab) !important;
+    gap: 12px !important;
+}
+#sc2CalMes {
+    min-width: 0 !important;
+    font: 700 24px/32px var(--pk-font-pixel) !important;
+    color: var(--pk-ink) !important;
+    text-transform: uppercase;
+}
+#sc2CalZona {
+    font: 400 14px/20px var(--pk-font-body) !important;
+    color: var(--pk-muted) !important;
+}
+#sc2CalBody {
+    padding: 4px 0 0 !important;
+    gap: 24px !important;
+}
+#sc2CalGrid {
+    grid-template-columns: repeat(7, 48px) !important;
+    grid-auto-rows: 44px !important;
+    gap: 6px !important;
+}
+.sc2CalSemana {
+    font: 700 14px/20px var(--pk-font-body) !important;
+    color: var(--pk-muted) !important;
+}
+.sc2CalDiaBtn {
+    border: 0 !important;
+    border-image: none !important;
+    background: var(--pk-cream) !important;
+    box-shadow: inset 0 0 0 2px var(--pk-blue) !important;
+    clip-path: var(--pk-corner-4);
+    font: 700 16px/1 var(--pk-font-body) !important;
+    color: var(--pk-ink) !important;
+}
+.sc2CalDiaBtn:hover { background: var(--pk-tab-hover) !important; }
+.sc2CalHoy { box-shadow: inset 0 0 0 3px var(--pk-ink) !important; }
+.sc2CalDiaBtn[aria-selected="true"] {
+    background: var(--pk-blue-deeper) !important;
+    color: #fff !important;
+    box-shadow: inset 0 0 0 3px var(--pk-ink), inset 0 -4px 0 var(--pk-gold) !important;
+}
+.sc2CalDiaBtn:focus-visible { outline: 0 !important; box-shadow: var(--pk-sh-focus) !important; }
+.sc2CalConEvento::after {
+    bottom: 6px !important;
+    width: 5px !important;
+    height: 5px !important;
+    margin-left: -2px !important;
+    border-radius: 0 !important;
+    background: var(--pk-gold-dark) !important;
+}
+.sc2CalDiaBtn[aria-selected="true"].sc2CalConEvento::after { background: var(--pk-gold) !important; }
+#sc2CalDia {
+    padding-left: 24px;
+    border-left: 2px solid var(--pk-tab);
+    gap: 16px !important;
+}
+#sc2CalDiaTitulo {
+    font: 700 22px/28px var(--pk-font-body) !important;
+    color: var(--pk-ink) !important;
+}
+.sc2CalMsg { font: 400 16px/24px var(--pk-font-body) !important; color: var(--pk-muted) !important; }
+.sc2CalEvento {
+    background: none !important;
+    padding: 0 0 0 16px !important;
+    border-left: 4px solid var(--pk-gold-dark) !important;
+}
+.sc2CalEvento.sc2EventLive { border-left-color: var(--pk-offer) !important; }
+.sc2CalEventoNombre { font: 700 21px/27px var(--pk-font-body) !important; color: var(--pk-ink) !important; }
+.sc2CalEventoHora {
+    font: 600 16px/22px var(--pk-font-body) !important;
+    color: var(--pk-blue-deeper) !important;
+}
+.sc2CalEventoDesc { font: 400 17px/25px var(--pk-font-body) !important; color: var(--pk-ink) !important; }
+
+/* ---- Novedades: subpestañas, artículo y listas de notas ----------------- */
+#sc2NewsSwitch {
+    padding: 0 !important;
+    gap: 8px !important;
+    flex: none;
+}
+.sc2NewsSwitchBtn {
+    position: relative;
+    height: 44px !important;
+    padding: 0 18px !important;
+    background: var(--pk-tab) !important;
+    box-shadow: var(--pk-sh-tab) !important;
+    clip-path: var(--pk-corner-4);
+    font: 700 16px/1 var(--pk-font-body) !important;
+    color: var(--pk-ink) !important;
+}
+.sc2NewsSwitchBtn:hover { background: var(--pk-tab-hover) !important; }
+.sc2NewsSwitchBtn[aria-selected="true"] {
+    background: var(--pk-blue-deeper) !important;
+    color: #fff !important;
+    box-shadow: var(--pk-sh-tab-on) !important;
+}
+.sc2NewsSwitchBtn:focus-visible { outline: 0 !important; box-shadow: var(--pk-sh-focus) !important; }
+#sc2NovServPunto, #sc2LauncherPunto {
+    position: static !important;
+    display: inline-block;
+    margin-left: 10px;
+    width: 10px !important;
+    height: 10px !important;
+    border-radius: 0 !important;
+    background: var(--pk-gold-dark) !important;
+    box-shadow: 0 0 0 2px var(--pk-gold);
+}
+#sc2NovServPunto[hidden], #sc2LauncherPunto[hidden] { display: none !important; }
+#newsStatusContainer {
+    padding: 0 0 12px !important;
+    border-bottom: 2px solid var(--pk-tab) !important;
+    align-items: center !important;
+}
+#newsArticleTitle {
+    font: 700 25px/31px var(--pk-font-body) !important;
+    color: var(--pk-ink) !important;
+}
+#newsArticleTitle:hover { color: var(--pk-blue-deeper) !important; }
+#newsMetaContainer, #newsArticleComments {
+    font: 400 14px/20px var(--pk-font-body) !important;
+    color: var(--pk-muted) !important;
+}
+#newsNavigationContainer {
+    font: 600 15px/1 var(--pk-font-body) !important;
+    color: var(--pk-ink) !important;
+}
+#newsArticleContainer { padding: 16px 10px 12px 0 !important; }
+#newsArticleContentScrollable {
+    font: 400 18px/27px var(--pk-font-body) !important;
+    color: var(--pk-ink) !important;
+}
+#newsArticleContentScrollable h1, #newsArticleContentScrollable h2, #newsArticleContentScrollable h3 {
+    color: var(--pk-ink) !important;
+    font-family: var(--pk-font-body);
+}
+#newsArticleContentScrollable a { color: var(--pk-blue-deep) !important; }
+#newsArticleContentScrollable blockquote {
+    border-left: 4px solid var(--pk-blue) !important;
+    color: var(--pk-muted) !important;
+}
+.newsErrorContent { font: 400 16px/24px var(--pk-font-body) !important; color: var(--pk-muted) !important; }
+#newsErrorRetry { width: auto !important; }
+
+#sc2NovServPanel, #sc2ModpackPanel {
+    padding: 4px 10px 4px 0 !important;
+    border-top: 0 !important;
+    gap: 8px !important;
+}
+#sc2NovServTitulo, #sc2ModpackTitulo, #sc2LauncherTitulo {
+    font: 700 25px/31px var(--pk-font-body) !important;
+    color: var(--pk-ink) !important;
+}
+#sc2NovServEstado { font: 600 14px/20px var(--pk-font-body) !important; color: var(--pk-red) !important; }
+#sc2ModpackFecha { font: 400 14px/20px var(--pk-font-body) !important; color: var(--pk-muted) !important; }
+#sc2NovServLista, #sc2LauncherLista { gap: 0 !important; }
+.sc2NovServItem {
+    background: none !important;
+    padding: 12px 0 12px 16px !important;
+    border-left: 4px solid var(--pk-tab) !important;
+    border-top: 2px solid var(--pk-tab);
+}
+.sc2NovServ-pack, .sc2NovServ-movil { border-left-color: var(--pk-offer) !important; }
+.sc2NovServ-launcher, .sc2NovServ-modpack { border-left-color: var(--pk-blue-deep) !important; }
+.sc2NovServ-servidor { border-left-color: var(--pk-gold-dark) !important; }
+.sc2NovServCab { font: 400 14px/20px var(--pk-font-body) !important; }
+.sc2NovServTipo { color: var(--pk-blue-deeper) !important; font-weight: 800 !important; }
+.sc2NovServFecha { color: var(--pk-muted) !important; }
+.sc2NovServNuevo {
+    color: var(--pk-ink) !important;
+    background: var(--pk-gold) !important;
+    clip-path: var(--pk-corner-4);
+    padding: 3px 8px !important;
+}
+.sc2NovServItemTitulo { font: 700 20px/26px var(--pk-font-body) !important; color: var(--pk-ink) !important; }
+.sc2NovServPuntos { font: 400 16px/24px var(--pk-font-body) !important; color: var(--pk-ink) !important; }
+.sc2ModpackItem {
+    background: var(--pk-cream) !important;
+    border-left: 4px solid var(--pk-tab) !important;
+    font: 400 15px/22px var(--pk-font-body) !important;
+    color: var(--pk-ink) !important;
+}
+.sc2Mp-nuevo { border-left-color: var(--pk-offer) !important; }
+.sc2Mp-actualizado, .sc2Mp-pack { border-left-color: var(--pk-blue-deep) !important; }
+.sc2Mp-quitado { border-left-color: var(--pk-red) !important; }
+#sc2NewsCard[data-servidor] .sc2CardKicker, #sc2NewsCard[data-destacada] .sc2CardKicker { color: var(--pk-red) !important; }
+
+/* ---- Galería -------------------------------------------------------------- */
+#sc2GaleriaHeader {
+    padding: 0 0 14px !important;
+    border-bottom: 2px solid var(--pk-tab) !important;
+}
+#sc2GaleriaTitulo { font: 700 24px/32px var(--pk-font-pixel) !important; color: var(--pk-ink) !important; text-transform: uppercase; }
+#sc2GaleriaCuenta { font: 400 14px/20px var(--pk-font-body) !important; color: var(--pk-muted) !important; }
+#sc2GaleriaCarpeta { width: auto !important; }
+#sc2GaleriaGrid { padding: 4px 4px 4px 0 !important; }
+.sc2GaleriaMsg { font: 400 16px/24px var(--pk-font-body) !important; color: var(--pk-muted) !important; }
+.sc2Foto img {
+    outline: 0 !important;
+    box-shadow: 0 0 0 3px var(--pk-ink);
+    background: var(--pk-cream) !important;
+}
+.sc2Foto:hover img { box-shadow: 0 0 0 3px var(--pk-blue-deep); filter: none !important; }
+.sc2FotoPie { font: 400 14px/20px var(--pk-font-body) !important; color: var(--pk-muted) !important; }
+
+/* ---- Aviso de actualización flotante (avisos.js) --------------------------- */
+#scAvisoUpd {
+    width: 560px !important;
+    bottom: 72px !important;
+    padding: 14px 16px 14px 20px !important;
+    border: 0 !important;
+    border-image: none !important;
+    background: var(--pk-paper) !important;
+    box-shadow: var(--pk-sh-card) !important;
+    clip-path: var(--pk-corner-8);
+}
+#scAvisoUpd::before { display: none !important; }
+.scAvisoKicker { font: 800 12px/18px var(--pk-font-body) !important; color: var(--pk-red) !important; text-transform: uppercase; }
+.scAvisoTitulo { font: 700 17px/22px var(--pk-font-body) !important; color: var(--pk-ink) !important; }
+.scAvisoTexto { font: 400 14px/20px var(--pk-font-body) !important; color: var(--pk-muted) !important; }
+.scAvisoAccion {
+    height: auto !important;
+    min-height: 40px;
+    padding: 8px 16px !important;
+    font: 700 15px/1 var(--pk-font-body) !important;
+    color: #fff !important;
+    background: var(--pk-blue-deep) !important;
+    box-shadow: var(--pk-sh-btn) !important;
+    border: 0 !important;
+    border-image: none !important;
+    clip-path: var(--pk-corner-4);
+}
+.scAvisoCerrar { color: var(--pk-muted) !important; }
+.scAvisoCerrar:hover { color: var(--pk-ink) !important; }
+
+/* Cuerpo de la noticia (scnoticias.js): figuras en marco de papel, «Ampliar» legible. */
+#newsArticleContentScrollable { font-family: var(--pk-font-body) !important; }
+#newsArticleContentScrollable :where(h2, h3) { font-size: 24px !important; line-height: 30px !important; }
+#newsArticleContentScrollable b, #newsArticleContentScrollable strong { font-weight: 700 !important; }
+#newsArticleContentScrollable .scNoticiaAbrir {
+    background: var(--pk-cream) !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: inset 0 0 0 3px var(--pk-ink), inset 0 0 0 5px var(--pk-blue);
+    padding: 8px !important;
+}
+#newsArticleContentScrollable .scNoticiaAbrir:hover { box-shadow: inset 0 0 0 3px var(--pk-blue-deep), inset 0 0 0 5px var(--pk-blue); }
+#newsArticleContentScrollable .scNoticiaAbrir:focus-visible { outline: 3px solid var(--pk-gold) !important; outline-offset: 0 !important; }
+#newsArticleContentScrollable .scNoticiaAmpliar {
+    background: var(--pk-tab) !important;
+    border: 0 !important;
+    box-shadow: inset 0 0 0 2px var(--pk-ink);
+    color: var(--pk-ink) !important;
+    font-family: var(--pk-font-body) !important;
+}
+#newsArticleContentScrollable figcaption { font: 600 14px/20px var(--pk-font-body) !important; color: var(--pk-muted) !important; }
+#newsArticleContentScrollable figcaption a { color: var(--pk-blue-deep) !important; }
+
+/* Visor de imagen ampliada: velo navy, como los diálogos. */
+#scNoticiaVisor {
+    inset: var(--sc2-bar) 0 0 !important;
+    background: rgba(20, 34, 56, .92) !important;
+    font-family: var(--pk-font-body) !important;
+    color: var(--pk-cream) !important;
+}
+#scNoticiaVisorTitulo { font: 700 22px/28px var(--pk-font-body) !important; }
+#scNoticiaVisorArticulo, #scNoticiaVisorAyuda { font: 400 14px/20px var(--pk-font-body) !important; color: var(--pk-tab) !important; }
+#scNoticiaLienzo { border-color: rgba(168, 206, 238, .35) !important; }
+#scNoticiaCerrar {
+    height: auto !important;
+    min-height: 44px;
+    min-width: 0 !important;
+    padding: 10px 20px !important;
+    border: 0 !important;
+    border-image: none !important;
+    background: var(--pk-paper) !important;
+    box-shadow: var(--pk-sh-btn);
+    clip-path: var(--pk-corner-4);
+    color: var(--pk-ink) !important;
+    font: 700 16px/1.1 var(--pk-font-body) !important;
+}
+#scNoticiaCerrar:hover { background: #fff !important; }
+#scNoticiaCerrar:focus-visible { outline: 0 !important; box-shadow: var(--pk-sh-focus); }
+
+/* =============================================================================
+ * CONTROLES COMUNES (Ajustes, diálogos, puerta y entrada)
+ * Mismos selectores que scpantallas.css para ganarle sin tocar ese archivo.
+ * ========================================================================== */
+#settingsContainer, #settingsContainer *,
+#overlayContainer, #overlayContainer *,
+#scPuerta, #scPuerta *,
+#loginContainer, #loginContainer *,
+#loginOptionsContainer, #loginOptionsContainer *,
+#welcomeContainer, #welcomeContainer *,
+#waitingContainer, #waitingContainer * {
+    font-family: var(--pk-font-body) !important;
+    font-variant-numeric: normal;
+}
+
+/* Botones: secundario azul claro por defecto. */
+#settingsNavViewLogs, #settingsNavViewLauncherLogs,
+#settingsNavDone, #serverSelectConfirm, #accountSelectConfirm, #overlayAcknowledge,
+#scPuertaBoton, #loginButton, #welcomeButton, #loginOptionMicrosoft, #loginOptionMojang,
+#serverSelectCancel, #accountSelectCancel, #overlayDismiss, #waitingCancelButton,
+.settingsSwitchServerButton, .settingsAddAuthAccount, .settingsAuthAccountSelect:not([selected]),
+.settingsAuthAccountLogOut, .settingsDropinRemoveButton, #settingsRpFolder, #settingsRpImport,
+#settingsShadersImport, .settingsFileSelButton, #settingsUpdateActionButton, .settingsRpDelete {
+    --bg: var(--pk-tab); --bg-hover: var(--pk-tab-hover); --fg: var(--pk-ink);
+    height: auto !important;
+    min-height: 44px;
+    min-width: 0;
+    padding: 10px 20px !important;
+    border: 0 !important;
+    border-image: none !important;
+    background: var(--bg) !important;
+    box-shadow: var(--pk-sh-btn) !important;
+    clip-path: var(--pk-corner-4);
+    color: var(--fg) !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    line-height: 1.1 !important;
+    transition: transform .08s ease, background-color .12s ease !important;
+}
+#settingsNavViewLogs:hover, #settingsNavViewLauncherLogs:hover,
+#settingsNavDone:hover, #serverSelectConfirm:hover, #accountSelectConfirm:hover, #overlayAcknowledge:hover,
+#scPuertaBoton:hover, #loginButton:not(:disabled):hover, #welcomeButton:hover, #loginOptionMicrosoft:hover, #loginOptionMojang:hover,
+#serverSelectCancel:hover, #accountSelectCancel:hover, #overlayDismiss:hover, #waitingCancelButton:hover,
+.settingsSwitchServerButton:hover, .settingsAddAuthAccount:hover, .settingsAuthAccountSelect:not([selected]):hover,
+.settingsAuthAccountLogOut:hover, .settingsDropinRemoveButton:hover, #settingsRpFolder:hover, #settingsRpImport:hover,
+#settingsShadersImport:hover, .settingsFileSelButton:hover, #settingsUpdateActionButton:hover, .settingsRpDelete:hover {
+    background: var(--bg-hover) !important;
+}
+#settingsNavViewLogs:active, #settingsNavViewLauncherLogs:active,
+#settingsNavDone:active, #serverSelectConfirm:active, #accountSelectConfirm:active, #overlayAcknowledge:active,
+#scPuertaBoton:active, #loginButton:not(:disabled):active, #welcomeButton:active, #loginOptionMicrosoft:active, #loginOptionMojang:active,
+#serverSelectCancel:active, #accountSelectCancel:active, #overlayDismiss:active, #waitingCancelButton:active,
+.settingsSwitchServerButton:active, .settingsAddAuthAccount:active, .settingsAuthAccountSelect:not([selected]):active,
+.settingsAuthAccountLogOut:active, .settingsDropinRemoveButton:active, #settingsRpFolder:active, #settingsRpImport:active,
+#settingsShadersImport:active, .settingsFileSelButton:active, #settingsUpdateActionButton:active, .settingsRpDelete:active {
+    transform: translateY(3px) !important;
+}
+/* Principal: azul fuerte con texto blanco. */
+#settingsNavDone, #serverSelectConfirm, #accountSelectConfirm, #overlayAcknowledge,
+#scPuertaBoton, #loginButton, #welcomeButton, #loginOptionMicrosoft {
+    --bg: var(--pk-blue-deep); --bg-hover: var(--pk-blue-hover); --fg: #fff;
+}
+/* Neutros (salir, cancelar, registros): papel. */
+#settingsNavViewLogs, #settingsNavViewLauncherLogs, #serverSelectCancel, #accountSelectCancel,
+#overlayDismiss, #waitingCancelButton {
+    --bg: var(--pk-paper); --bg-hover: #fff;
+}
+/* Quitar / cerrar sesión: papel con texto rojo. */
+.settingsAuthAccountLogOut, .settingsDropinRemoveButton, .settingsRpDelete {
+    --bg: var(--pk-paper); --bg-hover: #fff; --fg: var(--pk-red);
+}
+#settingsNavDone:disabled, #loginButton:disabled, #settingsUpdateActionButton:disabled, #settingsNavDone[disabled] {
+    --bg: var(--pk-disabled); --bg-hover: var(--pk-disabled); --fg: var(--pk-muted);
+    transform: none !important;
+}
+/* Foco: anillo navy + oro por dentro (el clip-path cortaría uno por fuera). */
+#settingsContainer button:focus-visible::after, #overlayContainer button:focus-visible::after,
+#scPuerta button:focus-visible::after, #loginContainer button:focus-visible::after,
+#loginOptionsContainer button:focus-visible::after, #welcomeContainer button:focus-visible::after,
+#waitingContainer button:focus-visible::after {
+    display: none !important;
+}
+#settingsContainer button:focus-visible, #overlayContainer button:focus-visible,
+#scPuerta button:focus-visible, #loginContainer button:focus-visible,
+#loginOptionsContainer button:focus-visible, #welcomeContainer button:focus-visible,
+#waitingContainer button:focus-visible {
+    outline: 0 !important;
+    box-shadow: var(--pk-sh-focus) !important;
+}
+#settingsContainer a:focus-visible, #settingsContainer input:focus-visible,
+#overlayContainer a:focus-visible, #scPuerta a:focus-visible, #loginContainer input:focus-visible,
+.serverListing:focus-visible, .accountListing:focus-visible, .settingsNavItem:focus-visible,
+.settingsShaderRow:focus-visible, .toggleSwitch:focus-within {
+    outline: 3px solid var(--pk-gold) !important;
+    outline-offset: 0 !important;
+}
+
+/* Interruptor: carril de 56×28 con cursor cuadrado, como la tienda. */
+#settingsContainer .toggleSwitch, #loginContainer #checkmarkContainer .scToggle {
+    width: 56px !important;
+    height: 28px !important;
+}
+#settingsContainer .toggleSwitch:focus-within { outline: 0 !important; }
+#settingsContainer .toggleSwitchSlider {
+    background: var(--pk-disabled) !important;
+    box-shadow: inset 0 0 0 3px var(--pk-ink) !important;
+    clip-path: var(--pk-corner-4);
+}
+#settingsContainer .toggleSwitchSlider::before {
+    display: block !important;
+    content: '' !important;
+    position: absolute !important;
+    left: 5px !important;
+    top: 5px !important;
+    bottom: auto !important;
+    width: 18px !important;
+    height: 18px !important;
+    border-radius: 0 !important;
+    background: var(--pk-paper) !important;
+    box-shadow: inset 0 0 0 2px var(--pk-ink) !important;
+    transform: none !important;
+    transition: transform .12s ease !important;
+}
+#settingsContainer .toggleSwitch input:hover + .toggleSwitchSlider { background: #E4E1D6 !important; }
+#settingsContainer .toggleSwitch input:checked + .toggleSwitchSlider,
+#settingsContainer .toggleSwitch input:checked:hover + .toggleSwitchSlider { background: var(--pk-blue-deep) !important; }
+#settingsContainer .toggleSwitch input:checked + .toggleSwitchSlider::before { transform: translateX(28px) !important; }
+#settingsContainer .toggleSwitch input:focus-visible + .toggleSwitchSlider { box-shadow: var(--pk-sh-focus) !important; }
+#settingsContainer .toggleSwitch input:disabled + .toggleSwitchSlider,
+#settingsContainer .toggleSwitch[reqmod] .toggleSwitchSlider { background: var(--pk-blue) !important; opacity: .6; }
+#settingsContainer .toggleSwitch input:disabled:not(:checked) + .toggleSwitchSlider { background: var(--pk-disabled) !important; }
+
+/* Campos de texto: blanco con borde navy de 3 px. */
+#settingsContainer input[type=text], #settingsContainer input[type=number],
+#loginContainer .loginField {
+    height: 48px !important;
+    padding: 10px 14px !important;
+    border: 0 !important;
+    border-image: none !important;
+    background: #fff !important;
+    box-shadow: var(--pk-sh-input) !important;
+    clip-path: var(--pk-corner-4);
+    color: var(--pk-ink) !important;
+    font-size: 16px !important;
+}
+#settingsContainer input[type=text]:focus, #settingsContainer input[type=number]:focus,
+#loginContainer .loginField:focus {
+    outline: 0 !important;
+    box-shadow: var(--pk-sh-focus) !important;
+}
+#settingsContainer input[type=number][error], #loginContainer .loginField[error] {
+    box-shadow: inset 0 0 0 3px var(--pk-red), inset 0 6px 0 rgba(22, 35, 62, .08) !important;
+}
+#settingsContainer input[type=text]:disabled {
+    background: var(--pk-disabled) !important;
+    color: var(--pk-muted) !important;
+}
+
+/* Barras de scroll: carril crema, pulgar azul. */
+#settingsContainer ::-webkit-scrollbar, #overlayContainer ::-webkit-scrollbar,
+#landingContainer ::-webkit-scrollbar { width: 12px !important; }
+#settingsContainer ::-webkit-scrollbar-track, #overlayContainer ::-webkit-scrollbar-track,
+#landingContainer ::-webkit-scrollbar-track {
+    display: block !important;
+    background: var(--pk-cream) !important;
+    border-left: 0 !important;
+    box-shadow: inset 2px 0 0 var(--pk-tab);
+}
+#settingsContainer ::-webkit-scrollbar-thumb, #overlayContainer ::-webkit-scrollbar-thumb,
+#landingContainer ::-webkit-scrollbar-thumb {
+    border: 2px solid var(--pk-cream) !important;
+    border-radius: 0 !important;
+    background: var(--pk-blue) !important;
+    min-height: 32px;
+}
+#settingsContainer ::-webkit-scrollbar-thumb:hover, #overlayContainer ::-webkit-scrollbar-thumb:hover,
+#landingContainer ::-webkit-scrollbar-thumb:hover { background: var(--pk-blue-deep) !important; }
+
+/* =============================================================================
+ * AJUSTES: título en la carcasa, menú y panel en la pantalla crema
+ * ========================================================================== */
+#settingsContainer {
+    inset: 0 var(--pk-lado) 16px !important;
+    grid-template-columns: 192px minmax(0, 1fr) !important;
+    column-gap: 20px !important;
+    padding: 0 16px 16px !important;
+    border: 0 !important;
+    border-image: none !important;
+    background: none !important;
+    color: var(--pk-ink) !important;
+    isolation: isolate;
+}
+#settingsContainer::before {
+    /* Pantalla crema bajo la cabecera roja. */
+    display: block !important;
+    content: '' !important;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 76px;
+    bottom: 0;
+    width: auto !important;
+    height: auto !important;
+    opacity: 1 !important;
+    background: var(--pk-cream) !important;
+    box-shadow: var(--pk-sh-screen);
+    clip-path: var(--pk-corner-8);
+    z-index: -1;
+}
+#settingsContainer > * { position: relative; }
+#scAjustesCabecera {
+    height: 76px;
+    margin: 0 -16px 16px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    color: var(--pk-cream);
+}
+#scAjustesTitulo {
+    font: 700 28px/34px var(--pk-font-pixel) !important;
+    letter-spacing: 0 !important;
+    color: var(--pk-cream) !important;
+    text-shadow: 2px 2px 0 var(--pk-ink);
+    text-transform: uppercase;
+}
+#scAjustesDesc {
+    margin: 2px 0 0 !important;
+    font-size: 16px !important;
+    color: var(--pk-cream) !important;
+}
+#scAjustesMarca, .scEntradaMarca { opacity: 1 !important; }
+#scAjustesMarca img { width: 36px !important; height: 36px !important; }
+#scAjustesMarca small {
+    font: 700 11px/16px var(--pk-font-pixel) !important;
+    letter-spacing: 0 !important;
+    color: var(--pk-cream) !important;
+}
+#scAjustesMarca b {
+    font: 700 21px/24px var(--pk-font-pixel) !important;
+    letter-spacing: 0 !important;
+    color: var(--pk-cream) !important;
+    text-shadow: 2px 2px 0 var(--pk-ink);
+    text-transform: uppercase;
+}
+
+/* Menú lateral: pestañas de la tienda en columna. */
+#settingsContainerLeft {
+    padding: 0 !important;
+    border-right: 0 !important;
+}
+#settingsNavItemsContent { gap: 4px !important; }
+.settingsNavItem {
+    height: 40px !important;
+    flex: none;
+    padding: 0 16px !important;
+    border: 0 !important;
+    border-image: none !important;
+    background: var(--pk-tab) !important;
+    box-shadow: var(--pk-sh-tab) !important;
+    clip-path: var(--pk-corner-4);
+    color: var(--pk-ink) !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    transition: background-color .12s ease !important;
+}
+.settingsNavItem:hover { background: var(--pk-tab-hover) !important; color: var(--pk-ink) !important; }
+.settingsNavItem[selected] {
+    background: var(--pk-blue-deeper) !important;
+    color: #fff !important;
+    box-shadow: var(--pk-sh-tab-on) !important;
+}
+.settingsNavItem[selected]::before { display: none !important; }
+.settingsNavItem:focus-visible { outline: 0 !important; box-shadow: var(--pk-sh-focus) !important; }
+#settingsNavContentBottom { gap: 6px !important; padding-top: 12px !important; }
+#settingsNavViewLogs, #settingsNavViewLauncherLogs {
+    min-height: 40px !important;
+    padding: 8px !important;
+    font-size: 14px !important;
+}
+#settingsNavDone { min-height: 44px !important; margin-top: 2px !important; }
+
+/* Panel derecho. */
+#settingsContainer .settingsTab {
+    padding: 8px 12px 20px 4px !important;
+}
+.settingsTabHeader { margin: 0 0 20px !important; }
+.settingsTabHeaderText {
+    font-size: 26px !important;
+    line-height: 32px;
+    letter-spacing: 0 !important;
+    color: var(--pk-ink) !important;
+}
+.settingsTabHeaderDesc { margin-top: 4px; font-size: 16px !important; color: var(--pk-muted) !important; }
+#settingsContainer .settingsFieldContainer {
+    padding: 14px 0 !important;
+    border-bottom: 2px solid var(--pk-tab) !important;
+}
+#settingsContainer .settingsFieldTitle { font-size: 18px !important; font-weight: 700 !important; line-height: 24px; color: var(--pk-ink) !important; }
+#settingsContainer .settingsFieldDesc { margin-top: 4px; max-width: 600px; font-size: 14px !important; line-height: 21px; color: var(--pk-muted) !important; }
+
+/* Tarjeta del perfil activo (Mods y Java). */
+#settingsContainer .settingsSelServContainer {
+    padding: 14px 16px !important;
+    margin: 0 0 16px !important;
+    border: 0 !important;
+    border-image: none !important;
+    background: var(--pk-paper) !important;
+    box-shadow: var(--pk-sh-card) !important;
+    clip-path: var(--pk-corner-8);
+}
+#settingsContainer .settingsSelServContent .serverListingImg { width: 48px !important; height: 48px !important; image-rendering: pixelated; }
+#settingsContainer .settingsSelServContent .serverListingName { font-size: 18px !important; font-weight: 700 !important; color: var(--pk-ink) !important; }
+#settingsContainer .settingsSelServContent .serverListingDescription { font-size: 14px !important; color: var(--pk-muted) !important; }
+#settingsContainer .settingsSelServContent .serverListingVersion,
+#settingsContainer .settingsAuthAccountSelect[selected],
+.settingsRpBadge, .settingsShaderActive,
+#settingsAboutCurrentVersion, #settingsUpdateVersion {
+    padding: 4px 8px !important;
+    background: var(--pk-blue-deeper) !important;
+    color: #fff !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    clip-path: var(--pk-corner-4);
+}
+#settingsAboutCurrentVersionCheck, #settingsUpdateVersionCheck,
+#settingsAboutCurrentVersionTitle, #settingsAboutCurrentVersionLine,
+#settingsUpdateVersionTitle, #settingsUpdateVersionLine,
+#settingsAboutCurrentVersionLine *, #settingsUpdateVersionLine * {
+    color: #fff !important;
+    font-size: 13px !important;
+}
+
+/* Minecraft: calidad (tres tarjetas elegibles) y resolución. */
+#settingsCalidadContainer, #settingsGameResolutionContainer, .settingsAuthAccountTypeContainer,
+#settingsMemoryContainer, #settingsContainer .settingsFileSelContainer, #settingsJVMOptsContainer,
+#settingsContainer .settingsChangelogContainer {
+    border-bottom: 2px solid var(--pk-tab) !important;
+}
+#settingsCalidadBotones { gap: 12px !important; margin-top: 12px !important; }
+#settingsContainer .settingsCalidad {
+    height: 76px !important;
+    gap: 6px;
+    border: 0 !important;
+    border-image: none !important;
+    background: var(--pk-paper) !important;
+    box-shadow: inset 0 0 0 3px var(--pk-ink), inset 0 0 0 5px var(--pk-blue) !important;
+    clip-path: var(--pk-corner-8);
+    color: var(--pk-ink) !important;
+}
+#settingsContainer .settingsCalidad span { font-size: 18px !important; font-weight: 700 !important; }
+#settingsContainer .settingsCalidad small { font-size: 14px !important; color: var(--pk-muted); opacity: 1; }
+#settingsContainer .settingsCalidad:hover { background: #fff !important; }
+#settingsContainer .settingsCalidad:active { transform: translateY(2px); }
+#settingsContainer .settingsCalidad[selected] {
+    background: var(--pk-tab) !important;
+    box-shadow: inset 0 0 0 3px var(--pk-ink), inset 0 -7px 0 var(--pk-gold) !important;
+}
+#settingsContainer .settingsCalidad[selected] span::before { content: '✓ '; }
+#settingsContainer .settingsCalidad[selected] small { color: var(--pk-ink); }
+#settingsCalidadEstado { font-size: 14px !important; color: var(--pk-blue-deeper) !important; font-weight: 600; }
+#settingsGameResolutionContent { gap: 12px !important; }
+#settingsContainer #settingsGameWidth, #settingsContainer #settingsGameHeight { width: 120px !important; }
+#settingsGameResolutionCross { font-size: 16px !important; font-weight: 700; color: var(--pk-ink) !important; }
+
+/* Cuenta. */
+.settingsAuthAccountTypeHeaderLeft { font-size: 20px !important; color: var(--pk-ink) !important; }
+#settingsContainer .settingsAddAuthAccount { min-height: 40px !important; padding: 8px 14px !important; font-size: 15px !important; }
+#settingsContainer .settingsAuthAccount {
+    padding: 14px 16px !important;
+    border: 0 !important;
+    border-image: none !important;
+    background: var(--pk-paper) !important;
+    box-shadow: var(--pk-sh-card) !important;
+    clip-path: var(--pk-corner-8);
+}
+#settingsContainer .settingsAuthAccountDetailTitle { font-size: 14px !important; color: var(--pk-muted) !important; }
+#settingsContainer .settingsAuthAccountDetailPane:first-child .settingsAuthAccountDetailValue { font-size: 18px !important; font-weight: 700 !important; color: var(--pk-ink) !important; }
+#settingsContainer .settingsAuthAccountDetailPane:last-child .settingsAuthAccountDetailValue { font-size: 13px !important; color: var(--pk-muted) !important; }
+#settingsContainer .settingsAuthAccountSelect, #settingsContainer .settingsAuthAccountLogOut { min-height: 40px !important; padding: 8px 14px !important; font-size: 15px !important; }
+
+/* Mods. */
+#settingsContainer .settingsModsHeader {
+    margin: 20px 0 8px !important;
+    font-size: 20px !important;
+    letter-spacing: 0 !important;
+    color: var(--pk-ink) !important;
+}
+#settingsContainer .settingsModContent {
+    margin: 0 0 6px !important;
+    padding: 10px 16px !important;
+    border-bottom: 0 !important;
+    background: var(--pk-paper) !important;
+    box-shadow: inset 0 0 0 2px var(--pk-blue) !important;
+    clip-path: var(--pk-corner-4);
+}
+#settingsContainer .settingsSubModContainer .settingsModContent { background: var(--pk-cream) !important; }
+#settingsContainer .settingsModStatus { width: 8px !important; height: 8px !important; border-radius: 0 !important; background: var(--pk-muted) !important; }
+#settingsContainer .settingsBaseMod[enabled] > .settingsModContent .settingsModStatus { background: var(--pk-offer) !important; }
+#settingsContainer .settingsModName { font-size: 16px !important; font-weight: 700 !important; color: var(--pk-ink) !important; }
+#settingsContainer .settingsModVersion { font-size: 13px !important; color: var(--pk-muted) !important; }
+#settingsContainer .settingsDropinRemoveButton { min-height: 36px !important; padding: 6px 12px !important; font-size: 14px !important; }
+#settingsContainer #settingsDropinFileSystemButton {
+    padding: 16px !important;
+    border: 0 !important;
+    border-image: none !important;
+    background: var(--pk-paper) !important;
+    box-shadow: inset 0 0 0 3px var(--pk-blue) !important;
+    outline: 3px dashed var(--pk-blue);
+    outline-offset: -9px;
+    color: var(--pk-ink) !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+}
+#settingsContainer #settingsDropinFileSystemButton:hover,
+#settingsContainer #settingsDropinFileSystemButton[drag] { background: var(--pk-tab-hover) !important; }
+#settingsDropinRefreshNote { font-size: 14px !important; color: var(--pk-muted) !important; }
+
+/* Paquetes y shaders. */
+#settingsRpListTitle, #settingsShadersListTitle { font-size: 20px !important; color: var(--pk-ink) !important; }
+#settingsRpActions { gap: 8px !important; }
+#settingsRpFolder, #settingsRpImport, #settingsShadersImport { min-height: 40px !important; padding: 8px 14px !important; font-size: 15px !important; }
+#settingsRpList, #settingsShadersList { gap: 8px !important; }
+.settingsRpRow {
+    padding: 12px 16px !important;
+    border-bottom: 0 !important;
+    background: var(--pk-paper) !important;
+    box-shadow: inset 0 0 0 2px var(--pk-blue) !important;
+    clip-path: var(--pk-corner-4);
+}
+.settingsRpName, .settingsShaderName { font-size: 16px !important; font-weight: 700 !important; color: var(--pk-ink) !important; }
+.settingsRpFile, .settingsShaderFile { font-size: 13px !important; color: var(--pk-muted) !important; }
+.settingsRpDelete { min-height: 36px !important; padding: 6px 12px !important; font-size: 14px !important; }
+.settingsRpEmpty, #settingsRpHint, #settingsShadersHint { font-size: 14px !important; line-height: 21px !important; color: var(--pk-muted) !important; }
+#settingsRpGameNotice, #settingsShadersNotice {
+    padding: 12px 16px !important;
+    border-left: 0 !important;
+    background: var(--pk-paper) !important;
+    box-shadow: inset 4px 0 0 var(--pk-gold-dark);
+    color: var(--pk-ink) !important;
+    font-size: 14px !important;
+    line-height: 22px;
+}
+.settingsShaderRow {
+    min-height: 60px;
+    padding: 10px 16px !important;
+    border: 0 !important;
+    border-image: none !important;
+    background: var(--pk-paper) !important;
+    box-shadow: inset 0 0 0 3px var(--pk-ink), inset 0 0 0 5px var(--pk-blue) !important;
+    clip-path: var(--pk-corner-8);
+}
+.settingsShaderRow:hover { background: #fff !important; }
+.settingsShaderRow[selected] {
+    background: var(--pk-tab-hover) !important;
+    box-shadow: inset 0 0 0 3px var(--pk-ink), inset 0 5px 0 var(--pk-gold) !important;
+}
+.settingsShaderRadio {
+    width: 22px !important;
+    height: 22px !important;
+    border: 0 !important;
+    background: var(--pk-paper) !important;
+    box-shadow: inset 0 0 0 2px var(--pk-ink) !important;
+}
+.settingsShaderRow[selected] .settingsShaderRadio { background: var(--pk-blue-deep) !important; box-shadow: inset 0 0 0 2px var(--pk-ink), inset 0 0 0 5px var(--pk-paper) !important; }
+.settingsShaderRow[selected] .settingsShaderRadio::after { display: none; }
+
+/* Java: memoria. */
+#settingsMemoryTitle, .settingsFileSelTitle, #settingsJVMOptsTitle { font-size: 20px !important; letter-spacing: 0 !important; color: var(--pk-ink) !important; }
+.settingsMemoryHeader { font-size: 16px !important; font-weight: 700 !important; color: var(--pk-ink) !important; }
+#settingsContainer .rangeSlider::before { border: 0 !important; background: #fff !important; box-shadow: inset 0 0 0 3px var(--pk-ink); height: 12px !important; top: 4px !important; }
+#settingsContainer .rangeSliderBar { background: var(--pk-blue-deep) !important; top: 7px !important; height: 6px !important; left: 3px !important; }
+#settingsContainer .rangeSliderTrack {
+    width: 22px !important;
+    height: 28px !important;
+    margin-left: -11px;
+    top: -4px !important;
+    background: var(--pk-tab) !important;
+    box-shadow: var(--pk-sh-btn) !important;
+    clip-path: var(--pk-corner-4);
+}
+#settingsContainer .rangeSliderTrack:hover { background: var(--pk-tab-hover) !important; }
+#settingsContainer .rangeSlider[disabled] .rangeSliderTrack { background: var(--pk-disabled) !important; }
+.settingsMemoryLabel { font-size: 18px !important; font-weight: 700 !important; color: var(--pk-blue-deeper) !important; }
+#settingsMemoryDesc { font-size: 14px !important; color: var(--pk-muted) !important; }
+#settingsMemoryStatus {
+    border-left: 0 !important;
+    background: var(--pk-tab) !important;
+    clip-path: var(--pk-corner-4);
+}
+.settingsMemoryStatusTitle { font-size: 14px !important; color: var(--pk-ink) !important; }
+.settingsMemoryStatusValue { font-size: 24px !important; font-weight: 700 !important; color: var(--pk-ink) !important; }
+#settingsJavaExecDetails { font-size: 14px !important; color: var(--pk-muted) !important; }
+#settingsDataDirTitle { font-size: 18px !important; font-weight: 700 !important; color: var(--pk-ink) !important; }
+#settingsContainer .settingsFileSelDesc, #settingsJVMOptsDesc { font-size: 14px !important; line-height: 21px !important; color: var(--pk-muted) !important; }
+#settingsContainer .settingsFileSelDesc strong { color: var(--pk-ink) !important; }
+#settingsJvmOptsLink, #settingsContainer .settingsChangelogText a, .sc-relnote-body a { color: var(--pk-blue-deep) !important; }
+
+/* Acerca de y Actualizaciones. */
+#settingsAboutCurrentContainer, #settingsUpdateStatusContainer {
+    padding: 16px 20px !important;
+    border: 0 !important;
+    border-image: none !important;
+    background: var(--pk-paper) !important;
+    box-shadow: var(--pk-sh-card) !important;
+    clip-path: var(--pk-corner-8);
+}
+#settingsAboutTitle, #settingsUpdateTitle { font-size: 22px !important; color: var(--pk-ink) !important; }
+#settingsContainer .settingsAboutButton { color: var(--pk-blue-deep) !important; font-size: 15px !important; font-weight: 600; }
+#settingsUpdateActionContainer { border-top: 2px solid var(--pk-tab) !important; }
+#settingsUpdateAutoHint { font-size: 14px !important; color: var(--pk-muted) !important; }
+#settingsContainer .settingsChangelogLabel, #settingsAboutHistoryLabel, #settingsAboutStatsTitle {
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    color: var(--pk-red) !important;
+}
+#settingsContainer .settingsChangelogTitle { font-size: 20px !important; color: var(--pk-ink) !important; }
+#settingsContainer .settingsChangelogText, .sc-relnote-body { font-size: 16px !important; line-height: 24px !important; color: var(--pk-ink) !important; }
+.sc-relnote { border-bottom: 2px solid var(--pk-tab) !important; }
+.sc-relnote summary { font-size: 16px !important; font-weight: 700 !important; color: var(--pk-ink) !important; }
+.sc-stat-num { font-size: 26px !important; color: var(--pk-ink); }
+.sc-stat-label { font-size: 14px !important; color: var(--pk-muted) !important; }
+
+/* ---- Ajustes → Launcher: tarjetas del selector de fondo ------------------- */
+#settingsContainer #settingsTabLauncher .scFondoTitulo { font-size: 20px !important; font-weight: 700 !important; color: var(--pk-ink) !important; }
+#settingsContainer #settingsTabLauncher .scFondoAyuda,
+#settingsContainer #settingsTabLauncher .scFondoCantidad { font-size: 14px !important; color: var(--pk-muted) !important; }
+#settingsContainer #settingsTabLauncher .scFondoTarjeta {
+    border: 0 !important;
+    border-radius: 0 !important;
+    padding: 7px !important;
+    background: var(--pk-paper) !important;
+    box-shadow: inset 0 0 0 3px var(--pk-ink), inset 0 0 0 6px var(--pk-blue) !important;
+    clip-path: var(--pk-corner-8);
+    color: var(--pk-ink) !important;
+}
+#settingsContainer #settingsTabLauncher .scFondoTarjeta:hover:not([aria-disabled=true]) { background: #fff !important; }
+#settingsContainer #settingsTabLauncher .scFondoTarjeta[aria-checked=true] {
+    background: var(--pk-tab-hover) !important;
+    box-shadow: inset 0 0 0 3px var(--pk-ink), inset 0 0 0 6px var(--pk-blue), inset 0 -10px 0 var(--pk-gold) !important;
+}
+#settingsContainer #settingsTabLauncher .scFondoTarjeta:focus,
+#settingsContainer #settingsTabLauncher .scFondoTarjeta:focus-visible { outline: 0 !important; box-shadow: var(--pk-sh-focus) !important; }
+#settingsContainer #settingsTabLauncher .scFondoMiniatura { background: var(--pk-cream) !important; border-radius: 0 !important; }
+#settingsContainer #settingsTabLauncher .scFondoNuevo {
+    background: var(--pk-gold) !important;
+    color: var(--pk-ink) !important;
+    border-radius: 0 !important;
+    clip-path: var(--pk-corner-4);
+    font-weight: 700 !important;
+}
+#settingsContainer #settingsTabLauncher .scFondoVelo { background: rgba(20, 34, 56, .72) !important; color: var(--pk-cream) !important; }
+#settingsContainer #settingsTabLauncher .scFondoProgreso { background: #fff !important; }
+#settingsContainer #settingsTabLauncher .scFondoProgreso > span { background: var(--pk-gold) !important; }
+#settingsContainer #settingsTabLauncher .scFondoNombre { font-size: 16px !important; font-weight: 700 !important; color: var(--pk-ink) !important; }
+#settingsContainer #settingsTabLauncher .scFondoFecha { font-size: 14px !important; color: var(--pk-muted) !important; }
+#settingsContainer #settingsTabLauncher .scFondoEstado { border-top: 2px solid var(--pk-tab) !important; font-size: 14px !important; color: var(--pk-muted) !important; }
+#settingsContainer #settingsTabLauncher .scFondoEnUso,
+#settingsContainer #settingsTabLauncher .scFondoTarjeta[data-estado=descargando] .scFondoEstado { color: var(--pk-blue-deeper) !important; font-weight: 700; }
+
+/* =============================================================================
+ * DIÁLOGOS: selector de perfil, de cuenta y avisos (velo navy sin desenfoque)
+ * ========================================================================== */
+#overlayContainer {
+    top: var(--sc2-bar) !important;
+    height: calc(100% - var(--sc2-bar)) !important;
+    padding: 28px !important;
+    background: rgba(20, 34, 56, .72) !important;
+}
+#serverSelectContent, #accountSelectContent, #overlayContent {
+    width: 720px !important;
+    padding: 28px !important;
+    border: 0 !important;
+    border-image: none !important;
+    background: var(--pk-paper) !important;
+    box-shadow: var(--pk-sh-frame) !important;
+    clip-path: var(--pk-corner-8);
+    color: var(--pk-ink) !important;
+    filter: drop-shadow(6px 6px 0 var(--pk-night));
+}
+#serverSelectContent { width: 940px !important; padding: 24px 28px !important; }
+#serverSelectHeader, #accountSelectHeader, #overlayTitle {
+    font-family: var(--pk-font-pixel) !important;
+    font-size: 25px !important;
+    font-weight: 700 !important;
+    line-height: 1.35 !important;
+    letter-spacing: 0 !important;
+    color: var(--pk-ink) !important;
+    text-transform: uppercase !important;
+}
+#serverSelectHeader, #accountSelectHeader { padding-bottom: 16px !important; }
+#serverSelectPista { font-size: 15px !important; color: var(--pk-muted) !important; }
+#serverSelectPista b { color: var(--pk-ink) !important; }
+#serverSelectListScrollable, #accountSelectListScrollable { gap: 12px !important; padding: 2px !important; }
+
+/* Filas de perfil: tarjeta crema, la elegida en azul claro con franja oro. */
+#overlayContainer .serverListing, #overlayContainer .accountListing {
+    padding: 14px 16px !important;
+    border: 0 !important;
+    border-image: none !important;
+    background: var(--pk-cream) !important;
+    box-shadow: inset 0 0 0 3px var(--pk-ink), inset 0 0 0 5px var(--pk-blue) !important;
+    clip-path: var(--pk-corner-8);
+    color: var(--pk-ink) !important;
+}
+#overlayContainer .serverListing { height: auto !important; min-height: 92px !important; }
+#overlayContainer .serverListing:hover, #overlayContainer .accountListing:hover { background: var(--pk-paper) !important; }
+#overlayContainer .serverListing[selected], #overlayContainer .accountListing[selected] {
+    background: var(--pk-tab-hover) !important;
+    box-shadow: inset 0 0 0 3px var(--pk-ink), inset 0 5px 0 var(--pk-gold) !important;
+}
+#overlayContainer .serverListing:focus-visible, #overlayContainer .accountListing:focus-visible {
+    outline: 0 !important;
+    box-shadow: var(--pk-sh-focus) !important;
+}
+#overlayContainer .serverListingImg { width: 64px !important; height: 64px !important; image-rendering: pixelated; }
+#overlayContainer .serverListingName { font-size: 24px !important; line-height: 30px !important; letter-spacing: 0 !important; color: var(--pk-ink) !important; }
+#overlayContainer .serverListingName small { font-size: 15px !important; font-weight: 700 !important; color: var(--pk-muted) !important; }
+#overlayContainer .serverListingDescription {
+    font-size: 15px !important;
+    line-height: 22px !important;
+    color: var(--pk-ink) !important;
+    white-space: normal !important;
+}
+#overlayContainer .serverListingRecomendado, .scPerfilElegido {
+    padding: 4px 8px !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    clip-path: var(--pk-corner-4);
+}
+#overlayContainer .serverListingRecomendado { background: var(--pk-gold) !important; color: var(--pk-ink) !important; }
+.scPerfilElegido { background: var(--pk-blue-deeper) !important; color: #fff !important; }
+.scPerfilVersion { font-size: 14px !important; font-weight: 700 !important; color: var(--pk-muted) !important; }
+.scPerfilMarca, #overlayContainer .accountListing::after {
+    width: 24px !important;
+    height: 24px !important;
+    border: 0 !important;
+    background: var(--pk-paper) !important;
+    box-shadow: inset 0 0 0 2px var(--pk-ink);
+    clip-path: var(--pk-corner-4);
+}
+#overlayContainer .serverListing[selected] .scPerfilMarca,
+#overlayContainer .accountListing[selected]::after {
+    background: var(--pk-blue-deep) !important;
+    box-shadow: inset 0 0 0 2px var(--pk-ink), inset 0 0 0 5px var(--pk-paper);
+    color: transparent !important;
+}
+#overlayContainer .serverListing[selected] .scPerfilMarca::after { content: '' !important; }
+#overlayContainer .accountListingName { font-size: 18px !important; font-weight: 700 !important; color: var(--pk-ink) !important; }
+
+#serverSelectActions, #accountSelectActions, #overlayActionContainer {
+    gap: 12px !important;
+    margin-top: 16px !important;
+    padding-top: 16px !important;
+    border-top: 2px solid var(--pk-tab) !important;
+}
+#serverSelectConfirm, #accountSelectConfirm, #overlayAcknowledge { min-width: 200px !important; min-height: 48px !important; }
+#serverSelectCancel, #accountSelectCancel, #overlayDismiss { min-height: 48px !important; }
+
+/* Aviso: icono cuadrado con su letra y etiqueta de tipo (no solo color). */
+#scAvisoCabecera { gap: 16px !important; padding-bottom: 16px !important; align-items: center !important; }
+#scAvisoIcono {
+    width: 52px !important;
+    height: 52px !important;
+    border: 0 !important;
+    background: var(--pk-tab) !important;
+    box-shadow: inset 0 0 0 3px var(--pk-ink);
+    clip-path: var(--pk-corner-4);
+    color: var(--pk-ink) !important;
+    font: 800 30px/1 var(--pk-font-body) !important;
+}
+#overlayContent[tipo="atencion"] #scAvisoIcono { background: var(--pk-gold) !important; color: var(--pk-ink) !important; }
+#overlayContent[tipo="error"] #scAvisoIcono { background: var(--pk-red) !important; color: var(--pk-cream) !important; }
+#overlayContent[tipo="atencion"], #overlayContent[tipo="error"] { border-image: none !important; }
+#overlayContent[tipo="error"] { box-shadow: inset 0 0 0 3px var(--pk-ink), inset 0 0 0 7px var(--pk-red), inset 0 0 0 9px var(--pk-line) !important; }
+#overlayContent[tipo="atencion"] { box-shadow: inset 0 0 0 3px var(--pk-ink), inset 0 0 0 7px var(--pk-gold-dark), inset 0 0 0 9px var(--pk-line) !important; }
+.scAvisoTipo { font-size: 14px !important; font-weight: 700; color: var(--pk-muted) !important; }
+#overlayContent[tipo="error"] .scAvisoTipo { color: var(--pk-red) !important; }
+#overlayDesc {
+    font-size: 18px !important;
+    line-height: 28px !important;
+    color: var(--pk-ink) !important;
+}
+#overlayDesc b, #overlayDesc strong { color: var(--pk-ink) !important; font-weight: 700 !important; }
+#overlayDesc a { color: var(--pk-blue-deep) !important; }
+#overlayDesc .sc-ruta, #overlayDesc code {
+    border-left: 0 !important;
+    background: var(--pk-cream) !important;
+    box-shadow: inset 4px 0 0 var(--pk-blue);
+    color: var(--pk-ink) !important;
+    font-size: 14px !important;
+    padding: 10px 12px !important;
+}
+.scAvisoPerfil {
+    padding: 12px 16px !important;
+    border: 0 !important;
+    border-image: none !important;
+    background: var(--pk-cream);
+    box-shadow: var(--pk-sh-card);
+    clip-path: var(--pk-corner-8);
+}
+.scAvisoPerfil small { font-size: 12px !important; color: var(--pk-red) !important; }
+.scAvisoPerfil b { font-size: 18px !important; color: var(--pk-ink) !important; }
+.scAvisoPerfil em { font-size: 14px !important; color: var(--pk-muted) !important; }
+
+/* =============================================================================
+ * PUERTA DE ACTUALIZACIÓN (scpuerta.js)
+ * ========================================================================== */
+#scPuerta {
+    top: var(--sc2-bar) !important;
+    height: calc(100% - var(--sc2-bar)) !important;
+    padding: 28px !important;
+    background: rgba(20, 34, 56, .72) !important;
+}
+#scPuertaCaja {
+    width: 600px !important;
+    padding: 28px !important;
+    border: 0 !important;
+    border-image: none !important;
+    background: var(--pk-paper) !important;
+    box-shadow: var(--pk-sh-frame) !important;
+    clip-path: var(--pk-corner-8);
+    filter: drop-shadow(6px 6px 0 var(--pk-night));
+    color: var(--pk-ink);
+}
+#scPuerta[estado="error"] #scPuertaCaja {
+    border-image: none !important;
+    box-shadow: inset 0 0 0 3px var(--pk-ink), inset 0 0 0 7px var(--pk-red), inset 0 0 0 9px var(--pk-line) !important;
+}
+#scPuertaCabecera { gap: 16px !important; padding-bottom: 16px !important; align-items: center !important; }
+#scPuertaIcono {
+    width: 52px !important;
+    height: 52px !important;
+    border: 0 !important;
+    background: var(--pk-tab) !important;
+    box-shadow: inset 0 0 0 3px var(--pk-ink) !important;
+    clip-path: var(--pk-corner-4);
+    color: var(--pk-ink) !important;
+    font-size: 26px !important;
+    font-weight: 700;
+}
+#scPuerta[estado="error"] #scPuertaIcono { background: var(--pk-red) !important; color: var(--pk-cream) !important; }
+#scPuerta[estado="lista"] #scPuertaIcono { background: var(--pk-offer-bg) !important; color: var(--pk-offer) !important; }
+#scPuertaTitulo { font-size: 26px !important; font-weight: 700 !important; line-height: 33px; letter-spacing: 0 !important; color: var(--pk-ink) !important; }
+#scPuertaSub { font-size: 14px !important; color: var(--pk-muted) !important; }
+#scPuertaDesc { font-size: 17px !important; line-height: 26px !important; color: var(--pk-ink) !important; }
+#scPuertaDesc b { color: var(--pk-ink) !important; font-weight: 700 !important; }
+#scPuertaBarra {
+    height: 22px !important;
+    margin: 20px 0 8px !important;
+    padding: 5px;
+    border: 0 !important;
+    border-image: none !important;
+    background: #fff !important;
+    box-shadow: inset 0 0 0 3px var(--pk-ink);
+}
+#scPuertaRelleno {
+    border: 0 !important;
+    border-image: none !important;
+    min-width: 4px;
+    background: repeating-linear-gradient(90deg, var(--pk-gold) 0 12px, #D9AC3E 12px 16px) !important;
+}
+#scPuertaPct { font-size: 14px !important; font-weight: 700; color: var(--pk-ink) !important; }
+#scPuertaPie { border-top: 2px solid var(--pk-tab) !important; gap: 12px !important; }
+#scPuertaNota { font-size: 14px !important; color: var(--pk-red) !important; font-weight: 600; }
+#scPuertaWeb, #scPuertaSaltar { font-size: 15px !important; font-weight: 600; color: var(--pk-blue-deep) !important; min-height: 36px !important; }
+
+/* =============================================================================
+ * ENTRADA: bienvenida, tipo de cuenta, login y espera de Microsoft
+ * La marca va en la carcasa; dentro, el fondo elegido en un marco y la tarjeta.
+ * ========================================================================== */
+#welcomeContainer, #loginOptionsContainer, #loginContainer, #waitingContainer {
+    inset: 0 var(--pk-lado) 16px !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    grid-template-rows: minmax(0, 1fr);
+    align-items: stretch !important;
+    gap: 24px !important;
+    padding: calc(var(--pk-cab) + 24px) 24px 24px !important;
+    background: none !important;
+    isolation: isolate;
+}
+#welcomeContainer::before, #loginOptionsContainer::before, #loginContainer::before, #waitingContainer::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: var(--pk-cab);
+    bottom: 0;
+    background: var(--pk-cream);
+    box-shadow: var(--pk-sh-screen);
+    clip-path: var(--pk-corner-8);
+    z-index: -1;
+}
+.scEntradaIntro {
+    position: static !important;
+    max-width: none !important;
+    min-height: 0;
+    justify-content: flex-end !important;
+    padding: 28px;
+    color: var(--pk-ink) !important;
+    background: var(--sc-fondo) 66% center / cover no-repeat, var(--pk-cream);
+    box-shadow: var(--pk-sh-screen);
+    position: relative !important;
+    isolation: isolate;
+}
+.scEntradaIntro::before {
+    /* Fundido a crema: el texto queda siempre sobre fondo liso. */
+    content: '';
+    position: absolute;
+    inset: 6px;
+    background: linear-gradient(0deg, var(--pk-cream) 0 50%, rgba(246, 240, 222, 0) 82%);
+    z-index: -1;
+}
+/* Marca en la carcasa roja, con lente y luces, como en la portada. */
+.scEntradaMarca {
+    position: fixed !important;
+    top: calc(var(--sc2-bar) + 14px) !important;
+    left: calc(var(--pk-lado) + 0px) !important;
+    gap: 10px !important;
+    color: var(--pk-cream);
+}
+.scEntradaMarca::before {
+    content: '';
+    order: -2;
+    width: 40px;
+    height: 40px;
+    background: radial-gradient(circle at 35% 30%, #DDF3FF 0 10%, #5FB7F0 11% 34%, #1E73C8 35% 62%, #0D3F7A 63%);
+    clip-path: var(--pk-corner-12);
+    box-shadow: inset 0 0 0 3px var(--pk-ink), inset 0 0 0 6px var(--pk-cream);
+}
+.scEntradaMarca::after {
+    content: '';
+    order: -1;
+    align-self: flex-start;
+    margin: 6px 18px 0 4px;
+    width: 58px;
+    height: 16px;
+    background:
+        linear-gradient(#E5383B, #E5383B) 1px 1px / 14px 14px no-repeat,
+        linear-gradient(#F2C230, #F2C230) 22px 1px / 14px 14px no-repeat,
+        linear-gradient(#3BB54A, #3BB54A) 43px 1px / 14px 14px no-repeat,
+        linear-gradient(var(--pk-ink), var(--pk-ink)) 0 0 / 16px 16px no-repeat,
+        linear-gradient(var(--pk-ink), var(--pk-ink)) 21px 0 / 16px 16px no-repeat,
+        linear-gradient(var(--pk-ink), var(--pk-ink)) 42px 0 / 16px 16px no-repeat;
+}
+.scEntradaMarca img { width: 36px !important; height: 36px !important; }
+.scEntradaMarca small { font: 700 11px/16px var(--pk-font-pixel) !important; letter-spacing: 0 !important; color: var(--pk-cream) !important; }
+.scEntradaMarca b {
+    font: 700 21px/24px var(--pk-font-pixel) !important;
+    letter-spacing: 0 !important;
+    color: var(--pk-cream) !important;
+    text-shadow: 2px 2px 0 var(--pk-ink);
+    text-transform: uppercase;
+}
+.scEntradaKicker { font-size: 14px !important; font-weight: 800 !important; letter-spacing: .5px !important; color: var(--pk-red) !important; }
+.scEntradaHero h1 {
+    margin: 12px 0 16px !important;
+    max-width: 400px !important;
+    font-family: var(--pk-font-pixel) !important;
+    font-size: 31px !important;
+    font-weight: 700 !important;
+    line-height: 1.3 !important;
+    letter-spacing: 0 !important;
+    color: var(--pk-ink);
+    text-transform: uppercase;
+}
+.scEntradaHero p { max-width: none !important; font-size: 18px !important; line-height: 26px !important; color: var(--pk-ink) !important; }
+.scEntradaPie { position: static !important; margin-top: 24px; font-size: 14px !important; color: var(--pk-muted) !important; }
+
+#welcomeContent, #loginOptionsContent, #loginContent, #waitingContent,
+#loginContainer #loginContent {
+    align-self: center;
+    padding: 28px !important;
+    border: 0 !important;
+    border-image: none !important;
+    background: var(--pk-paper) !important;
+    box-shadow: var(--pk-sh-card) !important;
+    clip-path: var(--pk-corner-8);
+    color: var(--pk-ink) !important;
+}
+.scEntradaEtiqueta, #loginSubheader { font-size: 14px !important; font-weight: 800 !important; letter-spacing: .5px !important; color: var(--pk-red) !important; }
+#welcomeHeader, .loginOptionsMainContent h2, #scLoginTitulo, #waitingTextContainer h2 {
+    margin: 8px 0 12px !important;
+    font-size: 28px !important;
+    font-weight: 700 !important;
+    line-height: 34px !important;
+    letter-spacing: 0 !important;
+    color: var(--pk-ink) !important;
+}
+#welcomeDescription, .scEntradaLead, .sc-login-help {
+    margin-bottom: 20px !important;
+    font-size: 17px !important;
+    line-height: 25px !important;
+    color: var(--pk-ink) !important;
+}
+#welcomeDescCTA, .scEntradaNota {
+    margin-top: 20px !important;
+    padding-top: 16px;
+    border-top: 2px solid var(--pk-tab) !important;
+    font-size: 14px !important;
+    line-height: 21px;
+    color: var(--pk-muted) !important;
+}
+#welcomeButton, #loginButton { min-height: 48px !important; text-transform: uppercase; }
+#loginOptionMicrosoft, #loginOptionMojang {
+    min-height: 60px !important;
+    padding: 0 20px !important;
+    font-size: 17px !important;
+}
+#loginOptionMicrosoft svg path, #loginOptionMicrosoft svg rect { fill: currentColor; }
+#loginOptionCancelButton, #loginCancelButton { font-size: 15px !important; font-weight: 600; color: var(--pk-blue-deep) !important; min-height: 36px !important; }
+#scLoginEtiqueta { font-size: 15px !important; font-weight: 700 !important; color: var(--pk-ink) !important; }
+#loginContainer .loginField { height: 48px !important; font-size: 16px !important; }
+#loginContainer .loginField::placeholder { color: var(--pk-muted) !important; }
+#loginContainer .loginErrorSpan { font-size: 14px !important; color: var(--pk-red) !important; font-weight: 600; }
+#loginRememberText { font-size: 15px !important; color: var(--pk-ink) !important; }
+#loginContainer #checkmarkContainer input { width: 56px !important; height: 28px !important; }
+#loginContainer .loginCheckmark {
+    position: relative !important;
+    width: 56px !important;
+    height: 28px !important;
+    background: var(--pk-disabled) !important;
+    box-shadow: inset 0 0 0 3px var(--pk-ink) !important;
+    clip-path: var(--pk-corner-4);
+}
+#loginContainer .loginCheckmark::before {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    width: 18px;
+    height: 18px;
+    background: var(--pk-paper);
+    box-shadow: inset 0 0 0 2px var(--pk-ink);
+    transition: transform .12s ease;
+}
+#loginContainer #checkmarkContainer input:checked ~ .loginCheckmark { background: var(--pk-blue-deep) !important; }
+#loginContainer #checkmarkContainer input:checked ~ .loginCheckmark::before { transform: translateX(28px); }
+#loginContainer #checkmarkContainer input:focus-visible ~ .loginCheckmark { outline: 0 !important; box-shadow: var(--pk-sh-focus) !important; }
+#loginDisclaimer { border-top: 2px solid var(--pk-tab) !important; }
+#loginContainer .loginDisclaimerText { font-size: 13px !important; line-height: 20px !important; color: var(--pk-muted) !important; }
+/* Espera de Microsoft: indicador cuadrado que gira a 8 pasos (barato, sin imagen). */
+#waitingContent .waitingSpinner {
+    width: 48px !important;
+    height: 48px !important;
+    background: none !important;
+    border: 5px solid var(--pk-tab) !important;
+    border-top-color: var(--pk-blue-deep) !important;
+    clip-path: var(--pk-corner-8);
+    animation: scV5Gira 1.6s steps(8) infinite !important;
+}
+
+/* =============================================================================
+ * PANTALLA DE CARGA: sello y aro sobre la pantalla crema
+ * ========================================================================== */
+#loadingContainer {
+    background: var(--pk-red);
+    top: var(--sc2-bar);
+    height: calc(100% - var(--sc2-bar)) !important;
+}
+#loadingContainer::before {
+    content: '';
+    position: absolute;
+    inset: var(--pk-cab) var(--pk-lado) var(--pk-pie);
+    background: var(--pk-cream);
+    box-shadow: var(--pk-sh-screen);
+    clip-path: var(--pk-corner-8);
+}
+#loadingContent { z-index: 1; }
+#loadCenterImage { width: 112px !important; }
+/* El aro es un PNG de puntos blancos: sobre crema se tiñe de azul con filtros. */
+#loadSpinnerImage { width: 180px !important; filter: brightness(0) invert(28%) sepia(84%) saturate(1640%) hue-rotate(204deg) brightness(91%); }
+
+/* =============================================================================
+ * VENTANA PEQUEÑA (≤980×610): lo mismo, más compacto. Nada desaparece.
+ * ========================================================================== */
+@media (max-width: 980px), (max-height: 610px) {
+    :root {
+        --pk-cab: 58px;
+        --pk-tabs: 44px;
+        --pk-pie: 44px;
+        --pk-lado: 12px;
+        --pk-pad: 12px;
+    }
+    #sc2Brand::before { width: 32px; height: 32px; clip-path: var(--pk-corner-8); }
+    #sc2Brand::after { margin-right: 10px; }
+    #image_seal_container { width: 28px !important; height: 28px !important; }
+    #sc2BrandName { font-size: 18px !important; line-height: 22px !important; }
+    #user_content { min-height: 44px; padding: 5px 12px 5px 6px; }
+    #user_text { font-size: 14px !important; line-height: 19px !important; }
+    #user_role { font-size: 12px !important; line-height: 16px !important; }
+    .sc2Tab { font-size: 16px !important; }
+    #landingContainer > #lower {
+        grid-template-rows: minmax(8px, .3fr) auto auto auto minmax(8px, .3fr) 8px minmax(230px, 1fr);
+        column-gap: 8px;
+    }
+    #sc2Kicker, #sc2Hero, #sc2Sub { margin-left: 20px !important; }
+    #sc2Kicker { font-size: 12px !important; line-height: 18px !important; }
+    #sc2Hero { font-size: 27px !important; line-height: 32px !important; margin-top: 2px !important; margin-bottom: 4px !important; }
+    #sc2Sub { font-size: 14px !important; line-height: 20px !important; }
+    #sc2Panel { padding: 12px 16px 40px !important; column-gap: 12px; row-gap: 6px; }
+    #server_status_wrapper { padding-right: 12px; }
+    #player_count, .sc2RegionNombre, .sc2RegionValor { font-size: 14px !important; line-height: 21px !important; }
+    #server_selection_button { font-size: 16px !important; line-height: 20px !important; }
+    #profile_hint { font-size: 12px !important; line-height: 18px !important; }
+    #sc2ProfileChange { min-height: 36px; font-size: 14px !important; padding: 6px 10px !important; }
+    #launch_button { height: 48px !important; font-size: 24px !important; }
+    #sc2Tools { margin-bottom: 4px !important; gap: 4px !important; }
+    .sc2Tool { height: 28px !important; font-size: 12px !important; }
+    #landingContainer > #lower > #center { gap: 8px; }
+    #sc2EventCard { padding: 10px 64px 10px 14px !important; }
+    #sc2NewsCard { padding: 10px 36px 10px 14px !important; gap: 0; }
+    .sc2EventTitle { font-size: 18px !important; line-height: 22px !important; }
+    #sc2EventWhen, .sc2EventCount { font-size: 13px !important; line-height: 18px !important; }
+    .sc2CardKicker { font-size: 11px !important; line-height: 16px !important; }
+    .sc2CardTitle { font-size: 15px !important; line-height: 19px !important; }
+    .sc2CardSub { font-size: 12px !important; line-height: 16px !important; }
+    #sc_version_badge, #sc2Site { font-size: 12px !important; }
+    #landingContainer #sc2Links .sc2Link { min-height: 32px !important; font-size: 12px !important; padding: 6px 12px !important; }
+
+    #sc2EventosFrame, #sc2GaleriaFrame, #sc2NewsFrame { padding: 14px 16px !important; gap: 10px; }
+    #sc2CalMes { font-size: 22px !important; }
+    #sc2CalGrid { grid-template-columns: repeat(7, 42px) !important; grid-auto-rows: 38px !important; gap: 4px !important; }
+    #sc2CalDia { padding-left: 16px; }
+    #newsArticleTitle, #sc2NovServTitulo, #sc2ModpackTitulo, #sc2LauncherTitulo { font-size: 22px !important; line-height: 28px !important; }
+    #newsArticleContentScrollable { font-size: 16px !important; line-height: 24px !important; }
+
+    #settingsContainer { grid-template-columns: 176px minmax(0, 1fr) !important; column-gap: 12px !important; padding: 0 12px 12px !important; }
+    #settingsContainer::before { top: 68px; }
+    #scAjustesCabecera { height: 68px; margin: 0 -12px 12px !important; }
+    #scAjustesTitulo { font-size: 24px !important; }
+    #scAjustesDesc { font-size: 14px !important; }
+    .settingsTabHeaderText { font-size: 23px !important; line-height: 29px; }
+    /* Las pestañas del menú se desplazan; Registros y Listo quedan siempre a la vista. */
+    #settingsNavItemsContainer { overflow-y: auto !important; overflow-x: hidden !important; }
+    #settingsNavItemsContent { height: auto !important; padding-right: 2px !important; }
+    .settingsNavItem { height: 34px !important; font-size: 15px !important; }
+    #settingsNavContentBottom {
+        position: sticky !important;
+        bottom: 0;
+        z-index: 1;
+        gap: 4px !important;
+        padding-top: 8px !important;
+        background: var(--pk-cream) !important;
+    }
+    #settingsNavViewLogs, #settingsNavViewLauncherLogs { min-height: 34px !important; padding: 6px !important; font-size: 13px !important; }
+    #settingsNavDone { min-height: 40px !important; }
+
+    #serverSelectContent, #accountSelectContent, #overlayContent { padding: 20px 24px !important; }
+    #overlayContainer .serverListing { min-height: 0 !important; padding: 10px 12px !important; }
+    #overlayContainer .serverListingImg { width: 48px !important; height: 48px !important; }
+    #overlayContainer .serverListingName { font-size: 21px !important; }
+    #overlayContainer .serverListingDescription { font-size: 14px !important; line-height: 20px !important; }
+
+    #welcomeContainer, #loginOptionsContainer, #loginContainer, #waitingContainer {
+        gap: 16px !important;
+        padding: calc(var(--pk-cab) + 16px) 16px 16px !important;
+    }
+    .scEntradaMarca { top: calc(var(--sc2-bar) + 10px) !important; }
+    .scEntradaIntro { padding: 16px; }
+    .scEntradaHero h1 { font-size: 24px !important; line-height: 31px !important; margin: 6px 0 8px !important; }
+    .scEntradaHero p { font-size: 14px !important; line-height: 20px !important; }
+    .scEntradaPie { margin-top: 12px; font-size: 12px !important; }
+    #welcomeContent, #loginOptionsContent, #loginContent, #waitingContent,
+    #loginContainer #loginContent { padding: 16px !important; }
+    #welcomeHeader, .loginOptionsMainContent h2, #scLoginTitulo, #waitingTextContainer h2 { font-size: 23px !important; line-height: 30px !important; }
+    #welcomeDescription, .scEntradaLead, .sc-login-help { font-size: 14px !important; line-height: 20px !important; margin-bottom: 12px !important; }
+    #welcomeDescCTA, .scEntradaNota { margin-top: 12px !important; padding-top: 10px; font-size: 12px !important; }
+    #loginContainer .loginDisclaimerText { font-size: 12px !important; line-height: 17px !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #waitingContent .waitingSpinner, #loadSpinnerImage { animation: none !important; }
+}
+
+/* La regla común de arriba pone Source Sans a todo lo de estas vistas con un ID; la letra
+   pixelada de los títulos cortos necesita la misma fuerza (:is cuenta como ID). */
+:is(#welcomeContainer, #loginOptionsContainer, #loginContainer, #waitingContainer) .scEntradaHero h1,
+:is(#welcomeContainer, #loginOptionsContainer, #loginContainer, #waitingContainer) .scEntradaMarca small,
+:is(#welcomeContainer, #loginOptionsContainer, #loginContainer, #waitingContainer) .scEntradaMarca b,
+#settingsContainer #scAjustesTitulo, #settingsContainer #scAjustesMarca small, #settingsContainer #scAjustesMarca b,
+#overlayContainer #serverSelectHeader, #overlayContainer #accountSelectHeader, #overlayContainer #overlayTitle {
+    font-family: var(--pk-font-pixel) !important;
+}
+/* launcher.css fija estos con su propio ID y !important: hay que igualarles la fuerza. */
+#loginButton:disabled, #settingsNavDone:disabled, #settingsUpdateActionButton:disabled {
+    background: var(--pk-disabled) !important;
+    color: var(--pk-muted) !important;
+}
+#loginContainer .loginField { font-weight: 400 !important; letter-spacing: 0 !important; }
+
+/* =============================================================================
+ * «CAMBIAR SKIN» (scskin.js mete scskin.css en tiempo de ejecución, DESPUÉS de esta
+ * hoja: por eso todo lo de aquí lleva !important con el mismo #scSkin delante).
+ * ========================================================================== */
+#scSkin { font-family: var(--pk-font-body) !important; color: var(--pk-ink) !important; font-variant-numeric: normal !important; }
+#scSkin h2 { font: 700 25px/1.35 var(--pk-font-pixel) !important; letter-spacing: 0 !important; text-transform: uppercase; color: var(--pk-ink) !important; }
+#scSkin small, #scSkin .small, #scSkin .preview-label, #scSkin .once, #scSkin .helper, #scSkin .privacy { color: var(--pk-muted) !important; font-size: 14px !important; }
+#scSkin button:focus-visible, #scSkin a:focus-visible, #scSkin input:focus-visible { outline: 3px solid var(--pk-gold) !important; outline-offset: 0 !important; }
+#scSkinScrim { inset: var(--sc2-bar) 0 0 !important; background: rgba(20, 34, 56, .72) !important; }
+#scSkinPanel {
+    padding: 24px 28px 20px !important;
+    border: 0 !important;
+    border-image: none !important;
+    background: var(--pk-paper) !important;
+    box-shadow: var(--pk-sh-frame) !important;
+    clip-path: var(--pk-corner-8);
+}
+#scSkinPanel.atencion { box-shadow: inset 0 0 0 3px var(--pk-ink), inset 0 0 0 7px var(--pk-gold-dark), inset 0 0 0 9px var(--pk-line) !important; }
+#scSkin .btn {
+    min-height: 44px !important;
+    min-width: 0 !important;
+    padding: 10px 20px !important;
+    border: 0 !important;
+    border-image: none !important;
+    background: var(--pk-paper) !important;
+    box-shadow: var(--pk-sh-btn) !important;
+    clip-path: var(--pk-corner-4);
+    color: var(--pk-ink) !important;
+    font: 700 16px/1.1 var(--pk-font-body) !important;
+    transition: transform .08s ease, background-color .12s ease;
+}
+#scSkin .btn:hover { background: #fff !important; }
+#scSkin .btn:active { transform: translateY(3px); }
+#scSkin .btn.primary { background: var(--pk-blue-deep) !important; color: #fff !important; }
+#scSkin .btn.primary:hover { background: var(--pk-blue-hover) !important; }
+#scSkin .btn:disabled, #scSkin .btn.primary:disabled { background: var(--pk-disabled) !important; color: var(--pk-muted) !important; opacity: 1 !important; transform: none; }
+#scSkin .btn:focus-visible { outline: 0 !important; box-shadow: var(--pk-sh-focus) !important; }
+#scSkin .text-btn { color: var(--pk-blue-deep) !important; font-size: 15px !important; font-weight: 600; }
+#scSkin .text-btn:hover { color: var(--pk-blue-deeper) !important; }
+#scSkin .tab {
+    min-height: 44px;
+    padding: 0 16px !important;
+    border: 0 !important;
+    border-image: none !important;
+    background: var(--pk-tab) !important;
+    box-shadow: var(--pk-sh-tab) !important;
+    clip-path: var(--pk-corner-4);
+    color: var(--pk-ink) !important;
+    font: 700 15px/1 var(--pk-font-body) !important;
+}
+#scSkin .tab:hover { background: var(--pk-tab-hover) !important; }
+#scSkin .tab[aria-selected=true] { background: var(--pk-blue-deeper) !important; color: #fff !important; box-shadow: var(--pk-sh-tab-on) !important; }
+#scSkin .panel-head, #scSkin .panel-foot { border-color: var(--pk-tab) !important; border-width: 2px !important; }
+#scSkin .panel-body { scrollbar-color: var(--pk-blue) var(--pk-cream) !important; }
+#scSkin .panel-body::-webkit-scrollbar-track { background: var(--pk-cream) !important; }
+#scSkin .panel-body::-webkit-scrollbar-thumb { background: var(--pk-blue) !important; border-color: var(--pk-cream) !important; }
+#scSkin .preview { border-right: 2px solid var(--pk-tab) !important; }
+#scSkin .preview-stage {
+    background: var(--pk-cream) !important;
+    box-shadow: inset 0 0 0 2px var(--pk-blue);
+    clip-path: var(--pk-corner-4);
+}
+#scSkin .preview-stage:after { background: rgba(22, 35, 62, .18) !important; }
+#scSkin .preview b, #scSkin .file-row b, #scSkin .model b, #scSkin .result b { color: var(--pk-ink) !important; }
+#scSkin .field-label, #scSkin .models legend { color: var(--pk-ink) !important; font-size: 15px !important; font-weight: 700 !important; }
+#scSkin .link-intro, #scSkin .notice-content, #scSkin .status-hero p { color: var(--pk-ink) !important; font-size: 16px !important; }
+#scSkin .input {
+    height: 48px !important;
+    border: 0 !important;
+    background: #fff !important;
+    box-shadow: var(--pk-sh-input);
+    clip-path: var(--pk-corner-4);
+    color: var(--pk-ink) !important;
+}
+#scSkin .input::placeholder { color: var(--pk-muted) !important; }
+#scSkin .input:focus { outline: 0 !important; box-shadow: var(--pk-sh-focus) !important; }
+#scSkin .input[aria-invalid=true] { box-shadow: inset 0 0 0 3px var(--pk-red), inset 0 6px 0 rgba(22, 35, 62, .08) !important; }
+#scSkin .dropzone {
+    border: 0 !important;
+    background: var(--pk-paper) !important;
+    box-shadow: inset 0 0 0 3px var(--pk-blue);
+    outline: 3px dashed var(--pk-blue);
+    outline-offset: -9px;
+}
+#scSkin .dropzone.dragging { background: var(--pk-tab-hover) !important; }
+#scSkin .drop-icon { color: var(--pk-blue-deep) !important; }
+#scSkin .file-row, #scSkin .result, #scSkin .notice-profile, #scSkin .model {
+    border: 0 !important;
+    background: var(--pk-cream) !important;
+    box-shadow: inset 0 0 0 2px var(--pk-blue);
+    clip-path: var(--pk-corner-4);
+}
+#scSkin .model:has(input:checked) { background: var(--pk-tab-hover) !important; box-shadow: inset 0 0 0 3px var(--pk-ink), inset 0 4px 0 var(--pk-gold); }
+#scSkin .model input { accent-color: var(--pk-blue-deep) !important; }
+#scSkin .cara { border: 0 !important; background: var(--pk-tab) !important; box-shadow: inset 0 0 0 2px var(--pk-ink); }
+#scSkin .steps li { color: var(--pk-ink) !important; font-size: 16px !important; }
+#scSkin .steps li:before {
+    border: 0 !important;
+    background: var(--pk-gold) !important;
+    color: var(--pk-ink) !important;
+    box-shadow: inset 0 0 0 3px var(--pk-ink);
+    clip-path: var(--pk-corner-4);
+    font-size: 15px !important;
+}
+#scSkin .code-input { font-family: var(--pk-font-body) !important; }
+#scSkin .feedback {
+    border: 0 !important;
+    background: var(--pk-paper) !important;
+    box-shadow: inset 4px 0 0 var(--pk-red);
+    color: var(--pk-ink) !important;
+    font-size: 14px !important;
+}
+#scSkin .feedback .symbol { color: var(--pk-red); }
+#scSkin .feedback.warning { box-shadow: inset 4px 0 0 var(--pk-gold-dark); }
+#scSkin .feedback.warning .symbol { color: var(--pk-gold-dark); }
+#scSkin .feedback.info { box-shadow: inset 4px 0 0 var(--pk-blue); }
+#scSkin .feedback.info .symbol { color: var(--pk-blue-deep); }
+#scSkin .spinner { border-color: var(--pk-tab) !important; border-top-color: var(--pk-blue-deep) !important; border-radius: 0 !important; }
+#scSkin .status-icon {
+    border: 0 !important;
+    background: var(--pk-tab) !important;
+    color: var(--pk-ink) !important;
+    box-shadow: inset 0 0 0 3px var(--pk-ink);
+    clip-path: var(--pk-corner-4);
+}
+#scSkinPanel.atencion .status-icon { background: var(--pk-gold) !important; color: var(--pk-ink) !important; }
+#scSkin .status-hero h3 { color: var(--pk-ink) !important; }
+#scSkin .progress-track { height: 12px !important; background: #fff !important; box-shadow: inset 0 0 0 2px var(--pk-ink); }
+#scSkin .progress-track span { background: var(--pk-gold) !important; }
+#scSkinLapiz {
+    background: var(--pk-gold) !important;
+    color: var(--pk-ink) !important;
+    border: 0 !important;
+    box-shadow: inset 0 0 0 1px var(--pk-ink);
+}

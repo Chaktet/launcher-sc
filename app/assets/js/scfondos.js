@@ -170,6 +170,9 @@ function aplicar(fondo = efectivo()){
         const img = new Image()
         img.onload = () => {
             document.body.style.backgroundImage = `url("${src}")`
+            // Diseño PokéNav (1.17): la ventana es la carcasa roja y el fondo se ve dentro de los
+            // marcos de la portada y la entrada, que lo leen de esta variable.
+            document.documentElement.style.setProperty('--sc-fondo', `url("${src}")`)
             document.body.setAttribute('data-sc-fondo', fondo.id)
             // Ajustes repinta sus tarjetas (también cuando el cambio es el automático).
             window.dispatchEvent(new CustomEvent('sc-fondo-cambiado', { detail: fondo.id }))
