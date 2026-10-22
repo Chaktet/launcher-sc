@@ -111,12 +111,12 @@ async function showMainUI(data){
         const ScFondos = require('./assets/js/scfondos')
         const fondo = ScFondos.efectivo()
         const src = ScFondos.imagen(fondo)
-        document.body.style.backgroundImage = `url("${src}")`
+        ScFondos.ponerEnVentana(src)
         document.body.setAttribute('data-sc-fondo', fondo.id)
         // Si esa imagen no carga (fichero dañado), el incluido: nunca sin fondo.
         const prueba = new Image()
         prueba.onerror = () => {
-            document.body.style.backgroundImage = `url("${ScFondos.imagen(ScFondos.INCLUIDO)}")`
+            ScFondos.ponerEnVentana(ScFondos.imagen(ScFondos.INCLUIDO))
             document.body.setAttribute('data-sc-fondo', ScFondos.INCLUIDO.id)
         }
         prueba.src = src

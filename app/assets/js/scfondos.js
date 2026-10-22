@@ -160,6 +160,19 @@ function efectivo(){
     return candidatos.find(f => f != null && disponible(f)) || INCLUIDO
 }
 
+/**
+ * Pinta una imagen de fondo ya cargada. Diseño PokéNav (1.17): la ventana es la carcasa roja y el
+ * fondo se ve dentro de los marcos de la portada y la entrada, que lo leen de --sc-fondo. Lo usan
+ * aplicar() y el arranque (uibinder.js): si solo lo hiciera aplicar(), al abrir el launcher los
+ * marcos enseñarían el fondo incluido aunque el jugador hubiera elegido otro.
+ * Ruta absoluta: una relativa dentro de una variable CSS se resuelve desde la hoja que la usa
+ * (assets/css/), no desde la ventana, y el fondo incluido no cargaría (revisión de Codex).
+ */
+function ponerEnVentana(src){
+    document.body.style.backgroundImage = `url("${src}")`
+    document.documentElement.style.setProperty('--sc-fondo', `url("${new URL(src, document.baseURI).href}")`)
+}
+
 /** Pone un fondo en la ventana cuando su imagen ya está cargada (sin parpadeo a negro). */
 function aplicar(fondo = efectivo()){
     const src = imagen(fondo)
@@ -169,7 +182,7 @@ function aplicar(fondo = efectivo()){
     return new Promise(resolve => {
         const img = new Image()
         img.onload = () => {
-            document.body.style.backgroundImage = `url("${src}")`
+            ponerEnVentana(src)
             document.body.setAttribute('data-sc-fondo', fondo.id)
             // Ajustes repinta sus tarjetas (también cuando el cambio es el automático).
             window.dispatchEvent(new CustomEvent('sc-fondo-cambiado', { detail: fondo.id }))
@@ -303,4 +316,4 @@ async function refrescar(){
     return catalogo()
 }
 
-module.exports = { INCLUIDO, catalogo, masNuevo, efectivo, aplicar, elegir, refrescar, descargar, disponible, imagen, miniatura }
+module.exports = { INCLUIDO, catalogo, masNuevo, efectivo, aplicar, ponerEnVentana, elegir, refrescar, descargar, disponible, imagen, miniatura }
