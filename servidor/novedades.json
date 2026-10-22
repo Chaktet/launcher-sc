@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-22-servidor-Fragmentos-Aureos-en-tu-cartera-y-en-el-pase",
+      "fecha": "2026-10-22",
+      "tipo": "servidor",
+      "titulo": "Fragmentos Áureos en tu cartera y en el pase",
+      "puntos": [
+        "Ya puedes ver en «Mi cartera» cuántos Fragmentos Áureos llevas encima y dónde conseguirlos.",
+        "El pase de batalla ahora también da Fragmentos Áureos, en el pase gratis y aún más en el VIP.",
+        "Siguen en las tiendas de la Torre de Batalla y de las incursiones, y sirven para las auras de brillo de la Herrería."
+      ]
+    },
+    {
       "id": "2026-10-22-servidor-Cosmetico-a-elegir-eliges-al-momento",
       "fecha": "2026-10-22",
       "tipo": "servidor",
