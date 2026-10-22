@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-22-pack-SC-3.2.85",
+      "fecha": "2026-10-22",
+      "tipo": "pack",
+      "version": "SC-3.2.85",
+      "titulo": "101 placas y títulos nuevos",
+      "puntos": [
+        "Banderas de 11 países más: ya están los 21 países de habla hispana.",
+        "12 placas de anime animadas y 89 títulos nuevos: de tu país, jerga y anime.",
+        "Algunos títulos ahora se mueven, también en el chat."
+      ]
+    },
+    {
       "id": "2026-10-22-servidor-Fragmentos-Aureos-en-tu-cartera-y-en-el-pase",
       "fecha": "2026-10-22",
       "tipo": "servidor",
