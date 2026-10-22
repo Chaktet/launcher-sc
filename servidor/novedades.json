@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-21-servidor-Las-crias-vuelven-a-poder-criar",
+      "fecha": "2026-10-21",
+      "tipo": "servidor",
+      "titulo": "Las crías vuelven a poder criar",
+      "puntos": [
+        "Las crías vuelven a poder criar, sin pagar nada.",
+        "Ahora puedes criar hasta 10 huevos al día; el menú te dice cuánto falta para que se reinicie."
+      ]
+    },
+    {
       "id": "2026-10-21-servidor-Crianza-nueva-y-avisos-en-el-PokeNav",
       "fecha": "2026-10-21",
       "tipo": "servidor",
@@ -12,16 +22,6 @@
         "Punto rojo cuando tienes algo por cobrar: ventas del GTS, premios de raids, minería, clanes, gimnasios y huevos listos.",
         "Nueva pantalla Títulos gratis: qué hacer para conseguir cada título. Al ganar uno te avisa en el chat.",
         "Los horarios ya no dicen una hora fija: te dicen cuánto falta, estés donde estés."
-      ]
-    },
-    {
-      "id": "2026-10-21-servidor-Las-crias-vuelven-a-poder-criar",
-      "fecha": "2026-10-21",
-      "tipo": "servidor",
-      "titulo": "Las crías vuelven a poder criar",
-      "puntos": [
-        "Las crías vuelven a poder criar, sin pagar nada.",
-        "Ahora puedes criar hasta 10 huevos al día (se reinicia a las 00:00)."
       ]
     },
     {
