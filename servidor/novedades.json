@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-22-servidor-Cosmetico-a-elegir-eliges-al-momento",
+      "fecha": "2026-10-22",
+      "tipo": "servidor",
+      "titulo": "Cosmético a elegir: eliges al momento",
+      "puntos": [
+        "Al comprar el «Cosmético a elegir» en las tiendas se abre directamente la pantalla para escoger cuál quieres",
+        "Si tienes alguno sin elegir, sigue esperándote en /vales"
+      ]
+    },
+    {
       "id": "2026-10-22-servidor-Los-titulos-del-pase-ya-salen-en-tus-placas",
       "fecha": "2026-10-22",
       "tipo": "servidor",
