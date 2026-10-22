@@ -357,6 +357,8 @@ body::before {
     cursor: pointer;
 }
 #user_content:hover { background: #fff; }
+/* El clip-path de la tarjeta corta el contorno de foco de fuera: anillo por dentro, como los demás botones recortados. */
+#user_content:focus-visible { outline: 0 !important; box-shadow: var(--pk-sh-focus) !important; }
 #avatarContainer {
     width: 36px !important;
     height: 36px !important;
@@ -1761,7 +1763,8 @@ body::before {
     clip-path: var(--pk-corner-8);
     color: var(--pk-ink) !important;
 }
-#overlayContainer .serverListing { height: auto !important; min-height: 92px !important; }
+/* flex-shrink 0: en ventana baja la lista encogía las tarjetas y su texto quedaba cortado (la lista se desplaza). */
+#overlayContainer .serverListing { height: auto !important; min-height: 92px !important; flex-shrink: 0 !important; }
 #overlayContainer .serverListing:hover, #overlayContainer .accountListing:hover { background: var(--pk-paper) !important; }
 #overlayContainer .serverListing[selected], #overlayContainer .accountListing[selected] {
     background: var(--pk-tab-hover) !important;
@@ -2178,7 +2181,8 @@ body::before {
 
     #sc2EventosFrame, #sc2GaleriaFrame, #sc2NewsFrame { padding: 14px 16px !important; gap: 10px; }
     #sc2CalMes { font-size: 22px !important; }
-    #sc2CalGrid { grid-template-columns: repeat(7, 42px) !important; grid-auto-rows: 38px !important; gap: 4px !important; }
+    /* Meses de 6 semanas (noviembre de 2026) en 900×540: filas de 32 px para que la última no quede recortada. */
+    #sc2CalGrid { grid-template-columns: repeat(7, 42px) !important; grid-auto-rows: 32px !important; gap: 3px !important; }
     #sc2CalDia { padding-left: 16px; }
     #newsArticleTitle, #sc2NovServTitulo, #sc2ModpackTitulo, #sc2LauncherTitulo { font-size: 22px !important; line-height: 28px !important; }
     #newsArticleContentScrollable { font-size: 16px !important; line-height: 24px !important; }
@@ -2205,10 +2209,13 @@ body::before {
     #settingsNavDone { min-height: 40px !important; }
 
     #serverSelectContent, #accountSelectContent, #overlayContent { padding: 20px 24px !important; }
-    #overlayContainer .serverListing { min-height: 0 !important; padding: 10px 12px !important; }
+    /* 14 px arriba: la franja oro de 5 px de la elegida tapaba la etiqueta «Recomendado». */
+    #overlayContainer .serverListing { min-height: 0 !important; padding: 14px 12px 12px !important; }
     #overlayContainer .serverListingImg { width: 48px !important; height: 48px !important; }
     #overlayContainer .serverListingName { font-size: 21px !important; }
     #overlayContainer .serverListingDescription { font-size: 14px !important; line-height: 20px !important; }
+    /* La columna de la derecha (Recomendado, Seleccionado, versión) medía 86 px en una tarjeta de 85. */
+    #overlayContainer .serverListingRecomendado, .scPerfilElegido { padding: 2px 8px !important; font-size: 13px !important; }
 
     #welcomeContainer, #loginOptionsContainer, #loginContainer, #waitingContainer {
         gap: 16px !important;
