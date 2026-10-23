@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-23-servidor-Torneos-cuadro-con-copa-y-rondas-a-un-clic",
+      "fecha": "2026-10-23",
+      "tipo": "servidor",
+      "titulo": "Torneos: cuadro con copa y rondas a un clic",
+      "puntos": [
+        "El cuadro del torneo enseña la copa en la Final.",
+        "Las pestañas de ronda abren directamente cada ronda del torneo."
+      ]
+    },
+    {
       "id": "2026-10-23-servidor-Cosmeticos-renovados-y-mas-faciles-de-usar",
       "fecha": "2026-10-23",
       "tipo": "servidor",
