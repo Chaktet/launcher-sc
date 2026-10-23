@@ -2,6 +2,15 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-22-servidor-La-pesca-ya-cuenta-en-el-bingo-semanal",
+      "fecha": "2026-10-22",
+      "tipo": "servidor",
+      "titulo": "La pesca ya cuenta en el bingo semanal",
+      "puntos": [
+        "Antes las casillas «Pesca N veces» no avanzaban al pescar con la caña Poké. Ahora cada Pokémon que pescas cuenta."
+      ]
+    },
+    {
       "id": "2026-10-22-launcher-1.17.2",
       "fecha": "2026-10-22",
       "tipo": "launcher",
