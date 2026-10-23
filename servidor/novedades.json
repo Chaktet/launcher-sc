@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-23-pack-SC-3.2.90",
+      "fecha": "2026-10-23",
+      "tipo": "pack",
+      "version": "SC-3.2.90",
+      "titulo": "Dos packs nuevos de Halloween en la tienda",
+      "puntos": [
+        "Pesadilla de Halloween: 25 piezas de terror, con máscaras de Jason y Ghostface, calabazas, caldero y lápida",
+        "FNAF: 17 piezas de la pizzería, con las cabezas de Freddy, Bonnie, Chica y Foxy y sus peluches",
+        "Las máscaras y cabezas se llevan puestas y el resto decora tu casa"
+      ]
+    },
+    {
       "id": "2026-10-23-pack-SC-3.2.89",
       "fecha": "2026-10-23",
       "tipo": "pack",
