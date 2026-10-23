@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-23-pack-SC-3.2.92",
+      "fecha": "2026-10-23",
+      "tipo": "pack",
+      "clase": "arreglo",
+      "version": "SC-3.2.92",
+      "titulo": "Pesadilla de Halloween: piezas arregladas",
+      "puntos": [
+        "El Bastón de bruja y la Espada de Drácula ya se ven bien, en la tienda y al colocarlos (antes salía un cubo morado y negro)",
+        "El Cráneo de wendigo ahora cubre la cabeza como una máscara, con las astas hacia arriba",
+        "El Adorno de murciélago es más grande y cuelga junto a la cabeza"
+      ]
+    },
+    {
       "id": "2026-10-23-modpack-Chat-de-voz-mas-estable",
       "fecha": "2026-10-23",
       "tipo": "modpack",
