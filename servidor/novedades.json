@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-23-servidor-Clanes-GTS-y-ventanas-que-se-abrian-solas",
+      "fecha": "2026-10-23",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Clanes, GTS y ventanas que se abrían solas",
+      "puntos": [
+        "Clanes: el color de la etiqueta ya se guarda al cambiarlo, igual que el anuncio del clan y los mensajes de entrada y salida de la base.",
+        "GTS: los legendarios y los Pokémon que no pueden criar ya salen como «No cría», y el filtro «Solo los que crían» los deja fuera.",
+        "Al entrar ya no se abren solos el menú de pesca ni la Tienda Nocturna."
+      ]
+    },
+    {
       "id": "2026-10-23-servidor-Las-compras-ya-dan-monedas-de-fidelidad",
       "fecha": "2026-10-23",
       "tipo": "servidor",
