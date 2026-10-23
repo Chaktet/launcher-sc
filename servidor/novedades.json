@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-23-pack-SC-3.2.94",
+      "fecha": "2026-10-23",
+      "tipo": "pack",
+      "clase": "cambio",
+      "version": "SC-3.2.94",
+      "titulo": "Reconoce siempre al staff",
+      "puntos": [
+        "Aunque alguien del staff lleve otra placa, detrás de su nombre sale siempre el icono de su cargo: Helper, Mod, Admin, Builder, Profesor…",
+        "Es el mismo icono de su placa de staff, así sabes enseguida a quién pedir ayuda en el chat y en la lista de jugadores"
+      ]
+    },
+    {
       "id": "2026-10-23-servidor-Los-cosmeticos-nuevos-salen-primero-en-el-probador",
       "fecha": "2026-10-23",
       "tipo": "servidor",
