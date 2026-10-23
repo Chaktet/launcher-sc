@@ -121,7 +121,12 @@
     "2026-10-22-pack-SC-3.2.88",
     "2026-10-22-pack-SC-3.2.87",
     "2026-10-22-servidor-Packs-de-Halloween-edicion-limitada",
-    "2026-10-22-servidor-Mochila-de-pesca-nueva-en-el-PokeNav"
+    "2026-10-22-servidor-Mochila-de-pesca-nueva-en-el-PokeNav",
+    "2026-10-22-pack-SC-3.2.85",
+    "2026-10-22-servidor-Fragmentos-Aureos-en-tu-cartera-y-en-el-pase",
+    "2026-10-23-servidor-Ve-a-por-los-legendarios-de-la-otra-region",
+    "2026-10-23-servidor-El-bingo-te-dice-si-salio-la-tirada-de-ruleta",
+    "2026-10-23-servidor-Evento-de-Halloween-caza-de-calabazas"
   ],
   "mensajes": [
     {
@@ -365,6 +370,17 @@
         "2026-10-22-pack-SC-3.2.87",
         "2026-10-22-servidor-Packs-de-Halloween-edicion-limitada",
         "2026-10-22-servidor-Mochila-de-pesca-nueva-en-el-PokeNav"
+      ]
+    },
+    {
+      "fecha": "2026-10-23",
+      "mensaje": "1563082834321875026",
+      "entradas": [
+        "2026-10-22-pack-SC-3.2.85",
+        "2026-10-22-servidor-Fragmentos-Aureos-en-tu-cartera-y-en-el-pase",
+        "2026-10-23-servidor-Ve-a-por-los-legendarios-de-la-otra-region",
+        "2026-10-23-servidor-El-bingo-te-dice-si-salio-la-tirada-de-ruleta",
+        "2026-10-23-servidor-Evento-de-Halloween-caza-de-calabazas"
       ]
     }
   ]
