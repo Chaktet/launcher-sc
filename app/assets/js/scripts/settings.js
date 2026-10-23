@@ -1961,8 +1961,14 @@ async function sc$officialPackNames(){
     } catch(e){
         console.warn('No se pudo leer la lista de packs oficiales', e)
     }
+    if(out.size > 0){
+        sc$ultimosOficiales = out
+    }
     return out
 }
+
+// Lo último que dijo la distribución, para sc$quitarPacksScViejos (que es síncrona).
+let sc$ultimosOficiales = new Set()
 
 function sc$togglePack(packName, activar){
     const { base, enabled } = sc$readOptionsPacks()
@@ -2221,6 +2227,71 @@ function sc$asegurarPackOficial(){
     } catch(e){
         console.warn('No se pudo asegurar el SC-Pack', e)
     }
+}
+
+/**
+ * Borra las copias viejas de nuestro pack (SC-3.1.8.zip, SC-Pack-LITE-3.2.73.zip…)
+ * que el jugador bajó a mano o le quedaron de antes, y deja solo el SC-Pack.zip
+ * que reparte la distribución (Felix, 23-10-2026). Esas copias traen modelos que
+ * ya no existen: los SC-93 de shedinja_anime2026 de 19-23/10 venían todos de un
+ * `sc-viejo` (está en la 3.1.6, 3.1.8 y 3.2.71, no en la 3.2.90).
+ *
+ * Solo ficheros .zip que empiezan por "SC-" o "SC " (la misma regla con la que el
+ * mod de avisos los marca como `sc-viejo`) y nunca uno que liste la distribución.
+ * Síncrona y antes de pb.build(), como sc$asegurarPackOficial.
+ *
+ * @returns {string[]} Los nombres borrados.
+ */
+function sc$quitarPacksScViejos(){
+    if(sc$juegoAbierto()){
+        return []
+    }
+    const nodeFs = require('fs')
+    const nodePath = require('path')
+    const borrados = []
+    try {
+        if(!ConfigManager.getSelectedServer()){
+            return []
+        }
+        const d = sc$rpDirs()
+        // Sin el pack bueno ya descargado no se quita ninguno: el jugador se quedaría sin nada.
+        if(!nodeFs.existsSync(nodePath.join(d.packs, SC_PACK_OFICIAL))){
+            return []
+        }
+        for(const f of nodeFs.readdirSync(d.packs)){
+            if(!/^SC[- ].*\.zip$/i.test(f) || f === SC_PACK_OFICIAL || sc$ultimosOficiales.has(f)){
+                continue
+            }
+            const ruta = nodePath.join(d.packs, f)
+            try {
+                if(nodeFs.statSync(ruta).isFile()){
+                    nodeFs.rmSync(ruta)
+                    borrados.push(f)
+                }
+            } catch(e){
+                // Abierto por otro programa (antivirus, explorador): se reintenta en la próxima partida.
+                console.warn('No se pudo borrar el pack viejo ' + f, e)
+            }
+        }
+        if(borrados.length > 0){
+            if(nodeFs.existsSync(d.options)){
+                const { base, enabled } = sc$readOptionsPacks()
+                const quedan = enabled.filter(p => !borrados.includes(p))
+                if(quedan.length !== enabled.length){
+                    sc$writeOptionsPacks(base, quedan)
+                }
+            }
+            const apagados = sc$leerApagados()
+            const apagadosQuedan = apagados.filter(p => !borrados.includes(p))
+            if(apagadosQuedan.length !== apagados.length){
+                nodeFs.writeFileSync(sc$rutaApagados(), JSON.stringify(apagadosQuedan))
+            }
+            console.log('Packs SC viejos borrados: ' + borrados.join(', '))
+        }
+    } catch(e){
+        console.warn('No se pudieron quitar los packs SC viejos', e)
+    }
+    return borrados
 }
 
 async function populateResourcepacksTab(){

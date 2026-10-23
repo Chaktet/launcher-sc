@@ -1,11 +1,28 @@
 # SC Launcher · historial
 
 ## Estado actual
-- Rama `fix/packs-viejos-pistas` (23-10, probada, sin publicar): borra solos los SC-Pack viejos y afina las pistas de
-  Voice Chat y de descargas. **Felix: sale en la MISMA versión que las ramas de rediseño y de peso**; quien junte esas
-  dos, que la junte también (detalle en la entrada del 23-10 de esa rama). `sc-stats.py` nuevo sin instalar en OVH-A.
-- Rama `claude/rework-tienda-a39596`: rediseño PokéNav (aspecto de la tienda) terminado y comprobado en la app.
-  Sin publicar: la sesión principal lo junta con la rama de peso `claude/peso-launcher-d11b48` y saca una sola versión.
+- 1.17.3 en preparación (23-10): packs SC viejos borrados solos + pistas de Voice Chat y de descargas
+  (rama `fix/packs-viejos-pistas`, ya en master). El rediseño y el peso ya salieron en la 1.17.1/1.17.2.
+  `sc-stats.py` nuevo sin instalar en OVH-A.
+
+## 2026-10-23 · Errores de jugadores revisados: packs SC viejos fuera y mejores pistas
+
+- Pedido de Felix: cuánta gente tiene errores y cómo se corrigen. Datos de `stats.json`/`historico.json` (avisos
+  anónimos): ~250-300 jugadores/día; 6-10 con un fallo de arranque visible, 6-10 cierres a media partida (SC-90, la
+  mitad `0xC0000409` = driver/superposición). Pico SC-92 21-22/10 (129 y 187 jugadores): textura
+  `sc_armor3d:armor3d/charizard/boots_left_leg` del SC-Pack; el 23-10 con la 3.2.90 ya sale 0 veces.
+- Rama `fix/packs-viejos-pistas` (sobre master 1.17.2, SIN publicar: falta la firma con SimplySign de Felix):
+  `sc$quitarPacksScViejos()` borra antes de cada partida los `SC-*.zip` viejos y deja solo `SC-Pack.zip`
+  (los SC-93 de `shedinja_anime2026` venían de copias 3.1.6/3.1.8/3.2.71); `scPistaCrash` saca la clase en
+  «Could not initialize class X» (Voice Chat 2/día sin clase); SC-04 lleva `k` (tipo fijo) y `n` (nombre del error).
+  `tools/sc-stats.py` cuenta `k` y `n`.
+- Comprobado: lint; prueba con carpeta falsa (borra los 3 SC viejos, respeta SC-Pack.zip, carpetas, packs ajenos y
+  oficiales, `options.txt` con CRLF intacto, no borra nada sin SC-Pack.zip); clasificación y pistas con 10 casos; el
+  launcher arranca sin errores de script. NO probado: una partida real lanzada con el cambio.
+- Pendiente: instalar `sc-stats.py` en OVH-A (`/usr/local/bin`, el modo automático no me dejó escribir allí);
+  publicar la versión (junto con las ramas de rediseño y de peso si salen a la vez). Sudowoodo «modelo» (SC-93
+  `o=nada`): no lo pide ningún pack nuestro (3.2.90, SUPERLITE, extras, ni copias viejas) ni Cobblemon 1.8.2: viene
+  de un pack del jugador; nada que arreglar en el nuestro.
 
 ## 2026-10-22 · Rediseño del launcher con el estilo de la tienda (PokéNav)
 

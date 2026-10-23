@@ -181,9 +181,10 @@ MAX_VALORES = 50
 # Pistas de los fallos del launcher (1.16.18), para SC-90 (cierre a media partida) y los codigos de
 # arranque: x error del sistema o de Java, m paquete del mod, d lo que falta, y mod del mixin,
 # l biblioteca nativa, e codigo de salida, h estado HTTP, t tipo de fallo de descarga, z cuantos mods
-# propios activos tiene el jugador (solo el numero). Mismas reglas que las de recursos: identificadores
+# propios activos tiene el jugador (solo el numero); desde la version siguiente a la 1.17.2, k clase fija del fallo de descarga
+# (bloqueado, hash, http...) y n nombre del error. Mismas reglas que las de recursos: identificadores
 # ya saneados y como mucho MAX_VALORES por codigo, campo y dia.
-CAMPOS_PISTA = ('x', 'm', 'd', 'y', 'l', 'e', 'h', 't', 'z')
+CAMPOS_PISTA = ('x', 'm', 'd', 'y', 'l', 'e', 'h', 't', 'z', 'k', 'n')
 # Claves con tope de valores por prefijo: recursos (inf_r_), pistas (inf_p_) y, desde el 20-10, tambien
 # versiones (inf_v_) y las de SC-90 de la 1.16.12 (inf_m_, inf_x_): antes, variando v, m o x en una query
 # hecha a mano se creaban claves sin limite que fusionar() guardaba para siempre (revision de Codex).

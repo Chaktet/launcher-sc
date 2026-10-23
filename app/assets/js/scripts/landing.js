@@ -1777,6 +1777,35 @@ function scMensajeDescarga(err){
 }
 
 /**
+ * Qué clase de fallo de descarga es, en una palabra fija para el aviso anónimo.
+ * Del 19 al 23/10 casi todos los SC-04 llegaban como `t=otro`, sin código del
+ * sistema ni estado HTTP, y no había nada que arreglar. Solo sale una de estas
+ * palabras, nunca el texto del error (lleva rutas y el usuario de Windows).
+ *
+ * @returns {string}
+ */
+function scTipoFalloDescarga(err){
+    // El mensaje y el código, no la pila: los nombres de función de la pila
+    // (validateFiles…) darían todos el mismo tipo.
+    let t = err == null ? '' : [err.displayable, err.message, err.code, err.name].filter(v => typeof v === 'string').join('\n')
+    if(t === '' && err != null){
+        t = scErrorLegible(err)
+    }
+    if(SC_RE_TLS.test(t)) return 'cert'
+    if(SC_RE_RED.test(t)) return 'red'
+    if(/ENOSPC|no space left/i.test(t)) return 'disco'
+    if(/EPERM|EACCES|EBUSY|operation not permitted|access is denied|resource busy|being used by another process/i.test(t)) return 'bloqueado'
+    if(/ENOENT|no such file/i.test(t)) return 'nofichero'
+    if(/hash|md5|sha-?1|checksum|integrity|validat/i.test(t)) return 'hash'
+    if(/premature close|ERR_STREAM_PREMATURE_CLOSE|socket hang up|aborted|ECONNABORTED/i.test(t)) return 'cortada'
+    if(/HTTPError|Response code [1-5]\d\d|status(?:Code)?\D{0,4}[1-5]\d\d/i.test(t)) return 'http'
+    if(/content-length|size mismatch|tama[nñ]o/i.test(t)) return 'tamano'
+    if(/receiver|child process|fork|exited with code|IPC/i.test(t)) return 'proceso'
+    if(/ERR_INVALID|TypeError|Cannot read propert|is not a function|undefined/i.test(t)) return 'codigo'
+    return 'otro'
+}
+
+/**
  * Linea TLS del informe: que certificado llego por cada ruta y como se
  * clasifico. Es lo que separa un bloqueo del operador de un antivirus o de un
  * reloj mal puesto, y hasta ahora habia que adivinarlo.
@@ -1927,7 +1956,9 @@ function scPistaCrash(texto){
     // NoSuchMethodError en com.cobblemon (2 jugadores LITE, 19-20/10) no se podía
     // arreglar: hacía falta saber QUÉ método. Su mensaje es un nombre de clase o de
     // método, nunca una ruta; aun así solo pasa si es un identificador limpio.
-    const falta = /(?:NoSuchMethodError|NoSuchFieldError|AbstractMethodError|NoClassDefFoundError|ClassNotFoundException|IncompatibleClassChangeError):\s*'?(?:[\w$.[\]<>]+ )?([\w$/.]+)/.exec(lineas.join('\n'))
+    // "Could not initialize class X" (la clase falló en su static) también: sin eso, los
+    // NoClassDefFoundError de Voice Chat de 21-23/10 llegaban sin decir qué clase.
+    const falta = /(?:NoSuchMethodError|NoSuchFieldError|AbstractMethodError|NoClassDefFoundError|ClassNotFoundException|IncompatibleClassChangeError):\s*'?(?:Could not initialize class )?(?:[\w$.[\]<>]+ )?([\w$/.]+)/.exec(lineas.join('\n'))
     const todoTexto = lineas.join('\n')
     const esMetodo = falta != null && /NoSuchMethodError|NoSuchFieldError|AbstractMethodError/.test(falta[0])
     if(falta && scEsNombreJava(falta[1], todoTexto.charAt(falta.index + falta[0].length) || null, esMetodo)){
@@ -2172,6 +2203,11 @@ function scEnviarAvisoError(codigo, err, extra = null){
         if(codigo === SC_ERR.DESCARGA){
             const clave = scMensajeDescarga(err)
             q.set('t', clave.endsWith('SinRespuesta') ? 'red' : clave.endsWith('Certificado') ? 'cert' : clave.endsWith('Disco') ? 'disco' : 'otro')
+            q.set('k', scTipoFalloDescarga(err))
+            const nombre = err && err.name
+            if(typeof nombre === 'string' && /^[A-Za-z][A-Za-z0-9_]{1,40}$/.test(nombre)){
+                q.set('n', nombre)
+            }
         }
         // Solo pares ya saneados por quien llama (scPistaCrash): letras, números, punto y guion.
         for(const [k, val] of Object.entries(extra || {})){
@@ -3548,6 +3584,7 @@ async function scDlAsyncInterno(login = true) {
             scAplicarPantallaCompleta()
             scCorregirTeclasEnConflicto()
             scActivarPacksInternosDeMods()
+            sc$quitarPacksScViejos()
             sc$asegurarPackOficial()
 
             // Build Minecraft process.

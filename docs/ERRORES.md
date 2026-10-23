@@ -381,6 +381,12 @@ mismo código cuenta una vez por minuto. Se apaga en Ajustes → Launcher (`envi
   | `x` | En arranque, el error del sistema (`ECONNRESET`, `EPERM`…) o la excepción Java | `scPistaError()` |
   | `e` / `h` | Código de salida / estado HTTP | `scPistaError()` |
   | `z` | Cuántos mods propios activos tiene en `mods/` (solo el número, máx. 99) | `scModsPropios()` |
+  | `k` | Solo SC-04: clase fija del fallo de descarga (`bloqueado`, `hash`, `http`, `cortada`, `nofichero`, `tamano`, `proceso`, `codigo`, `red`, `cert`, `disco`, `otro`) | `scTipoFalloDescarga()`, del mensaje y el código, no de la pila |
+  | `n` | Solo SC-04: nombre del error (`HTTPError`, `RequestError`…) | `err.name` |
+
+  Desde la versión siguiente a la 1.17.2 (23-10): `d` también sale en `NoClassDefFoundError: Could not initialize
+  class X` (los SC-90 de Voice Chat de 21-23/10 llegaban sin clase), y `k`/`n` existen porque los SC-04 de 19-23/10
+  eran casi todos `t=otro` sin código ni HTTP. `sc-stats.py` los guarda desde esa misma fecha (`CAMPOS_PISTA`).
 
   `sc-stats.py` los guarda como `inf_p_<código>_<campo>_<valor>` (tope de 50 valores por código, campo y día) y publica
   `informes.pistas_hoy` / `pistas_ayer` (`{código: {campo: {valor: jugadores}}}`) e `informes.serie` (30 días de jugadores
@@ -415,6 +421,11 @@ anónimo, con códigos que **no se enseñan al jugador**:
   de objetos de plugins) y los `Unable to load model: 'zcrystals:item/tera_orb' referenced from …` de modelos de
   objetos. Si se arregla o aparece ruido nuevo de ese tipo, se cambia `Detector.BASE` / `NS_IGNORADOS`.
 - **Si el jugador apagó el SC-Pack a propósito** (Ajustes → Paquetes, `.sc-packs-apagados.json`) no hay SC-91.
+- **Copias viejas del SC-Pack (`o=sc-viejo`), borradas solas** (Felix, 23-10): antes de cada partida
+  `sc$quitarPacksScViejos()` (settings.js) borra de `resourcepacks/` todo `.zip` que empiece por `SC-` o `SC ` salvo
+  `SC-Pack.zip` y lo que liste la distribución, y lo quita de `options.txt` y de la lista de apagados. No hace nada sin
+  `SC-Pack.zip` descargado ni con el juego abierto. Motivo: los SC-93 de `shedinja_anime2026` de 19-23/10 venían todos
+  de copias viejas (está en la 3.1.6, 3.1.8 y 3.2.71, no en la 3.2.90).
 - **SC-94 (mod 1.2.0):** `x=arreglado` cuando el mod corrige el `app-update.yml` roto de un launcher 1.16.16–1.16.18 (ver
   `DISTRIBUCION.md`, incidente del 21/10). Debe subir unos días y luego quedarse a cero. Solo se manda con los avisos
   anónimos activos (`-Dsc.avisos=1`): hasta el 21/10 06:00 no había llegado ninguno. Desde el mod **1.2.1**, si el
