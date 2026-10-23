@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-23-modpack-Chat-de-voz-mas-estable",
+      "fecha": "2026-10-23",
+      "tipo": "modpack",
+      "clase": "arreglo",
+      "titulo": "Chat de voz más estable",
+      "puntos": [
+        "El chat de voz se actualiza solo a su última versión estable al abrir el launcher.",
+        "Corrige el audio que a veces se cortaba o dejaba de oírse y algunos cierres del juego relacionados con la voz."
+      ]
+    },
+    {
       "id": "2026-10-23-launcher-1.17.3",
       "fecha": "2026-10-23",
       "tipo": "launcher",
