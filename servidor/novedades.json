@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-23-servidor-Muebles-subete-encima-y-sientate-bien",
+      "fecha": "2026-10-23",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Muebles: súbete encima y siéntate bien",
+      "puntos": [
+        "Los muebles chocan con su forma real: puedes subirte encima del sofá y ya no quedan zonas invisibles bloqueadas a su alrededor.",
+        "Se colocan bien apoyados: sobre losas o alfombras ya no flotan, y las farolas y lámparas ya no quedan hundidas.",
+        "Al sentarte en sofás, butacas y sillas ya no te hundes en el cojín.",
+        "La tienda de lujo ya está en el PokéNav, en Estilo, con los muebles en 3D y el Salón Snorlax el primero."
+      ]
+    },
+    {
       "id": "2026-10-23-servidor-Clanes-GTS-y-ventanas-que-se-abrian-solas",
       "fecha": "2026-10-23",
       "tipo": "servidor",
