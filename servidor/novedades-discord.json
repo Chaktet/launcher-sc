@@ -137,7 +137,12 @@
     "2026-10-23-servidor-Las-compras-ya-dan-monedas-de-fidelidad",
     "2026-10-23-servidor-Gimnasios-tus-objetos-ya-no-desaparecen",
     "2026-10-23-servidor-Los-premios-ya-no-se-pierden-con-el-inventario-lleno",
-    "2026-10-23-servidor-Vincular-Discord-reclamar-te-dice-a-que-bot-escribir"
+    "2026-10-23-servidor-Vincular-Discord-reclamar-te-dice-a-que-bot-escribir",
+    "2026-10-23-pack-SC-3.2.92",
+    "2026-10-23-modpack-Chat-de-voz-mas-estable",
+    "2026-10-23-movil-SC-Pack-Movil-2.3.10",
+    "2026-10-23-pack-SC-3.2.91",
+    "2026-10-23-movil-2.3.9"
   ],
   "mensajes": [
     {
@@ -415,6 +420,17 @@
         "2026-10-23-servidor-Gimnasios-tus-objetos-ya-no-desaparecen",
         "2026-10-23-servidor-Los-premios-ya-no-se-pierden-con-el-inventario-lleno",
         "2026-10-23-servidor-Vincular-Discord-reclamar-te-dice-a-que-bot-escribir"
+      ]
+    },
+    {
+      "fecha": "2026-10-23",
+      "mensaje": "1563266084826517678",
+      "entradas": [
+        "2026-10-23-pack-SC-3.2.92",
+        "2026-10-23-modpack-Chat-de-voz-mas-estable",
+        "2026-10-23-movil-SC-Pack-Movil-2.3.10",
+        "2026-10-23-pack-SC-3.2.91",
+        "2026-10-23-movil-2.3.9"
       ]
     }
   ]
