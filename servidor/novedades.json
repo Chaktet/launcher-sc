@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-23-launcher-1.17.3",
+      "fecha": "2026-10-23",
+      "tipo": "launcher",
+      "version": "1.17.3",
+      "titulo": "Launcher 1.17.3: adiós a los packs viejos",
+      "puntos": [
+        "Si tenías copias antiguas de nuestro pack de texturas, el launcher las quita solo antes de jugar y deja solo el actual: así no vuelven Pokémon con modelos rotos.",
+        "Cuando algo falla al descargar o el juego se cierra, el aviso anónimo nos dice mejor qué ha pasado para arreglarlo antes. Sigue sin enviar nada tuyo."
+      ]
+    },
+    {
       "id": "2026-10-23-movil-SC-Pack-Movil-2.3.10",
       "fecha": "2026-10-23",
       "tipo": "movil",
