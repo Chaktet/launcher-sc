@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-23-servidor-Gimnasios-tus-objetos-ya-no-desaparecen",
+      "fecha": "2026-10-23",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Gimnasios: tus objetos ya no desaparecen",
+      "puntos": [
+        "En los combates de gimnasio desaparecían objetos que no se gastan, como los Restos o los objetos Elección. Ahora solo se pierden los que se gastan en el combate.",
+        "Si te quitan un objeto con Ladrón, Truco o Desarme, vuelve a tu Pokémon al acabar.",
+        "Si ves algo raro, avísanos por ticket."
+      ]
+    },
+    {
       "id": "2026-10-23-servidor-Los-premios-ya-no-se-pierden-con-el-inventario-lleno",
       "fecha": "2026-10-23",
       "tipo": "servidor",
