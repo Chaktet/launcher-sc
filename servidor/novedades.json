@@ -2,6 +2,15 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-22-servidor-Los-muebles-van-mas-fluidos",
+      "fecha": "2026-10-22",
+      "tipo": "servidor",
+      "titulo": "Los muebles van más fluidos",
+      "puntos": [
+        "Los muebles ya no se dibujan cuando no los estás viendo, y desde muy lejos dejan de mostrarse: más FPS en casas y zonas decoradas, sobre todo con shaders."
+      ]
+    },
+    {
       "id": "2026-10-22-servidor-La-pesca-ya-cuenta-en-el-bingo-semanal",
       "fecha": "2026-10-22",
       "tipo": "servidor",
