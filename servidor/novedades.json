@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-23-pack-SC-3.2.91",
+      "fecha": "2026-10-23",
+      "tipo": "pack",
+      "clase": "arreglo",
+      "version": "SC-3.2.91",
+      "titulo": "Arreglada la skin alienígena de Sneasler",
+      "puntos": [
+        "La skin alienígena de Sneasler de la Ruleta Halloween ya se ve en el juego"
+      ]
+    },
+    {
       "id": "2026-10-23-servidor-Vincular-Discord-reclamar-te-dice-a-que-bot-escribir",
       "fecha": "2026-10-23",
       "tipo": "servidor",
