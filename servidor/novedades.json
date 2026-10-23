@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-22-launcher-1.17.2",
+      "fecha": "2026-10-22",
+      "tipo": "launcher",
+      "version": "1.17.2",
+      "titulo": "Launcher 1.17.2: decoración Noche de ánimas",
+      "puntos": [
+        "Descarga las 18 piezas nuevas de decoración de Halloween"
+      ]
+    },
+    {
       "id": "2026-10-22-pack-SC-3.2.88",
       "fecha": "2026-10-22",
       "tipo": "pack",
