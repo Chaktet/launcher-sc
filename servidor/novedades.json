@@ -2,21 +2,21 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-22-servidor-La-pesca-ya-cuenta-en-el-bingo-semanal",
+      "fecha": "2026-10-22",
+      "tipo": "servidor",
+      "titulo": "La pesca ya cuenta en el bingo semanal",
+      "puntos": [
+        "Las casillas «Pesca N veces» ya avanzan con cualquier caña: la normal, las mejoradas de la pesca del servidor y la caña Poké cuando pescas un Pokémon."
+      ]
+    },
+    {
       "id": "2026-10-22-servidor-Los-muebles-van-mas-fluidos",
       "fecha": "2026-10-22",
       "tipo": "servidor",
       "titulo": "Los muebles van más fluidos",
       "puntos": [
         "Los muebles ya no se dibujan cuando no los estás viendo, y desde muy lejos dejan de mostrarse: más FPS en casas y zonas decoradas, sobre todo con shaders."
-      ]
-    },
-    {
-      "id": "2026-10-22-servidor-La-pesca-ya-cuenta-en-el-bingo-semanal",
-      "fecha": "2026-10-22",
-      "tipo": "servidor",
-      "titulo": "La pesca ya cuenta en el bingo semanal",
-      "puntos": [
-        "Antes las casillas «Pesca N veces» no avanzaban al pescar con la caña Poké. Ahora cada Pokémon que pescas cuenta."
       ]
     },
     {
