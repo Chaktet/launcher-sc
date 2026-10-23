@@ -1,11 +1,17 @@
 # SC Launcher · historial
 
 ## Estado actual
-- 1.17.3 en preparación (23-10): packs SC viejos borrados solos + pistas de Voice Chat y de descargas
-  (rama `fix/packs-viejos-pistas`, ya en master). El rediseño y el peso ya salieron en la 1.17.1/1.17.2.
-  `sc-stats.py` nuevo sin instalar en OVH-A.
+- **1.17.3 publicada (23-10)**: borra solos los SC-Pack viejos y afina las pistas de Voice Chat (`d` en «Could not
+  initialize class») y de descargas (`k`, `n`). `sc-stats.py` nuevo instalado en OVH-A. Mirar en unos días: `d` de los
+  SC-90 de Voice Chat, `k` de los SC-04 y que bajen los SC-93 `sc-viejo`.
 
 ## 2026-10-23 · Errores de jugadores revisados: packs SC viejos fuera y mejores pistas
+
+- **Publicado como 1.17.3** (mismo día): rama juntada en master (el rediseño y el peso ya habían salido en la
+  1.17.1/1.17.2); firmada (exe y programa `Valid` con sello, publisher ok); release v1.17.3 con exe, blockmap y
+  latest.yml (feed público = local); `master` y `main` subidas; los 3 exe de OVH-A con sha512 del latest.yml y la
+  descarga por Cloudflare = 93.647.208 B y mismo sha256; novedad `2026-10-23-launcher-1.17.3`; `sc-stats.py` instalado
+  (copia `.bak-20261023`, stats.json regenerado bien). Lo de «Pendiente» de abajo ya está hecho.
 
 - Pedido de Felix: cuánta gente tiene errores y cómo se corrigen. Datos de `stats.json`/`historico.json` (avisos
   anónimos): ~250-300 jugadores/día; 6-10 con un fallo de arranque visible, 6-10 cierres a media partida (SC-90, la
