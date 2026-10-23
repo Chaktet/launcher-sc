@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-23-servidor-Web-renovada-y-mas-rapida",
+      "fecha": "2026-10-23",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Web renovada y más rápida",
+      "puntos": [
+        "servidorcobblemon.es estrena el diseño de la tienda y del PokéNav, y carga bastante más rápido.",
+        "El botón «Descargar» te lleva a lo tuyo: el launcher en Windows y el pack del móvil en Android.",
+        "Nueva página «Actualizaciones» con este mismo historial de cambios, y «Cómo jugar» en 3 pasos con las descargas siempre al día.",
+        "Los rangos de 1 mes ya se pueden comprar en la web: se cobran cada mes hasta que los canceles."
+      ]
+    },
+    {
       "id": "2026-10-23-servidor-Muebles-subete-encima-y-sientate-bien",
       "fecha": "2026-10-23",
       "tipo": "servidor",
