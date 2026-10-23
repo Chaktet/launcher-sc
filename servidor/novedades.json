@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-23-servidor-Vincular-Discord-reclamar-te-dice-a-que-bot-escribir",
+      "fecha": "2026-10-23",
+      "tipo": "servidor",
+      "clase": "retoque",
+      "titulo": "Vincular Discord: /reclamar te dice a qué bot escribir",
+      "puntos": [
+        "Con /reclamar ves que el código se pide al bot Alertas SC (/codigo por privado), con enlaces para hablarle y para entrar a nuestro Discord."
+      ]
+    },
+    {
       "id": "2026-10-23-servidor-Web-renovada-y-mas-rapida",
       "fecha": "2026-10-23",
       "tipo": "servidor",
