@@ -1,9 +1,26 @@
 # SC Launcher · historial
 
 ## Estado actual
+- Voice Chat 2.6.22 (23-10): modpack y Pruebas ya; Kanto y Kalos entran en su próximo reinicio (mirar `aplica.out`).
 - **1.17.3 publicada (23-10)**: borra solos los SC-Pack viejos y afina las pistas de Voice Chat (`d` en «Could not
   initialize class») y de descargas (`k`, `n`). `sc-stats.py` nuevo instalado en OVH-A. Mirar en unos días: `d` de los
   SC-90 de Voice Chat, `k` de los SC-04 y que bajen los SC-93 `sc-viejo`.
+
+## 2026-10-23 · Voice Chat 2.6.22 en servidores y modpack, configuración sin IP fija
+
+- Felix: sincronizar Voice Chat con el servidor y dejar la configuración bien (se le «desconfiguraba»). Antes: servidores
+  2.6.12, modpack 2.6.17 (protocolo 20 los dos). Elegida la 2.6.22 (última estable; 2.6.23-25 son beta), arregla audio
+  roto y fugas de OpenAL. Jar de Modrinth con sha512 comprobado (md5 dccfc2a4…).
+- Modpack: solo las 3 entradas de Voice Chat del distribution.json publicado (PRO, LITE, SUPER LITE), sin regenerar;
+  copia `distribution.json.bak-voicechat-20261023` en OVH-A; por Cloudflare JSON y jars = tamaño y MD5. Copia local de
+  sc-distribution igual (2.6.17 en `_retirados/voicechat-2026-10-23`). Novedad `2026-10-23-modpack-Chat-de-voz-mas-estable`.
+- Servidores: Pruebas reiniciado con 2.6.22 + config nueva (arranca, «Compatibility version 20», voz en 24455, sin
+  errores). Kanto y Kalos ARMADOS con aplica_al_reiniciar (jar + config) para su reinicio diario
+  (`_pendiente-reinicio/mods-20261023-voicechat-<región>/`, config vieja en `.bak-20261023`).
+- Config: `bind_address=*`, `voice_host=mc.servidorcobblemon.es` (antes la IP a mano: la mudanza del 21-09 la rompió;
+  vacío no vale por el SRV de servidorcobblemon.es). Regla en `_infra-context-servidorcobblemon.md` §6.
+- Pendiente: tras el reinicio, `aplica.out` OK y «Voice chat server started» en Kanto (24454) y Kalos (25565). Sin probar
+  hablando en el juego.
 
 ## 2026-10-23 · Errores de jugadores revisados: packs SC viejos fuera y mejores pistas
 
