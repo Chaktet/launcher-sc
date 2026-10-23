@@ -142,7 +142,11 @@
     "2026-10-23-modpack-Chat-de-voz-mas-estable",
     "2026-10-23-movil-SC-Pack-Movil-2.3.10",
     "2026-10-23-pack-SC-3.2.91",
-    "2026-10-23-movil-2.3.9"
+    "2026-10-23-movil-2.3.9",
+    "2026-10-23-servidor-Los-packs-de-Halloween-con-skin-traen-su-Pokemon",
+    "2026-10-23-pack-SC-3.2.94",
+    "2026-10-23-servidor-Los-cosmeticos-nuevos-salen-primero-en-el-probador",
+    "2026-10-23-pack-SC-3.2.93"
   ],
   "mensajes": [
     {
@@ -431,6 +435,16 @@
         "2026-10-23-movil-SC-Pack-Movil-2.3.10",
         "2026-10-23-pack-SC-3.2.91",
         "2026-10-23-movil-2.3.9"
+      ]
+    },
+    {
+      "fecha": "2026-10-23",
+      "mensaje": "1563287408588496958",
+      "entradas": [
+        "2026-10-23-servidor-Los-packs-de-Halloween-con-skin-traen-su-Pokemon",
+        "2026-10-23-pack-SC-3.2.94",
+        "2026-10-23-servidor-Los-cosmeticos-nuevos-salen-primero-en-el-probador",
+        "2026-10-23-pack-SC-3.2.93"
       ]
     }
   ]
