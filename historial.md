@@ -1,6 +1,9 @@
 # SC Launcher · historial
 
 ## Estado actual
+- Rama `fix/packs-viejos-pistas` (23-10, probada, sin publicar): borra solos los SC-Pack viejos y afina las pistas de
+  Voice Chat y de descargas. **Felix: sale en la MISMA versión que las ramas de rediseño y de peso**; quien junte esas
+  dos, que la junte también (detalle en la entrada del 23-10 de esa rama). `sc-stats.py` nuevo sin instalar en OVH-A.
 - Rama `claude/rework-tienda-a39596`: rediseño PokéNav (aspecto de la tienda) terminado y comprobado en la app.
   Sin publicar: la sesión principal lo junta con la rama de peso `claude/peso-launcher-d11b48` y saca una sola versión.
 
