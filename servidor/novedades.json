@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-23-servidor-Ve-a-por-los-legendarios-de-la-otra-region",
+      "fecha": "2026-10-23",
+      "tipo": "servidor",
+      "titulo": "Ve a por los legendarios de la otra región",
+      "puntos": [
+        "Cuando aparece un legendario en Kanto o Kalos, ahora te enteras desde la otra región.",
+        "Pulsa «Ir a cazarlo» en el chat: te lleva a su región y a su mundo para empezar a buscarlo."
+      ]
+    },
+    {
       "id": "2026-10-23-servidor-El-bingo-te-dice-si-salio-la-tirada-de-ruleta",
       "fecha": "2026-10-23",
       "tipo": "servidor",
