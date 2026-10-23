@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-22-launcher-1.17.1",
+      "fecha": "2026-10-22",
+      "tipo": "launcher",
+      "version": "1.17.1",
+      "titulo": "Launcher 1.17.1: Halloween y torneos",
+      "puntos": [
+        "Descarga los modelos de los packs de Halloween: skins, armaduras y muebles",
+        "Pantallas del PokéNav al día, con el nuevo apartado de Torneos"
+      ]
+    },
+    {
       "id": "2026-10-22-pack-SC-3.2.87",
       "fecha": "2026-10-22",
       "tipo": "pack",
