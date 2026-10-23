@@ -126,7 +126,11 @@
     "2026-10-22-servidor-Fragmentos-Aureos-en-tu-cartera-y-en-el-pase",
     "2026-10-23-servidor-Ve-a-por-los-legendarios-de-la-otra-region",
     "2026-10-23-servidor-El-bingo-te-dice-si-salio-la-tirada-de-ruleta",
-    "2026-10-23-servidor-Evento-de-Halloween-caza-de-calabazas"
+    "2026-10-23-servidor-Evento-de-Halloween-caza-de-calabazas",
+    "2026-10-23-pack-SC-3.2.90",
+    "2026-10-23-pack-SC-3.2.89",
+    "2026-10-23-servidor-Torneos-cuadro-con-copa-y-rondas-a-un-clic",
+    "2026-10-23-servidor-Cosmeticos-renovados-y-mas-faciles-de-usar"
   ],
   "mensajes": [
     {
@@ -381,6 +385,16 @@
         "2026-10-23-servidor-Ve-a-por-los-legendarios-de-la-otra-region",
         "2026-10-23-servidor-El-bingo-te-dice-si-salio-la-tirada-de-ruleta",
         "2026-10-23-servidor-Evento-de-Halloween-caza-de-calabazas"
+      ]
+    },
+    {
+      "fecha": "2026-10-23",
+      "mensaje": "1563107721778307073",
+      "entradas": [
+        "2026-10-23-pack-SC-3.2.90",
+        "2026-10-23-pack-SC-3.2.89",
+        "2026-10-23-servidor-Torneos-cuadro-con-copa-y-rondas-a-un-clic",
+        "2026-10-23-servidor-Cosmeticos-renovados-y-mas-faciles-de-usar"
       ]
     }
   ]
