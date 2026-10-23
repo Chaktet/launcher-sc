@@ -115,7 +115,13 @@
     "2026-10-21-servidor-Mas-de-140-bloques-decorativos-nuevos-en-la-tienda",
     "2026-10-22-servidor-Cosmetico-a-elegir-eliges-al-momento",
     "2026-10-22-servidor-Los-titulos-del-pase-ya-salen-en-tus-placas",
-    "2026-10-22-pack-SC-3.2.84"
+    "2026-10-22-pack-SC-3.2.84",
+    "2026-10-22-servidor-Los-muebles-van-mas-fluidos",
+    "2026-10-22-servidor-La-pesca-ya-cuenta-en-el-bingo-semanal",
+    "2026-10-22-pack-SC-3.2.88",
+    "2026-10-22-pack-SC-3.2.87",
+    "2026-10-22-servidor-Packs-de-Halloween-edicion-limitada",
+    "2026-10-22-servidor-Mochila-de-pesca-nueva-en-el-PokeNav"
   ],
   "mensajes": [
     {
@@ -347,6 +353,18 @@
         "2026-10-22-servidor-Cosmetico-a-elegir-eliges-al-momento",
         "2026-10-22-servidor-Los-titulos-del-pase-ya-salen-en-tus-placas",
         "2026-10-22-pack-SC-3.2.84"
+      ]
+    },
+    {
+      "fecha": "2026-10-23",
+      "mensaje": "1563008124728905819",
+      "entradas": [
+        "2026-10-22-servidor-Los-muebles-van-mas-fluidos",
+        "2026-10-22-servidor-La-pesca-ya-cuenta-en-el-bingo-semanal",
+        "2026-10-22-pack-SC-3.2.88",
+        "2026-10-22-pack-SC-3.2.87",
+        "2026-10-22-servidor-Packs-de-Halloween-edicion-limitada",
+        "2026-10-22-servidor-Mochila-de-pesca-nueva-en-el-PokeNav"
       ]
     }
   ]
