@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-23-servidor-Los-packs-de-Halloween-con-skin-traen-su-Pokemon",
+      "fecha": "2026-10-23",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Los packs de Halloween con skin traen su Pokémon",
+      "puntos": [
+        "Al comprar la Cripta, el Salón o el Huerto recibes el Pokémon de la skin a nivel 50 con la skin ya puesta",
+        "Llega a tu equipo, o al PC si lo tienes lleno",
+        "Si ya habías comprado uno, te llega al entrar al servidor"
+      ]
+    },
+    {
       "id": "2026-10-23-pack-SC-3.2.94",
       "fecha": "2026-10-23",
       "tipo": "pack",
