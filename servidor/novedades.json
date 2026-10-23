@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-23-servidor-Las-compras-ya-dan-monedas-de-fidelidad",
+      "fecha": "2026-10-23",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Las compras ya dan monedas de fidelidad",
+      "puntos": [
+        "Al comprar en la tienda no llegaban las monedas de fidelidad. Ya llegan.",
+        "Las compras hechas desde el 19 de octubre ya tienen sus monedas.",
+        "Pagar en dólares da las mismas monedas que pagar el mismo paquete en euros."
+      ]
+    },
+    {
       "id": "2026-10-23-servidor-Gimnasios-tus-objetos-ya-no-desaparecen",
       "fecha": "2026-10-23",
       "tipo": "servidor",
