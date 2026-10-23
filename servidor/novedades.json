@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-23-servidor-Evento-de-Halloween-caza-de-calabazas",
+      "fecha": "2026-10-23",
+      "tipo": "servidor",
+      "titulo": "Evento de Halloween: caza de calabazas",
+      "puntos": [
+        "Hay 25 calabazas escondidas en el spawn de Kanto y 25 en el de Kalos: son iguales que las de decoración, así que haz clic para descubrir las del evento y llévate un premio",
+        "Entra cada día y recoge tu caramelo de Halloween: con 7 caramelos consigues un mueble de Halloween al azar",
+        "Lo tienes en el PokéNav, en Diversión, o con /calabazas. Dura hasta el 2 de noviembre"
+      ]
+    },
+    {
       "id": "2026-10-22-servidor-La-pesca-ya-cuenta-en-el-bingo-semanal",
       "fecha": "2026-10-22",
       "tipo": "servidor",
