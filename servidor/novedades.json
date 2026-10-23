@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-23-servidor-Los-premios-ya-no-se-pierden-con-el-inventario-lleno",
+      "fecha": "2026-10-23",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Los premios ya no se pierden con el inventario lleno",
+      "puntos": [
+        "Si tienes el inventario lleno, muchos premios que antes caían al suelo ahora se guardan en tu buzón. Ábrelo con /buzon o desde el PokéNav.",
+        "Pokédex y pase de batalla: si el premio no cabe, no se cobra y te dice cuántas casillas vaciar. Lo cobras cuando hagas hueco.",
+        "Si ves algo raro, avísanos por ticket."
+      ]
+    },
+    {
       "id": "2026-10-23-movil-2.3.9",
       "fecha": "2026-10-23",
       "tipo": "movil",
