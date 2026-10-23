@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-23-pack-SC-3.2.89",
+      "fecha": "2026-10-23",
+      "tipo": "pack",
+      "version": "SC-3.2.89",
+      "titulo": "Llegan 121 skins nuevas y objetos de Halloween",
+      "puntos": [
+        "121 skins nuevas de Halloween, alienígenas, héroes, series y café, listas para salir muy pronto",
+        "Decoración y máscaras de terror y de Five Nights at Freddy's para la edición de Halloween",
+        "Feraligatr alien con la bandera de Estados Unidos y Minior alien de un color distinto en cada tirada"
+      ]
+    },
+    {
       "id": "2026-10-23-servidor-Torneos-cuadro-con-copa-y-rondas-a-un-clic",
       "fecha": "2026-10-23",
       "tipo": "servidor",
