@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-23-servidor-El-bingo-te-dice-si-salio-la-tirada-de-ruleta",
+      "fecha": "2026-10-23",
+      "tipo": "servidor",
+      "titulo": "El bingo te dice si salió la tirada de ruleta",
+      "puntos": [
+        "Al completar el cartón, el menú del bingo ya dice si te tocó la tirada de ruleta (50 %) o no",
+        "Si no sale, el próximo cartón completo la trae segura, y ahora el menú lo avisa"
+      ]
+    },
+    {
       "id": "2026-10-23-servidor-Evento-de-Halloween-caza-de-calabazas",
       "fecha": "2026-10-23",
       "tipo": "servidor",
