@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-24-servidor-Ditto-Party-cada-fallo-te-baja-solo-un-piso",
+      "fecha": "2026-10-24",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Ditto Party: cada fallo te baja solo un piso",
+      "puntos": [
+        "Antes, si alguien llegaba al último piso, cualquiera que fallara quedaba eliminado aunque tuviera pisos debajo: ya no pasa",
+        "Ahora caes de verdad por el hueco y aterrizas en el piso de justo debajo; solo quedas fuera si caes desde el último",
+        "Si estás en el color bueno en tu pantalla, te quedas: se acabó caer estando en tu color"
+      ]
+    },
+    {
       "id": "2026-10-24-servidor-Escondite-final-de-ronda-y-vuelta-de-tus-cosas-arreglados",
       "fecha": "2026-10-24",
       "tipo": "servidor",
