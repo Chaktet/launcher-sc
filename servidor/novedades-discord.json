@@ -146,7 +146,19 @@
     "2026-10-23-servidor-Los-packs-de-Halloween-con-skin-traen-su-Pokemon",
     "2026-10-23-pack-SC-3.2.94",
     "2026-10-23-servidor-Los-cosmeticos-nuevos-salen-primero-en-el-probador",
-    "2026-10-23-pack-SC-3.2.93"
+    "2026-10-23-pack-SC-3.2.93",
+    "2026-10-23-pack-SC-3.2.97",
+    "2026-10-23-servidor-Canje-de-megapiedras-con-fragmentos-sale-al-azar",
+    "2026-10-24-servidor-vip-regiones",
+    "2026-10-24-servidor-gts-buzon",
+    "2026-10-24-servidor-tienda-raids",
+    "2026-10-24-servidor-movimientos",
+    "2026-10-24-servidor-suscripcion",
+    "2026-10-24-servidor-greninja-ash",
+    "2026-10-24-pack-SC-3.2.99",
+    "2026-10-24-pack-SC-3.2.98",
+    "2026-10-24-servidor-Herreria-cambios-en-megapiedras",
+    "2026-10-24-movil-SC-Movil-2.3.16"
   ],
   "mensajes": [
     {
@@ -445,6 +457,24 @@
         "2026-10-23-pack-SC-3.2.94",
         "2026-10-23-servidor-Los-cosmeticos-nuevos-salen-primero-en-el-probador",
         "2026-10-23-pack-SC-3.2.93"
+      ]
+    },
+    {
+      "fecha": "2026-10-24",
+      "mensaje": "1563458873069928509",
+      "entradas": [
+        "2026-10-23-pack-SC-3.2.97",
+        "2026-10-23-servidor-Canje-de-megapiedras-con-fragmentos-sale-al-azar",
+        "2026-10-24-servidor-vip-regiones",
+        "2026-10-24-servidor-gts-buzon",
+        "2026-10-24-servidor-tienda-raids",
+        "2026-10-24-servidor-movimientos",
+        "2026-10-24-servidor-suscripcion",
+        "2026-10-24-servidor-greninja-ash",
+        "2026-10-24-pack-SC-3.2.99",
+        "2026-10-24-pack-SC-3.2.98",
+        "2026-10-24-servidor-Herreria-cambios-en-megapiedras",
+        "2026-10-24-movil-SC-Movil-2.3.16"
       ]
     }
   ]
