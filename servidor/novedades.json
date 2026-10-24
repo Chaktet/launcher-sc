@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-24-launcher-1.17.5",
+      "fecha": "2026-10-24",
+      "tipo": "launcher",
+      "version": "1.17.5",
+      "titulo": "Launcher 1.17.5: mejor aviso del error SC-03",
+      "puntos": [
+        "Si el launcher no puede comprobar los archivos del juego, el aviso anónimo nos dice si fue el antivirus, el disco lleno o un archivo que falta.",
+        "Sigue sin enviar nada tuyo y se puede apagar en Ajustes."
+      ]
+    },
+    {
       "id": "2026-10-24-movil-SC-Movil-2.3.16",
       "fecha": "2026-10-24",
       "tipo": "movil",
