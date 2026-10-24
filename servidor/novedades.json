@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-24-servidor-suscripcion",
+      "fecha": "2026-10-24",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Nueva suscripción mensual de SC Coins",
+      "puntos": [
+        "Suscríbete en la tienda (servidorcobblemon.es/tienda) y recibe 300 SC Coins de bienvenida.",
+        "Cada día cobras 70 SC Coins en el PokéNav: Recompensas › Diarias › Suscripción.",
+        "Cada 7 días seguidos cobrando, 100 SC Coins extra. Si un día no cobras, la racha vuelve a empezar."
+      ]
+    },
+    {
       "id": "2026-10-24-servidor-greninja-ash",
       "fecha": "2026-10-24",
       "tipo": "servidor",
