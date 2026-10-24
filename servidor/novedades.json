@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-24-servidor-Escondite-el-anuncio-del-premio-MVP-ya-no-repite-llaves",
+      "fecha": "2026-10-24",
+      "tipo": "servidor",
+      "clase": "retoque",
+      "titulo": "Escondite: el anuncio del premio MVP ya no repite llaves",
+      "puntos": [
+        "El mensaje del premio al MVP del escondite enseña cada llave una sola vez en vez de llenar el chat de «Llave de Evento»."
+      ]
+    },
+    {
       "id": "2026-10-24-servidor-Las-capturas-ya-cuentan-en-la-guia-y-la-agenda",
       "fecha": "2026-10-24",
       "tipo": "servidor",
