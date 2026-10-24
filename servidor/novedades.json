@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-24-servidor-vip-regiones",
+      "fecha": "2026-10-24",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Tu pase VIP vale en todas las regiones",
+      "puntos": [
+        "El pase VIP que compras en una región ya está activo también en la otra."
+      ]
+    },
+    {
       "id": "2026-10-24-servidor-gts-buzon",
       "fecha": "2026-10-24",
       "tipo": "servidor",
