@@ -182,7 +182,7 @@ MAX_VALORES = 50
 # arranque: x error del sistema o de Java, m paquete del mod, d lo que falta, y mod del mixin,
 # l biblioteca nativa, e codigo de salida, h estado HTTP, t tipo de fallo de descarga, z cuantos mods
 # propios activos tiene el jugador (solo el numero); desde la version siguiente a la 1.17.2, k clase fija del fallo de descarga
-# (bloqueado, hash, http...) y n nombre del error. Mismas reglas que las de recursos: identificadores
+# (bloqueado, hash, http...) y n nombre del error; desde la 1.17.5 tambien en SC-03 (n = EPERM, ENOENT...). Mismas reglas que las de recursos: identificadores
 # ya saneados y como mucho MAX_VALORES por codigo, campo y dia.
 CAMPOS_PISTA = ('x', 'm', 'd', 'y', 'l', 'e', 'h', 't', 'z', 'k', 'n')
 # Claves con tope de valores por prefijo: recursos (inf_r_), pistas (inf_p_) y, desde el 20-10, tambien

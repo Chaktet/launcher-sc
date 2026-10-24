@@ -2210,12 +2210,30 @@ function scAvisoCrashPartida(code, perfilJugado, inicio){
 }
 
 /**
+ * Código de Node (EPERM, ENOENT…) de un fallo de verificación. Si viene del proceso de
+ * verificación, el error ya no es un Error sino el texto que manda el receptor
+ * («Local error (EPERM): …», parche 8 de tools/parche-helios.js).
+ *
+ * @returns {string|null}
+ */
+function scCodigoErrorNode(err){
+    if(err == null){
+        return null
+    }
+    if(typeof err.code === 'string' && /^E[A-Z0-9_]{2,24}$/.test(err.code)){
+        return err.code
+    }
+    const m = /\((E[A-Z0-9_]{2,24})\)/.exec(typeof err.displayable === 'string' ? err.displayable : '')
+    return m ? m[1] : null
+}
+
+/**
  * Aviso anónimo de un fallo de arranque (1.16.12). Hasta ahora solo sabíamos de un
  * fallo si el jugador mandaba el ZIP de soporte; un sábado de partido podían fallar
  * decenas sin que nadie dijera nada.
  *
  * Solo viaja: el código SC, la versión del launcher, el perfil, la ruta (normal o
- * directa) y, en un fallo de descarga, de qué tipo. Nada del informe, ni nombre, ni
+ * directa) y, en un fallo de descarga o de verificación, de qué tipo. Nada del informe, ni nombre, ni
  * cuenta, ni rutas del disco. Es una petición GET a un fichero vacío: el servidor la
  * cuenta en su registro (tools/sc-stats.py) y la IP no se guarda en ningún recuento.
  * Va primero por la ruta directa, que es la que funciona cuando Cloudflare está
@@ -2241,6 +2259,15 @@ function scEnviarAvisoError(codigo, err, extra = null){
             const nombre = err && err.name
             if(typeof nombre === 'string' && /^[A-Za-z][A-Za-z0-9_]{1,40}$/.test(nombre)){
                 q.set('n', nombre)
+            }
+        } else if(codigo === SC_ERR.VERIFICACION){
+            // Los SC-03 llegaban sin nada: no se sabía si era el antivirus (EPERM/EBUSY),
+            // el disco (ENOSPC) o un fichero que falta (ENOENT). Solo la clase fija y el
+            // código de Node; el mensaje lleva rutas del disco y no viaja.
+            q.set('k', scTipoFalloDescarga(err))
+            const cod = scCodigoErrorNode(err)
+            if(cod){
+                q.set('n', cod)
             }
         }
         // Solo pares ya saneados por quien llama (scPistaCrash): letras, números, punto y guion.

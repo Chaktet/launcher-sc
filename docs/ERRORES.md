@@ -13,7 +13,7 @@ una explicación en cristiano y un botón que copia un informe completo al porta
 |---|---|---|---|
 | **SC-01** | `DISTRO` | No se pudo leer la lista de archivos del servidor | ¿Responde `descargas.servidorcobblemon.es`? |
 | **SC-02** | `JAVA` | Fallo descargando o instalando Java | Red, o la API de Adoptium caída |
-| **SC-03** | `VERIFICACION` | Fallo verificando archivos ya descargados | Disco lleno o antivirus |
+| **SC-03** | `VERIFICACION` | Fallo verificando archivos ya descargados | Disco lleno o antivirus: el aviso anónimo lo dice desde la 1.17.5 (`k`/`n`) |
 | **SC-04** | `DESCARGA` | Fallo descargando mods o recursos | La línea `TLS:` del informe. Ver abajo |
 | **SC-05** | `REPARACION` | El proceso de reparación murió | Permisos sobre el directorio de datos |
 | **SC-06** | `JVM` | El juego no llegó a arrancar (genérico) | El informe adjunto |
@@ -381,8 +381,8 @@ mismo código cuenta una vez por minuto. Se apaga en Ajustes → Launcher (`envi
   | `x` | En arranque, el error del sistema (`ECONNRESET`, `EPERM`…) o la excepción Java | `scPistaError()` |
   | `e` / `h` | Código de salida / estado HTTP | `scPistaError()` |
   | `z` | Cuántos mods propios activos tiene en `mods/` (solo el número, máx. 99) | `scModsPropios()` |
-  | `k` | Solo SC-04: clase fija del fallo de descarga (`bloqueado`, `hash`, `http`, `cortada`, `nofichero`, `tamano`, `proceso`, `codigo`, `red`, `cert`, `disco`, `otro`) | `scTipoFalloDescarga()`, del mensaje y el código, no de la pila |
-  | `n` | Solo SC-04: nombre del error (`HTTPError`, `RequestError`…) | `err.name` |
+  | `k` | SC-04 y SC-03 (desde la 1.17.5): clase fija del fallo de descarga (`bloqueado`, `hash`, `http`, `cortada`, `nofichero`, `tamano`, `proceso`, `codigo`, `red`, `cert`, `disco`, `otro`) | `scTipoFalloDescarga()`, del mensaje y el código, no de la pila |
+  | `n` | SC-04: nombre del error (`HTTPError`, `RequestError`…). SC-03: código de Node (`EPERM`, `EBUSY` = antivirus o bloqueo; `ENOSPC` = disco; `ENOENT` = falta un fichero) | `err.name` / `scCodigoErrorNode()` |
 
   Desde la versión siguiente a la 1.17.2 (23-10): `d` también sale en `NoClassDefFoundError: Could not initialize
   class X` (los SC-90 de Voice Chat de 21-23/10 llegaban sin clase), y `k`/`n` existen porque los SC-04 de 19-23/10

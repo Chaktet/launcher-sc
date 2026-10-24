@@ -44,6 +44,11 @@
 //
 // 7. Java JRE en vez de JDK desde Adoptium (22-10-2026) · JavaGuard
 //    −156 MB de descarga y −183 MB en disco cuando falla nuestro CDN de Java.
+//
+// 8. Fallos del disco al verificar (24-10-2026) · FullRepairReceiver.parseError
+//    Solo traducía los errores de red: un EPERM del antivirus o un ENOENT llegaba al
+//    launcher como `displayable: undefined` y el SC-03 salía sin pista. Ahora manda
+//    «Local error (CÓDIGO): mensaje» y landing.js saca de ahí el código del aviso.
 const fs = require('fs')
 const path = require('path')
 
@@ -340,3 +345,16 @@ parchear(path.join('java', 'JavaGuard.js'), MARCA_JRE, s => reemplazarTramo(s,
     + '                && entry.binary.architecture === arch;\n'
     + '            const targetBinary = res.body.find(entry => sirve(entry, \'jre\')) ?? res.body.find(entry => sirve(entry, \'jdk\'));\n',
     'image_type === \'jdk\'', 'JavaGuard.latestAdoptium'), 'Java de Adoptium: JRE antes que JDK')
+
+// --- 8. Fallos del disco al verificar (24-10-2026) -----------------------------------
+// Solo los errores con código de Node o Error de verdad; lo demás sigue sin texto,
+// como upstream. El mensaje se corta para que una ruta larga no llene el informe.
+const MARCA_LOCAL = '/* sc-error-local */'
+parchear(path.join('dl', 'receivers', 'FullRepairReceiver.js'), MARCA_LOCAL, s => reemplazarLiteral(s,
+    '        else {\n            return undefined;\n        }\n    }\n    async validate(message) {',
+    '        else if (error != null && (typeof error.code === \'string\' || error instanceof Error)) {\n'
+    + '            ' + MARCA_LOCAL + '\n'
+    + '            return `Local error (${typeof error.code === \'string\' ? error.code : error.name}): ${String(error.message || \'\').slice(0, 300)}`;\n'
+    + '        }\n'
+    + '        else {\n            return undefined;\n        }\n    }\n    async validate(message) {',
+    'FullRepairReceiver.js'), 'texto de los fallos locales (disco, antivirus) en parseError')

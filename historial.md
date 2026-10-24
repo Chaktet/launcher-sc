@@ -1,12 +1,26 @@
 # SC Launcher · historial
 
 ## Estado actual
+- **1.17.5 SIN publicar (24-10)**, rama `fix/sc03-pista`: el aviso anónimo del SC-03 manda `k` y `n`. Falta firmar con
+  SimplySign de Felix, release y novedad. Después, mirar en `stats.json` los `k`/`n` de los SC-03.
 - **1.17.4 publicada (23-10)**: «Abrir al encender el PC» con pregunta única. Release en GitHub, novedad y los 3 exe
   de OVH-A hechos. Sin probar: desinstalación real y arranque tras reiniciar Windows.
 - Voice Chat 2.6.22 (23-10): modpack y Pruebas ya; Kanto y Kalos entran en su próximo reinicio (mirar `aplica.out`).
 - **1.17.3 publicada (23-10)**: borra solos los SC-Pack viejos y afina las pistas de Voice Chat (`d` en «Could not
   initialize class») y de descargas (`k`, `n`). `sc-stats.py` nuevo instalado en OVH-A. Mirar en unos días: `d` de los
   SC-90 de Voice Chat, `k` de los SC-04 y que bajen los SC-93 `sc-viejo`.
+
+## 2026-10-24 · 1.17.5: el SC-03 dice por qué falla
+
+- Felix: un jugador da SC-03 «por el antivirus»; que el aviso anónimo traiga el tipo de error, como el SC-04. Hasta
+  ahora 6 avisos SC-03 (~3 jugadores, 1.16.20 y 1.17.4), todos sin pista.
+- Causa: `FullRepairReceiver.parseError` de helios solo traduce errores de red; un EPERM/ENOENT del disco llegaba como
+  `displayable: undefined`. Parche 8 en `tools/parche-helios.js`: manda «Local error (CÓDIGO): mensaje». En
+  `scEnviarAvisoError` el SC-03 lleva `k` (`scTipoFalloDescarga`) y `n` = código de Node (`scCodigoErrorNode`); el
+  mensaje (rutas) no viaja. De paso, un SC-04 por error local ahora trae texto (antes también salía vacío).
+- Comprobado: parche idempotente (2.ª pasada «ya aplicado»); prueba con el receptor parcheado y las funciones reales de
+  landing.js: EPERM/EBUSY → `bloqueado`, ENOENT → `nofichero`, ENOSPC → `disco`, TypeError → `codigo` sin `n`; lint ok.
+  `sc-stats.py` ya guardaba `k`/`n` de cualquier código: solo cambia su comentario. Sin probar con un SC-03 real.
 
 ## 2026-10-23 · 1.17.4: «Abrir al encender el PC» con permiso del jugador
 
