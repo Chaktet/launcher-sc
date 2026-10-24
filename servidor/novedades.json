@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-23-servidor-Canje-de-megapiedras-con-fragmentos-sale-al-azar",
+      "fecha": "2026-10-23",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Canje de megapiedras: con fragmentos sale al azar",
+      "puntos": [
+        "En la Herrería, si pagas el canje con Fragmentos Megapiedra te toca una megapiedra al azar de su categoría.",
+        "Con un Vale de megapiedra sigues eligiendo la que quieras."
+      ]
+    },
+    {
       "id": "2026-10-23-launcher-1.17.4",
       "fecha": "2026-10-23",
       "tipo": "launcher",
