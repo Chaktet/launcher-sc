@@ -1,8 +1,8 @@
 # SC Launcher · historial
 
 ## Estado actual
-- **1.17.4 publicada (23-10)**: «Abrir al encender el PC» con pregunta única. Release en GitHub y novedad hechas;
-  **pendiente: los 3 exe de OVH-A siguen en la 1.17.3** (el modo automático bloqueó subirlos; ver entrada de hoy).
+- **1.17.4 publicada (23-10)**: «Abrir al encender el PC» con pregunta única. Release en GitHub, novedad y los 3 exe
+  de OVH-A hechos. Sin probar: desinstalación real y arranque tras reiniciar Windows.
 - Voice Chat 2.6.22 (23-10): modpack y Pruebas ya; Kanto y Kalos entran en su próximo reinicio (mirar `aplica.out`).
 - **1.17.3 publicada (23-10)**: borra solos los SC-Pack viejos y afina las pistas de Voice Chat (`d` en «Could not
   initialize class») y de descargas (`k`, `n`). `sc-stats.py` nuevo instalado en OVH-A. Mirar en unos días: `d` de los
@@ -19,8 +19,9 @@
   (`--user-data-dir`) la pregunta sale en la portada, «Sí» guarda y no vuelve a salir, Ajustes apaga y guarda. Firmada
   (publisher ok), release v1.17.4 (feed = local), `master` y `main` subidas, novedad `2026-10-23-launcher-1.17.4`.
 - Sin probar: la desinstalación real (que quite la entrada) y el arranque real tras reiniciar Windows.
-- Pendiente: renovar `SC-Launcher-setup{,-1.0.0,-1.17.4}.exe` en `/var/www/packs` de OVH-A (sha512 del latest.yml,
-  `.nuevo` + `mv -f`): el modo automático lo bloqueó como despliegue a producción.
+- Exe de OVH-A (con el OK de Felix tras el bloqueo del modo automático): `SC-Launcher-setup{,-1.0.0,-1.17.4}.exe` en
+  `/var/www/packs` renovados (sha512 = latest.yml, `.nuevo` + `mv -f`); por Cloudflare los 3 dan 93.649.976 B y sha256
+  `7f653bf5…` = compilación local.
 
 ## 2026-10-23 · Voice Chat 2.6.22 en servidores y modpack, configuración sin IP fija
 
