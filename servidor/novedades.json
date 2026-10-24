@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-24-servidor-tienda-raids",
+      "fecha": "2026-10-24",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Tienda de raids: lo que compras siempre llega",
+      "puntos": [
+        "Algunos objetos de la tienda de raids se cobraban sin entregarse; ya llegan siempre.",
+        "También llegan otra vez las 5 Poké Balls del primer día de la guía; a quien le faltaron se las hemos dejado en su Buzón."
+      ]
+    },
+    {
       "id": "2026-10-24-servidor-movimientos",
       "fecha": "2026-10-24",
       "tipo": "servidor",
