@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-24-servidor-Escondite-recuperas-el-PokeNav-al-salir-de-la-partida",
+      "fecha": "2026-10-24",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Escondite: recuperas el PokéNav al salir de la partida",
+      "puntos": [
+        "Si te eliminan y sales de la partida mientras sigue la ronda, el PokéNav vuelve a tu inventario al momento en vez de esperar a que termine."
+      ]
+    },
+    {
       "id": "2026-10-24-servidor-Canje-de-megapiedras-mas-claro",
       "fecha": "2026-10-24",
       "tipo": "servidor",
