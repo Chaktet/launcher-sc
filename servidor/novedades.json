@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-24-movil-SC-Movil-2.3.16",
+      "fecha": "2026-10-24",
+      "tipo": "movil",
+      "clase": "retoque",
+      "version": "SC-Movil-2.3.16",
+      "titulo": "Greninja Ash también en el móvil",
+      "puntos": [
+        "La textura de Greninja Ash ya se ve bien en el móvil."
+      ]
+    },
+    {
       "id": "2026-10-24-servidor-vip-regiones",
       "fecha": "2026-10-24",
       "tipo": "servidor",
