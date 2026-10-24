@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-24-servidor-Ditto-Party-potenciadores-y-muerte-subita",
+      "fecha": "2026-10-24",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Ditto Party: potenciadores y muerte súbita",
+      "puntos": [
+        "Desde la ronda 3 aparecen potenciadores flotando en el suelo: pasa por encima para cogerlos",
+        "Supersalto (clic derecho con los pies en el suelo para un salto largo), Velocidad y Escudo, que para el próximo empujón",
+        "Cuando quedan 3 jugadores o menos llega la muerte súbita: menos tiempo y menos bloques buenos cada ronda"
+      ]
+    },
+    {
       "id": "2026-10-24-servidor-Ditto-Party-cada-fallo-te-baja-solo-un-piso",
       "fecha": "2026-10-24",
       "tipo": "servidor",
