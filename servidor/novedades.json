@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-24-servidor-Escondite-final-de-ronda-y-vuelta-de-tus-cosas-arreglados",
+      "fecha": "2026-10-24",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Escondite: final de ronda y vuelta de tus cosas, arreglados",
+      "puntos": [
+        "Al acabar una ronda ya ves la celebración entera antes de volver, sin que te saque de golpe.",
+        "Al salir del escondite recuperas tu inventario tal como lo dejaste."
+      ]
+    },
+    {
       "id": "2026-10-24-servidor-Los-vales-te-dicen-donde-tienes-lo-que-eliges",
       "fecha": "2026-10-24",
       "tipo": "servidor",
