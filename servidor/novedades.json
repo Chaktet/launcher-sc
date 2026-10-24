@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-24-servidor-movimientos",
+      "fecha": "2026-10-24",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Movimientos nuevos para varios Pokémon",
+      "puntos": [
+        "Raichu (también el de Alola) aprende Canto, Velocidad Extrema y Placaje Eléctrico.",
+        "Nuevas MT para Rotom, Jirachi, Blastoise, Golisopod, Tinkaton, Basculegion y Genesect, entre otros.",
+        "Nueva MT de Cambio Marcha en la tienda de MT."
+      ]
+    },
+    {
       "id": "2026-10-24-servidor-suscripcion",
       "fecha": "2026-10-24",
       "tipo": "servidor",
