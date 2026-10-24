@@ -317,6 +317,14 @@ const settingsNavDone = document.getElementById('settingsNavDone')
  * 
  * @param {boolean} v True to disable, false to enable.
  */
+/**
+ * Lleva a Windows lo que dice el ajuste «Abrir al encender el PC» (1.17.4). Va también aquí,
+ * no solo en la pregunta única: cambiar el interruptor sin esto no haría nada.
+ */
+function scAplicarAbrirConWindows(){
+    ipcRenderer.invoke('sc-abrir-con-windows', ConfigManager.getAbrirConWindows()).catch(() => {})
+}
+
 function settingsSaveDisabled(v){
     settingsNavDone.disabled = v
 }
@@ -325,6 +333,7 @@ function fullSettingsSave() {
     saveSettingsValues()
     saveModConfiguration()
     ConfigManager.save()
+    scAplicarAbrirConWindows()
     saveDropinModConfiguration()
     // The landing shows the memory the game will use.
     if(typeof window.scRefrescarPistaPerfil === 'function'){

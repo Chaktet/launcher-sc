@@ -95,6 +95,10 @@ const DEFAULT_CONFIG = {
             minimizarAlJugar: true,
             // Envío anónimo del código de un fallo de arranque (1.16.12). Se puede apagar en Ajustes → Launcher.
             enviarErrores: true,
+            // Abrir con Windows (1.17.4). Apagado hasta que el jugador diga que sí en la pregunta
+            // única (landing.js) o en Ajustes: nunca se activa sin su permiso.
+            abrirConWindows: false,
+            abrirConWindowsPreguntado: false,
             // Fondos (1.16.13, scfondos.js): el elegido en Ajustes (null = el más nuevo) y el
             // más nuevo que ya se aplicó una vez (cuando sale otro, se pone solo).
             fondoElegido: null,
@@ -998,6 +1002,29 @@ exports.getEnviarErrores = function(def = false){
 
 exports.setEnviarErrores = function(v){
     config.settings.launcher.enviarErrores = v === true
+}
+
+/**
+ * Whether the launcher opens when Windows starts (1.17.4). Off by default; only the
+ * player turns it on. Windows itself is updated by scAplicarAbrirConWindows (settings.js).
+ *
+ * @param {boolean} def Optional. If true, the default value will be returned.
+ */
+exports.getAbrirConWindows = function(def = false){
+    return !def ? config.settings.launcher.abrirConWindows === true : DEFAULT_CONFIG.settings.launcher.abrirConWindows
+}
+
+exports.setAbrirConWindows = function(v){
+    config.settings.launcher.abrirConWindows = v === true
+}
+
+/** Whether the one-time "open with Windows?" question was already answered. */
+exports.getAbrirConWindowsPreguntado = function(){
+    return config.settings.launcher.abrirConWindowsPreguntado === true
+}
+
+exports.setAbrirConWindowsPreguntado = function(v){
+    config.settings.launcher.abrirConWindowsPreguntado = v === true
 }
 
 /** Fondo elegido en Ajustes → Launcher, o null para seguir siempre el más nuevo (scfondos.js). */

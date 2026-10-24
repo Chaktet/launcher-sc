@@ -161,6 +161,12 @@ async function showMainUI(data){
         }, 700)
     }
 
+    // Pregunta única de «Abrir al encender el PC» (landing.js), con margen para que no tape
+    // la carga ni el selector de perfil del primer arranque.
+    if(typeof scPreguntarAbrirConWindows === 'function'){
+        setTimeout(() => scPreguntarAbrirConWindows(), 8000)
+    }
+
     // Detener el giro ANTES de ocultar, para dejar de animar cuanto antes.
     $('#loadSpinnerImage').removeClass('rotating')
     const loading = document.getElementById('loadingContainer')

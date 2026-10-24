@@ -1,6 +1,6 @@
 # Política de privacidad · SC Launcher
 
-_Última actualización: 18 de octubre de 2026_
+_Última actualización: 23 de octubre de 2026_
 
 SC Launcher es el launcher del servidor de Minecraft [servidorcobblemon.es](https://servidorcobblemon.es).
 Esta política explica qué datos maneja el programa. En resumen: **no recopilamos datos personales ni
@@ -37,6 +37,17 @@ cuando tú cambias tu skin desde el launcher.
 | `descargas.servidorcobblemon.es/launcher/skin` (o `directo.…`) | Mostrar la skin que llevas en el servidor y cambiarla desde el launcher | Tu nombre de jugador; si vinculas el launcher, el código de un solo uso y después el identificador de este PC; la imagen de la skin que subas |
 | `api.mojang.com` y `sessionserver.mojang.com` | Enseñar la vista previa al copiar la skin de un jugador premium | El nombre de ese jugador premium |
 | `servidorcobblemon.es` | Mostrar el número de jugadores conectados y jugar | Lo propio del protocolo de Minecraft |
+
+## Abrir al encender el PC
+
+Desde la versión 1.17.4 el launcher pregunta **una sola vez** si quieres que se abra al iniciar Windows. Viene
+**apagado** y solo se activa si respondes que sí. Puedes cambiarlo cuando quieras en **Ajustes → Launcher → Abrir al
+encender el PC**, o desde el Administrador de tareas de Windows (Aplicaciones de arranque). Al desinstalar el
+launcher se quita solo.
+
+Para ello el launcher añade una entrada al arranque de tu usuario de Windows. No recoge ningún dato nuevo: al
+abrirse así hace lo mismo que si lo abrieras tú (buscar actualizaciones, comprobar los archivos del juego y mostrar
+los jugadores conectados), con las conexiones descritas en la tabla de arriba.
 
 ## Avisos anónimos de error
 

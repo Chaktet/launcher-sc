@@ -1071,6 +1071,40 @@ function scOfrecerPerfilMasLigero(seguro = false, jugado = null, desde = 0){
     return true
 }
 
+/**
+ * Pregunta única «¿Abrimos SC Launcher al encender el PC?» (1.17.4). Nunca se activa sin un
+ * «sí» del jugador: a los que ya tenían el launcher no se les cambia nada al actualizar.
+ * Espera a que no haya otro diálogo abierto (selector de perfil, actualización, cuentas...).
+ */
+function scPreguntarAbrirConWindows(intentos = 0){
+    if(process.platform !== 'win32' || ConfigManager.getAbrirConWindowsPreguntado()){
+        return
+    }
+    if(isOverlayVisible() || getCurrentView() !== VIEWS.landing){
+        if(intentos < 90){
+            setTimeout(() => scPreguntarAbrirConWindows(intentos + 1), 2000)
+        }
+        return
+    }
+    const responder = (si) => {
+        ConfigManager.setAbrirConWindows(si)
+        ConfigManager.setAbrirConWindowsPreguntado(true)
+        ConfigManager.save()
+        ipcRenderer.invoke('sc-abrir-con-windows', si).catch(() => {})
+        toggleOverlay(false)
+    }
+    setOverlayContent(
+        Lang.queryJS('landing.sc2.abrirWindowsTitulo'),
+        Lang.queryJS('landing.sc2.abrirWindowsTexto'),
+        Lang.queryJS('landing.sc2.abrirWindowsSi'),
+        Lang.queryJS('landing.sc2.abrirWindowsNo')
+    )
+    scTipoAviso('info')
+    setOverlayHandler(() => responder(true))
+    setDismissHandler(() => responder(false))
+    toggleOverlay(true, true)
+}
+
 function scMostrarOfertaPerfil(servSig){
     // Rediseño v5: el perfil propuesto va en su propia tarjeta entre la explicación y la pregunta.
     const tarjeta = `<span class="scAvisoPerfil">

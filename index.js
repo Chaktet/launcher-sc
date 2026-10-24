@@ -535,6 +535,22 @@ ipcMain.on('sc-ventana-juego', (_event, accion) => {
     }
 })
 
+// «Abrir al encender el PC» (1.17.4). Lo piden Ajustes y la pregunta única de landing.js.
+// Solo en el launcher instalado: en desarrollo registraría electron.exe en el arranque de Windows.
+// El nombre es fijo porque es el que borra el desinstalador (build/installer.nsh).
+ipcMain.handle('sc-abrir-con-windows', (_event, activar) => {
+    if(process.platform !== 'win32' || !app.isPackaged){
+        return false
+    }
+    try {
+        app.setLoginItemSettings({ openAtLogin: activar === true, name: 'SC Launcher' })
+        return true
+    } catch(err) {
+        console.error('[SC] No se pudo cambiar el arranque con Windows', err)
+        return false
+    }
+})
+
 function getPlatformIcon(filename){
     let ext
     switch(process.platform) {
