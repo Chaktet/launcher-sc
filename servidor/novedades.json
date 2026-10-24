@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-24-servidor-Herreria-cambios-en-megapiedras",
+      "fecha": "2026-10-24",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Herrería: cambios en megapiedras",
+      "puntos": [
+        "El Reciclaje pide más megapiedras repetidas para darte un Vale de megapiedra.",
+        "La Llave Megapiedra ya no se forja en la Herrería: tus fragmentos van al Canje de megapiedra."
+      ]
+    },
+    {
       "id": "2026-10-23-pack-SC-3.2.97",
       "fecha": "2026-10-23",
       "tipo": "pack",
