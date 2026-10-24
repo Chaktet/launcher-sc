@@ -158,7 +158,13 @@
     "2026-10-24-pack-SC-3.2.99",
     "2026-10-24-pack-SC-3.2.98",
     "2026-10-24-servidor-Herreria-cambios-en-megapiedras",
-    "2026-10-24-movil-SC-Movil-2.3.16"
+    "2026-10-24-movil-SC-Movil-2.3.16",
+    "2026-10-24-servidor-Ditto-Party-potenciadores-y-muerte-subita",
+    "2026-10-24-servidor-Ditto-Party-cada-fallo-te-baja-solo-un-piso",
+    "2026-10-24-servidor-Escondite-final-de-ronda-y-vuelta-de-tus-cosas-arreglados",
+    "2026-10-24-servidor-Las-capturas-ya-cuentan-en-la-guia-y-la-agenda",
+    "2026-10-24-servidor-Los-vales-te-dicen-donde-tienes-lo-que-eliges",
+    "2026-10-24-servidor-Escondite-el-anuncio-del-premio-MVP-ya-no-repite-llaves"
   ],
   "mensajes": [
     {
@@ -475,6 +481,18 @@
         "2026-10-24-pack-SC-3.2.98",
         "2026-10-24-servidor-Herreria-cambios-en-megapiedras",
         "2026-10-24-movil-SC-Movil-2.3.16"
+      ]
+    },
+    {
+      "fecha": "2026-10-24",
+      "mensaje": "1563635118780977274",
+      "entradas": [
+        "2026-10-24-servidor-Ditto-Party-potenciadores-y-muerte-subita",
+        "2026-10-24-servidor-Ditto-Party-cada-fallo-te-baja-solo-un-piso",
+        "2026-10-24-servidor-Escondite-final-de-ronda-y-vuelta-de-tus-cosas-arreglados",
+        "2026-10-24-servidor-Las-capturas-ya-cuentan-en-la-guia-y-la-agenda",
+        "2026-10-24-servidor-Los-vales-te-dicen-donde-tienes-lo-que-eliges",
+        "2026-10-24-servidor-Escondite-el-anuncio-del-premio-MVP-ya-no-repite-llaves"
       ]
     }
   ]
