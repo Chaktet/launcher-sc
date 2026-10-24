@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-23-pack-SC-3.2.97",
+      "fecha": "2026-10-23",
+      "tipo": "pack",
+      "clase": "arreglo",
+      "version": "SC-3.2.97",
+      "titulo": "Armaduras bien con shaders, también en tu brazo",
+      "puntos": [
+        "Con shaders, las armaduras cosméticas salían con rayas rojas y negras en tu brazo al jugar en primera persona: ya se ven con su aspecto real.",
+        "Las armaduras de Halloween (Caballero calabaza, Segador de ánimas y Cazador de vampiros) también se ven bien con shaders."
+      ]
+    },
+    {
       "id": "2026-10-23-servidor-Canje-de-megapiedras-con-fragmentos-sale-al-azar",
       "fecha": "2026-10-23",
       "tipo": "servidor",
