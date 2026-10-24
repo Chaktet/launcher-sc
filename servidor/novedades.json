@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-24-servidor-gts-buzon",
+      "fecha": "2026-10-24",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "GTS: lo que no cabe va a tu Buzón",
+      "puntos": [
+        "Si compras o retiras algo con el inventario lleno, te espera en tu Buzón.",
+        "Los objetos que publicaste y caducan vuelven a tu Buzón aunque no estés conectado."
+      ]
+    },
+    {
       "id": "2026-10-24-servidor-tienda-raids",
       "fecha": "2026-10-24",
       "tipo": "servidor",
