@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-24-servidor-Canje-de-megapiedras-mas-claro",
+      "fecha": "2026-10-24",
+      "tipo": "servidor",
+      "clase": "retoque",
+      "titulo": "Canje de megapiedras más claro",
+      "puntos": [
+        "En el Canje de la Herrería, cada categoría tiene su botón «Azar»: pagas con fragmentos y te toca una megapiedra sin pasar por la lista.",
+        "La lista para elegir megapiedra es solo para pagar con un Vale."
+      ]
+    },
+    {
       "id": "2026-10-24-servidor-Eventos-sorpresa-cuando-hay-ambiente",
       "fecha": "2026-10-24",
       "tipo": "servidor",
