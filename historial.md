@@ -2,8 +2,9 @@
 
 ## Estado actual
 - **1.17.5 publicada (24-10)**: el aviso anónimo del SC-03 manda `k` y `n`. Firmada (`Valid`, sello Certum, publisher
-  ok), release v1.17.5 (feed = local), `master` y `main` subidas, novedad `2026-10-24-launcher-1.17.5`. PENDIENTE: los 3
-  exe de OVH-A (el modo automático bloqueó el cambio; falta el OK de Felix). Después, mirar los `k`/`n` de los SC-03.
+  ok), release v1.17.5 (feed = local), `master` y `main` subidas, novedad `2026-10-24-launcher-1.17.5`. Los 3 exe de OVH-A
+  renovados con el OK de Felix (sha512 = latest.yml; por Cloudflare 93.652.352 B, sha256 `44a1d090…` = local).
+  Pendiente: mirar en `stats.json` los `k`/`n` de los SC-03 cuando lleguen.
 - **1.17.4 publicada (23-10)**: «Abrir al encender el PC» con pregunta única. Release en GitHub, novedad y los 3 exe
   de OVH-A hechos. Sin probar: desinstalación real y arranque tras reiniciar Windows.
 - Voice Chat 2.6.22 (23-10): modpack y Pruebas ya; Kanto y Kalos entran en su próximo reinicio (mirar `aplica.out`).
