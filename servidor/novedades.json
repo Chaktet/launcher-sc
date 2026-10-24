@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-24-servidor-Las-capturas-ya-cuentan-en-la-guia-y-la-agenda",
+      "fecha": "2026-10-24",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Las capturas ya cuentan en la guía y la agenda",
+      "puntos": [
+        "Capturar Pokémon no sumaba en el paso «Captura tu primer Pokémon» de la guía de bienvenida ni en las tareas de captura de la agenda diaria",
+        "Ya está arreglado: tu próxima captura cuenta y recibes el premio del paso"
+      ]
+    },
+    {
       "id": "2026-10-24-launcher-1.17.5",
       "fecha": "2026-10-24",
       "tipo": "launcher",
