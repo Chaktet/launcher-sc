@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-24-servidor-greninja-ash",
+      "fecha": "2026-10-24",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Greninja Ash ya se puede conseguir",
+      "puntos": [
+        "Consigue Fragmentos de Vínculo en las raids de 4★ y 5★ y en las expediciones en Experto.",
+        "Con 30, haz una tirada en la Herrería del PokéNav: 50 % de conseguir a Greninja Ash; si no, recuperas parte.",
+        "En combate, al derrotar a un rival se transforma y se hace más fuerte."
+      ]
+    },
+    {
       "id": "2026-10-24-pack-SC-3.2.99",
       "fecha": "2026-10-24",
       "tipo": "pack",
