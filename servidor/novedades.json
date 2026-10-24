@@ -2,6 +2,20 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-24-servidor-Eventos-sorpresa-cuando-hay-ambiente",
+      "fecha": "2026-10-24",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Eventos sorpresa cuando hay ambiente",
+      "puntos": [
+        "Cuando tu región está animada, de vez en cuando salta un evento sorpresa: se avisa por el chat 2 minutos antes",
+        "Carrera de captura: los primeros en capturar un Pokémon del tipo que toque se llevan premio",
+        "Lluvia de objetos en el spawn: Ultra Balls, caramelos, mentas… y con suerte alguna Master Ball",
+        "Hora feliz: tus Pokémon ganan el doble de experiencia en combate durante un rato",
+        "También pueden saltar por sorpresa los minijuegos de siempre, nunca encima de otro evento"
+      ]
+    },
+    {
       "id": "2026-10-24-servidor-Ditto-Party-potenciadores-y-muerte-subita",
       "fecha": "2026-10-24",
       "tipo": "servidor",
