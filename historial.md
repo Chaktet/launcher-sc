@@ -1,10 +1,26 @@
 # SC Launcher · historial
 
 ## Estado actual
+- **1.17.4 publicada (23-10)**: «Abrir al encender el PC» con pregunta única. Release en GitHub y novedad hechas;
+  **pendiente: los 3 exe de OVH-A siguen en la 1.17.3** (el modo automático bloqueó subirlos; ver entrada de hoy).
 - Voice Chat 2.6.22 (23-10): modpack y Pruebas ya; Kanto y Kalos entran en su próximo reinicio (mirar `aplica.out`).
 - **1.17.3 publicada (23-10)**: borra solos los SC-Pack viejos y afina las pistas de Voice Chat (`d` en «Could not
   initialize class») y de descargas (`k`, `n`). `sc-stats.py` nuevo instalado en OVH-A. Mirar en unos días: `d` de los
   SC-90 de Voice Chat, `k` de los SC-04 y que bajen los SC-93 `sc-viejo`.
+
+## 2026-10-23 · 1.17.4: «Abrir al encender el PC» con permiso del jugador
+
+- Felix: que el launcher se abra con Windows. Elegido: preguntar UNA vez (nunca activarlo sin un sí, tampoco a los
+  que ya lo tenían) y abrir con la ventana normal. Ajuste `abrirConWindows` (apagado) + `abrirConWindowsPreguntado`;
+  interruptor en Ajustes → Launcher; IPC `sc-abrir-con-windows` en index.js (`setLoginItemSettings`, nombre fijo
+  «SC Launcher», solo instalado); `build/installer.nsh` lo borra al desinstalar pero no al actualizar (`isUpdated`).
+  PRIVACY.md: sección nueva (no recoge datos nuevos). Las páginas legales de la web no hablan del launcher: sin cambios.
+- Verificado: entrada del registro creada y borrada por Electron con ese nombre; en una copia de datos
+  (`--user-data-dir`) la pregunta sale en la portada, «Sí» guarda y no vuelve a salir, Ajustes apaga y guarda. Firmada
+  (publisher ok), release v1.17.4 (feed = local), `master` y `main` subidas, novedad `2026-10-23-launcher-1.17.4`.
+- Sin probar: la desinstalación real (que quite la entrada) y el arranque real tras reiniciar Windows.
+- Pendiente: renovar `SC-Launcher-setup{,-1.0.0,-1.17.4}.exe` en `/var/www/packs` de OVH-A (sha512 del latest.yml,
+  `.nuevo` + `mv -f`): el modo automático lo bloqueó como despliegue a producción.
 
 ## 2026-10-23 · Voice Chat 2.6.22 en servidores y modpack, configuración sin IP fija
 
