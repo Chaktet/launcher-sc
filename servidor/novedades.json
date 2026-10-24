@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-24-servidor-Los-vales-te-dicen-donde-tienes-lo-que-eliges",
+      "fecha": "2026-10-24",
+      "tipo": "servidor",
+      "clase": "retoque",
+      "titulo": "Los vales te dicen dónde tienes lo que eliges",
+      "puntos": [
+        "Al elegir un premio en /vales, la pantalla te dice dónde está: en tus Cosméticos (PokéNav → Estilo → Cosméticos), en tu inventario o en tu equipo"
+      ]
+    },
+    {
       "id": "2026-10-24-servidor-Escondite-el-anuncio-del-premio-MVP-ya-no-repite-llaves",
       "fecha": "2026-10-24",
       "tipo": "servidor",
