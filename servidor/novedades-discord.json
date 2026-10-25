@@ -164,7 +164,16 @@
     "2026-10-24-servidor-Escondite-final-de-ronda-y-vuelta-de-tus-cosas-arreglados",
     "2026-10-24-servidor-Las-capturas-ya-cuentan-en-la-guia-y-la-agenda",
     "2026-10-24-servidor-Los-vales-te-dicen-donde-tienes-lo-que-eliges",
-    "2026-10-24-servidor-Escondite-el-anuncio-del-premio-MVP-ya-no-repite-llaves"
+    "2026-10-24-servidor-Escondite-el-anuncio-del-premio-MVP-ya-no-repite-llaves",
+    "2026-10-24-pack-SC-3.3.0",
+    "2026-10-24-servidor-Escondite-recuperas-el-PokeNav-al-salir-de-la-partida",
+    "2026-10-24-servidor-Eventos-sorpresa-cuando-hay-ambiente",
+    "2026-10-25-servidor-Muchas-mas-MT-en-la-tienda",
+    "2026-10-25-servidor-Greninja-Ash-su-mejora-una-vez-por-combate",
+    "2026-10-25-servidor-Raids-guardianes-a-la-vista-y-menos",
+    "2026-10-24-movil-2.3.17",
+    "2026-10-24-servidor-Canje-de-megapiedras-mas-claro",
+    "2026-10-25-servidor-Tesoros-de-la-pesca-con-su-icono"
   ],
   "mensajes": [
     {
@@ -493,6 +502,21 @@
         "2026-10-24-servidor-Las-capturas-ya-cuentan-en-la-guia-y-la-agenda",
         "2026-10-24-servidor-Los-vales-te-dicen-donde-tienes-lo-que-eliges",
         "2026-10-24-servidor-Escondite-el-anuncio-del-premio-MVP-ya-no-repite-llaves"
+      ]
+    },
+    {
+      "fecha": "2026-10-25",
+      "mensaje": "1563918715584782421",
+      "entradas": [
+        "2026-10-24-pack-SC-3.3.0",
+        "2026-10-24-servidor-Escondite-recuperas-el-PokeNav-al-salir-de-la-partida",
+        "2026-10-24-servidor-Eventos-sorpresa-cuando-hay-ambiente",
+        "2026-10-25-servidor-Muchas-mas-MT-en-la-tienda",
+        "2026-10-25-servidor-Greninja-Ash-su-mejora-una-vez-por-combate",
+        "2026-10-25-servidor-Raids-guardianes-a-la-vista-y-menos",
+        "2026-10-24-movil-2.3.17",
+        "2026-10-24-servidor-Canje-de-megapiedras-mas-claro",
+        "2026-10-25-servidor-Tesoros-de-la-pesca-con-su-icono"
       ]
     }
   ]
