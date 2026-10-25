@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-25-servidor-Ya-puedes-apuntarte-bien-a-los-minijuegos-de-la-rueda",
+      "fecha": "2026-10-25",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Ya puedes apuntarte bien a los minijuegos de la rueda",
+      "puntos": [
+        "El botón Apuntarme de la pantalla del Royale y del Escondite ahora te apunta de verdad a la partida de la rueda",
+        "En el chat verás cuántos vais apuntados y cuántos faltan, con avisos a 3 y a 1 minuto y el botón Apuntarme",
+        "Si no se llega al mínimo de jugadores, en tu región sale una Carrera de captura o una Lluvia de objetos en su lugar"
+      ]
+    },
+    {
       "id": "2026-10-25-pack-SC-3.3.4",
       "fecha": "2026-10-25",
       "tipo": "pack",
