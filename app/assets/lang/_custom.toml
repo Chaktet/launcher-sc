@@ -244,9 +244,20 @@ tryAgain = "Reintentar"
 invalidValue = "* Nombre no válido (3-16 letras, números o _)"
 requiredValue = "* Escribe tu nombre de usuario"
 
+[js.login.premium]
+title = "Ese nombre es de una cuenta premium"
+desc = "<strong>{nombre}</strong> es el nombre de una cuenta premium (de pago) de Minecraft. Con una cuenta No Premium te dará error al entrar al servidor.<br><br>Si eres nuevo, elige otro nombre."
+sugerencias = " Estos están libres: {nombres}."
+otroNombre = "Elegir otro nombre"
+yaJugaba = "Ya jugaba con este nombre"
+
 [js.login.error.unknown]
 title = "Error desconocido al entrar"
 desc = "Ha ocurrido un error desconocido. Mira la consola para más detalles."
+
+[js.landing.sesion]
+title = "No se ha podido renovar tu sesión"
+desc = "Tu sesión de Microsoft ha caducado y no hemos podido renovarla. Comprueba tu conexión a internet y pulsa JUGAR otra vez."
 
 [js.landing.launch]
 pleaseWait = "Espera un momento.."

@@ -1,6 +1,8 @@
 # SC Launcher · historial
 
 ## Estado actual
+- **1.17.6 (25-10): fin del aviso SC-PREMIUM evitable.** Ver la entrada de abajo. Estado de la publicación al final de
+  la entrada.
 - **1.17.5 publicada (24-10)**: el aviso anónimo del SC-03 manda `k` y `n`. Firmada (`Valid`, sello Certum, publisher
   ok), release v1.17.5 (feed = local), `master` y `main` subidas, novedad `2026-10-24-launcher-1.17.5`. Los 3 exe de OVH-A
   renovados con el OK de Felix (sha512 = latest.yml; por Cloudflare 93.652.352 B, sha256 `44a1d090…` = local).
@@ -11,6 +13,24 @@
 - **1.17.3 publicada (23-10)**: borra solos los SC-Pack viejos y afina las pistas de Voice Chat (`d` en «Could not
   initialize class») y de descargas (`k`, `n`). `sc-stats.py` nuevo instalado en OVH-A. Mirar en unos días: `d` de los
   SC-90 de Voice Chat, `k` de los SC-04 y que bajen los SC-93 `sc-viejo`.
+
+## 2026-10-25 · 1.17.6: sesión premium renovada al JUGAR y aviso de nombre premium
+
+- Felix: el aviso SC-PREMIUM («Error al iniciar sesión… aviso SC-PREMIUM») le sale a mucha gente, también a él.
+  El texto es del SC-Pack (`disconnect.loginFailedInfo.invalidSession`); el juego lo muestra cuando el servidor pide la
+  verificación premium y Mojang no la acepta.
+- Causas: (1) premium: la sesión de Minecraft dura 24 h y el launcher solo la renovaba al abrirse; con él abierto un día
+  se jugaba con ella muerta. (2) No Premium con un nombre que es premium en Mojang: SCLogin fuerza la verificación,
+  que nunca pasa; el texto prometía «pulsa JUGAR otra vez», cierto con JPremium, falso con SCLogin.
+- Cambios: `scSesionLista()` (landing.js) renueva antes de lanzar si caduca en < 1 h; si Microsoft la rechaza pide
+  volver a entrar, si no hay red y ya caducó no lanza (aviso «No se ha podido renovar tu sesión»). `validateSelected`
+  con una sola renovación a la vez y 20 s máximo. Al añadir cuenta No Premium se consulta Mojang: si es premium, aviso
+  con 3 nombres libres; «Ya jugaba con este nombre» deja seguir (cuentas antiguas). Escape = elegir otro nombre.
+- Codex (xhigh): 4 fallos del launcher arreglados (sin tiempo límite, caducada sin red, doble renovación, Escape).
+- Comprobado con `electron .` + CDP y carpeta de datos aparte: aviso con nombres libres, Escape no crea cuenta, «Ya
+  jugaba» la crea, nombre libre pasa directo; renovación: lejos de caducar no toca la red, rechazo de Microsoft → pedir
+  entrar, sin red caducada → no lanza, colgada → se libera a los 20 s (2 seguidas, 40 s). La prueba pilló un
+  `loggerLaunchSuite` fuera de su ámbito (arreglado). Sin probar con una sesión real caducada.
 
 ## 2026-10-24 · 1.17.5: el SC-03 dice por qué falla
 

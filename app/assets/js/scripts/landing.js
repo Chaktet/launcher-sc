@@ -3241,6 +3241,28 @@ async function scRefrescarDistribucion(logger){
  * por la ruta directa), y un rechazo ahí era un unhandledrejection con la barra de
  * progreso puesta para siempre y sin botón de JUGAR.
  */
+// Renueva la sesión premium antes de lanzar (ver la llamada en dlAsync). false = no se
+// lanza: o Microsoft la rechazó (validateSelectedAccount ya pide volver a entrar) o no se
+// pudo renovar y ya está caducada, y entrar así solo daría el aviso SC-PREMIUM. La espera
+// máxima (20 s) la pone AuthManager.validateSelected (Codex, 25-10).
+async function scSesionLista() {
+    const val = await validateSelectedAccount(60 * 60 * 1000)
+    if(val === false || val === undefined) {
+        loggerLanding.warn('La sesión de Microsoft ya no vale: se pide volver a iniciar sesión.')
+        return false
+    }
+    const acc = ConfigManager.getSelectedAccount()
+    if(acc != null && acc.type === 'microsoft' && Date.now() >= acc.expiresAt) {
+        loggerLanding.warn('No se pudo renovar la sesión de Microsoft y ya está caducada: no se lanza.')
+        setOverlayContent(Lang.queryJS('landing.sesion.title'), Lang.queryJS('landing.sesion.desc'),
+            Lang.queryJS('landing.launch.okay'))
+        setOverlayHandler(null)
+        toggleOverlay(true)
+        return false
+    }
+    return true
+}
+
 async function dlAsync(login = true) {
     try {
         // Los reintentos automáticos también pasan por aquí: si mientras tanto se ha
@@ -3493,6 +3515,14 @@ async function scDlAsyncInterno(login = true) {
     scBorrarPackPresembradoViejo(serv)
 
     if(login) {
+        // SC-PREMIUM (Felix 25-10): la sesión premium solo se renovaba al abrir el launcher.
+        // Con el launcher abierto más de 24 h el juego salía con ella caducada y el servidor
+        // rechazaba la entrada. Se renueva aquí, justo antes de lanzar (tras las descargas, que
+        // pueden tardar). Si Microsoft la rechaza, validateSelectedAccount pide volver a entrar.
+        if(!(await scSesionLista())) {
+            toggleLaunchArea(false)
+            return
+        }
         const authUser = ConfigManager.getSelectedAccount()
         loggerLaunchSuite.info(`Sending selected account (${authUser.displayName}) to ProcessBuilder.`)
         let pb = new ProcessBuilder(serv, versionData, modLoaderData, authUser, remote.app.getVersion())

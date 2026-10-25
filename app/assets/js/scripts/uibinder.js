@@ -403,10 +403,12 @@ function mergeModConfiguration(o, n, nReq = false){
     return n
 }
 
-async function validateSelectedAccount(){
+// Devuelve true si la cuenta sigue valiendo; si no, la quita y abre el aviso para volver
+// a entrar. margenMs: ver validateSelectedMicrosoftAccount (landing.js lo usa al JUGAR).
+async function validateSelectedAccount(margenMs = 0){
     const selectedAcc = ConfigManager.getSelectedAccount()
     if(selectedAcc != null){
-        const val = await AuthManager.validateSelected()
+        const val = await AuthManager.validateSelected(margenMs)
         if(!val){
             ConfigManager.removeAuthAccount(selectedAcc.uuid)
             ConfigManager.save()

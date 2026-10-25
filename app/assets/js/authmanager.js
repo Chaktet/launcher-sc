@@ -171,11 +171,51 @@ function getOfflineUUID(username) {
     return hash.toString('hex')
 }
 
-exports.addMojangAccount = async function(username, password) {
+// ¿Es este nombre de una cuenta premium de Minecraft? true / false, o null si Mojang
+// no contesta (sin red, límite de peticiones...): entonces no se bloquea a nadie.
+async function scNombreEsPremium(nombre) {
+    try {
+        const res = await fetch('https://api.mojang.com/users/profiles/minecraft/' + encodeURIComponent(nombre),
+            { signal: AbortSignal.timeout(4000) })
+        if(res.status === 200) return true
+        if(res.status === 204 || res.status === 404) return false
+        return null
+    } catch(_err) {
+        return null
+    }
+}
+
+// Hasta 3 nombres parecidos que Mojang confirma que NO son premium. El servidor puede
+// tenerlos ya como cuenta No Premium de otro: entonces SCLogin le pide la contraseña y le
+// ofrece otros (0.6.1), pero el caso normal es que estén libres.
+async function scNombresLibres(nombre) {
+    const base = nombre.slice(0, 12)
+    const candidatos = new Set()
+    while(candidatos.size < 6) {
+        candidatos.add(base + '_' + (100 + Math.floor(Math.random() * 900)))
+    }
+    const lista = Array.from(candidatos)
+    const premium = await Promise.all(lista.map(scNombreEsPremium))
+    return lista.filter((n, i) => premium[i] === false).slice(0, 3)
+}
+
+// aceptarPremium: el jugador ya ha visto el aviso y dice que ese nombre es el suyo de
+// siempre en el servidor (cuenta No Premium antigua): se le deja seguir.
+exports.addMojangAccount = async function(username, password, aceptarPremium = false) {
     if(!/^[a-zA-Z0-9_]{3,16}$/.test(username)) {
         return Promise.reject({
             title: 'Nombre no válido',
             desc: 'El nombre debe tener 3-16 caracteres: letras, números y _ (sin espacios).'
+        })
+    }
+    // SC-PREMIUM (Felix 25-10): con un nombre que es de una cuenta premium el servidor pide
+    // la verificación de Mojang, que una cuenta No Premium nunca pasa. Se avisa al crearla,
+    // en vez de dejar que el jugador se estrelle con el error al entrar.
+    if(!aceptarPremium && await scNombreEsPremium(username) === true) {
+        return Promise.reject({
+            scNombrePremium: true,
+            nombre: username,
+            sugerencias: await scNombresLibres(username)
         })
     }
     const uuid = getOfflineUUID(username)
@@ -352,8 +392,9 @@ async function validateSelectedMojangAccount(){
 /**
  * Tras un fallo renovando la sesión: false (hay que volver a entrar, uibinder quita la
  * cuenta) SOLO si Microsoft ha dicho que la sesión ya no vale. Sin conexión, con
- * Microsoft caído o con un timeout se mantiene la cuenta y se sigue: el servidor no
- * exige sesión premium para entrar y a la próxima con red se renueva sola.
+ * Microsoft caído o con un timeout se mantiene la cuenta y se sigue (a la próxima con
+ * red se renueva sola). Ojo: desde SCLogin (23-10) una cuenta premium SÍ necesita la
+ * sesión viva para entrar; con una caducada el juego da el aviso SC-PREMIUM.
  */
 function scMantenerCuentaTrasFallo(err){
     if(err != null && err.scErrorDeSesion === true){
@@ -364,11 +405,14 @@ function scMantenerCuentaTrasFallo(err){
     return true
 }
 
-async function validateSelectedMicrosoftAccount(){
+// margenMs: renueva también si la sesión caduca dentro de ese margen. Al pulsar JUGAR se
+// pide 1 h: la sesión de Minecraft dura 24 h y antes solo se renovaba al abrir el
+// launcher, así que quien lo dejaba abierto un día entraba con ella muerta (SC-PREMIUM).
+async function validateSelectedMicrosoftAccount(margenMs = 0){
     const current = ConfigManager.getSelectedAccount()
     const now = new Date().getTime()
     const mcExpiresAt = current.expiresAt
-    const mcExpired = now >= mcExpiresAt
+    const mcExpired = now + margenMs >= mcExpiresAt
 
     if(!mcExpired) {
         return true
@@ -377,7 +421,7 @@ async function validateSelectedMicrosoftAccount(){
     // MC token expired. Check MS token.
 
     const msExpiresAt = current.microsoft.expires_at
-    const msExpired = now >= msExpiresAt
+    const msExpired = now + margenMs >= msExpiresAt
 
     if(msExpired) {
         // MS expired, do full refresh.
@@ -425,11 +469,36 @@ async function validateSelectedMicrosoftAccount(){
  * @returns {Promise.<boolean>} Promise which resolves to true if the access token is valid,
  * otherwise false.
  */
-exports.validateSelected = async function(){
+// Una sola renovación a la vez: pulsar JUGAR nada más abrir el launcher lanzaba la del
+// arranque y la de JUGAR a la vez con el mismo refresh_token (Codex, 25-10).
+let scValidacionEnCurso = null
+exports.validateSelected = async function(margenMs = 0){
+    while(scValidacionEnCurso != null) {
+        try {
+            await scValidacionEnCurso
+        } catch(_err) {
+            // La otra llamada ya gestiona su error; aquí solo se espera a que acabe.
+        }
+    }
+    // 20 s como mucho: las peticiones de helios no tienen tiempo límite y una colgada
+    // dejaría esperando para siempre a todas las siguientes. Pasado ese tiempo se trata como
+    // «sin conexión» (se mantiene la cuenta; landing.js no lanza si ya está caducada).
+    scValidacionEnCurso = Promise.race([
+        scValidarSeleccionada(margenMs),
+        new Promise(resolve => setTimeout(() => resolve(true), 20000))
+    ])
+    try {
+        return await scValidacionEnCurso
+    } finally {
+        scValidacionEnCurso = null
+    }
+}
+
+async function scValidarSeleccionada(margenMs){
     const current = ConfigManager.getSelectedAccount()
 
     if(current.type === 'microsoft') {
-        return await validateSelectedMicrosoftAccount()
+        return await validateSelectedMicrosoftAccount(margenMs)
     } else {
         return await validateSelectedMojangAccount()
     }

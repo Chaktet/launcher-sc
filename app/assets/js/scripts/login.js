@@ -182,14 +182,17 @@ loginCancelButton.onclick = (e) => {
 loginForm.onsubmit = () => { return false }
 
 // Bind login button behavior.
-loginButton.addEventListener('click', () => {
+loginButton.addEventListener('click', () => scEntrarNoPremium(false))
+
+// aceptarPremium: ver AuthManager.addMojangAccount (el aviso de nombre premium lo reintenta así).
+function scEntrarNoPremium(aceptarPremium) {
     // Disable form.
     formDisabled(true)
 
     // Show loading stuff.
     loginLoading(true)
 
-    AuthManager.addMojangAccount(loginUsername.value, loginPassword.value).then((value) => {
+    AuthManager.addMojangAccount(loginUsername.value, loginPassword.value, aceptarPremium).then((value) => {
         updateSelectedAccount(value)
         loginButton.innerHTML = loginButton.innerHTML.replace(Lang.queryJS('login.loggingIn'), Lang.queryJS('login.success'))
         $('.circle-loader').toggleClass('load-complete')
@@ -215,6 +218,11 @@ loginButton.addEventListener('click', () => {
     }).catch((displayableError) => {
         loginLoading(false)
 
+        if(displayableError != null && displayableError.scNombrePremium === true) {
+            scAvisoNombrePremium(displayableError)
+            return
+        }
+
         let actualDisplayableError
         if(isDisplayableError(displayableError)) {
             msftLoginLogger.error('Error while logging in.', displayableError)
@@ -233,4 +241,35 @@ loginButton.addEventListener('click', () => {
         toggleOverlay(true)
     })
 
-})
+}
+
+// SC-PREMIUM: el nombre es de una cuenta premium. Lo normal es que sea un jugador nuevo
+// que no lo sabe: se le proponen nombres libres. El que ya jugaba en el servidor con ese
+// nombre sin premium (cuenta antigua) puede seguir, porque su cuenta ya existe allí.
+// Los nombres solo llevan letras, números y _ (validados antes), así que van tal cual al HTML.
+function scAvisoNombrePremium(err) {
+    const sugerencias = err.sugerencias || []
+    const desc = Lang.queryJS('login.premium.desc', { nombre: err.nombre })
+        + (sugerencias.length > 0
+            ? Lang.queryJS('login.premium.sugerencias', { nombres: sugerencias.map(n => '<strong>' + n + '</strong>').join(', ') })
+            : '')
+    setOverlayContent(Lang.queryJS('login.premium.title'), desc,
+        Lang.queryJS('login.premium.otroNombre'), Lang.queryJS('login.premium.yaJugaba'))
+    setOverlayHandler(() => {
+        if(sugerencias.length > 0) {
+            loginUsername.value = sugerencias[0]
+            validateEmail(sugerencias[0])
+        }
+        formDisabled(false)
+        toggleOverlay(false)
+        loginUsername.focus()
+    })
+    setDismissHandler(() => {
+        toggleOverlay(false)
+        scEntrarNoPremium(true)
+    })
+    toggleOverlay(true, true)
+    // Escape normalmente pulsa el segundo botón; aquí ese botón crea la cuenta, así que
+    // Enter y Escape van los dos a «Elegir otro nombre». «Ya jugaba» solo con clic (Codex, 25-10).
+    bindOverlayKeys(true, 'overlayContent', false)
+}
