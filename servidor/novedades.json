@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-25-servidor-Romper-un-soporte-de-armadura-ya-no-borra-la-armadura",
+      "fecha": "2026-10-25",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Romper un soporte de armadura ya no borra la armadura",
+      "puntos": [
+        "Antes, al romper un soporte de armadura caía el soporte pero la armadura y lo que tuviera en las manos desaparecían",
+        "Ahora cae todo lo que llevaba puesto, en Kanto y en Kalos",
+        "En tu protección nadie puede romper ni vaciar tus soportes si no le das permiso"
+      ]
+    },
+    {
       "id": "2026-10-25-servidor-El-cofre-del-clan-ya-se-puede-desbloquear",
       "fecha": "2026-10-25",
       "tipo": "servidor",
