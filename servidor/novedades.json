@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-25-servidor-Aviso-si-dejas-un-vale-sin-elegir",
+      "fecha": "2026-10-25",
+      "tipo": "servidor",
+      "clase": "retoque",
+      "titulo": "Aviso si dejas un vale sin elegir",
+      "puntos": [
+        "Si cierras la pantalla de elegir tu cosmético, teralito o menta sin escoger, el chat te recuerda que sigue guardado y que lo eliges con /vales."
+      ]
+    },
+    {
       "id": "2026-10-25-pack-3.3.2",
       "fecha": "2026-10-25",
       "tipo": "pack",
