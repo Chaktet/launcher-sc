@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-25-pack-SC-3.3.6",
+      "fecha": "2026-10-25",
+      "tipo": "pack",
+      "clase": "arreglo",
+      "version": "SC-3.3.6",
+      "titulo": "Kyurem de Mayo 2024 shiny ya se ve bien",
+      "puntos": [
+        "Kyurem de Mayo 2024 shiny ya se ve bien (antes salía con la textura rota)."
+      ]
+    },
+    {
       "id": "2026-10-25-servidor-Ya-puedes-apuntarte-bien-a-los-minijuegos-de-la-rueda",
       "fecha": "2026-10-25",
       "tipo": "servidor",
