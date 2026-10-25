@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-25-servidor-Transformado-en-Pokemon-ya-no-desapareces-al-viajar",
+      "fecha": "2026-10-25",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Transformado en Pokémon ya no desapareces al viajar",
+      "puntos": [
+        "Antes, si usabas un tp, una casa o un warp estando transformado, tu Pokémon se perdía y nadie te veía durante unos segundos",
+        "Ahora tu Pokémon aparece contigo al llegar al destino"
+      ]
+    },
+    {
       "id": "2026-10-25-launcher-1.17.6",
       "fecha": "2026-10-25",
       "tipo": "launcher",
