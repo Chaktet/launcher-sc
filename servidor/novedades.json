@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-25-servidor-Tus-vales-mas-faciles-de-encontrar",
+      "fecha": "2026-10-25",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Tus vales, más fáciles de encontrar",
+      "puntos": [
+        "Nueva tarjeta «Mis vales» en el PokéNav (Recompensas, página 2): ahí eliges lo que compraste «a elegir», como un cosmético o un teralito.",
+        "Si tienes un cosmético por elegir, el inicio de Cosméticos te lo recuerda con un botón para elegirlo al momento."
+      ]
+    },
+    {
       "id": "2026-10-25-modpack-Gritos-y-animaciones-nuevas-para-muchos-Pokemon",
       "fecha": "2026-10-25",
       "tipo": "modpack",
