@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-25-servidor-Muchas-mas-MT-en-la-tienda",
+      "fecha": "2026-10-25",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Muchas más MT en la tienda",
+      "puntos": [
+        "14 MT nuevas en la tienda de MT (/mts), como Teletransporte, Pistola Agua, Megaagotar, Placaje y Gruñido.",
+        "Las MT ya enseñan también los movimientos de tutor o de juegos anteriores que tu Pokémon puede aprender; antes no los aceptaban.",
+        "La tienda tiene ya más de 600 MT."
+      ]
+    },
+    {
       "id": "2026-10-25-servidor-Greninja-Ash-su-mejora-una-vez-por-combate",
       "fecha": "2026-10-25",
       "tipo": "servidor",
