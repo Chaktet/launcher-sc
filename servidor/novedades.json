@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-24-movil-2.3.17",
+      "fecha": "2026-10-24",
+      "tipo": "movil",
+      "clase": "retoque",
+      "version": "2.3.17",
+      "titulo": "El Escondite renovado también en el móvil",
+      "puntos": [
+        "Los iconos de habilidades, la ballesta y el traje del cazador del Escondite ya se ven en el móvil"
+      ]
+    },
+    {
       "id": "2026-10-24-pack-SC-3.3.0",
       "fecha": "2026-10-24",
       "tipo": "pack",
