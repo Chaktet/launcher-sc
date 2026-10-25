@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-25-servidor-Greninja-Ash-su-mejora-una-vez-por-combate",
+      "fecha": "2026-10-25",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Greninja Ash: su mejora, una vez por combate",
+      "puntos": [
+        "Greninja Ash se hace más fuerte solo la primera vez que debilita a un rival en cada combate; si debilita a otro, ya no sube más.",
+        "Si lo cambias, pierde esa mejora, pero sigue con el aspecto Ash el resto del combate.",
+        "Transformarse ya no cambia sus estadísticas base.",
+        "Si ves algo raro, avísanos por ticket."
+      ]
+    },
+    {
       "id": "2026-10-25-servidor-Raids-guardianes-a-la-vista-y-menos",
       "fecha": "2026-10-25",
       "tipo": "servidor",
