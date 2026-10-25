@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-25-servidor-Raids-guardianes-a-la-vista-y-menos",
+      "fecha": "2026-10-25",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Raids: guardianes a la vista y menos",
+      "puntos": [
+        "Los guardianes que llegan durante la raid ya no salen dentro de bloques ni barreras: aparecen a la vista, donde puedes golpearlos.",
+        "Salen bastantes menos guardianes en cada raid.",
+        "Si ves alguno atascado, avísanos por ticket."
+      ]
+    },
+    {
       "id": "2026-10-25-servidor-Vuelves-directo-a-tu-region-al-entrar",
       "fecha": "2026-10-25",
       "tipo": "servidor",
