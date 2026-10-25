@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-25-servidor-Vuelves-a-ver-el-progreso-de-tus-cacerias",
+      "fecha": "2026-10-25",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Vuelves a ver el progreso de tus cacerías",
+      "puntos": [
+        "Al capturar un Pokémon de tu cacería no salía ningún aviso de cuánto llevabas",
+        "Ahora encima de la barra de objetos ves la especie y tu progreso, por ejemplo 2/5",
+        "También te avisa cuando ya has aportado el máximo de la semana a la cacería de la red"
+      ]
+    },
+    {
       "id": "2026-10-25-servidor-Ya-sabes-cual-es-tu-legendario-al-romper-el-aura",
       "fecha": "2026-10-25",
       "tipo": "servidor",
