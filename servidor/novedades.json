@@ -2,6 +2,21 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-24-pack-SC-3.3.0",
+      "fecha": "2026-10-24",
+      "tipo": "pack",
+      "clase": "nuevo",
+      "version": "SC-3.3.0",
+      "titulo": "El Escondite se renueva: mapas, habilidades y trajes",
+      "puntos": [
+        "5 mapas nuevos hechos a mano: al empezar, votáis entre 3 y gana el más votado",
+        "Habilidades nuevas: Transformación y Eco para los escondidos; Pulso, Red y Rastro para los cazadores",
+        "Los cazadores llevan su propio traje y los objetos de habilidad ya no se ven en la mano del disfraz",
+        "Si te cazan, ves quién fue y miras 3 segundos por sus ojos; luego puedes seguir a cualquier cazador",
+        "Al acabar, una sola pantalla con el ganador, el MVP, el podio y tus números de la ronda"
+      ]
+    },
+    {
       "id": "2026-10-24-servidor-Escondite-recuperas-el-PokeNav-al-salir-de-la-partida",
       "fecha": "2026-10-24",
       "tipo": "servidor",
