@@ -8,7 +8,7 @@
       "clase": "retoque",
       "titulo": "Aviso si dejas un vale sin elegir",
       "puntos": [
-        "Si cierras la pantalla de elegir tu cosmético, teralito o menta sin escoger, el chat te recuerda que sigue guardado y que lo eliges con /vales."
+        "Si cierras sin escoger la pantalla del «Cosmético a elegir», el chat te recuerda que sigue guardado y que lo eliges con /vales."
       ]
     },
     {
