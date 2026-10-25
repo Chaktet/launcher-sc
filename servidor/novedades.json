@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-25-modpack-Gritos-y-animaciones-nuevas-para-muchos-Pokemon",
+      "fecha": "2026-10-25",
+      "tipo": "modpack",
+      "clase": "nuevo",
+      "titulo": "Gritos y animaciones nuevas para muchos Pokémon",
+      "puntos": [
+        "Gritos nuevos para más de 25 Pokémon: Hoppip, Houndoom, Starly, Staraptor, Combee, Vespiquen, Vikavolt, Applin y más",
+        "Mudkip, Marshtomp, Swampert, Ninetales, Fearow y Magmar se mueven con animaciones nuevas",
+        "Se actualiza solo al darle a JUGAR en el launcher"
+      ]
+    },
+    {
       "id": "2026-10-25-servidor-Aviso-si-dejas-un-vale-sin-elegir",
       "fecha": "2026-10-25",
       "tipo": "servidor",
