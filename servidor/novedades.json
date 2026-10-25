@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-25-servidor-Tesoros-de-la-pesca-con-su-icono",
+      "fecha": "2026-10-25",
+      "tipo": "servidor",
+      "clase": "retoque",
+      "titulo": "Tesoros de la pesca con su icono",
+      "puntos": [
+        "En la tienda de tesoros de la pesca, la tirada de ruleta, los tokens y las llaves legendaria y shiny se ven con su icono de verdad."
+      ]
+    },
+    {
       "id": "2026-10-25-servidor-Muchas-mas-MT-en-la-tienda",
       "fecha": "2026-10-25",
       "tipo": "servidor",
