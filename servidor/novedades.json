@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-25-pack-SC-3.3.4",
+      "fecha": "2026-10-25",
+      "tipo": "pack",
+      "clase": "arreglo",
+      "version": "SC-3.3.4",
+      "titulo": "Los tallos de champiñón vuelven a verse bien",
+      "puntos": [
+        "Al colocar varios tallos de champiñón juntos ya no aparecen como lucky blocks."
+      ]
+    },
+    {
       "id": "2026-10-25-servidor-Vuelves-a-ver-el-progreso-de-tus-cacerias",
       "fecha": "2026-10-25",
       "tipo": "servidor",
