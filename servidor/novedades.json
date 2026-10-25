@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-25-servidor-Vuelves-directo-a-tu-region-al-entrar",
+      "fecha": "2026-10-25",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Vuelves directo a tu región al entrar",
+      "puntos": [
+        "Al entrar al servidor vas directo a la región donde estabas al salir, Kanto o Kalos, sin pasar por el Lobby.",
+        "Si tienes que iniciar sesión, al hacerlo te lleva a tu región.",
+        "Si la última vez saliste desde el Lobby, empiezas en el Lobby."
+      ]
+    },
+    {
       "id": "2026-10-24-movil-2.3.17",
       "fecha": "2026-10-24",
       "tipo": "movil",
