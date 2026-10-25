@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-25-pack-3.3.2",
+      "fecha": "2026-10-25",
+      "tipo": "pack",
+      "clase": "arreglo",
+      "version": "3.3.2",
+      "titulo": "La megapiedra vuelve a verse al megaevolucionar",
+      "puntos": [
+        "Al megaevolucionar en combate, la piedra que sube encima de tu Pokémon salía como un cuadro morado y negro. Ya se ve la megapiedra de verdad.",
+        "También vuelven a verse bien el aura de la megaevolución, el fuego de la teracristalización y los efectos de varias skins que salían con ese mismo cuadro."
+      ]
+    },
+    {
       "id": "2026-10-25-servidor-Transformado-en-Pokemon-ya-no-desapareces-al-viajar",
       "fecha": "2026-10-25",
       "tipo": "servidor",
