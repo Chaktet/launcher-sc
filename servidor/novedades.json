@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-25-pack-SC-3.3.1",
+      "fecha": "2026-10-25",
+      "tipo": "pack",
+      "clase": "nuevo",
+      "version": "SC-3.3.1",
+      "titulo": "Los cazadores del Escondite estrenan traje y ballesta",
+      "puntos": [
+        "Traje de cazador en 3D: capucha honda, hombreras, bandolera con virotes, cinturón con bolsas, carcaj a la espalda y botas con hebilla",
+        "Ballesta nueva en 3D: se ve tensar la cuerda y el virote cargado",
+        "Se lo pone solo el cazador al empezar cada ronda"
+      ]
+    },
+    {
       "id": "2026-10-24-movil-2.3.17",
       "fecha": "2026-10-24",
       "tipo": "movil",
