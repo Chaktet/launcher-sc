@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-25-launcher-1.17.6",
+      "fecha": "2026-10-25",
+      "tipo": "launcher",
+      "version": "1.17.6",
+      "titulo": "Adiós al error de cuenta premium al entrar",
+      "puntos": [
+        "Si dejabas el launcher abierto mucho rato, tu sesión premium caducaba y no podías entrar al servidor. Ahora se renueva sola al pulsar JUGAR.",
+        "Al crear una cuenta No Premium con un nombre que ya es de una cuenta premium, el launcher te avisa y te propone nombres libres. Si ya jugabas con ese nombre, puedes seguir usándolo."
+      ]
+    },
+    {
       "id": "2026-10-25-servidor-Tesoros-de-la-pesca-con-su-icono",
       "fecha": "2026-10-25",
       "tipo": "servidor",
