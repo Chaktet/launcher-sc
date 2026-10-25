@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-25-servidor-El-cofre-del-clan-ya-se-puede-desbloquear",
+      "fecha": "2026-10-25",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "El cofre del clan ya se puede desbloquear",
+      "puntos": [
+        "La mejora «Cofre compartido» no aparecía en Mejoras, así que el cofre del clan no se podía abrir. Ya está disponible desde el nivel 6 del clan.",
+        "Lo que guardes en el cofre lo ve todo el clan en Kanto y en Kalos.",
+        "Las mejoras del clan ahora muestran bien sus efectos: las rebajas de impuesto y de espera salen en negativo."
+      ]
+    },
+    {
       "id": "2026-10-25-servidor-Tus-vales-mas-faciles-de-encontrar",
       "fecha": "2026-10-25",
       "tipo": "servidor",
