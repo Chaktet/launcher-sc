@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-25-servidor-Ya-sabes-cual-es-tu-legendario-al-romper-el-aura",
+      "fecha": "2026-10-25",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Ya sabes cuál es tu legendario al romper el aura",
+      "puntos": [
+        "Tu copia lleva ahora un aro y un haz de luz verdes, y encima «▼ Tu …», que solo ves tú; las de los demás ya no brillan.",
+        "Si lanzas la ball a la copia de otro, te dice de quién es y a cuántos metros y hacia dónde está la tuya.",
+        "Las copias salen más separadas y ya no aparecen dentro de una pared, en un saliente o en una cueva.",
+        "La Ball Legendaria que falla vuelve a tu inventario y desaparece al terminar el evento."
+      ]
+    },
+    {
       "id": "2026-10-25-servidor-Romper-un-soporte-de-armadura-ya-no-borra-la-armadura",
       "fecha": "2026-10-25",
       "tipo": "servidor",
