@@ -30,7 +30,7 @@
   Timestamp 2026, `comprueba-publisher` ok, el `app.asar` lleva el ID y la versión 1.17.7), release v1.17.7 con exe +
   blockmap + latest.yml (el `latest.yml` público ya dice 1.17.7), `master` y `main` subidas, novedad
   `2026-10-26-launcher-1.17.7`. Los 3 exe de OVH-A renovados con el OK de Felix (sha512 = latest.yml; por
-  Cloudflare 93.660.392 B, sha256 `3628861d…` = local). Sin probar: el aviso con el launcher real instalado.
+  Cloudflare 93.660.392 B, sha256 `3628861d…` = local). Felix confirma que el aviso real ya sale como «SC Launcher».
 
 ## 2026-10-25 · 1.17.6: sesión premium renovada al JUGAR y aviso de nombre premium
 
