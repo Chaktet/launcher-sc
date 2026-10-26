@@ -68,7 +68,8 @@ if(!isDev){
                 loggerAutoUpdater.info('New update available', info.version)
 
                 if(process.platform === 'darwin'){
-                    info.darwindownload = `https://github.com/dscalzi/HeliosLauncher/releases/download/v${info.version}/Helios-Launcher-setup-${info.version}${process.arch === 'arm64' ? '-arm64' : '-x64'}.dmg`
+                    // Era el .dmg de Helios (upstream): ahora el nuestro, el último publicado (scpuerta.js).
+                    info.darwindownload = SC_PUERTA_DESCARGA_MAC
                 }
                 // El aviso a la vista es la puerta (scpuerta.js), que ya se ha pintado
                 // arriba. El sello del logo de Helios que se encendía aquí era un

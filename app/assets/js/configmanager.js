@@ -631,7 +631,10 @@ function defaultJavaConfig8(ram) {
 function lwjglExtractPath() {
     const os = require('os')
     const crypto = require('crypto')
-    const base = process.env.ProgramData || 'C:\\ProgramData'
+    // En Mac y Linux no hay ProgramData: el 'C:\ProgramData' de reserva quedaba como
+    // ruta relativa y, con el launcher abierto desde el Finder (directorio '/'), LWJGL
+    // no podía escribir ahí y el juego no arrancaba. Su carpeta temporal ya es ASCII.
+    const base = process.platform === 'win32' ? (process.env.ProgramData || 'C:\\ProgramData') : os.tmpdir()
     const userTag = crypto.createHash('md5').update(os.userInfo().username, 'utf8').digest('hex').substring(0, 8)
     return path.join(base, 'SCLauncher', 'natives-' + userTag)
 }

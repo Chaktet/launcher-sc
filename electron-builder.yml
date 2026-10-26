@@ -57,22 +57,39 @@ nsis:
   deleteAppDataOnUninstall: false
 
 # macOS Configuration
+# Sin firma de Apple (cuesta 99 $/año): firma ad hoc ('-'), la mínima para que un Mac
+# con chip Apple acepte abrirlo; sin ella macOS dice «está dañado» en vez de dejar
+# abrirlo desde Ajustes → Privacidad y seguridad. Sin hardenedRuntime: con firma ad hoc
+# bloquearía cargar las librerías de Electron. Nombre sin versión: el servidor de
+# descargas sirve siempre el último con el mismo enlace (la web y la puerta lo usan).
 mac:
   target:
     - target: 'dmg'
       arch:
         - 'x64'
         - 'arm64'
-  artifactName: '${productName}-setup-${version}-${arch}.${ext}'
+  artifactName: 'SC-Launcher-mac-${arch}.${ext}'
   category: 'public.app-category.games'
+  identity: '-'
+  hardenedRuntime: false
+  notarize: false
+
+dmg:
+  title: 'SC Launcher'
 
 # Linux Configuration
-linux: 
-  target: 'AppImage'
-  maintainer: 'Daniel Scalzi'
-  vendor: 'Daniel Scalzi'
-  synopsis: 'Modded Minecraft Launcher'
-  description: 'Custom launcher which allows users to join modded servers. All mods, configurations, and updates are handled automatically.'
+# AppImage: un solo fichero que funciona en casi cualquier distribución y se
+# actualiza solo con electron-updater (latest-linux.yml en la release).
+linux:
+  target:
+    - target: 'AppImage'
+      arch: 'x64'
+  artifactName: 'SC-Launcher-linux.${ext}'
+  executableName: 'sc-launcher'
+  maintainer: 'Servidor Cobblemon <https://servidorcobblemon.es>'
+  vendor: 'Servidor Cobblemon'
+  synopsis: 'Launcher oficial de servidorcobblemon.es'
+  description: 'Launcher oficial de servidorcobblemon.es: instala y mantiene al día los mods, el pack y Java automáticamente.'
   category: 'Game'
 
 

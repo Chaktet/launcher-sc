@@ -23,6 +23,10 @@
 /* global Lang, ipcRenderer, shell, scInstalarAhora, scJuegoEnMarcha, scOcupado, scAvisoLauncherCuentaAtras, isOverlayVisible */
 
 const SC_PUERTA_DESCARGA = 'https://github.com/Chaktet/launcher-sc/releases/latest'
+// En Mac no hay actualización automática: Squirrel.Mac solo instala apps firmadas por un
+// desarrollador de Apple, y el launcher de Mac va sin firmar (no se paga la cuota de Apple).
+// La puerta ofrece el .dmg nuevo, con nombre fijo en nuestro servidor (siempre el último).
+const SC_PUERTA_DESCARGA_MAC = 'https://descargas.servidorcobblemon.es/SC-Launcher-mac-' + (process.arch === 'arm64' ? 'arm64' : 'x64') + '.dmg'
 // Segundos de la cuenta atrás antes de instalar sola con el launcher ocioso.
 const SC_PUERTA_CUENTA = 10
 
@@ -170,7 +174,10 @@ function scPuertaInstalar(){
 }
 
 function scPuertaPulsaBoton(){
-    if(scPuertaEstado === 'lista'){
+    if(scPuertaEstado === 'manual'){
+        shell.openExternal(SC_PUERTA_DESCARGA_MAC)
+        scPuertaNota(scPuertaTxt('notaMac', 'Abre el archivo descargado, arrastra SC Launcher a Aplicaciones y elige «Reemplazar». Luego cierra este launcher y abre el nuevo.'))
+    } else if(scPuertaEstado === 'lista'){
         scPuertaInstalar()
     } else if(scPuertaEstado === 'error'){
         scPuertaPinta('disponible', { reintento: true })
@@ -304,6 +311,13 @@ function scPuertaPinta(estado, extra = {}){
         q('#scPuertaPct').textContent = estado === 'descargando'
             ? scPuertaTxt('descargando', 'Descargando… {p} %').replace('{p}', pct) + resto
             : scPuertaTxt('preparando', 'Preparando la descarga…')
+    } else if(estado === 'manual'){
+        titulo = scPuertaTxt('tituloDisponible', 'Hay una actualización del launcher')
+        desc = scPuertaTxt('descMac', 'En Mac la versión nueva se instala a mano: descárgala y sustituye la que tienes. Tus cuentas, mods y mundos se quedan.')
+        boton = scPuertaTxt('botonMac', 'Descargar la versión nueva')
+        saltar = scPuertaTxt('saltar', 'Jugar sin actualizar')
+        q('#scPuertaPct').textContent = ''
+        barra = false
     } else if(estado === 'lista'){
         titulo = scPuertaTxt('tituloLista', 'Actualización lista')
         desc = scPuertaTxt('descLista', 'Pulsa el botón: el launcher se cierra, se actualiza y <b>vuelve a abrirse solo</b> en unos segundos.')
@@ -368,7 +382,11 @@ function scPuerta(evento, info){
             case 'update-available':
                 scPuertaVersion = info != null && info.version ? String(info.version) : scPuertaVersion
                 scPuertaSinActualizar = false
-                if(scPuertaEstado !== 'lista'){
+                if(process.platform === 'darwin'){
+                    // Sin descarga en segundo plano (ver SC_PUERTA_DESCARGA_MAC): sin esto la puerta
+                    // decía «Se está descargando» para siempre con JUGAR bloqueado.
+                    scPuertaPinta('manual')
+                } else if(scPuertaEstado !== 'lista'){
                     scPuertaPinta('disponible')
                 }
                 break

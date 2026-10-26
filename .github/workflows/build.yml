@@ -74,3 +74,70 @@ jobs:
           name: instalador-firmado
           path: dist-firmado/**
           if-no-files-found: error
+
+  # Mac y Linux (desde la 1.17.8). Los runners de GitHub son gratis en repos públicos.
+  # Sin firma de Apple ni SignPath: el artefacto de aquí ES el que se publica.
+  build-mac:
+    runs-on: macos-latest
+
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v6
+
+      - name: Preparar Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      # Un .dmg por arquitectura: arm64 (chip Apple, M1 en adelante) y x64 (Intel).
+      - name: Compilar los .dmg de Mac
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: npx electron-builder --mac --publish never
+
+      - name: Comprobar la firma ad hoc
+        run: |
+          for app in dist/mac*/*.app; do
+            codesign --verify --deep --strict "$app"
+            codesign -dv "$app" 2>&1 | grep -E 'Signature=adhoc|Identifier'
+          done
+
+      - name: Publicar artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: instalador-mac
+          path: |
+            dist/*.dmg
+            dist/*.dmg.blockmap
+            dist/latest-mac.yml
+          if-no-files-found: error
+
+  build-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v6
+
+      - name: Preparar Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Compilar el AppImage de Linux
+        run: npx electron-builder --linux --publish never
+
+      - name: Publicar artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: instalador-linux
+          path: |
+            dist/*.AppImage
+            dist/latest-linux.yml
+          if-no-files-found: error
