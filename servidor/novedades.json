@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-26-modpack-El-probador-se-ve-bien-con-shaders",
+      "fecha": "2026-10-26",
+      "tipo": "modpack",
+      "clase": "arreglo",
+      "titulo": "El probador se ve bien con shaders",
+      "puntos": [
+        "Con shaders, la ropa que te pruebas en el probador salía con rayas rojas y negras sobre el maniquí",
+        "Ahora el maniquí la enseña tal cual es; se actualiza solo al darle a JUGAR en el launcher"
+      ]
+    },
+    {
       "id": "2026-10-26-pack-SC-3.3.9",
       "fecha": "2026-10-26",
       "tipo": "pack",
