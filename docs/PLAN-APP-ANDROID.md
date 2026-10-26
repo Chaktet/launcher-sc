@@ -104,8 +104,13 @@ Codex revisó el plan contra el código real de FCL (10 puntos). Lo que se sosti
 - **Microsoft (decidido por Felix, 26-10):** salir con el client ID de Helios (el del launcher de PC,
   `1ce6e35a-126f-48fd-97fb-54d143ac6d45`, secreto `OAUTH_API_KEY` del repo) con el flujo de ventana de login (punto 5 de
   la revisión) y, EN PARALELO, registrar nuestra app en Microsoft Entra (gratis) y pedir a Microsoft acceso a la API de
-  Minecraft; cuando lo aprueben, pasar el móvil y el launcher de PC al ID nuevo. **Client ID propio: pendiente**
-  (Felix tiene que iniciar sesión en Microsoft; Claude hace los clics después).
+  Minecraft; cuando lo aprueben, pasar el móvil y el launcher de PC al ID nuevo.
+  **App propia (26-10):** «SC Launcher» en Azure (cuenta darksens96@hotmail.com, cuenta gratuita de Azure,
+  «Directorio predeterminado»). Client ID `b02d1916-762f-4732-ad9e-f10fc0a71fe9`, tenant
+  `d92b5a1c-15ea-42d7-8516-ae9ed59b7440`, solo cuentas personales, cliente público con redirección `nativeclient` y
+  flujos públicos activados (comprobado: el endpoint de código de dispositivo lo acepta). Formulario de acceso a la API
+  de Minecraft (aka.ms/mce-reviewappid) **enviado el 26-10**; Mojang revisa cada semana y responde a ese correo.
+  Riesgo: puede salir rechazado porque la app tiene modo No Premium. Hasta la aprobación, el ID de Helios.
 - **Clave de firma del APK (hecha 26-10):** `sc-release.jks` (alias `sc-launcher`, válida hasta 2126) en los secretos
   de GitHub `SC_KEYSTORE_BASE64` / `SC_KEYSTORE_PASSWORD`, con copia fuera de git en `E:\SECRETOS\sc-launcher-movil\`
   que Felix debe copiar además a un USB o a su nube personal: **si se pierde, ningún jugador podrá actualizar la app**
