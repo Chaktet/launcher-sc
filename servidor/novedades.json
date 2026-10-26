@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-25-servidor-SCHunts-0.3.13",
+      "fecha": "2026-10-25",
+      "tipo": "servidor",
+      "clase": "retoque",
+      "version": "SCHunts 0.3.13",
+      "titulo": "Cofre del cazador más claro",
+      "puntos": [
+        "Al abrir el Cofre del cazador, el chat te dice qué has ganado y, en otra línea, cuántos cofres te faltan como máximo para la skin del mes",
+        "El menú de /caza lo explica igual"
+      ]
+    },
+    {
       "id": "2026-10-25-pack-SC-3.3.6",
       "fecha": "2026-10-25",
       "tipo": "pack",
