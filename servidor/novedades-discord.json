@@ -187,7 +187,14 @@
     "2026-10-25-servidor-Tus-vales-mas-faciles-de-encontrar",
     "2026-10-25-modpack-Gritos-y-animaciones-nuevas-para-muchos-Pokemon",
     "2026-10-25-pack-3.3.2",
-    "2026-10-25-servidor-Transformado-en-Pokemon-ya-no-desapareces-al-viajar"
+    "2026-10-25-servidor-Transformado-en-Pokemon-ya-no-desapareces-al-viajar",
+    "2026-10-25-servidor-Vuelves-directo-a-tu-region-al-entrar",
+    "2026-10-26-servidor-Pokemon-con-skin-de-gimnasio-por-tus-medallas",
+    "2026-10-26-servidor-Baul-de-recuperados-ahora-con-su-propio-comando",
+    "2026-10-26-modpack-Muebles-sin-parpadeos",
+    "2026-10-26-modpack-El-probador-se-ve-bien-con-shaders",
+    "2026-10-26-pack-SC-3.3.9",
+    "2026-10-26-servidor-SCHunts-0.3.14"
   ],
   "mensajes": [
     {
@@ -557,6 +564,19 @@
         "2026-10-25-modpack-Gritos-y-animaciones-nuevas-para-muchos-Pokemon",
         "2026-10-25-pack-3.3.2",
         "2026-10-25-servidor-Transformado-en-Pokemon-ya-no-desapareces-al-viajar"
+      ]
+    },
+    {
+      "fecha": "2026-10-26",
+      "mensaje": "1564279755824701441",
+      "entradas": [
+        "2026-10-25-servidor-Vuelves-directo-a-tu-region-al-entrar",
+        "2026-10-26-servidor-Pokemon-con-skin-de-gimnasio-por-tus-medallas",
+        "2026-10-26-servidor-Baul-de-recuperados-ahora-con-su-propio-comando",
+        "2026-10-26-modpack-Muebles-sin-parpadeos",
+        "2026-10-26-modpack-El-probador-se-ve-bien-con-shaders",
+        "2026-10-26-pack-SC-3.3.9",
+        "2026-10-26-servidor-SCHunts-0.3.14"
       ]
     }
   ]
