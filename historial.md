@@ -1,6 +1,9 @@
 # SC Launcher · historial
 
 ## Estado actual
+- **Mac y Linux (rama `feat/mac-linux`, 26-10), SIN publicar**: compila y pasa las pruebas en CI. Falta el OK de Felix para
+  publicar la 1.17.8 (Windows firmado en local + Mac/Linux del CI en la misma release), `no-cache` para .dmg/.AppImage en
+  `packs.conf` de OVH-A y subir ahí los nombres fijos. Luego la web (sesión aparte) publica las guías.
 - **1.17.7 publicada (26-10)**: avisos de Windows con nombre «SC Launcher» (antes «electron.app.SC Launcher»).
   Firmada, release v1.17.7, `master` y `main` subidas, novedad `2026-10-26-launcher-1.17.7`. Los 3 exe
   de OVH-A renovados con el OK de Felix (por Cloudflare 93.660.392 B, sha256 `3628861d…` = local).
@@ -16,6 +19,19 @@
 - **1.17.3 publicada (23-10)**: borra solos los SC-Pack viejos y afina las pistas de Voice Chat (`d` en «Could not
   initialize class») y de descargas (`k`, `n`). `sc-stats.py` nuevo instalado en OVH-A. Mirar en unos días: `d` de los
   SC-90 de Voice Chat, `k` de los SC-04 y que bajen los SC-93 `sc-viejo`.
+
+## 2026-10-26 · Launcher para Mac y Linux (sin publicar)
+
+- Felix: que el launcher funcione en Mac (.dmg) y Linux sin pagar nada, y que se actualice solo en los dos.
+- Builds gratis en GitHub Actions (, ). Mac: firma ad hoc, sin notarizar (primera vez «Abrir
+  igualmente»); actualización propia  (Squirrel.Mac exige firma de Apple): .zip + sha512 de
+  latest-mac.yml, ditto, script que cambia el .app al cerrar. Linux: AppImage con electron-updater;   quita el sandbox SOLO si el kernel lo bloquea (Ubuntu 24.04+ moría al abrir; decisión de Felix).
+- Arreglos de paso: LWJGL usaba  también en Mac/Linux; el enlace .dmg apuntaba a Helios.
+- Codex (high): 6 fallos de la actualización de Mac arreglados (doble instalación, cambio a medias, descarga colgada,
+  errores de disco, versión preparada borrada, instalar al cerrar).
+- Comprobado en CI (run 40402020902): firma ad hoc válida; actualización de punta a punta en macOS arm64 (la app
+  nueva queda abierta); AppImage vivo a los 40 s con y sin el bloqueo (sin él, sin ). Windows arranca en
+  local. Sin probar: Mac/Linux reales con partida, y una actualización de Mac descargada de GitHub (será la 1.17.9).
 
 ## 2026-10-26 · Avisos de Windows con nombre «SC Launcher»
 
