@@ -1,9 +1,13 @@
 # SC Launcher · historial
 
 ## Estado actual
-- **Mac y Linux (rama `feat/mac-linux`, 26-10), SIN publicar**: compila y pasa las pruebas en CI. Falta el OK de Felix para
-  publicar la 1.17.8 (Windows firmado en local + Mac/Linux del CI en la misma release), `no-cache` para .dmg/.AppImage en
-  `packs.conf` de OVH-A y subir ahí los nombres fijos. Luego la web (sesión aparte) publica las guías.
+- **1.17.8 publicada (26-10): Windows, Mac y Linux** con el OK de Felix. Release v1.17.8 con 14 ficheros (exe firmado
+  en local, `comprueba-publisher` ok; Mac/Linux del CI run 40403813368, todas las pruebas en verde); las tres fichas
+  `latest*.yml` públicas dicen 1.17.8. OVH-A: `packs.conf` sirve `.dmg|.AppImage` con `no-cache` (copia en
+  `/home/ubuntu/_backups/packs.conf.*`, Apache con `reload`); exe estable, 1.0.0 y versionado + `SC-Launcher-mac-arm64.dmg`,
+  `-mac-x64.dmg` y `-linux.AppImage` bajados de GitHub con sha512 = fichas; por Cloudflare tamaño y sha256 = build (4/4).
+  Novedad `2026-10-26-launcher-1.17.8`. Pendiente: que la sesión de la web publique las guías de Mac/Linux y el enlace
+  de Discord; que un jugador con Mac y otro con Linux entren a jugar; la primera actualización real de Mac será la 1.17.9.
 - **1.17.7 publicada (26-10)**: avisos de Windows con nombre «SC Launcher» (antes «electron.app.SC Launcher»).
   Firmada, release v1.17.7, `master` y `main` subidas, novedad `2026-10-26-launcher-1.17.7`. Los 3 exe
   de OVH-A renovados con el OK de Felix (por Cloudflare 93.660.392 B, sha256 `3628861d…` = local).
@@ -20,7 +24,7 @@
   initialize class») y de descargas (`k`, `n`). `sc-stats.py` nuevo instalado en OVH-A. Mirar en unos días: `d` de los
   SC-90 de Voice Chat, `k` de los SC-04 y que bajen los SC-93 `sc-viejo`.
 
-## 2026-10-26 · Launcher para Mac y Linux (sin publicar)
+## 2026-10-26 · 1.17.8: launcher para Mac y Linux (publicada)
 
 - Felix: que el launcher funcione en Mac (.dmg) y Linux sin pagar nada, y que se actualice solo en los dos.
 - Builds gratis en GitHub Actions (`build-mac`, `build-linux`). Mac: firma ad hoc, sin notarizar (primera vez «Abrir
