@@ -2,17 +2,6 @@
   "version": 1,
   "entradas": [
     {
-      "id": "2026-10-26-servidor-Las-misiones-del-clan-ya-dicen-como-se-hacen",
-      "fecha": "2026-10-26",
-      "tipo": "servidor",
-      "clase": "arreglo",
-      "titulo": "Las misiones del clan ya dicen cómo se hacen",
-      "puntos": [
-        "En /clan, sección Misiones, cada misión explica ahora qué hay que hacer para completarla (por ejemplo «Captura 250 Pokémon»)",
-        "Los premios de cada misión los ves con «Ver premios»"
-      ]
-    },
-    {
       "id": "2026-10-26-servidor-SCHunts-0.3.17",
       "fecha": "2026-10-26",
       "tipo": "servidor",
@@ -21,7 +10,20 @@
       "titulo": "Tu tiempo de juego cuenta en todas las regiones",
       "puntos": [
         "Para que tus capturas cuenten en las cacerías diarias hacen falta 5 h de juego: ahora se suman las horas de Kanto y Kalos",
-        "Si ya llevas tiempo en una región, al entrar en la otra tus cacerías cuentan desde el primer momento"
+        "Si ya llevas tiempo en una región, al entrar en la otra tus cacerías cuentan desde el primer momento",
+        "Las preguntas del chat dan premio cuando llevas 1 h jugada, sumando las dos regiones",
+        "En la guerra de clanes, las bajas cuentan si el rival lleva 30 min jugados entre las dos regiones"
+      ]
+    },
+    {
+      "id": "2026-10-26-servidor-Las-misiones-del-clan-ya-dicen-como-se-hacen",
+      "fecha": "2026-10-26",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Las misiones del clan ya dicen cómo se hacen",
+      "puntos": [
+        "En /clan, sección Misiones, cada misión explica ahora qué hay que hacer para completarla (por ejemplo «Captura 250 Pokémon»)",
+        "Los premios de cada misión los ves con «Ver premios»"
       ]
     },
     {
