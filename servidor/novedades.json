@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-26-servidor-La-Lluvia-de-objetos-ya-cae-donde-estais",
+      "fecha": "2026-10-26",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "La Lluvia de objetos ya cae donde estáis",
+      "puntos": [
+        "Antes los objetos caían en un sitio vacío y nadie los veía: ahora caen en el spawn",
+        "Pulsa «Ir a la lluvia» en el chat y te lleva al momento",
+        "Al empezar la Liga relámpago o un minijuego en tu región, el chat trae un botón para unirte"
+      ]
+    },
+    {
       "id": "2026-10-26-servidor-Enviar-SCC-y-tokens-ahora-mas-facil",
       "fecha": "2026-10-26",
       "tipo": "servidor",
