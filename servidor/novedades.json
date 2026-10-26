@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-26-modpack-Muebles-sin-parpadeos",
+      "fecha": "2026-10-26",
+      "tipo": "modpack",
+      "clase": "arreglo",
+      "titulo": "Muebles sin parpadeos",
+      "puntos": [
+        "Arreglado el parpadeo de los muebles: ya no se ven rayas ni cubitos asomando por sofás, peluches y demás muebles."
+      ]
+    },
+    {
       "id": "2026-10-26-modpack-El-probador-se-ve-bien-con-shaders",
       "fecha": "2026-10-26",
       "tipo": "modpack",
