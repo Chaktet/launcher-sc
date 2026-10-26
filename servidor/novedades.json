@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-26-movil-2.3.26",
+      "fecha": "2026-10-26",
+      "tipo": "movil",
+      "clase": "nuevo",
+      "version": "2.3.26",
+      "titulo": "Trío de Ánimas también en el móvil",
+      "puntos": [
+        "Las skins Noche de ánimas de Skeledirge, Roaring Moon y Amoonguss y la placa animada del pack Trío de Ánimas ya se ven en el móvil."
+      ]
+    },
+    {
       "id": "2026-10-26-pack-SC-3.3.10",
       "fecha": "2026-10-26",
       "tipo": "pack",
