@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-26-servidor-Felicita-tambien-las-compras-con-SCC",
+      "fecha": "2026-10-26",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Felicita también las compras con SCC",
+      "puntos": [
+        "Cuando alguien hace una buena compra con SCC en las tiendas del servidor, sale en el chat de toda la red con el botón [¡Felicitar!]",
+        "Al felicitar, tu «¡Felicidades!» sale en el chat y ganas tokens, como con las compras de la tienda web"
+      ]
+    },
+    {
       "id": "2026-10-26-servidor-La-Lluvia-de-objetos-ya-cae-donde-estais",
       "fecha": "2026-10-26",
       "tipo": "servidor",
