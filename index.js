@@ -572,6 +572,15 @@ function getPlatformIcon(filename){
 // vez: el segundo se encuentra archivos a medio escribir por el primero y el
 // juego revienta al abrirlos. Si ya hay una abierta, se trae al frente en vez
 // de arrancar otra.
+// Identidad de las notificaciones en Windows. Sin esto Electron usa
+// «electron.app.SC Launcher», que no coincide con ningún acceso directo, y el
+// centro de notificaciones muestra ese ID en crudo sin nombre ni icono. Debe ser
+// IGUAL al appId de electron-builder.yml: el instalador NSIS lo graba en el
+// acceso directo del menú Inicio y Windows saca de ahí el nombre y el icono.
+if(process.platform === 'win32'){
+    app.setAppUserModelId('es.servidorcobblemon.sclauncher')
+}
+
 if(!app.requestSingleInstanceLock()){
     app.quit()
 } else {
