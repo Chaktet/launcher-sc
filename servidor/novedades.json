@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-26-servidor-Pokemon-con-skin-de-gimnasio-por-tus-medallas",
+      "fecha": "2026-10-26",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Pokémon con skin de gimnasio por tus medallas",
+      "puntos": [
+        "Al conseguir 5 medallas en la temporada recibes un Maushold con skin de gimnasio",
+        "Con 15 medallas, un Gallade, y con 25, un Gardevoir, ambos con la skin de gimnasio y a nivel 50",
+        "Llegan solos al ganar la medalla, con un aviso de felicitación; si tu equipo está lleno, van a tu PC",
+        "Cada temporada cambian por otros tres Pokémon con skins nuevas"
+      ]
+    },
+    {
       "id": "2026-10-26-servidor-Baul-de-recuperados-ahora-con-su-propio-comando",
       "fecha": "2026-10-26",
       "tipo": "servidor",
