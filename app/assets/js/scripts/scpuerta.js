@@ -345,7 +345,7 @@ function scPuertaPinta(estado, extra = {}){
     q('#scPuertaSub').textContent = scPuertaVersion
         ? scPuertaTxt('subtituloVersion', 'Versión {v}').replace('{v}', scPuertaVersion)
         : scPuertaTxt('subtitulo', 'Actualización del launcher')
-    q('#scPuertaIcono').textContent = estado === 'error' ? '!' : (estado === 'lista' ? '✓' : (estado === 'disponible' || estado === 'descargando' ? '⬇' : '↻'))
+    q('#scPuertaIcono').textContent = estado === 'error' ? '!' : (estado === 'lista' ? '✓' : (estado === 'disponible' || estado === 'descargando' || estado === 'manual' ? '⬇' : '↻'))
     q('#scPuertaTitulo').textContent = titulo
     q('#scPuertaDesc').innerHTML = desc
     q('#scPuertaBoton').textContent = boton
