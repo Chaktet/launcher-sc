@@ -202,7 +202,12 @@
     "2026-10-26-servidor-Evolucionar-ya-no-te-quita-el-objeto-equipado",
     "2026-10-26-servidor-Elige-el-estilo-de-tu-Urshifu",
     "2026-10-26-movil-2.3.26",
-    "2026-10-26-pack-SC-3.3.10"
+    "2026-10-26-pack-SC-3.3.10",
+    "2026-10-26-movil-2.4.0",
+    "2026-10-26-servidor-Ya-no-te-echa-al-entrar-con-mods-que-no-coinciden",
+    "2026-10-26-servidor-Felicita-tambien-las-compras-con-SCC",
+    "2026-10-26-servidor-La-Lluvia-de-objetos-ya-cae-donde-estais",
+    "2026-10-26-servidor-Enviar-SCC-y-tokens-ahora-mas-facil"
   ],
   "mensajes": [
     {
@@ -605,6 +610,17 @@
         "2026-10-26-servidor-Elige-el-estilo-de-tu-Urshifu",
         "2026-10-26-movil-2.3.26",
         "2026-10-26-pack-SC-3.3.10"
+      ]
+    },
+    {
+      "fecha": "2026-10-26",
+      "mensaje": "1564376324611510454",
+      "entradas": [
+        "2026-10-26-movil-2.4.0",
+        "2026-10-26-servidor-Ya-no-te-echa-al-entrar-con-mods-que-no-coinciden",
+        "2026-10-26-servidor-Felicita-tambien-las-compras-con-SCC",
+        "2026-10-26-servidor-La-Lluvia-de-objetos-ya-cae-donde-estais",
+        "2026-10-26-servidor-Enviar-SCC-y-tokens-ahora-mas-facil"
       ]
     }
   ]
