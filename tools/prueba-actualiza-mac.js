@@ -64,6 +64,10 @@ async function main(){
     if(!mac.instalar() || !cerrado){
         throw new Error('instalar() no cerró el launcher')
     }
+    // Una segunda petición no puede lanzar otro script sobre las mismas rutas.
+    if(mac.instalar() !== false){
+        throw new Error('instalar() se lanzó dos veces')
+    }
     console.log('✓ descarga, sha512 y ditto; script de cambio lanzado')
 }
 

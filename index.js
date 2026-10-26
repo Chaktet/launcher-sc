@@ -171,6 +171,15 @@ ipcMain.on('autoUpdateAction', (event, arg, data) => {
             break
     }
 })
+// Mac: la actualización ya preparada se instala al cerrar el launcher, como hace
+// autoInstallOnAppQuit en Windows (que no conoce la descarga de scactualizamac.js). Sin
+// esto, quien cerraba con la cuenta atrás esperando a Minecraft la volvía a bajar cada vez.
+app.on('will-quit', () => {
+    if(process.platform === 'darwin' && !isDev && scActualizaMac.hayPreparada()){
+        scActualizaMac.instalar(false)
+    }
+})
+
 // Redirect distribution index event from preloader to renderer.
 ipcMain.on('distributionIndexDone', (event, res) => {
     event.sender.send('distributionIndexDone', res)

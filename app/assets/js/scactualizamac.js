@@ -18,10 +18,16 @@ const child_process = require('child_process')
 const crypto = require('crypto')
 const fs = require('fs')
 const path = require('path')
+const { Readable, Transform } = require('stream')
+const { pipeline } = require('stream/promises')
 
 const RELEASES = 'https://github.com/Chaktet/launcher-sc/releases/download/'
+// Sin un solo byte en este tiempo, la descarga se da por colgada: sin límite, una
+// conexión abierta que no entrega nada dejaba la puerta (y JUGAR) bloqueada para siempre.
+const INACTIVIDAD_MS = 60 * 1000
 
-let preparada = null // { version, app } del .app nuevo ya descomprimido
+let preparada = null // { version, dir, app } del .app nuevo ya descomprimido
+let instalando = false
 
 /** Ruta del «SC Launcher.app» en ejecución, o null si no es un .app. */
 function rutaApp(){
@@ -44,6 +50,10 @@ function sePuedeInstalar(){
     }
 }
 
+function hayPreparada(){
+    return preparada != null
+}
+
 function ejecutar(cmd, args){
     return new Promise((resolve, reject) => {
         child_process.execFile(cmd, args, { timeout: 5 * 60 * 1000 }, (err, out, errOut) =>
@@ -53,6 +63,8 @@ function ejecutar(cmd, args){
 
 /**
  * Baja y prepara la versión de `info` (lo que da electron-updater en update-available).
+ * Cada versión va en su propia carpeta: la ya preparada no se toca hasta que la nueva
+ * está entera (Codex: borrarla antes dejaba «lista» apuntando a una app a medias).
  * @param {object} info
  * @param {(p: {percent: number, bytesPerSecond: number, total: number, transferred: number}) => void} progreso
  */
@@ -66,45 +78,50 @@ async function descargar(info, progreso){
     if(fichero == null || !fichero.sha512){
         throw new Error('La release ' + version + ' no trae el .zip de Mac para ' + arch)
     }
-    const dir = path.join(app.getPath('temp'), 'sc-launcher-actualizacion')
+    const raiz = path.join(app.getPath('temp'), 'sc-launcher-actualizacion')
+    const dir = path.join(raiz, version.replace(/[^\w.-]/g, '_'))
     await fs.promises.rm(dir, { recursive: true, force: true })
     await fs.promises.mkdir(dir, { recursive: true })
     const zip = path.join(dir, 'nuevo.zip')
 
-    const res = await net.fetch(RELEASES + 'v' + version + '/' + encodeURIComponent(fichero.url), { cache: 'no-store' })
-    if(!res.ok || res.body == null){
-        throw new Error('HTTP ' + res.status + ' al bajar ' + fichero.url)
-    }
-    const total = Number(res.headers.get('content-length')) || fichero.size || 0
-    const hash = crypto.createHash('sha512')
-    const salida = fs.createWriteStream(zip)
-    const inicio = Date.now()
-    let hecho = 0
-    let ultimoPct = -1
-    const lector = res.body.getReader()
+    const ctrl = new AbortController()
+    let reloj = setTimeout(() => ctrl.abort(), INACTIVIDAD_MS)
     try {
-        for(;;){
-            const { done, value } = await lector.read()
-            if(done){
-                break
-            }
-            hash.update(value)
-            hecho += value.length
-            if(!salida.write(value)){
-                await new Promise(r => salida.once('drain', r))
-            }
-            const pct = total > 0 ? Math.floor(hecho * 100 / total) : 0
-            if(pct !== ultimoPct){
-                ultimoPct = pct
-                progreso({ percent: pct, transferred: hecho, total, bytesPerSecond: hecho / Math.max(1, (Date.now() - inicio) / 1000) })
-            }
+        const res = await net.fetch(RELEASES + 'v' + version + '/' + encodeURIComponent(fichero.url), { cache: 'no-store', signal: ctrl.signal })
+        if(!res.ok || res.body == null){
+            throw new Error('HTTP ' + res.status + ' al bajar ' + fichero.url)
         }
+        const total = Number(res.headers.get('content-length')) || fichero.size || 0
+        const hash = crypto.createHash('sha512')
+        const inicio = Date.now()
+        let hecho = 0
+        let ultimoPct = -1
+        const contar = new Transform({
+            transform(trozo, _cod, listo){
+                clearTimeout(reloj)
+                reloj = setTimeout(() => ctrl.abort(), INACTIVIDAD_MS)
+                hash.update(trozo)
+                hecho += trozo.length
+                const pct = total > 0 ? Math.floor(hecho * 100 / total) : 0
+                if(pct !== ultimoPct){
+                    ultimoPct = pct
+                    progreso({ percent: pct, transferred: hecho, total, bytesPerSecond: hecho / Math.max(1, (Date.now() - inicio) / 1000) })
+                }
+                listo(null, trozo)
+            }
+        })
+        // pipeline lleva los errores de cualquier tramo (disco lleno, sin permiso, red
+        // cortada o abortada) a esta promesa, en vez de una excepción suelta.
+        await pipeline(Readable.fromWeb(res.body), contar, fs.createWriteStream(zip), { signal: ctrl.signal })
+        // Un .zip corrupto o cambiado instalaría una app rota: se rechaza antes de tocar nada.
+        if(hash.digest('base64') !== fichero.sha512){
+            throw new Error('sha512 del .zip de Mac no coincide con latest-mac.yml')
+        }
+    } catch(err){
+        await fs.promises.rm(dir, { recursive: true, force: true }).catch(() => {})
+        throw ctrl.signal.aborted ? new Error('Descarga de la actualización de Mac sin respuesta durante 60 s') : err
     } finally {
-        await new Promise(r => salida.end(r))
-    }
-    // Un .zip corrupto o cambiado instalaría una app rota: se rechaza antes de tocar nada.
-    if(hash.digest('base64') !== fichero.sha512){
-        throw new Error('sha512 del .zip de Mac no coincide con latest-mac.yml')
+        clearTimeout(reloj)
     }
     const extraido = path.join(dir, 'app')
     await ejecutar('/usr/bin/ditto', ['-x', '-k', zip, extraido])
@@ -113,32 +130,45 @@ async function descargar(info, progreso){
     // Por si acaso: sin marca de cuarentena Gatekeeper no vuelve a preguntar.
     await ejecutar('/usr/bin/xattr', ['-dr', 'com.apple.quarantine', nuevo]).catch(() => {})
     await fs.promises.rm(zip, { force: true })
-    preparada = { version, app: nuevo }
+    const anterior = preparada
+    preparada = { version, dir, app: nuevo }
+    if(anterior != null && anterior.dir !== dir){
+        fs.promises.rm(anterior.dir, { recursive: true, force: true }).catch(() => {})
+    }
 }
 
 /**
- * Cierra el launcher y cambia el .app por el nuevo. Devuelve false si no hay nada
- * preparado (entonces no se cierra nada).
+ * Lanza el cambio del .app y, si `cerrar`, cierra el launcher. Solo una vez por sesión:
+ * dos scripts a la vez sobre las mismas rutas podían dejar al jugador sin .app (Codex).
+ * Devuelve false si no hay nada preparado (entonces no se cierra nada).
  */
-function instalar(){
+function instalar(cerrar = true){
     const actual = rutaApp()
-    if(preparada == null || actual == null){
+    if(instalando || preparada == null || actual == null){
         return false
     }
-    // El script vive fuera del .app y sigue tras cerrar el launcher. Si el cambio falla,
-    // vuelve a dejar el .app viejo y lo abre: nunca se queda el jugador sin launcher.
-    const script = path.join(path.dirname(preparada.app), '..', 'instalar.sh')
+    instalando = true
+    // El script vive fuera del .app y sigue tras cerrar el launcher. Primero copia el .app
+    // nuevo JUNTO al viejo (mismo disco: los dos mv son renombres que no se quedan a
+    // medias); si algo falla, el viejo vuelve a su sitio: nunca se queda el jugador sin
+    // launcher. Al pulsar el botón se reabre solo; al cerrar el launcher, no.
+    const script = path.join(preparada.dir, 'instalar.sh')
     fs.writeFileSync(script, [
         '#!/bin/sh',
         'while kill -0 "$1" 2>/dev/null; do sleep 0.3; done',
-        'rm -rf "$2.viejo"',
-        'if mv "$2" "$2.viejo" && mv "$3" "$2"; then rm -rf "$2.viejo"; else [ -d "$2" ] || mv "$2.viejo" "$2"; fi',
-        'open "$2"',
+        'rm -rf "$2.nuevo" "$2.viejo"',
+        'if /usr/bin/ditto "$3" "$2.nuevo" && mv "$2" "$2.viejo"; then',
+        '  if mv "$2.nuevo" "$2"; then rm -rf "$2.viejo"; else mv "$2.viejo" "$2"; fi',
+        'fi',
+        'rm -rf "$2.nuevo"',
+        '[ "$4" = 1 ] && open "$2"',
         ''
     ].join('\n'), { mode: 0o755 })
-    child_process.spawn('/bin/sh', [script, String(process.pid), actual, preparada.app], { detached: true, stdio: 'ignore' }).unref()
-    app.quit()
+    child_process.spawn('/bin/sh', [script, String(process.pid), actual, preparada.app, cerrar ? '1' : '0'], { detached: true, stdio: 'ignore' }).unref()
+    if(cerrar){
+        app.quit()
+    }
     return true
 }
 
-module.exports = { sePuedeInstalar, descargar, instalar }
+module.exports = { sePuedeInstalar, hayPreparada, descargar, instalar }

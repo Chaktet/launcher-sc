@@ -308,6 +308,40 @@ función se tocó. Mira las de la 1.5.7, 1.5.8 y 1.5.9 como referencia.
 > dentro de `dist/win-unpacked/resources/app.asar`; se puede leer su cabecera y comparar el tamaño de
 > la entrada con el del fichero fuente.
 
+### Mac y Linux (desde la 1.17.8)
+
+Se compilan **solo en GitHub Actions** (`build-mac` en `macos-latest`, `build-linux` en `ubuntu-latest`; gratis porque
+el repo es público). Cada ejecución prueba además la actualización de Mac de punta a punta
+([tools/prueba-actualiza-mac.js](../tools/prueba-actualiza-mac.js)) y que el AppImage arranca, con y sin el bloqueo
+del sandbox. Si una prueba falla, no se publica.
+
+| Sistema | Ficheros (nombre SIN versión, a propósito) | Actualización |
+|---|---|---|
+| Mac Apple (arm64) e Intel (x64) | `SC-Launcher-mac-<arch>.dmg` (instalar), `.zip` (actualizar), `latest-mac.yml` | Propia: [scactualizamac.js](../app/assets/js/scactualizamac.js). Squirrel.Mac exige firma de Apple (99 $/año) y el .app va con firma ad hoc. Si el .app no se puede sustituir (abierto desde el .dmg o desde Descargas), la puerta ofrece el .dmg a mano. |
+| Linux x64 | `SC-Launcher-linux.AppImage`, `latest-linux.yml` | La de electron-updater (sustituye el AppImage). |
+
+- **Primera instalación en Mac:** macOS lo bloquea por no estar notarizado; Ajustes del Sistema → Privacidad y
+  seguridad → «Abrir igualmente». Las actualizaciones no vuelven a preguntar (lo que baja el launcher no lleva la marca
+  de cuarentena).
+- **Linux, sandbox:** Ubuntu 24.04+ impide el sandbox de Electron dentro de un AppImage y el launcher moría al abrir.
+  [build/afterpack.js](../build/afterpack.js) mete un script de arranque que añade `--no-sandbox` SOLO cuando el kernel
+  lo bloquea (decisión de Felix, 26-10-2026).
+- **Publicar:** la release de GitHub lleva los ficheros de Windows (firmados en local) **y** los de Mac y Linux del
+  artefacto de CI del mismo commit: sin `latest-mac.yml` / `latest-linux.yml` esos jugadores no se actualizan.
+
+```bash
+gh run download <run-id> -R Chaktet/launcher-sc -n instalador-mac -D dist/ci
+gh run download <run-id> -R Chaktet/launcher-sc -n instalador-linux -D dist/ci
+gh release upload vX.Y.Z -R Chaktet/launcher-sc dist/ci/*.dmg dist/ci/*.zip dist/ci/*.blockmap \
+  dist/ci/latest-mac.yml dist/ci/SC-Launcher-linux.AppImage dist/ci/latest-linux.yml
+```
+
+- **Servidor de descargas:** los mismos nombres fijos en `/var/www/packs/` (la web y la puerta de Mac enlazan
+  `https://descargas.servidorcobblemon.es/SC-Launcher-mac-<arch>.dmg` y `/SC-Launcher-linux.AppImage`). Se renuevan
+  en cada versión como el `.exe` estable, con el OK de Felix. **Antes de subirlos por primera vez**, `packs.conf`
+  debe servir `.dmg` y `.AppImage` con `no-cache` como los `.exe`: Cloudflare cachea los `.dmg` por extensión y el nombre
+  fijo serviría la versión vieja.
+
 ---
 
 ## 3. El servidor de descargas
