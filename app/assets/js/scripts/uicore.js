@@ -76,6 +76,14 @@ if(!isDev){
                 // segundo aviso para lo mismo, con el diseño viejo.
                 populateSettingsUpdateInformation(info)
                 break
+            case 'mac-manual':
+                // Mac sin poder sustituir el .app: la puerta (scpuerta.js) y Ajustes ofrecen el .dmg.
+                if(info != null){
+                    info.darwindownload = SC_PUERTA_DESCARGA_MAC
+                    info.scMacManual = true
+                    populateSettingsUpdateInformation(info)
+                }
+                break
             case 'download-progress': {
                 // Progreso real de la descarga en la insignia y en el botón de
                 // Ajustes → Actualizaciones (la puerta pinta el suyo).

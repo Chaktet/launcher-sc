@@ -1721,7 +1721,7 @@ function populateSettingsUpdateInformation(data){
         settingsUpdateChangelogText.innerHTML = notas
         populateVersionInformation(data.version, settingsUpdateVersionValue, settingsUpdateVersionTitle, settingsUpdateVersionCheck)
         
-        if(process.platform === 'darwin'){
+        if(process.platform === 'darwin' && data.scMacManual){
             settingsUpdateButtonStatus(Lang.queryJS('settings.updates.downloadButton'), false, () => {
                 shell.openExternal(data.darwindownload)
             })

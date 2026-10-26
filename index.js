@@ -12,6 +12,7 @@ const semver                            = require('semver')
 const { pathToFileURL }                 = require('url')
 const { AZURE_CLIENT_ID, MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR, SHELL_OPCODE } = require('./app/assets/js/ipcconstants')
 const LangLoader                        = require('./app/assets/js/langloader')
+const scActualizaMac                    = require('./app/assets/js/scactualizamac')
 
 // Setup Lang
 LangLoader.setupLanguage()
@@ -83,6 +84,22 @@ function initAutoUpdater(event, data) {
                 })
                 .finally(() => { scDescargando = false })
         }
+        // Mac: electron-updater no puede instalar sin firma de Apple; lo hace scactualizamac.js con
+        // los mismos avisos que en Windows. Si el .app no se puede sustituir, la puerta pide hacerlo a mano.
+        if(process.platform === 'darwin' && !isDev && !scDescargando){
+            if(!scActualizaMac.sePuedeInstalar()){
+                scEnviarUpdate('mac-manual', info)
+                return
+            }
+            scDescargando = true
+            scActualizaMac.descargar(info, p => scEnviarUpdate('download-progress', p))
+                .then(() => scEnviarUpdate('update-downloaded', info))
+                .catch(err => {
+                    console.error('[autoUpdater] Mac: ' + String(err && err.message || err))
+                    scEnviarUpdate('realerror', { message: String(err && err.message || err), code: 'SC_MAC' })
+                })
+                .finally(() => { scDescargando = false })
+        }
     })
     autoUpdater.on('download-progress', (progress) => {
         scEnviarUpdate('download-progress', progress)
@@ -143,7 +160,11 @@ ipcMain.on('autoUpdateAction', (event, arg, data) => {
         case 'installUpdateNow':
             // (isSilent, isForceRunAfter): instala sin asistente y vuelve a abrir
             // el launcher automáticamente.
-            autoUpdater.quitAndInstall(true, true)
+            if(process.platform === 'darwin'){
+                scActualizaMac.instalar()
+            } else {
+                autoUpdater.quitAndInstall(true, true)
+            }
             break
         default:
             console.log('Unknown argument', arg)

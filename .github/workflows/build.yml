@@ -105,13 +105,26 @@ jobs:
             codesign -dv "$app" 2>&1 | grep -E 'Signature=adhoc|Identifier'
           done
 
+      # Actualización automática de punta a punta (tools/prueba-actualiza-mac.js) y
+      # que la app nueva, abierta por el script, sigue viva a los 30 s.
+      - name: Probar la actualización automática
+        run: |
+          node tools/prueba-actualiza-mac.js
+          sleep 30
+          test ! -e "/Applications/SC Launcher.app/Contents/Resources/sc-prueba-viejo.txt"
+          test ! -e "/Applications/SC Launcher.app.viejo"
+          codesign --verify --deep --strict "/Applications/SC Launcher.app"
+          pgrep -fl "/Applications/SC Launcher.app/Contents/MacOS/SC Launcher"
+          pkill -f "/Applications/SC Launcher.app" || true
+
       - name: Publicar artefacto
         uses: actions/upload-artifact@v4
         with:
           name: instalador-mac
           path: |
             dist/*.dmg
-            dist/*.dmg.blockmap
+            dist/*.zip
+            dist/*.blockmap
             dist/latest-mac.yml
           if-no-files-found: error
 
@@ -132,6 +145,18 @@ jobs:
 
       - name: Compilar el AppImage de Linux
         run: npx electron-builder --linux --publish never
+
+      # Que arranca de verdad (pantalla virtual): sigue vivo a los 40 s.
+      - name: Probar que el AppImage arranca
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq xvfb libfuse2t64
+          chmod +x dist/SC-Launcher-linux.AppImage
+          set +e
+          xvfb-run -a timeout 40 dist/SC-Launcher-linux.AppImage > arranque.log 2>&1
+          codigo=$?
+          set -e
+          tail -40 arranque.log
+          test $codigo -eq 124
 
       - name: Publicar artefacto
         uses: actions/upload-artifact@v4

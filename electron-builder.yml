@@ -62,9 +62,14 @@ nsis:
 # abrirlo desde Ajustes → Privacidad y seguridad. Sin hardenedRuntime: con firma ad hoc
 # bloquearía cargar las librerías de Electron. Nombre sin versión: el servidor de
 # descargas sirve siempre el último con el mismo enlace (la web y la puerta lo usan).
+# El .zip es el que baja la actualización automática (app/assets/js/scactualizamac.js).
 mac:
   target:
     - target: 'dmg'
+      arch:
+        - 'x64'
+        - 'arm64'
+    - target: 'zip'
       arch:
         - 'x64'
         - 'arm64'

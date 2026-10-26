@@ -23,9 +23,9 @@
 /* global Lang, ipcRenderer, shell, scInstalarAhora, scJuegoEnMarcha, scOcupado, scAvisoLauncherCuentaAtras, isOverlayVisible */
 
 const SC_PUERTA_DESCARGA = 'https://github.com/Chaktet/launcher-sc/releases/latest'
-// En Mac no hay actualización automática: Squirrel.Mac solo instala apps firmadas por un
-// desarrollador de Apple, y el launcher de Mac va sin firmar (no se paga la cuota de Apple).
-// La puerta ofrece el .dmg nuevo, con nombre fijo en nuestro servidor (siempre el último).
+// Mac cuando el .app no se puede sustituir solo (abierto desde el .dmg o desde Descargas,
+// ver scactualizamac.js): la puerta ofrece el .dmg nuevo, con nombre fijo en nuestro
+// servidor (siempre el último).
 const SC_PUERTA_DESCARGA_MAC = 'https://descargas.servidorcobblemon.es/SC-Launcher-mac-' + (process.arch === 'arm64' ? 'arm64' : 'x64') + '.dmg'
 // Segundos de la cuenta atrás antes de instalar sola con el launcher ocioso.
 const SC_PUERTA_CUENTA = 10
@@ -382,13 +382,13 @@ function scPuerta(evento, info){
             case 'update-available':
                 scPuertaVersion = info != null && info.version ? String(info.version) : scPuertaVersion
                 scPuertaSinActualizar = false
-                if(process.platform === 'darwin'){
-                    // Sin descarga en segundo plano (ver SC_PUERTA_DESCARGA_MAC): sin esto la puerta
-                    // decía «Se está descargando» para siempre con JUGAR bloqueado.
-                    scPuertaPinta('manual')
-                } else if(scPuertaEstado !== 'lista'){
+                if(scPuertaEstado !== 'lista'){
                     scPuertaPinta('disponible')
                 }
+                break
+            case 'mac-manual':
+                scPuertaVersion = info != null && info.version ? String(info.version) : scPuertaVersion
+                scPuertaPinta('manual')
                 break
             case 'download-progress':
                 if(scPuertaEstado !== 'lista' && !scPuertaSinActualizar){
