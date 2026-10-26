@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-26-launcher-1.17.7",
+      "fecha": "2026-10-26",
+      "tipo": "launcher",
+      "version": "1.17.7",
+      "titulo": "Los avisos del launcher ya llevan su nombre",
+      "puntos": [
+        "Los avisos de Windows del launcher salían como «electron.app.SC Launcher». Ahora salen como SC Launcher, con su icono."
+      ]
+    },
+    {
       "id": "2026-10-26-servidor-Elige-el-estilo-de-tu-Urshifu",
       "fecha": "2026-10-26",
       "tipo": "servidor",
