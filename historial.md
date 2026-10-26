@@ -1,7 +1,7 @@
 # SC Launcher · historial
 
 ## Estado actual
-- **Rama `fix/notificaciones-nombre` (26-10)**: los avisos de Windows salían como «electron.app.SC Launcher».
+- **Avisos con nombre «SC Launcher» (26-10, en `master`)**: los avisos de Windows salían como «electron.app.SC Launcher».
   Hecho y comprobado en local; sin publicar (entra en la próxima versión).
 - **1.17.6 (25-10): fin del aviso SC-PREMIUM evitable.** Ver la entrada de abajo. Estado de la publicación al final de
   la entrada.
@@ -25,7 +25,7 @@
   graba en el acceso directo del menú Inicio) antes del bloqueo de instancia única.
 - Comprobado: el acceso directo instalado tiene ese AUMID; un Electron de prueba con ese ID muestra el aviso, Windows lo
   registra con ese ID y `shell:AppsFolder` lo resuelve como «SC Launcher». eslint limpio.
-- Pendiente: publicar en la próxima versión (rama `fix/notificaciones-nombre`, sin fusionar en `master`).
+- Pendiente: publicar en la próxima versión (ya fusionado en `master`, sin subir).
 
 ## 2026-10-25 · 1.17.6: sesión premium renovada al JUGAR y aviso de nombre premium
 
