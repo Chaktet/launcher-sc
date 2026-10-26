@@ -173,7 +173,15 @@
     "2026-10-25-servidor-Raids-guardianes-a-la-vista-y-menos",
     "2026-10-24-movil-2.3.17",
     "2026-10-24-servidor-Canje-de-megapiedras-mas-claro",
-    "2026-10-25-servidor-Tesoros-de-la-pesca-con-su-icono"
+    "2026-10-25-servidor-Tesoros-de-la-pesca-con-su-icono",
+    "2026-10-25-pack-SC-3.3.6",
+    "2026-10-25-servidor-Ya-puedes-apuntarte-bien-a-los-minijuegos-de-la-rueda",
+    "2026-10-25-pack-SC-3.3.4",
+    "2026-10-25-servidor-Lo-que-compras-en-la-GTS-dentro-de-la-Torre-ya-no-se-pierde",
+    "2026-10-25-servidor-Vuelves-a-ver-el-progreso-de-tus-cacerias",
+    "2026-10-25-servidor-Ya-sabes-cual-es-tu-legendario-al-romper-el-aura",
+    "2026-10-25-servidor-SCHunts-0.3.13",
+    "2026-10-25-servidor-Aviso-si-dejas-un-vale-sin-elegir"
   ],
   "mensajes": [
     {
@@ -517,6 +525,20 @@
         "2026-10-24-movil-2.3.17",
         "2026-10-24-servidor-Canje-de-megapiedras-mas-claro",
         "2026-10-25-servidor-Tesoros-de-la-pesca-con-su-icono"
+      ]
+    },
+    {
+      "fecha": "2026-10-26",
+      "mensaje": "1564187469803429960",
+      "entradas": [
+        "2026-10-25-pack-SC-3.3.6",
+        "2026-10-25-servidor-Ya-puedes-apuntarte-bien-a-los-minijuegos-de-la-rueda",
+        "2026-10-25-pack-SC-3.3.4",
+        "2026-10-25-servidor-Lo-que-compras-en-la-GTS-dentro-de-la-Torre-ya-no-se-pierde",
+        "2026-10-25-servidor-Vuelves-a-ver-el-progreso-de-tus-cacerias",
+        "2026-10-25-servidor-Ya-sabes-cual-es-tu-legendario-al-romper-el-aura",
+        "2026-10-25-servidor-SCHunts-0.3.13",
+        "2026-10-25-servidor-Aviso-si-dejas-un-vale-sin-elegir"
       ]
     }
   ]
