@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-26-servidor-Evolucionar-ya-no-te-quita-el-objeto-equipado",
+      "fecha": "2026-10-26",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Evolucionar ya no te quita el objeto equipado",
+      "puntos": [
+        "Antes, si tu Pokémon llevaba un objeto (por ejemplo una megapiedra) y evolucionaba, el objeto desaparecía.",
+        "Ahora lo conserva al evolucionar: Pikachu, Eevee, Growlithe, Vulpix, Riolu y muchos más."
+      ]
+    },
+    {
       "id": "2026-10-26-launcher-1.17.7",
       "fecha": "2026-10-26",
       "tipo": "launcher",
