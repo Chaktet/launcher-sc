@@ -32,6 +32,9 @@ files:
   - '!{CLAUDE.md,AGENTS.md,PRIVACY.md}'
   - '!electron-builder.firmado.yml'
 
+# Linux: script de arranque que quita el sandbox solo donde el sistema lo bloquea.
+afterPack: 'build/afterpack.js'
+
 extraResources:
   - 'libraries'
 

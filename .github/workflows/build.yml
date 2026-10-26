@@ -157,6 +157,15 @@ jobs:
           set -e
           tail -40 arranque.log
           test $codigo -eq 124
+          # Donde el sistema SÍ permite el sandbox, arranca con él (sin --no-sandbox).
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+          xvfb-run -a timeout 40 dist/SC-Launcher-linux.AppImage > arranque2.log 2>&1 &
+          sleep 25
+          ps -eo args | grep 'sc-launcher.bin' | grep -v grep | head -3 > procesos.txt || true
+          wait || true
+          cat procesos.txt
+          grep -q 'sc-launcher.bin' procesos.txt
+          ! grep -q -- '--no-sandbox' procesos.txt
 
       - name: Publicar artefacto
         uses: actions/upload-artifact@v4
