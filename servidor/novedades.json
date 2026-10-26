@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-26-launcher-1.17.8",
+      "fecha": "2026-10-26",
+      "tipo": "launcher",
+      "version": "1.17.8",
+      "titulo": "El launcher ya funciona en Mac y Linux",
+      "puntos": [
+        "Ya puedes jugar desde un Mac (chip Apple o Intel) o un PC con Linux: descárgalo desde la web.",
+        "En Mac y Linux se actualiza solo, igual que en Windows.",
+        "En Windows no cambia nada."
+      ]
+    },
+    {
       "id": "2026-10-26-movil-2.4.0",
       "fecha": "2026-10-26",
       "tipo": "movil",
