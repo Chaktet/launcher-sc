@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-26-pack-3.3.12",
+      "fecha": "2026-10-26",
+      "tipo": "pack",
+      "clase": "arreglo",
+      "version": "3.3.12",
+      "titulo": "Las placas animadas ya se mueven en todos los PC",
+      "puntos": [
+        "En algunos ordenadores las placas animadas del chat salían quietas, con todos sus dibujos amontonados. Ya se ven animadas como deben.",
+        "Se actualiza solo al darle a JUGAR en el launcher."
+      ]
+    },
+    {
       "id": "2026-10-26-launcher-1.17.8",
       "fecha": "2026-10-26",
       "tipo": "launcher",
