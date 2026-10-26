@@ -1,7 +1,8 @@
 # Plan · App de Android propia («SC Launcher Móvil»)
 
-> Estado: **plan, sin aprobar** (Felix, 26-10-2026: «primero solo el plan»; descarga solo desde nuestra web).
-> Nada de esto está construido. Antes de construir: OK de Felix + revisión del plan por Codex (regla de planes grandes).
+> Estado: **aprobado por Felix (26-10-2026), en construcción.** Revisado por Codex el 26-10 (sección «Revisión de
+> Codex»). Repo: `Chaktet/sc-launcher-movil` (fork público de FCL), clon en `E:/PROYECTOS-MC/sc-launcher-movil`; su
+> `historial.md` lleva el día a día. Fase en curso: **0**.
 
 ## Objetivo
 
@@ -41,11 +42,56 @@ hacemos con Helios: todo lo nuestro con prefijo `Sc`, y lo heredado tocado lo m�
    puede evitar). El modpack, en cambio, sí se actualiza solo.
 8. **Ajustes por defecto para nuestro pack:** renderer, RAM y controles pensados para Cobblemon en móvil.
 
+## Revisión de Codex (26-10-2026) y cómo cambia el plan
+
+Codex revisó el plan contra el código real de FCL (10 puntos). Lo que se sostiene, y queda decidido:
+
+1. **Firma:** FCL trae sus propias claves dentro de git (`key-store.jks`, `debug-key.jks`, `private_key.pepk`). Se
+   quitan; solo se firma con NUESTRA clave, y solo en `main` y en etiquetas de versión (nunca en PR). Cada compilación
+   comprueba el certificado y el `applicationId` del APK final.
+2. **Actualizar el modpack:** FCL ya sabe ACTUALIZAR un `.mrpack` instalado (`ModpackUpdateTask`, con copia y vuelta
+   atrás si falla). Se usa sobre una instancia fija nuestra, sin reimportar encima. Se protegen a mano `options.txt`,
+   controles, `servers.dat`, capturas y partidas (el pack no puede pisarlos); una sola actualización a la vez y
+   recuperación si la app se cierra a medias.
+3. **Actualizar la app:** el actualizador de FCL mira GitHub/Gitee, no comprueba el archivo y tiene la autoridad
+   `com.tungsten.fcl.provider` escrita a mano. Se sustituye por un manifiesto nuestro por HTTPS (`versionCode`, URL y
+   SHA-256 por arquitectura); antes de instalar se comprueban hash, paquete y certificado. Android pide el permiso
+   «instalar apps desconocidas» PARA NUESTRA APP la primera vez que se actualiza (el que se dio al navegador no vale):
+   la app guía al jugador y sigue sola al volver.
+4. **Licencias:** junto a cada APK publicado, enlace al código exacto de esa versión (etiqueta en GitHub) y las
+   licencias de cada pieza; créditos a FCL, HMCL, Amethyst/Pojav y demás en «Acerca de». **Se quita Terracotta**
+   (juego en LAN por VPN, AGPL, no lo necesitamos) con su servicio VPN; LWJGLX (licencia sin aclarar, solo para
+   versiones antiguas de Minecraft) se retira si 1.21.1 no lo usa. Repaso de licencias antes de la primera publicación.
+5. **Microsoft (comprobado por Claude el 26-10):** FCL entra con «código de dispositivo», y el client ID de Helios lo
+   **rechaza** (`AADSTS70002: The client application must be marked as 'mobile'`). Para usar el ID de Helios ya, la app
+   hará lo mismo que el launcher de PC: ventana de login de Microsoft dentro de la app con redirección
+   `https://login.microsoftonline.com/common/oauth2/nativeclient` (flujo «authorization code», cliente público, sin
+   secreto). Prueba completa en la fase 4: login, Xbox, perfil de Minecraft y renovación al día siguiente. Nuestra
+   app de Entra se registra para cuentas personales con flujos públicos; al cambiar de ID, el jugador vuelve a iniciar
+   sesión una vez.
+6. **Datos separados de FCL:** FCL guarda todo en `/FCL/` del almacenamiento compartido (juego, controles, logs).
+   Nuestra app usa sus propias carpetas, para no pisarse si el jugador tiene las dos. Si se usa el almacenamiento
+   privado de la app, se adapta la comprobación de permisos del arranque y se quita `MANAGE_EXTERNAL_STORAGE`.
+7. **Caché e integridad del pack:** el nombre fijo `SC-Movil.mrpack` está cacheado un año. El manifiesto apunta al
+   archivo VERSIONADO (`SC-Movil-2.4.1.mrpack`) con su SHA-256 y se sirve sin caché larga; además la app comprueba los
+   hashes de los 28 archivos remotos (Cobblemon, fabric-api…), también los que ya tenía, porque FCL hoy no lo hace.
+8. **Fuera lo ajeno:** promoción Quark, anuncios remotos de FCL, textos legales de FCL-Team (se hacen los nuestros en
+   español) y CurseForge (no hace falta para un `.mrpack` de Modrinth). Se comprueba qué conexiones hace la app al
+   abrir y al pulsar JUGAR.
+9. **Permisos:** se quitan juntos permiso, servicio y pantalla de lo que no usamos (VPN de Terracotta, desinstalar
+   complementos, micrófono si no hay mod de voz). Se mantienen los servicios en primer plano de descargas y de juego
+   (Android 14-15 los exige).
+10. **Pruebas:** el emulador del CI necesita un APK `x86_64`; probarlo no valida los APK ARM que publicamos, así que
+    la fase 6 prueba cada arquitectura publicada en móviles reales, incluida la actualización n → n+1 sin perder datos.
+    JUGAR ya convierte la dirección de la instancia en `--quickPlayMultiplayer mc.servidorcobblemon.es:25565`; la
+    fase 3 comprueba que de verdad entra. Los paquetes Java internos de FCL (`com.tungsten.fclauncher…`) no se
+    renombran: el código nativo los busca por nombre.
+
 ## Fases (cada una con la comprobación que la cierra)
 
 | Fase | Qué | Cómo se comprueba |
 |---|---|---|
-| 0 | Fork, compilación en GitHub Actions (gratis, repo público), firma con una clave nuestra | Un `.apk` firmado sale del CI y se instala en un emulador Android del runner |
+| 0 | Fork, compilación en GitHub Actions (gratis, repo público), firma con una clave nuestra, claves de FCL fuera | Un `.apk` firmado con NUESTRO certificado (comprobado con `apksigner`) sale del CI y arranca en un emulador Android del runner (`x86_64`) |
 | 1 | Identidad + español | El APK abre con nuestro nombre/icono y en español (capturas del emulador) |
 | 2 | Diseño de Codex aprobado por Felix → pantallas nuevas | Comparadas lado a lado con el diseño aprobado |
 | 3 | Modpack automático + JUGAR directo | En el emulador: instala el pack, y un pack nuevo publicado se aplica solo |
@@ -55,12 +101,15 @@ hacemos con Helios: todo lo nuestro con prefijo `Sc`, y lo heredado tocado lo m�
 
 ## Lo que hay que decidir o conseguir antes
 
-- **Microsoft (bloqueante para premium):** el launcher de PC usa el identificador de app de Helios, no uno nuestro. La
-  app de Android necesita **registrar nuestra propia app en Microsoft Entra** (gratis) y **pedir a Microsoft acceso a la
-  API de Minecraft** (formulario gratuito; lo revisan ellos, pueden tardar días o semanas). Hasta entonces, solo No
-  Premium. Es una «clave nueva»: necesita el OK de Felix.
-- **Clave de firma del APK:** la generamos nosotros (gratis). Va como secreto de GitHub y con copia de seguridad fuera
-  de git: **si se pierde, ningún jugador podrá actualizar la app** y habría que reinstalarla.
+- **Microsoft (decidido por Felix, 26-10):** salir con el client ID de Helios (el del launcher de PC,
+  `1ce6e35a-126f-48fd-97fb-54d143ac6d45`, secreto `OAUTH_API_KEY` del repo) con el flujo de ventana de login (punto 5 de
+  la revisión) y, EN PARALELO, registrar nuestra app en Microsoft Entra (gratis) y pedir a Microsoft acceso a la API de
+  Minecraft; cuando lo aprueben, pasar el móvil y el launcher de PC al ID nuevo. **Client ID propio: pendiente**
+  (Felix tiene que iniciar sesión en Microsoft; Claude hace los clics después).
+- **Clave de firma del APK (hecha 26-10):** `sc-release.jks` (alias `sc-launcher`, válida hasta 2126) en los secretos
+  de GitHub `SC_KEYSTORE_BASE64` / `SC_KEYSTORE_PASSWORD`, con copia fuera de git en `E:\SECRETOS\sc-launcher-movil\`
+  que Felix debe copiar además a un USB o a su nube personal: **si se pierde, ningún jugador podrá actualizar la app**
+  y habría que reinstalarla.
 - **Diseño:** pantallas de Codex (Felix aprueba el concepto antes de construir).
 - **Quién prueba:** al menos 2-3 Android reales (gama media y baja), porque el emulador no sirve para medir si va fluido.
 
