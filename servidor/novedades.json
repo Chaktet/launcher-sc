@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-26-pack-SC-3.3.10",
+      "fecha": "2026-10-26",
+      "tipo": "pack",
+      "clase": "nuevo",
+      "version": "SC-3.3.10",
+      "titulo": "Trío de Ánimas: tres skins de Halloween que no volverán",
+      "puntos": [
+        "Skeledirge, Roaring Moon y Amoonguss con su skin Noche de ánimas, solo en el pack Trío de Ánimas (Cosméticos → Edición limitada).",
+        "Te llegan los tres a nivel 50 con la skin puesta, y de regalo una placa animada que no se consigue de otra forma.",
+        "Hasta el 5 de noviembre: después no vuelve a salir."
+      ]
+    },
+    {
       "id": "2026-10-26-servidor-Elige-el-estilo-de-tu-Urshifu",
       "fecha": "2026-10-26",
       "tipo": "servidor",
