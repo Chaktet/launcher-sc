@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-26-pack-SC-3.3.8",
+      "fecha": "2026-10-26",
+      "tipo": "pack",
+      "clase": "arreglo",
+      "version": "SC-3.3.8",
+      "titulo": "Skins de Raichu, Blastoise y Growlithe arregladas",
+      "puntos": [
+        "Raichu Heaven, Blastoise Gilded y Growlithe Shadow y Heaven vuelven a verse bien."
+      ]
+    },
+    {
       "id": "2026-10-26-pack-SC-3.3.7",
       "fecha": "2026-10-26",
       "tipo": "pack",
