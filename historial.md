@@ -1,6 +1,8 @@
 # SC Launcher · historial
 
 ## Estado actual
+- **Rama `fix/notificaciones-nombre` (26-10)**: los avisos de Windows salían como «electron.app.SC Launcher».
+  Hecho y comprobado en local; sin publicar (entra en la próxima versión).
 - **1.17.6 (25-10): fin del aviso SC-PREMIUM evitable.** Ver la entrada de abajo. Estado de la publicación al final de
   la entrada.
 - **1.17.5 publicada (24-10)**: el aviso anónimo del SC-03 manda `k` y `n`. Firmada (`Valid`, sello Certum, publisher
@@ -13,6 +15,17 @@
 - **1.17.3 publicada (23-10)**: borra solos los SC-Pack viejos y afina las pistas de Voice Chat (`d` en «Could not
   initialize class») y de descargas (`k`, `n`). `sc-stats.py` nuevo instalado en OVH-A. Mirar en unos días: `d` de los
   SC-90 de Voice Chat, `k` de los SC-04 y que bajen los SC-93 `sc-viejo`.
+
+## 2026-10-26 · Avisos de Windows con nombre «SC Launcher»
+
+- Felix: las notificaciones del launcher salen en Windows como «electron.app.SC Launcher».
+- Causa: nunca se llamaba a `app.setAppUserModelId`; Electron usa entonces `electron.app.<productName>`, que no
+  coincide con ningún acceso directo, y Windows enseña el ID en crudo sin icono.
+- Arreglo: `index.js` fija el ID `es.servidorcobblemon.sclauncher` (= `appId` de electron-builder.yml, el que el NSIS
+  graba en el acceso directo del menú Inicio) antes del bloqueo de instancia única.
+- Comprobado: el acceso directo instalado tiene ese AUMID; un Electron de prueba con ese ID muestra el aviso, Windows lo
+  registra con ese ID y `shell:AppsFolder` lo resuelve como «SC Launcher». eslint limpio.
+- Pendiente: publicar en la próxima versión (rama `fix/notificaciones-nombre`, sin fusionar en `master`).
 
 ## 2026-10-25 · 1.17.6: sesión premium renovada al JUGAR y aviso de nombre premium
 
