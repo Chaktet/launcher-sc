@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-26-pack-SC-3.3.9",
+      "fecha": "2026-10-26",
+      "tipo": "pack",
+      "clase": "arreglo",
+      "version": "SC-3.3.9",
+      "titulo": "Muebles sin parpadeos",
+      "puntos": [
+        "Arreglados los muebles que parpadeaban al mirarlos de cerca (sofá Snorlax, peluches y muchos más)."
+      ]
+    },
+    {
       "id": "2026-10-26-pack-SC-3.3.8",
       "fecha": "2026-10-26",
       "tipo": "pack",
