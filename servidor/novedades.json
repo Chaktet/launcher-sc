@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-26-servidor-Elige-el-estilo-de-tu-Urshifu",
+      "fecha": "2026-10-26",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Elige el estilo de tu Urshifu",
+      "puntos": [
+        "¿Tu Urshifu no tiene el estilo que querías? Ahora puedes pasarlo de Golpe Brusco a Golpe Fluido, o al revés.",
+        "Ponlo en el primer hueco de tu equipo y abre el PokéNav: Evoluciones › Estilo de Urshifu. Ves los dos estilos, el precio en Tokens y tu saldo antes de confirmar.",
+        "También funciona escribiendo /cambiaforma y luego /cambiaforma confirmar.",
+        "Conserva su skin, shiny, IVs y nivel; su movimiento exclusivo cambia con el estilo."
+      ]
+    },
+    {
       "id": "2026-10-26-movil-2.3.26",
       "fecha": "2026-10-26",
       "tipo": "movil",
@@ -23,18 +36,6 @@
         "Skeledirge, Roaring Moon y Amoonguss con su skin Noche de ánimas, solo en el pack Trío de Ánimas (Cosméticos → Edición limitada).",
         "Te llegan los tres a nivel 50 con la skin puesta, y de regalo una placa animada que no se consigue de otra forma.",
         "Hasta el 5 de noviembre: después no vuelve a salir."
-      ]
-    },
-    {
-      "id": "2026-10-26-servidor-Elige-el-estilo-de-tu-Urshifu",
-      "fecha": "2026-10-26",
-      "tipo": "servidor",
-      "clase": "nuevo",
-      "titulo": "Elige el estilo de tu Urshifu",
-      "puntos": [
-        "¿Tu Urshifu no tiene el estilo que querías? Ahora puedes pasarlo de Golpe Brusco a Golpe Fluido, o al revés.",
-        "Ponlo en el primer hueco de tu equipo, guárdalo en su Poké Ball y escribe /cambiaforma: te dice el precio en Tokens y luego confirmas con /cambiaforma confirmar.",
-        "Conserva su skin, shiny, IVs y nivel; su movimiento exclusivo cambia con el estilo."
       ]
     },
     {
