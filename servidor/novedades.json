@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-26-pack-SC-3.3.7",
+      "fecha": "2026-10-26",
+      "tipo": "pack",
+      "clase": "arreglo",
+      "version": "SC-3.3.7",
+      "titulo": "Grubbin y otros Pokémon vuelven a verse bien",
+      "puntos": [
+        "Grubbin ya no sale con la textura rota.",
+        "Arreglados también Charjabug, Vikavolt, Helioptile, Heliolisk, Eternatus, Mothim y Greavard (normales y shiny)."
+      ]
+    },
+    {
       "id": "2026-10-25-servidor-SCHunts-0.3.13",
       "fecha": "2026-10-25",
       "tipo": "servidor",
