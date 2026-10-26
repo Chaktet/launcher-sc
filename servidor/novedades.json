@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-26-servidor-Ya-no-te-echa-al-entrar-con-mods-que-no-coinciden",
+      "fecha": "2026-10-26",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Ya no te echa al entrar con mods que no coinciden",
+      "puntos": [
+        "Si tus mods no son los del servidor, antes el juego te echaba al entrar en Kanto o Kalos con un error en inglés.",
+        "Ahora, si tienes una versión vieja, te quedas en el Lobby y te decimos en español qué hacer.",
+        "Con el launcher del servidor todo se actualiza solo al darle a JUGAR."
+      ]
+    },
+    {
       "id": "2026-10-26-servidor-Felicita-tambien-las-compras-con-SCC",
       "fecha": "2026-10-26",
       "tipo": "servidor",
