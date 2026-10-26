@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-26-servidor-Enviar-SCC-y-tokens-ahora-mas-facil",
+      "fecha": "2026-10-26",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Enviar SCC y tokens, ahora más fácil",
+      "puntos": [
+        "Usa /enviar scc <jugador> <cantidad> para mandar SCC a otro jugador, y /enviar tokens <jugador> <cantidad> para los tokens.",
+        "Escribe solo /enviar para ver cómo se usa, cuántos SCC tienes y cuántos puedes enviar ahora mismo.",
+        "Funciona aunque el otro jugador esté en la otra región: le llega al momento."
+      ]
+    },
+    {
       "id": "2026-10-26-servidor-Evolucionar-ya-no-te-quita-el-objeto-equipado",
       "fecha": "2026-10-26",
       "tipo": "servidor",
