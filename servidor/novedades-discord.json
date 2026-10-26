@@ -198,7 +198,11 @@
     "2026-10-26-servidor-SCHunts-0.3.17",
     "2026-10-26-servidor-Las-misiones-del-clan-ya-dicen-como-se-hacen",
     "2026-10-26-pack-SC-3.3.8",
-    "2026-10-26-pack-SC-3.3.7"
+    "2026-10-26-pack-SC-3.3.7",
+    "2026-10-26-servidor-Evolucionar-ya-no-te-quita-el-objeto-equipado",
+    "2026-10-26-servidor-Elige-el-estilo-de-tu-Urshifu",
+    "2026-10-26-movil-2.3.26",
+    "2026-10-26-pack-SC-3.3.10"
   ],
   "mensajes": [
     {
@@ -591,6 +595,16 @@
         "2026-10-26-servidor-Las-misiones-del-clan-ya-dicen-como-se-hacen",
         "2026-10-26-pack-SC-3.3.8",
         "2026-10-26-pack-SC-3.3.7"
+      ]
+    },
+    {
+      "fecha": "2026-10-26",
+      "mensaje": "1564306930883629138",
+      "entradas": [
+        "2026-10-26-servidor-Evolucionar-ya-no-te-quita-el-objeto-equipado",
+        "2026-10-26-servidor-Elige-el-estilo-de-tu-Urshifu",
+        "2026-10-26-movil-2.3.26",
+        "2026-10-26-pack-SC-3.3.10"
       ]
     }
   ]
