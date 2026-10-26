@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-26-servidor-Elige-el-estilo-de-tu-Urshifu",
+      "fecha": "2026-10-26",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Elige el estilo de tu Urshifu",
+      "puntos": [
+        "¿Tu Urshifu no tiene el estilo que querías? Ahora puedes pasarlo de Golpe Brusco a Golpe Fluido, o al revés.",
+        "Ponlo en el primer hueco de tu equipo, guárdalo en su Poké Ball y escribe /cambiaforma: te dice el precio en Tokens y luego confirmas con /cambiaforma confirmar.",
+        "Conserva su skin, shiny, IVs y nivel; su movimiento exclusivo cambia con el estilo."
+      ]
+    },
+    {
       "id": "2026-10-26-servidor-SCHunts-0.3.17",
       "fecha": "2026-10-26",
       "tipo": "servidor",
