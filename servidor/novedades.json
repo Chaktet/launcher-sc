@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-26-servidor-Baul-de-recuperados-ahora-con-su-propio-comando",
+      "fecha": "2026-10-26",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Baúl de recuperados: ahora con su propio comando",
+      "puntos": [
+        "Si al juntar tus mochilas de Kanto y Kalos algo no cabía, ya puedes abrir tu Baúl de recuperados escribiendo /vault recuperados",
+        "El aviso que sale al entrar también se puede pulsar para abrirlo"
+      ]
+    },
+    {
       "id": "2026-10-26-modpack-Muebles-sin-parpadeos",
       "fecha": "2026-10-26",
       "tipo": "modpack",
