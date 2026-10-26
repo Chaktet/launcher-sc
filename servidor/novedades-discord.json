@@ -181,7 +181,13 @@
     "2026-10-25-servidor-Vuelves-a-ver-el-progreso-de-tus-cacerias",
     "2026-10-25-servidor-Ya-sabes-cual-es-tu-legendario-al-romper-el-aura",
     "2026-10-25-servidor-SCHunts-0.3.13",
-    "2026-10-25-servidor-Aviso-si-dejas-un-vale-sin-elegir"
+    "2026-10-25-servidor-Aviso-si-dejas-un-vale-sin-elegir",
+    "2026-10-25-servidor-Romper-un-soporte-de-armadura-ya-no-borra-la-armadura",
+    "2026-10-25-servidor-El-cofre-del-clan-ya-se-puede-desbloquear",
+    "2026-10-25-servidor-Tus-vales-mas-faciles-de-encontrar",
+    "2026-10-25-modpack-Gritos-y-animaciones-nuevas-para-muchos-Pokemon",
+    "2026-10-25-pack-3.3.2",
+    "2026-10-25-servidor-Transformado-en-Pokemon-ya-no-desapareces-al-viajar"
   ],
   "mensajes": [
     {
@@ -539,6 +545,18 @@
         "2026-10-25-servidor-Ya-sabes-cual-es-tu-legendario-al-romper-el-aura",
         "2026-10-25-servidor-SCHunts-0.3.13",
         "2026-10-25-servidor-Aviso-si-dejas-un-vale-sin-elegir"
+      ]
+    },
+    {
+      "fecha": "2026-10-26",
+      "mensaje": "1564187534182064139",
+      "entradas": [
+        "2026-10-25-servidor-Romper-un-soporte-de-armadura-ya-no-borra-la-armadura",
+        "2026-10-25-servidor-El-cofre-del-clan-ya-se-puede-desbloquear",
+        "2026-10-25-servidor-Tus-vales-mas-faciles-de-encontrar",
+        "2026-10-25-modpack-Gritos-y-animaciones-nuevas-para-muchos-Pokemon",
+        "2026-10-25-pack-3.3.2",
+        "2026-10-25-servidor-Transformado-en-Pokemon-ya-no-desapareces-al-viajar"
       ]
     }
   ]
