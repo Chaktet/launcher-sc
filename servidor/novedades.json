@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-26-servidor-Las-misiones-del-clan-ya-dicen-como-se-hacen",
+      "fecha": "2026-10-26",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Las misiones del clan ya dicen cómo se hacen",
+      "puntos": [
+        "En /clan, sección Misiones, cada misión explica ahora qué hay que hacer para completarla (por ejemplo «Captura 250 Pokémon»)",
+        "Los premios de cada misión los ves con «Ver premios»"
+      ]
+    },
+    {
       "id": "2026-10-26-servidor-SCHunts-0.3.17",
       "fecha": "2026-10-26",
       "tipo": "servidor",
