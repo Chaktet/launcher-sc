@@ -2,8 +2,8 @@
 
 ## Estado actual
 - **1.17.7 publicada (26-10)**: avisos de Windows con nombre «SC Launcher» (antes «electron.app.SC Launcher»).
-  Firmada, release v1.17.7, `master` y `main` subidas, novedad `2026-10-26-launcher-1.17.7`. Pendiente: los 3 exe
-  de OVH-A (el modo automático bloqueó la escritura; esperan el OK de Felix).
+  Firmada, release v1.17.7, `master` y `main` subidas, novedad `2026-10-26-launcher-1.17.7`. Los 3 exe
+  de OVH-A renovados con el OK de Felix (por Cloudflare 93.660.392 B, sha256 `3628861d…` = local).
 - **1.17.6 (25-10): fin del aviso SC-PREMIUM evitable.** Ver la entrada de abajo. Estado de la publicación al final de
   la entrada.
 - **1.17.5 publicada (24-10)**: el aviso anónimo del SC-03 manda `k` y `n`. Firmada (`Valid`, sello Certum, publisher
@@ -29,7 +29,8 @@
 - Publicada como **1.17.7** (Felix: «publica»): `dist:win:firmado` (exe y `SC Launcher.exe` `Valid`, sello Certum
   Timestamp 2026, `comprueba-publisher` ok, el `app.asar` lleva el ID y la versión 1.17.7), release v1.17.7 con exe +
   blockmap + latest.yml (el `latest.yml` público ya dice 1.17.7), `master` y `main` subidas, novedad
-  `2026-10-26-launcher-1.17.7`. Pendiente: renovar los 3 exe de OVH-A (bloqueado por el modo automático).
+  `2026-10-26-launcher-1.17.7`. Los 3 exe de OVH-A renovados con el OK de Felix (sha512 = latest.yml; por
+  Cloudflare 93.660.392 B, sha256 `3628861d…` = local). Sin probar: el aviso con el launcher real instalado.
 
 ## 2026-10-25 · 1.17.6: sesión premium renovada al JUGAR y aviso de nombre premium
 
