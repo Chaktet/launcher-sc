@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-26-servidor-SCHunts-0.3.19",
+      "fecha": "2026-10-26",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "version": "SCHunts-0.3.19",
+      "titulo": "Tu tiempo jugado cuenta en Kanto y Kalos",
+      "puntos": [
+        "Las preguntas del chat dan premio cuando llevas 1 h jugada, sumando las dos regiones.",
+        "En la guerra de clanes, las bajas cuentan si el rival lleva 30 min jugados entre las dos regiones."
+      ]
+    },
+    {
       "id": "2026-10-26-servidor-Las-misiones-del-clan-ya-dicen-como-se-hacen",
       "fecha": "2026-10-26",
       "tipo": "servidor",
