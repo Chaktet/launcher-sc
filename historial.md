@@ -23,14 +23,15 @@
 ## 2026-10-26 · Launcher para Mac y Linux (sin publicar)
 
 - Felix: que el launcher funcione en Mac (.dmg) y Linux sin pagar nada, y que se actualice solo en los dos.
-- Builds gratis en GitHub Actions (, ). Mac: firma ad hoc, sin notarizar (primera vez «Abrir
-  igualmente»); actualización propia  (Squirrel.Mac exige firma de Apple): .zip + sha512 de
-  latest-mac.yml, ditto, script que cambia el .app al cerrar. Linux: AppImage con electron-updater;   quita el sandbox SOLO si el kernel lo bloquea (Ubuntu 24.04+ moría al abrir; decisión de Felix).
-- Arreglos de paso: LWJGL usaba  también en Mac/Linux; el enlace .dmg apuntaba a Helios.
+- Builds gratis en GitHub Actions (`build-mac`, `build-linux`). Mac: firma ad hoc, sin notarizar (primera vez «Abrir
+  igualmente»); actualización propia `scactualizamac.js` (Squirrel.Mac exige firma de Apple): .zip + sha512 de
+  latest-mac.yml, ditto, script que cambia el .app al cerrar. Linux: AppImage con electron-updater;
+  `build/afterpack.js` quita el sandbox SOLO si el kernel lo bloquea (Ubuntu 24.04+ moría al abrir; decisión de Felix).
+- Arreglos de paso: LWJGL usaba `C:\ProgramData` también en Mac/Linux; el enlace .dmg apuntaba a Helios.
 - Codex (high): 6 fallos de la actualización de Mac arreglados (doble instalación, cambio a medias, descarga colgada,
   errores de disco, versión preparada borrada, instalar al cerrar).
 - Comprobado en CI (run 40402020902): firma ad hoc válida; actualización de punta a punta en macOS arm64 (la app
-  nueva queda abierta); AppImage vivo a los 40 s con y sin el bloqueo (sin él, sin ). Windows arranca en
+  nueva queda abierta); AppImage vivo a los 40 s con y sin el bloqueo (sin él, sin `--no-sandbox`). Windows arranca en
   local. Sin probar: Mac/Linux reales con partida, y una actualización de Mac descargada de GitHub (será la 1.17.9).
 
 ## 2026-10-26 · Avisos de Windows con nombre «SC Launcher»
