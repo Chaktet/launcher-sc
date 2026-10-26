@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-26-movil-2.4.0",
+      "fecha": "2026-10-26",
+      "tipo": "movil",
+      "clase": "arreglo",
+      "version": "2.4.0",
+      "titulo": "Modpack de móvil al día con el servidor",
+      "puntos": [
+        "Si juegas desde el móvil, descarga la versión 2.4.0 del modpack: trae la misma versión de Cobblemon que el servidor.",
+        "Con la anterior podías ver un error al entrar en Kanto o Kalos."
+      ]
+    },
+    {
       "id": "2026-10-26-servidor-Ya-no-te-echa-al-entrar-con-mods-que-no-coinciden",
       "fecha": "2026-10-26",
       "tipo": "servidor",
