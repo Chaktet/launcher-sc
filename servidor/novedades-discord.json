@@ -211,7 +211,14 @@
     "2026-10-26-pack-3.3.12",
     "2026-10-27-servidor-Las-mascotas-de-pesca-ya-dan-su-bono",
     "2026-10-27-servidor-SCRueda-0.8.2",
-    "2026-10-27-pack-SC-3.3.13"
+    "2026-10-27-pack-SC-3.3.13",
+    "2026-10-27-servidor-Pokeparadas-la-barra-de-la-ruta-se-entiende",
+    "2026-10-27-servidor-Ya-no-te-quedas-atascado-al-morir",
+    "2026-10-27-servidor-Degradados-del-chat-desbloqueados",
+    "2026-10-27-servidor-Discord-imagenes-para-verificados-y-ayuda-al-momento",
+    "2026-10-27-servidor-Raids-iconos-de-la-tienda-y-oleadas-mas-claras",
+    "2026-10-27-servidor-Legendarios-el-boton-Ir-a-cazarlo-ya-funciona",
+    "2026-10-27-servidor-Avisos-mas-claros-en-pesca-clanes-Liga-y-mas"
   ],
   "mensajes": [
     {
@@ -635,6 +642,19 @@
         "2026-10-27-servidor-Las-mascotas-de-pesca-ya-dan-su-bono",
         "2026-10-27-servidor-SCRueda-0.8.2",
         "2026-10-27-pack-SC-3.3.13"
+      ]
+    },
+    {
+      "fecha": "2026-10-27",
+      "mensaje": "1564643598241112157",
+      "entradas": [
+        "2026-10-27-servidor-Pokeparadas-la-barra-de-la-ruta-se-entiende",
+        "2026-10-27-servidor-Ya-no-te-quedas-atascado-al-morir",
+        "2026-10-27-servidor-Degradados-del-chat-desbloqueados",
+        "2026-10-27-servidor-Discord-imagenes-para-verificados-y-ayuda-al-momento",
+        "2026-10-27-servidor-Raids-iconos-de-la-tienda-y-oleadas-mas-claras",
+        "2026-10-27-servidor-Legendarios-el-boton-Ir-a-cazarlo-ya-funciona",
+        "2026-10-27-servidor-Avisos-mas-claros-en-pesca-clanes-Liga-y-mas"
       ]
     }
   ]
