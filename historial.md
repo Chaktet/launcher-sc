@@ -6,9 +6,10 @@
   (Mac/Linux del CI run 40539470213, todo en verde); las tres fichas `latest*.yml` dicen 1.17.9; `master` y `main`
   subidas; los 3 exe de OVH-A renovados (por Cloudflare 93.673.816 B, sha256 `493a9130…` = build, firma `Valid`);
   novedad `2026-10-27-launcher-1.17.9`. Los `.dmg`/AppImage fijos de OVH-A siguen en 1.17.8 (Felix pidió solo los exe;
-  se actualizan solos al abrir). **Pendiente:** instalar `tools/sc-stats.py` en OVH-A (`/usr/local/bin`; el modo
-  automático no deja): sin él, SC-19 y las pistas nuevas se cuentan por código pero no se guardan los detalles.
-  Mirar en unos días: SC-05 `ERR_IPC_DISCONNECTED` a cero, SC-19 por antivirus, `x` de los SC-14, `f`/`u` de los SC-90.
+  se actualizan solos al abrir). `tools/sc-stats.py` instalado en OVH-A (27-10 16:34 UTC, permiso de Felix; copia
+  `/usr/local/bin/sc-stats.py.bak-20261027`; `stats.json` regenerado, histórico intacto con 109 días). ⚠ El fichero del
+  repo tiene CRLF: al subirlo, `sed -i 's/\r$//'` antes de instalar (el cron llama con `python3` delante y no le
+  afecta, pero ejecutado a mano falla con `python3\r`). Mirar en unos días: SC-05 `ERR_IPC_DISCONNECTED` a cero, SC-19 por antivirus, `x` de los SC-14, `f`/`u` de los SC-90.
 - **1.17.8 publicada (26-10): Windows, Mac y Linux** con el OK de Felix. Release v1.17.8 con 14 ficheros (exe firmado
   en local, `comprueba-publisher` ok; Mac/Linux del CI run 40403813368, todas las pruebas en verde); las tres fichas
   `latest*.yml` públicas dicen 1.17.8. OVH-A: `packs.conf` sirve `.dmg|.AppImage` con `no-cache` (copia en
