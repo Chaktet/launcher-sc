@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-27-servidor-Los-rangos-vuelven-a-ensenar-tu-precio-de-mejora",
+      "fecha": "2026-10-27",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Los rangos vuelven a enseñar tu precio de mejora",
+      "puntos": [
+        "En la tienda de rangos, el rango justo encima del tuyo vuelve a mostrar el precio de mejora aunque nunca hayas regalado nada."
+      ]
+    },
+    {
       "id": "2026-10-27-servidor-El-boton-Volver-de-la-tienda-SCC-ya-funciona",
       "fecha": "2026-10-27",
       "tipo": "servidor",
