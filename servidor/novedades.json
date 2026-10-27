@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-27-servidor-Mineria-tu-mineral-se-vende-aunque-uses-autopickup",
+      "fecha": "2026-10-27",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Minería: tu mineral se vende aunque uses /autopickup",
+      "puntos": [
+        "Con /autopickup, lo que picabas salía como «No lo picaste tú» y no se podía vender. Ya sale bien y lo puedes vender. Lo picado antes del arreglo no cambia.",
+        "La Forja te dice dónde cae cada plano y desde qué nivel, y al subir de nivel te avisamos cuando ya te puede caer uno nuevo.",
+        "Mientras picas, la barra de progreso deja sitio unos segundos para que leas los avisos de la minería."
+      ]
+    },
+    {
       "id": "2026-10-27-servidor-Ahora-ves-que-Poke-Ball-pide-tu-caceria-dificil",
       "fecha": "2026-10-27",
       "tipo": "servidor",
