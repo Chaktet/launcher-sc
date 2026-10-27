@@ -2,6 +2,21 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-27-movil-app-0.1.4",
+      "fecha": "2026-10-27",
+      "tipo": "movil",
+      "clase": "nuevo",
+      "version": "app-0.1.4",
+      "titulo": "La app del móvil ya tiene botones de Pokémon",
+      "puntos": [
+        "Botón Pokémon para abrir tu equipo y elegir tu inicial, Lanzar para sacar a tu Pokémon y flechas para cambiar de Pokémon",
+        "En Ajustes puedes elegir el modpack Móvil o el PRO, con más animaciones, si tu móvil es potente",
+        "Si la instalación se corta, la app la arregla sola al pulsar JUGAR",
+        "Mientras descarga ves la velocidad, para saber que sigue avanzando",
+        "La app te avisa sola para actualizarse"
+      ]
+    },
+    {
       "id": "2026-10-27-pack-SC-3.3.15",
       "fecha": "2026-10-27",
       "tipo": "pack",
