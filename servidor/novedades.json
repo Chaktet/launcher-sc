@@ -2,6 +2,20 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-27-servidor-SCRueda-0.8.2",
+      "fecha": "2026-10-27",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "version": "SCRueda-0.8.2",
+      "titulo": "La rueda de eventos ahora gira todo el día",
+      "puntos": [
+        "Ahora hay eventos a todas las horas del día, también por la tarde y por la noche.",
+        "Te puedes apuntar a los minijuegos de toda la red desde la propia pantalla de la rueda, con el botón Apuntarme.",
+        "La rueda te dice cómo va cada evento: si está empezando, en marcha y en qué región, si ya terminó o si no llegó a empezar por falta de gente.",
+        "Los avisos llegan 15 minutos antes y salen en grande en el centro de la pantalla, para que no se pierdan en el chat."
+      ]
+    },
+    {
       "id": "2026-10-27-pack-SC-3.3.13",
       "fecha": "2026-10-27",
       "tipo": "pack",
