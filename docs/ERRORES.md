@@ -30,6 +30,23 @@ una explicación en cristiano y un botón que copia un informe completo al porta
 | **SC-17** | `NATIVAS` | Falta `lwjgl.dll` (u otra nativa) al arrancar: Sodium muere en preLaunch con `UnsatisfiedLinkError: Failed to locate library` | Reintentar; si se repite, excluir la carpeta del launcher y `%TEMP%` del antivirus y cerrar limpiadores |
 | **SC-18** | `MODS_PROPIOS` | Algo no casa (`NoSuchMethodError`, clase que falta, mixin, mod repetido) y el jugador tiene mods añadidos por su cuenta en `mods/` (Ajustes → Mods). Sale al arrancar y a media partida | El diálogo le lista sus mods: que los desactive y los active de uno en uno |
 
+### App Android (SC Launcher móvil, desde 0.1.4)
+
+Mismo canal anónimo (`informe.txt`), con `a=android`, `v` = versión de la app (0.1.x) y `p=movil|movilpro`. Código en
+`E:/PROYECTOS-MC/sc-launcher-movil/FCL/src/main/java/com/tungsten/fcl/sc/ScAvisos.kt`. Se apaga en Ajustes de la app
+(«Enviar errores anónimos»); el mismo interruptor pone `-Dsc.avisos` al juego, así que en el móvil también llegan
+SC-90/91/92/93.
+
+| Código | Qué pasa | Pistas |
+|---|---|---|
+| **SC-40** | No se pudo instalar o actualizar el modpack | `n` = clase del fallo de FCL; `k` = título del aviso |
+| **SC-41** | Una descarga se quedó a 0 B/s 3 minutos (el «se queda en 99 %») | `s` = paso/total donde se paró |
+| **SC-42** | «Reparar archivos» falló | `k` |
+| **SC-43** | Fallo inesperado preparando el juego (como el de `modpack.cfg` del 27-10) | `n` = clase de la excepción |
+| **SC-44** | No hay espacio en el móvil para el modpack | — |
+
+Sin conexión no se avisa (es la red del jugador).
+
 ## El informe de diagnóstico
 
 `scInformeDiagnostico()` genera un texto plano con:
