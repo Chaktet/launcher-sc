@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-27-servidor-El-boton-Volver-de-la-tienda-SCC-ya-funciona",
+      "fecha": "2026-10-27",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "El botón Volver de la tienda SCC ya funciona",
+      "puntos": [
+        "En «Revisa tu compra», «Volver» ya no da error: te lleva a la lista donde elegiste el producto, o al inicio de la tienda.",
+        "Esa pantalla ya no enseña ceros si todavía no has elegido nada."
+      ]
+    },
+    {
       "id": "2026-10-27-servidor-La-Lluvia-de-objetos-dura-mas-y-se-ve-arriba",
       "fecha": "2026-10-27",
       "tipo": "servidor",
