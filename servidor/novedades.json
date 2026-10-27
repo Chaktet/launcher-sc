@@ -2,6 +2,21 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-27-movil-app-0.1.10",
+      "fecha": "2026-10-27",
+      "tipo": "movil",
+      "clase": "nuevo",
+      "version": "app-0.1.10",
+      "titulo": "La app del móvil se renueva",
+      "puntos": [
+        "Botones nuevos y cómodos: joystick, Saltar grande (mantén para nadar), Atacar, Usar y flechas para cambiar de objeto",
+        "Al pulsar JUGAR ves en qué paso va, cuánto falta y la velocidad de descarga",
+        "Si el juego se cierra, la app te dice qué pasó y cómo arreglarlo",
+        "Con wifi la app se actualiza sola",
+        "El modpack PRO del móvil ya tiene el mismo pack de recursos que el servidor"
+      ]
+    },
+    {
       "id": "2026-10-27-movil-app-0.1.4",
       "fecha": "2026-10-27",
       "tipo": "movil",
