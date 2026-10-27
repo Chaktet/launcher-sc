@@ -218,7 +218,13 @@
     "2026-10-27-servidor-Discord-imagenes-para-verificados-y-ayuda-al-momento",
     "2026-10-27-servidor-Raids-iconos-de-la-tienda-y-oleadas-mas-claras",
     "2026-10-27-servidor-Legendarios-el-boton-Ir-a-cazarlo-ya-funciona",
-    "2026-10-27-servidor-Avisos-mas-claros-en-pesca-clanes-Liga-y-mas"
+    "2026-10-27-servidor-Avisos-mas-claros-en-pesca-clanes-Liga-y-mas",
+    "2026-10-27-movil-app-0.1.4",
+    "2026-10-27-pack-SC-3.3.15",
+    "2026-10-27-servidor-Los-rangos-vuelven-a-ensenar-tu-precio-de-mejora",
+    "2026-10-27-servidor-El-boton-Volver-de-la-tienda-SCC-ya-funciona",
+    "2026-10-27-servidor-La-Lluvia-de-objetos-dura-mas-y-se-ve-arriba",
+    "2026-10-27-servidor-Minijuegos-todo-desde-el-PokeNav"
   ],
   "mensajes": [
     {
@@ -655,6 +661,18 @@
         "2026-10-27-servidor-Raids-iconos-de-la-tienda-y-oleadas-mas-claras",
         "2026-10-27-servidor-Legendarios-el-boton-Ir-a-cazarlo-ya-funciona",
         "2026-10-27-servidor-Avisos-mas-claros-en-pesca-clanes-Liga-y-mas"
+      ]
+    },
+    {
+      "fecha": "2026-10-27",
+      "mensaje": "1564738854622072914",
+      "entradas": [
+        "2026-10-27-movil-app-0.1.4",
+        "2026-10-27-pack-SC-3.3.15",
+        "2026-10-27-servidor-Los-rangos-vuelven-a-ensenar-tu-precio-de-mejora",
+        "2026-10-27-servidor-El-boton-Volver-de-la-tienda-SCC-ya-funciona",
+        "2026-10-27-servidor-La-Lluvia-de-objetos-dura-mas-y-se-ve-arriba",
+        "2026-10-27-servidor-Minijuegos-todo-desde-el-PokeNav"
       ]
     }
   ]
