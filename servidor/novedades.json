@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-27-servidor-Degradados-del-chat-desbloqueados",
+      "fecha": "2026-10-27",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Degradados del chat desbloqueados",
+      "puntos": [
+        "A los rangos Ultra, Legendario, Élite y Maestro les salían bloqueados los degradados de color del chat. Ya puedes usarlos."
+      ]
+    },
+    {
       "id": "2026-10-27-servidor-Discord-imagenes-para-verificados-y-ayuda-al-momento",
       "fecha": "2026-10-27",
       "tipo": "servidor",
