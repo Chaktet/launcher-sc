@@ -3,7 +3,7 @@
 > Estado: **aprobado por Felix (26-10-2026), en construcción.** Revisado por Codex el 26-10 (sección «Revisión de
 > Codex»). Repo: `Chaktet/sc-launcher-movil` (fork público de FCL), clon en `E:/PROYECTOS-MC/sc-launcher-movil`; su
 > `historial.md` lleva el día a día. Fase en curso: **6** (27-10-2026: fases 0-5 hechas y comprobadas en el emulador
-> del CI; versión 0.1.0 publicada en `descargas.servidorcobblemon.es/movil/app/` y en GitHub Releases `v0.1.0`).
+> del CI; versión 0.1.4 publicada el 27-10 en `descargas.servidorcobblemon.es/movil/app/` y GitHub Releases, con perfiles «Móvil» y «Móvil PRO»).
 
 ## Objetivo
 
