@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-27-servidor-Avisos-mas-claros-en-pesca-clanes-Liga-y-mas",
+      "fecha": "2026-10-27",
+      "tipo": "servidor",
+      "clase": "retoque",
+      "titulo": "Avisos más claros en pesca, clanes, Liga y más",
+      "puntos": [
+        "Pesca: los bonos de estelas y mascotas, en español claro, y al vender ves el precio base, el % de bonos y el total.",
+        "Clanes, Liga, energía y Día de la Comunidad: los avisos dicen qué has ganado y qué significa cada número.",
+        "Tienda Nocturna: los anuncios dicen el nombre de la skin, no su código.",
+        "El aviso de cacería completada enseña los puntos que ganas de verdad, también con VIP."
+      ]
+    },
+    {
       "id": "2026-10-27-servidor-Minijuegos-todo-desde-el-PokeNav",
       "fecha": "2026-10-27",
       "tipo": "servidor",
