@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-27-servidor-Ahora-ves-que-Poke-Ball-pide-tu-caceria-dificil",
+      "fecha": "2026-10-27",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Ahora ves qué Poké Ball pide tu cacería difícil",
+      "puntos": [
+        "En /caza, la tarjeta Difícil enseña el dibujo de la Ball que pide (o un reloj si es de noche, o un Caramelo Raro si pide nivel)",
+        "Al empezar un combate contra el Pokémon de tu cacería difícil te recordamos con qué capturarlo",
+        "Si le lanzas una Ball que no vale, te avisamos en ese momento de que esa captura no contará"
+      ]
+    },
+    {
       "id": "2026-10-27-movil-0.1.0",
       "fecha": "2026-10-27",
       "tipo": "movil",
