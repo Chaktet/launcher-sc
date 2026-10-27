@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-27-pack-SC-3.3.15",
+      "fecha": "2026-10-27",
+      "tipo": "pack",
+      "clase": "nuevo",
+      "version": "SC-3.3.15",
+      "titulo": "Una Meloetta muy especial",
+      "puntos": [
+        "Nueva skin exclusiva de Meloetta, «Diosa de la música», con sus dos formas: canto y baile.",
+        "Va rodeada de notas musicales y polvo brillante que se ven incluso de noche."
+      ]
+    },
+    {
       "id": "2026-10-27-launcher-1.17.9",
       "fecha": "2026-10-27",
       "tipo": "launcher",
