@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-27-launcher-1.17.9",
+      "fecha": "2026-10-27",
+      "tipo": "launcher",
+      "version": "1.17.9",
+      "titulo": "Te avisamos si tu antivirus borra archivos del juego",
+      "puntos": [
+        "Si tu antivirus borra archivos del juego, el launcher te lo dice, los vuelve a descargar y te ayuda a evitar que vuelva a pasar.",
+        "Si tenías asignada más memoria de la que tiene tu equipo, se ajusta sola en vez de darte error.",
+        "Los mensajes de error son más claros: ya no sale «antivirus o disco lleno» cuando el problema era otro."
+      ]
+    },
+    {
       "id": "2026-10-27-servidor-Los-rangos-vuelven-a-ensenar-tu-precio-de-mejora",
       "fecha": "2026-10-27",
       "tipo": "servidor",
