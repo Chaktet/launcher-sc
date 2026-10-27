@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-27-servidor-La-Lluvia-de-objetos-dura-mas-y-se-ve-arriba",
+      "fecha": "2026-10-27",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "La Lluvia de objetos dura más y se ve arriba",
+      "puntos": [
+        "Durante la Lluvia de objetos sale una barra arriba que dice que está en marcha y cuántos minutos quedan.",
+        "Ahora dura 5 minutos, con objetos cayendo cada 5 segundos.",
+        "Si no ves la barra, avísanos por ticket."
+      ]
+    },
+    {
       "id": "2026-10-27-servidor-Pokeparadas-la-barra-de-la-ruta-se-entiende",
       "fecha": "2026-10-27",
       "tipo": "servidor",
