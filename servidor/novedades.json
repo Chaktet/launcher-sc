@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-27-servidor-Legendarios-el-boton-Ir-a-cazarlo-ya-funciona",
+      "fecha": "2026-10-27",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Legendarios: el botón «Ir a cazarlo» ya funciona",
+      "puntos": [
+        "El botón «Ir a cazarlo» de los anuncios de legendario ya te lleva, sin escribir el comando a mano. Si no te funciona, avísanos por ticket.",
+        "La racha y el aura se explican con palabras: cuántos fallos seguidos llevas y cuántos guardianes quedan."
+      ]
+    },
+    {
       "id": "2026-10-27-servidor-Avisos-mas-claros-en-pesca-clanes-Liga-y-mas",
       "fecha": "2026-10-27",
       "tipo": "servidor",
