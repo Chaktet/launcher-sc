@@ -2,6 +2,20 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-27-servidor-Minijuegos-todo-desde-el-PokeNav",
+      "fecha": "2026-10-27",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Minijuegos: todo desde el PokéNav",
+      "puntos": [
+        "Escondite, Quién es quién, Ditto Party y Sumo abren sus pantallas del PokéNav para todos, sin tener que entrar antes a su menú (a muchos les salía un cofre).",
+        "En el Royale, el Disco MT y la Menta también se eligen desde el PokéNav.",
+        "En el Escondite nadie brilla durante la partida, aunque tenga el brillo puesto; al salir te vuelve.",
+        "El resumen del Royale ya dice bien el premio del campeón: 1 Llave Evento.",
+        "Dale a JUGAR en el launcher para tener las pantallas nuevas."
+      ]
+    },
+    {
       "id": "2026-10-27-servidor-Muebles-y-probador-de-cosmeticos-arreglados",
       "fecha": "2026-10-27",
       "tipo": "servidor",
