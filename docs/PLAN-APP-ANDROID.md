@@ -2,7 +2,8 @@
 
 > Estado: **aprobado por Felix (26-10-2026), en construcción.** Revisado por Codex el 26-10 (sección «Revisión de
 > Codex»). Repo: `Chaktet/sc-launcher-movil` (fork público de FCL), clon en `E:/PROYECTOS-MC/sc-launcher-movil`; su
-> `historial.md` lleva el día a día. Fase en curso: **0**.
+> `historial.md` lleva el día a día. Fase en curso: **6** (27-10-2026: fases 0-5 hechas y comprobadas en el emulador
+> del CI; versión 0.1.0 publicada en `descargas.servidorcobblemon.es/movil/app/` y en GitHub Releases `v0.1.0`).
 
 ## Objetivo
 
@@ -95,8 +96,8 @@ Codex revisó el plan contra el código real de FCL (10 puntos). Lo que se sosti
 | 1 | Identidad + español | El APK abre con nuestro nombre/icono y en español (capturas del emulador) |
 | 2 | Diseño de Codex aprobado por Felix → pantallas nuevas | Comparadas lado a lado con el diseño aprobado |
 | 3 | Modpack automático + JUGAR directo | En el emulador: instala el pack, y un pack nuevo publicado se aplica solo |
-| 4 | Cuentas (Microsoft necesita lo de «Microsoft» de abajo) | Login real en un móvil |
-| 5 | Actualización de la app, web y novedad | APK n → n+1 desde nuestro servidor |
+| 4 | Cuentas (Microsoft necesita lo de «Microsoft» de abajo) | Login real en un móvil · *27-10: ventana propia con código + PKCE + state y redirección `nativeclient` (ID de Helios); en CI comprobados la petición, la cancelación y el canje del código con Microsoft; falta el login real en un móvil (fase 6)* |
+| 5 | Actualización de la app, web y novedad | APK n → n+1 desde nuestro servidor · *27-10: `movil/app/sc-app.json` (versionCode, url/sha256/size por ABI); el APK se comprueba (paquete, firma igual a la instalada, versión anunciada) antes del instalador; en CI llega al instalador de Android. Web y novedad: los hace la sesión web* |
 | 6 | **Prueba en móviles reales** (Felix y staff) | Instalar, entrar al servidor y jugar 15 min en 2-3 móviles distintos |
 
 ## Lo que hay que decidir o conseguir antes
