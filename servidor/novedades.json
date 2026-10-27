@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-27-servidor-Muebles-y-probador-de-cosmeticos-arreglados",
+      "fecha": "2026-10-27",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Muebles y probador de cosméticos arreglados",
+      "puntos": [
+        "Los muebles ya no salen como cajas moradas al volver del Hub.",
+        "Al subirte encima de un mueble ya no te quedas pegado dando saltitos.",
+        "El probador y la tienda de cosméticos solo enseñan lo que está a la venta en los packs, para que no veas cosas que luego no puedes comprar.",
+        "Si ves algo raro, avísanos por ticket."
+      ]
+    },
+    {
       "id": "2026-10-27-servidor-Mineria-tu-mineral-se-vende-aunque-uses-autopickup",
       "fecha": "2026-10-27",
       "tipo": "servidor",
