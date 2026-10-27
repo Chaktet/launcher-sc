@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-27-servidor-Pokeparadas-la-barra-de-la-ruta-se-entiende",
+      "fecha": "2026-10-27",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Pokeparadas: la barra de la ruta se entiende",
+      "puntos": [
+        "La barra de arriba te dice cuántas pokeparadas llevas de las 15 para el Cofre de ruta.",
+        "Ya no está fija todo el rato: sale unos segundos al reclamar una parada y cuando tienes cerca una que aún puedes reclamar.",
+        "La primera vez, el chat te explica cómo funciona la ruta."
+      ]
+    },
+    {
       "id": "2026-10-27-servidor-Ya-no-te-quedas-atascado-al-morir",
       "fecha": "2026-10-27",
       "tipo": "servidor",
