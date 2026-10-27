@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-27-pack-SC-3.3.13",
+      "fecha": "2026-10-27",
+      "tipo": "pack",
+      "clase": "arreglo",
+      "version": "SC-3.3.13",
+      "titulo": "Los emotes ya no borran la cara",
+      "puntos": [
+        "Al hacer un emote de la rueda, a ti y a los demás ya no se os quitan los ojos ni la cara.",
+        "Los peluches de Mega-Dragonite (también el de rango Mega) y de Cubone se llevan en la mano a su tamaño, ya no salen gigantes.",
+        "Dale a JUGAR en el launcher para tener el pack nuevo."
+      ]
+    },
+    {
       "id": "2026-10-26-pack-3.3.12",
       "fecha": "2026-10-26",
       "tipo": "pack",
