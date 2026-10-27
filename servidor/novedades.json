@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-27-servidor-Las-mascotas-de-pesca-ya-dan-su-bono",
+      "fecha": "2026-10-27",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Las mascotas de pesca ya dan su bono",
+      "puntos": [
+        "Las mascotas legendarias ya dan la suerte que prometían",
+        "El Salmón da más peces de Plata y el Pez globo más de Oro",
+        "Las mascotas que antes daban dinero ahora dan esa misma ventaja en XP al pescar"
+      ]
+    },
+    {
       "id": "2026-10-27-servidor-SCRueda-0.8.2",
       "fecha": "2026-10-27",
       "tipo": "servidor",
