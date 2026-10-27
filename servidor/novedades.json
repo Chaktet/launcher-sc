@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-27-servidor-Raids-iconos-de-la-tienda-y-oleadas-mas-claras",
+      "fecha": "2026-10-27",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Raids: iconos de la tienda y oleadas más claras",
+      "puntos": [
+        "En la tienda de raids, la pulsera mega, los orbes, las máscaras y la lucarionita salían con icono de piedra. Ya se ven bien.",
+        "En las oleadas, la barra te dice cuántos refuerzos quedan y cuánto tiempo tienes para derrotarlos.",
+        "Si llegas al límite de daño, el aviso explica que tu daño no cuenta durante unos segundos, pero puedes seguir luchando."
+      ]
+    },
+    {
       "id": "2026-10-27-servidor-Legendarios-el-boton-Ir-a-cazarlo-ya-funciona",
       "fecha": "2026-10-27",
       "tipo": "servidor",
