@@ -33,6 +33,17 @@
   initialize class») y de descargas (`k`, `n`). `sc-stats.py` nuevo instalado en OVH-A. Mirar en unos días: `d` de los
   SC-90 de Voice Chat, `k` de los SC-04 y que bajen los SC-93 `sc-viejo`.
 
+## 2026-10-27 · Norma: novedades y Discord, primero vista previa con @chaktet y OK de Felix
+- Pedido: antes de publicar novedades del launcher o posts de Discord, enseñárselo y dejarlo en «diseño-pruebas»
+  hasta su OK, mencionándole (@chaktet, id `154597670688653312`).
+- Cambios: `anade_novedad.js --muestra` (valida y manda el borrador a «diseño-pruebas», no publica);
+  `publica_novedades.py` en Hetzner menciona a @chaktet en el modo `pruebas` (copia `.bak-2026-10-27`);
+  `publica_anuncio_ruleta.py` (plantilla de anuncios) igual en `prueba`. Normas en `PROYECTOS-MC/CLAUDE.md`,
+  `RESOURCE-MC/CLAUDE.md`, `NOVEDADES-GUIA.md`, skill `desplegar` y CLAUDE.md global.
+- Verificado: vista previa de Discord (mensaje 1564746089922568363, Discord confirma la mención a chaktet) y del
+  launcher (llegó a «diseño-pruebas», `novedades.json` publicado sin la entrada de prueba; mensaje de prueba borrado).
+- Pendiente: 4 novedades esperan el OK de Felix para #actualizaciones (vista previa ya en «diseño-pruebas»).
+
 ## 2026-10-27 · Revisión de avisos anónimos: SC-05 falso, pistas nuevas y SC-19 (antivirus)
 
 - Felix: revisar los avisos anónimos del launcher de PC, arreglar los puntos 1-4 de la revisión, dejar el 5 (SC-90)
