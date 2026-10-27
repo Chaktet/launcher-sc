@@ -1,4 +1,4 @@
-# Códigos de error de arranque (SC-01 … SC-18) y del juego (SC-90 … SC-93)
+# Códigos de error de arranque (SC-01 … SC-19) y del juego (SC-90 … SC-93)
 
 > Estado verificado: 2026-08-06. Definidos en [landing.js](../app/assets/js/scripts/landing.js),
 > constante `SC_ERR`.
@@ -15,10 +15,10 @@ una explicación en cristiano y un botón que copia un informe completo al porta
 | **SC-02** | `JAVA` | Fallo descargando o instalando Java | Red, o la API de Adoptium caída |
 | **SC-03** | `VERIFICACION` | Fallo verificando archivos ya descargados | Disco lleno o antivirus: el aviso anónimo lo dice desde la 1.17.5 (`k`/`n`) |
 | **SC-04** | `DESCARGA` | Fallo descargando mods o recursos | La línea `TLS:` del informe. Ver abajo |
-| **SC-05** | `REPARACION` | El proceso de reparación murió | Permisos sobre el directorio de datos |
+| **SC-05** | `REPARACION` | El proceso de reparación murió | Permisos sobre el directorio de datos. Antes de la 1.17.9, un SC-05 con `x=ERR_IPC_DISCONNECTED` era falso: tapaba el SC-03/SC-04 real (ver «Avisos anónimos») |
 | **SC-06** | `JVM` | El juego no llegó a arrancar (genérico) | El informe adjunto |
 | **SC-07** | `LAUNCHWRAPPER` | Faltan librerías de arranque | Descarga incompleta; forzar reparación |
-| **SC-08** | `RAM` | Memoria asignada imposible para este equipo | Bajar la RAM en Ajustes |
+| **SC-08** | `RAM` | Memoria asignada imposible para este equipo | Desde la 1.17.9 el launcher pasa solo a RAM automática y avisa (cuenta como `x=autoajustada`, sin diálogo); el error solo sale si ni la mínima cabe |
 | **SC-09** | `CUENTA` | Problema con la cuenta seleccionada | Volver a iniciar sesión |
 | **SC-10** | `JAVA_ROTO` | La instalación de Java está incompleta o dañada | **Antivirus.** Ver abajo |
 | **SC-11** | `MEMORIA` | El juego se quedó sin memoria | Subir RAM, o pasar a LITE |
@@ -29,6 +29,7 @@ una explicación en cristiano y un botón que copia un informe completo al porta
 | **SC-16** | `DISCO` | No cabe en el disco lo que falta por descargar (más 512 MB de margen) | Liberar espacio; el mensaje dice cuánto queda y la carpeta |
 | **SC-17** | `NATIVAS` | Falta `lwjgl.dll` (u otra nativa) al arrancar: Sodium muere en preLaunch con `UnsatisfiedLinkError: Failed to locate library` | Reintentar; si se repite, excluir la carpeta del launcher y `%TEMP%` del antivirus y cerrar limpiadores |
 | **SC-18** | `MODS_PROPIOS` | Algo no casa (`NoSuchMethodError`, clase que falta, mixin, mod repetido) y el jugador tiene mods añadidos por su cuenta en `mods/` (Ajustes → Mods). Sale al arrancar y a media partida | El diálogo le lista sus mods: que los desactive y los active de uno en uno |
+| **SC-19** | `BORRADOS` | Desde la última partida buena han desaparecido mods (`.jar` del perfil, opcionales incluidos) o Java: el antivirus los puso en cuarentena (`scborrados.js`, 1.17.9). Sale al pulsar JUGAR; «Jugar ya» sigue y la descarga los repone | «Que no vuelva a pasar»: exclusión de la carpeta (Defender la pone el launcher con UAC) |
 
 ### App Android (SC Launcher móvil, desde 0.1.4)
 
@@ -415,6 +416,23 @@ mismo código cuenta una vez por minuto. Se apaga en Ajustes → Launcher (`envi
   DLL la delata. A media partida no se manda un segundo aviso: ya cuenta como SC-90.
 - **SC-09 (desde 1.16.18):** sin cuenta seleccionada, JUGAR abre directamente la pantalla de iniciar sesión (y vuelve a la
   principal al terminar) en vez del error que mandaba a Ajustes → Cuenta. Se sigue contando con `x=sincuenta`.
+- **Pistas del equipo y nuevas (1.17.9, revisión de avisos del 27-10).** En todos los avisos del launcher: `a` procesador
+  real (`x64`, `arm64`: un Windows ARM ejecuta el launcher emulado y `os.arch()` mentía) y `s` compilación de Windows
+  (`19045` = Win 10 22H2, `22631` = Win 11 23H2). En SC-06, SC-12, SC-13 y SC-90: `g` marca de la gráfica
+  (`nvidia`, `amd`, `intel`, `otra`, `desconocida`). En SC-90: `f` qué dejó el juego (`crash`, `hserr`, `nada`) y
+  `u` minutos jugados por tramos (`0m`, `2m`, `5m` … `240m`). En SC-14: `x` = por qué no arranca Java según
+  `scSondaJava()` (`borrado`, `vacio`, `EPERM`/`EACCES`/`UNKNOWN`, `colgado`, `salidaN`, `ok`) y `q` antivirus como
+  clase fija (`defender`, `avast`, `kaspersky`…, `otro`, `ninguno`). En SC-03: `k=json` (un JSON local a medias) y `n`
+  también con el nombre del error (`TypeError`) o `sindetalle` si el receptor no supo describirlo.
+- **SC-19 (1.17.9):** `n` cuántos archivos (máx. 99), `t` `mods`/`java`/`ambos`, `q` antivirus. La huella
+  (`<launcher>/sc-huella.json`) se escribe cuando la partida carga; solo cuenta lo que la distribución sigue pidiendo,
+  y lo que borra el propio launcher (reparar un módulo SC-15, reparar Java) se quita antes.
+- **SC-05 falso (arreglado en la 1.17.9):** el receptor manda su error y sale con `process.exit(1)`; helios-core hace
+  `disconnect()` al recibirlo y, con el canal ya cerrado, Node emite `ERR_IPC_DISCONNECTED`, que pintaba SC-05 encima
+  del SC-03/SC-04 real (11 avisos el 24-25/10). Ahora ese `'error'` se ignora; una muerte real sigue saliendo por el `close`.
+- **Cierres hechos por Windows (1.17.9):** `0x40010004` (1073807364) y `0xC000013A` ya no cuentan como SC-90 ni
+  enseñan nada: es Windows terminando el juego (apagado, cerrar sesión). `0xCFFFFFFF` (3489660927) sí cuenta: suele ser
+  un cuelgue que el jugador cierra a la fuerza; `f` y `u` dirán más.
 - **Privacidad:** viaja solo lo de arriba. Está en `PRIVACY.md`.
 
 ## Recursos rotos dentro del juego: SC-91, SC-92 y SC-93 (desde 1.16.13)

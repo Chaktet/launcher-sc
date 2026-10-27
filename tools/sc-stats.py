@@ -184,7 +184,10 @@ MAX_VALORES = 50
 # propios activos tiene el jugador (solo el numero); desde la version siguiente a la 1.17.2, k clase fija del fallo de descarga
 # (bloqueado, hash, http...) y n nombre del error; desde la 1.17.5 tambien en SC-03 (n = EPERM, ENOENT...). Mismas reglas que las de recursos: identificadores
 # ya saneados y como mucho MAX_VALORES por codigo, campo y dia.
-CAMPOS_PISTA = ('x', 'm', 'd', 'y', 'l', 'e', 'h', 't', 'z', 'k', 'n')
+# Desde la 1.17.9: a procesador real (x64, arm64), s compilacion de Windows, g marca de la grafica
+# (SC-06/12/13/90), q antivirus como clase fija (SC-14, SC-19), f que dejo el juego al morir y
+# u minutos jugados en tramos (SC-90). SC-19 = archivos borrados entre partidas (n cuantos, t que).
+CAMPOS_PISTA = ('x', 'm', 'd', 'y', 'l', 'e', 'h', 't', 'z', 'k', 'n', 'a', 's', 'g', 'q', 'f', 'u')
 # Claves con tope de valores por prefijo: recursos (inf_r_), pistas (inf_p_) y, desde el 20-10, tambien
 # versiones (inf_v_) y las de SC-90 de la 1.16.12 (inf_m_, inf_x_): antes, variando v, m o x en una query
 # hecha a mano se creaban claves sin limite que fusionar() guardaba para siempre (revision de Codex).

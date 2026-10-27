@@ -1,6 +1,9 @@
 # SC Launcher · historial
 
 ## Estado actual
+- **Rama `fix/avisos-errores-antivirus` (27-10), SIN publicar**: falso SC-05, pistas nuevas de SC-03/14/90, RAM
+  autoajustada (SC-08) y SC-19 «el antivirus borró archivos». Ver la entrada de abajo. Pendiente: firma y release
+  (1.17.9) con el OK de Felix, e instalar `tools/sc-stats.py` en OVH-A (`/usr/local/bin`; el modo automático no deja).
 - **1.17.8 publicada (26-10): Windows, Mac y Linux** con el OK de Felix. Release v1.17.8 con 14 ficheros (exe firmado
   en local, `comprueba-publisher` ok; Mac/Linux del CI run 40403813368, todas las pruebas en verde); las tres fichas
   `latest*.yml` públicas dicen 1.17.8. OVH-A: `packs.conf` sirve `.dmg|.AppImage` con `no-cache` (copia en
@@ -23,6 +26,28 @@
 - **1.17.3 publicada (23-10)**: borra solos los SC-Pack viejos y afina las pistas de Voice Chat (`d` en «Could not
   initialize class») y de descargas (`k`, `n`). `sc-stats.py` nuevo instalado en OVH-A. Mirar en unos días: `d` de los
   SC-90 de Voice Chat, `k` de los SC-04 y que bajen los SC-93 `sc-viejo`.
+
+## 2026-10-27 · Revisión de avisos anónimos: SC-05 falso, pistas nuevas y SC-19 (antivirus)
+
+- Felix: revisar los avisos anónimos del launcher de PC, arreglar los puntos 1-4 de la revisión, dejar el 5 (SC-90)
+  preparado para detectarlo, y «mucha gente tiene el antivirus borrándole archivos: que lo recupere mejor».
+- Datos (registros de OVH-A, 19-27/10): SC-92 de Charizard y SC-93 de Shedinja `sc-viejo` ya a cero; SC-90 sigue
+  siendo lo más común (mitad 0xC0000409 sin DLL).
+- **SC-05 `ERR_IPC_DISCONNECTED` (11 avisos 24-25/10) era falso**: el receptor hace `process.exit(1)` justo tras mandar
+  su error, helios llama `disconnect()` con el canal cerrado y el `'error'` pintaba SC-05 ENCIMA del SC-03 real.
+  Reproducido 20/20; ahora se ignora ese código. SC-03: `k=json` y `n` = nombre del error o `sindetalle`.
+- SC-08: RAM manual > 92 % del equipo → RAM automática + aviso, sin bloquear. SC-14: `scSondaJava()` (`x`) y antivirus
+  (`q`). Todas: `a` procesador real, `s` build de Windows; `g` gráfica en SC-06/12/13/90; SC-90: `f`, `u`, y los cierres
+  de Windows (0x40010004, 0xC000013A) ya no cuentan. Detalle: `docs/ERRORES.md`.
+- **SC-19 nuevo** (`app/assets/js/scborrados.js`): huella de los .jar y Java al cargar la partida; si al JUGAR falta algo,
+  aviso «Tu antivirus ha borrado archivos» con «Que no vuelva a pasar» (exclusión) o «Jugar ya». De paso,
+  `scOfrecerArreglarAntivirus` abre el overlay (el botón «Revisar el antivirus» del SC-15 lo rellenaba detrás).
+- Codex (high): 3 fallos de SC-19 falso o repetido, arreglados (reparar Java borraba el runtime de todos los perfiles;
+  huella que no se puede guardar; reparación de módulo a medias). Ahora `olvidarBajo()` va antes del borrado y hay
+  memoria de sesión.
+- Comprobado: eslint; 14 casos de `scborrados.js` (los 3 de Codex incluidos); 14 de clasificación/pistas/sonda; el diálogo SC-19 en el launcher real
+  por CDP (singular/plural, un solo aviso por borrado); el launcher arranca sin errores de script. NO probado: una
+  partida real, la exclusión con UAC desde el SC-19, ni avisos reales en `stats.json` (falta publicar e instalar sc-stats).
 
 ## 2026-10-26 · 1.17.8: launcher para Mac y Linux (publicada)
 

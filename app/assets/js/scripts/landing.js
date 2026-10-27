@@ -33,6 +33,7 @@ const ProcessBuilder          = require('./assets/js/processbuilder')
 const distroManager           = require('./assets/js/distromanager')
 const ScJuegoAbierto          = require('./assets/js/scjuegoabierto')
 const ScRendimiento           = require('./assets/js/screndimiento')
+const ScBorrados              = require('./assets/js/scborrados')
 
 // Launch Elements
 const launch_content          = document.getElementById('launch_content')
@@ -203,7 +204,11 @@ document.getElementById('launch_button').addEventListener('click', async e => {
     scComprobandoJugar = true
     let seguir
     try {
+        // Lo último: ¿se llevó algo el antivirus desde la última partida? Se le explica
+        // antes de que la descarga lo reponga en silencio (SC-19). Dentro de la guarda:
+        // espera a la detección del antivirus y un doble clic lanzaría el juego debajo.
         seguir = !(await scAvisarJuegoPrevioAbierto()) && scComprobacionesPrevias()
+            && !(await scAvisarArchivosBorrados())
     } finally {
         scComprobandoJugar = false
     }
@@ -535,7 +540,8 @@ const SC_ERR = {
     MOD_ILEGIBLE:   'SC-15', // el juego no ha podido abrir un archivo del pack
     DISCO:          'SC-16', // no queda espacio libre suficiente en el disco de datos
     NATIVAS:        'SC-17', // falta lwjgl.dll (u otra nativa) al arrancar: antivirus o carpeta temporal
-    MODS_PROPIOS:   'SC-18'  // el juego falla por código que no casa y el jugador tiene mods añadidos por su cuenta
+    MODS_PROPIOS:   'SC-18', // el juego falla por código que no casa y el jugador tiene mods añadidos por su cuenta
+    BORRADOS:       'SC-19'  // desde la última partida desaparecieron mods o Java: el antivirus (scborrados.js)
 }
 
 // Cuántas veces se ha intentado ya arreglar cada fichero en ESTA sesión.
@@ -575,6 +581,43 @@ function scUltimoCrashReport(){
 }
 
 /**
+ * Por qué un Java recién instalado no arranca, como identificador fijo para el aviso
+ * anónimo (SC-14): `borrado` (el antivirus se lo llevó nada más extraerlo), `vacio`,
+ * el código del sistema al lanzarlo (EPERM, EACCES, UNKNOWN… = algo lo bloquea),
+ * `colgado` (no respondió en 15 s), `salida<N>` (arrancó y salió con error) u `ok`.
+ * Ejecuta `java -version`, nada más.
+ *
+ * @returns {Promise<string>}
+ */
+function scSondaJava(exe){
+    return new Promise(resolve => {
+        try {
+            const nodeFs = require('fs')
+            if(!nodeFs.existsSync(exe)){
+                return resolve('borrado')
+            }
+            if(nodeFs.statSync(exe).size === 0){
+                return resolve('vacio')
+            }
+            require('child_process').execFile(exe, ['-version'], { timeout: 15000, windowsHide: true }, err => {
+                if(err == null){
+                    return resolve('ok')
+                }
+                if(err.killed){
+                    return resolve('colgado')
+                }
+                if(typeof err.code === 'string' && /^[A-Z][A-Z0-9_]{1,30}$/.test(err.code)){
+                    return resolve(err.code)
+                }
+                resolve('salida' + String(err.code).replace(/[^0-9-]/g, '').slice(0, 11))
+            })
+        } catch(e){
+            resolve(typeof (e && e.code) === 'string' && /^[A-Z][A-Z0-9_]{1,30}$/.test(e.code) ? e.code : 'error')
+        }
+    })
+}
+
+/**
  * Borra la instalación de Java y la marca como no configurada, de modo que el
  * launcher la vuelva a descargar entera en el siguiente intento.
  */
@@ -589,6 +632,8 @@ async function scRepararJava(){
     scInvalidarCacheValidacion('reparar Java')
     try {
         const runtime = nodePath.join(ConfigManager.getDataDirectory(), 'runtime')
+        // El runtime es de todos los perfiles: ninguno debe dar luego un SC-19 por este borrado.
+        ScBorrados.olvidarBajo(runtime)
         nodeFs.rmSync(runtime, { recursive: true, force: true })
         ConfigManager.setJavaExecutable(ConfigManager.getSelectedServer(), null)
         ConfigManager.save()
@@ -764,6 +809,9 @@ async function scRepararModulo(rutaFichero){
     }
     scInvalidarCacheValidacion('reparar módulo')
     try {
+        // Lo borra el launcher: que el próximo JUGAR no lo cuente como antivirus. Antes del
+        // borrado, para que uno a medias (el .jar sí, la carpeta no) tampoco cuente.
+        ScBorrados.olvidarBajo(nodePath.dirname(rutaFichero))
         nodeFs.rmSync(nodePath.dirname(rutaFichero), { recursive: true, force: true })
         return { ok: true, denegado: false }
     } catch(e){
@@ -857,7 +905,7 @@ async function scOfrecerArreglarAntivirus(opts){
         if(puedeAuto){
             setOverlayContent(
                 Lang.queryJS('landing.launch.failureTitle'),
-                Lang.queryJS('landing.launch.avAplicando'),
+                Lang.queryJS(opts.claveAplicando || 'landing.launch.avAplicando'),
                 Lang.queryJS('landing.launch.okay')
             )
             const ok = await scExcluirEnDefender(carpeta)
@@ -867,7 +915,7 @@ async function scOfrecerArreglarAntivirus(opts){
             const reparado = ok ? await opts.reparar() : false
             setOverlayContent(
                 Lang.queryJS('landing.launch.failureTitle'),
-                Lang.queryJS(ok && reparado ? 'landing.launch.avHecho' : 'landing.launch.avNoHecho'),
+                Lang.queryJS(ok && reparado ? (opts.claveHecho || 'landing.launch.avHecho') : 'landing.launch.avNoHecho'),
                 Lang.queryJS('landing.launch.okay')
             )
             setOverlayHandler(() => toggleOverlay(false))
@@ -890,6 +938,91 @@ async function scOfrecerArreglarAntivirus(opts){
         toggleOverlay(false)
     })
     setDismissHandler(() => toggleOverlay(false))
+    // Hay quien llama con el aviso ya cerrado (SC-15 «Revisar el antivirus», SC-19): sin
+    // esto el diálogo se rellenaba detrás de la pantalla y el botón no hacía nada visible.
+    toggleOverlay(true, true)
+}
+
+/**
+ * Al pulsar JUGAR: ¿se ha llevado algo el antivirus desde la última partida? (SC-19, 1.17.9)
+ *
+ * Felix (27-10): a mucha gente el antivirus le borra archivos del juego. El launcher ya
+ * los vuelve a bajar solo, pero el jugador no sabía por qué ni cómo evitar que se repita,
+ * y nosotros no lo veíamos. Ahora se le dice qué ha pasado y se le ofrece la excepción
+ * (con Defender, hecha por él), y cuenta en los avisos anónimos: cuántos archivos (`n`),
+ * si fue Java, mods o ambos (`t`) y qué antivirus (`q`, clase fija).
+ *
+ * No bloquea: «Jugar ya» sigue con el arranque y la descarga normal lo repone todo.
+ *
+ * @returns {Promise<boolean>} true si se ha enseñado el aviso (el arranque espera al jugador).
+ */
+async function scAvisarArchivosBorrados(){
+    let serv
+    try {
+        serv = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
+    } catch(e){
+        return false
+    }
+    if(serv == null){
+        return false
+    }
+    const faltan = ScBorrados.comprobar(serv, ConfigManager.getJavaExecutable(serv.rawServer.id))
+    const total = faltan.mods.length + (faltan.java ? 1 : 0)
+    if(total === 0){
+        return false
+    }
+    // Se avisa una vez por borrado: la próxima partida buena renueva la huella.
+    ScBorrados.olvidar(serv, faltan)
+    loggerLanding.warn(`Desde la última partida han desaparecido ${faltan.mods.length} mods`
+        + (faltan.java ? ' y Java' : '') + ': ' + faltan.mods.slice(0, 5).map(r => require('path').basename(r)).join(', '))
+
+    let av = null
+    try {
+        av = await scDetectarAntivirus()
+    } catch(e){
+        // Sin antivirus detectado el aviso sigue valiendo.
+    }
+    const tipo = faltan.java && faltan.mods.length > 0 ? 'ambos' : (faltan.java ? 'java' : 'mods')
+    scEnviarAvisoError(SC_ERR.BORRADOS, null, { n: String(Math.min(total, 99)), t: tipo, q: scAntivirusId(av) })
+
+    // La exclusión más estrecha que cubre lo borrado.
+    const carpeta = tipo === 'java'
+        ? require('path').join(ConfigManager.getDataDirectory(), 'runtime')
+        : (tipo === 'mods' ? ConfigManager.getCommonDirectory() : ConfigManager.getDataDirectory())
+    const nombreAv = av != null && av.nombre ? `<b>${sc$escapeHtml(av.nombre)}</b>` : Lang.queryJS('landing.launch.borradosTuAntivirus')
+    const uno = faltan.mods.length === 1
+    const que = Lang.queryJS(tipo === 'java' ? 'landing.launch.borradosJava'
+        : (tipo === 'mods' ? 'landing.launch.borradosMods' : 'landing.launch.borradosAmbos'))
+        .replace('{verbo}', Lang.queryJS(uno ? 'landing.launch.borradosVerboUno' : 'landing.launch.borradosVerboVarios'))
+        .replace('{archivos}', Lang.queryJS(uno ? 'landing.launch.borradosUno' : 'landing.launch.borradosVarios').replace('{n}', String(faltan.mods.length)))
+    const cuerpo = Lang.queryJS('landing.launch.errBorrados').replace('{antivirus}', nombreAv).replace('{que}', que)
+        + `<br><br><span class="sc-cod-error">${SC_ERR.BORRADOS}</span>`
+        + `<span class="sc-cod-ayuda">${Lang.queryJS('landing.launch.codigoAyuda')}</span>`
+
+    setOverlayContent(
+        Lang.queryJS('landing.launch.borradosTitulo'),
+        cuerpo,
+        Lang.queryJS('landing.launch.borradosEvitar'),
+        Lang.queryJS('landing.launch.borradosJugar')
+    )
+    setOverlayHandler(() => {
+        scOfrecerArreglarAntivirus({
+            carpeta,
+            intro: Lang.queryJS('landing.launch.avIntroBorrados'),
+            codigo: SC_ERR.BORRADOS,
+            claveAplicando: 'landing.launch.avAplicandoBorrados',
+            claveHecho: 'landing.launch.avHechoBorrados',
+            // Lo que falte lo vuelve a bajar el propio JUGAR: no hay nada más que reparar.
+            reparar: async () => true
+        })
+    })
+    setDismissHandler(() => {
+        toggleOverlay(false)
+        // Jugar ya: mismo botón JUGAR; la huella ya no tiene lo borrado, así que no vuelve a parar.
+        document.getElementById('launch_button').click()
+    })
+    toggleOverlay(true, true)
+    return true
 }
 
 /**
@@ -1834,6 +1967,9 @@ function scTipoFalloDescarga(err){
     if(/premature close|ERR_STREAM_PREMATURE_CLOSE|socket hang up|aborted|ECONNABORTED/i.test(t)) return 'cortada'
     if(/HTTPError|Response code [1-5]\d\d|status(?:Code)?\D{0,4}[1-5]\d\d/i.test(t)) return 'http'
     if(/content-length|size mismatch|tama[nñ]o/i.test(t)) return 'tamano'
+    // Un JSON local a medias (version.json, índice de assets, la distribución en disco):
+    // apagón o antivirus a mitad de escritura. Los SC-03 «otro» de 24-26/10 podían ser esto.
+    if(/SyntaxError|JSON|Unexpected (?:token|end)/i.test(t)) return 'json'
     if(/receiver|child process|fork|exited with code|IPC/i.test(t)) return 'proceso'
     if(/ERR_INVALID|TypeError|Cannot read propert|is not a function|undefined/i.test(t)) return 'codigo'
     return 'otro'
@@ -2081,6 +2217,14 @@ function scCrashReportDe(perfil, desde){
  * Minecraft casi siempre es el driver gráfico o un programa que se mete en la ventana
  * del juego (superposiciones). Node los da sin signo; se aceptan las dos formas.
  */
+// Cierres que no son un fallo del juego: Windows lo terminó (apagado, cerrar sesión,
+// «Finalizar tarea» con el juego respondiendo). Llegaban como SC-90 (e=1073807364, 3
+// avisos en 21-25/10) y no hay nada que arreglar ni que explicarle al jugador.
+const SC_CODIGOS_CERRADO_FUERA = new Set([
+    1073807364, // 0x40010004 DBG_TERMINATE_PROCESS
+    3221225786, -1073741510 // 0xC000013A STATUS_CONTROL_C_EXIT (sesión de Windows cerrándose)
+])
+
 const SC_CODIGOS_NATIVOS = new Set([
     3221226505, -1073740791, // 0xC0000409 fail-fast / desbordamiento de pila
     3221225477, -1073741819, // 0xC0000005 violación de acceso
@@ -2198,6 +2342,13 @@ function scAvisoCrashPartida(code, perfilJugado, inicio){
         if(hsErr.dll){
             pista.l = hsErr.dll.slice(0, 60)
         }
+        // Qué dejó el juego al morir y cuánto duró la partida (1.17.9). La mitad de los
+        // SC-90 llegaban solo con el código de salida: sin saber si hubo informe ni si
+        // moría al entrar o tras horas (memoria que se llena, un cuelgue que el jugador
+        // cierra a la fuerza: el 0xCFFFFFFF de 26-27/10).
+        pista.f = crash ? 'crash' : (hsErr.linea ? 'hserr' : 'nada')
+        const minutos = (Date.now() - inicio) / 60000
+        pista.u = String([0, 2, 5, 15, 30, 60, 120, 240].filter(m => minutos >= m).pop()) + 'm'
         // Cuántos mods propios activos (solo el número): separa nuestros fallos de los suyos.
         const propios = scModsPropios(perfilJugado)
         pista.z = String(Math.min(propios.length, 99))
@@ -2239,6 +2390,57 @@ function scCodigoErrorNode(err){
  * Va primero por la ruta directa, que es la que funciona cuando Cloudflare está
  * bloqueado. Se apaga en Ajustes → Launcher.
  */
+// Fallos donde la tarjeta gráfica puede ser la causa: el aviso lleva su marca.
+const SC_CODIGOS_CON_GPU = new Set(['SC-06', 'SC-12', 'SC-13', SC_CRASH_PARTIDA])
+
+/**
+ * Procesador real. Un Windows ARM (portátiles Snapdragon) ejecuta el launcher x64
+ * emulado y os.arch() dice 'x64'; Java x64 emulado es justo lo que puede no arrancar.
+ */
+function scArquitecturaReal(){
+    const e = process.env
+    if(/^ARM/i.test(String(e.PROCESSOR_IDENTIFIER || '')) || e.PROCESSOR_ARCHITECTURE === 'ARM64' || e.PROCESSOR_ARCHITEW6432 === 'ARM64'){
+        return 'arm64'
+    }
+    return String(require('os').arch()).replace(/[^A-Za-z0-9]/g, '').slice(0, 10) || 'x'
+}
+
+/** Compilación del sistema: 19045 = Windows 10 22H2, 22631 = Windows 11 23H2… */
+function scBuildSistema(){
+    try {
+        const trozos = String(require('os').release()).split('.')
+        const b = process.platform === 'win32' ? (trozos[2] || trozos[0]) : trozos[0]
+        return String(b).replace(/[^A-Za-z0-9]/g, '').slice(0, 12)
+    } catch(e){
+        return ''
+    }
+}
+
+/** Marca de la tarjeta gráfica (nvidia, amd, intel, otra), nunca el modelo. */
+function scMarcaGpuId(){
+    try {
+        const r = ScRendimiento.infoGpu().renderer || ''
+        if(/nvidia|geforce|quadro/i.test(r)) return 'nvidia'
+        if(/\bamd\b|radeon|\bati\b/i.test(r)) return 'amd'
+        if(/intel/i.test(r)) return 'intel'
+        return r ? 'otra' : 'desconocida'
+    } catch(e){
+        return 'desconocida'
+    }
+}
+
+/** Antivirus como clase fija (defender, avast, kaspersky…, otro, ninguno), nunca el nombre. */
+function scAntivirusId(av){
+    if(av == null || !av.nombre){
+        return 'ninguno'
+    }
+    if(av.esDefender){
+        return 'defender'
+    }
+    const conocido = SC_ANTIVIRUS_CONOCIDOS.find(a => a.re.test(av.nombre))
+    return conocido ? conocido.clave.slice(2).toLowerCase() : 'otro'
+}
+
 function scEnviarAvisoError(codigo, err, extra = null){
     try {
         if(!ConfigManager.getEnviarErrores() || !/^SC-\d{2}$/.test(String(codigo))){
@@ -2252,6 +2454,17 @@ function scEnviarAvisoError(codigo, err, extra = null){
         const serv = String(ConfigManager.getSelectedServer() || '')
         const perfil = /superlite/i.test(serv) ? 'superlite' : (/lite/i.test(serv) ? 'lite' : 'pro')
         const q = new URLSearchParams({ c: codigo, v: remote.app.getVersion(), p: perfil, r: scRutaUltimoIntento === 'directa' ? 'directa' : 'normal' })
+        // Equipo (1.17.9): el SC-14 se concentraba en SUPER LITE (PCs flojos) sin saber
+        // si era el procesador, la versión de Windows o el antivirus. Datos genéricos,
+        // iguales en millones de equipos: no identifican a nadie.
+        q.set('a', scArquitecturaReal())
+        const build = scBuildSistema()
+        if(build){
+            q.set('s', build)
+        }
+        if(SC_CODIGOS_CON_GPU.has(codigo)){
+            q.set('g', scMarcaGpuId())
+        }
         if(codigo === SC_ERR.DESCARGA){
             const clave = scMensajeDescarga(err)
             q.set('t', clave.endsWith('SinRespuesta') ? 'red' : clave.endsWith('Certificado') ? 'cert' : clave.endsWith('Disco') ? 'disco' : 'otro')
@@ -2265,7 +2478,13 @@ function scEnviarAvisoError(codigo, err, extra = null){
             // el disco (ENOSPC) o un fichero que falta (ENOENT). Solo la clase fija y el
             // código de Node; el mensaje lleva rutas del disco y no viaja.
             q.set('k', scTipoFalloDescarga(err))
+            // Sin código de Node, el nombre del error («Local error (TypeError): …» o
+            // err.name); y si el receptor no supo describirlo, que se sepa: los SC-03 de
+            // 24-26/10 llegaban con k=otro y nada más.
             const cod = scCodigoErrorNode(err)
+                || (/^Local error \(([A-Za-z][A-Za-z0-9_]{1,40})\)/.exec(typeof (err && err.displayable) === 'string' ? err.displayable : '') || [])[1]
+                || (err instanceof Error && /^[A-Za-z][A-Za-z0-9_]{1,40}$/.test(err.name) ? err.name : null)
+                || (err != null && err.response === 'error' && err.displayable == null ? 'sindetalle' : null)
             if(cod){
                 q.set('n', cod)
             }
@@ -2313,6 +2532,8 @@ function scFalloArranque(codigo, explicacion, err, reintentable = false, opcione
         const pista = scPistaError(err)
         // Solo el número de mods propios activos, nunca sus nombres.
         pista.z = String(Math.min(scModsPropios(ConfigManager.getSelectedServer()).length, 99))
+        // Pistas que solo sabe quien llama (la sonda de Java del SC-14, por ejemplo).
+        Object.assign(pista, opciones.pista || {})
         scEnviarAvisoError(codigo, err, pista)
     }
     // En launcher.log solo el resumen y dónde está el informe. Antes se escribía el
@@ -2604,10 +2825,40 @@ function scComprobacionesPrevias(){
     // Validate the memory that will really be used.
     scAplicarRamAutomatica(DistroAPI.distribution?.getServerById(serv))
     try {
+        const bytesDe = ram => {
+            const m = /^(\d+(?:\.\d+)?)([MG])$/i.exec(String(ram).trim())
+            return m == null ? null : parseFloat(m[1]) * (m[2].toUpperCase() === 'G' ? 1073741824 : 1048576)
+        }
+        // RAM puesta a mano por encima de lo que tiene el equipo (6 SC-08 en 23-26/10,
+        // normalmente un ajuste traído de otro PC o un perfil copiado): en vez de parar,
+        // se pasa a RAM automática, que siempre deja margen a Windows, y se le dice.
+        // Solo si la automática sí cabe; si ni la mínima cabe, sigue el error de siempre.
+        const servObj = DistroAPI.distribution?.getServerById(serv)
+        const pedida = bytesDe(ConfigManager.getMaxRAM(serv))
+        if(pedida != null && pedida > os.totalmem() * 0.92 && servObj != null && !ConfigManager.getRamAuto(serv)){
+            const auto = ScRendimiento.ramAutomatica(servObj.rawServer.javaOptions?.ram)
+            if(auto * 1073741824 <= os.totalmem() * 0.92){
+                ConfigManager.setRamAuto(serv, true)
+                ConfigManager.save()
+                scAplicarRamAutomatica(servObj)
+                loggerLanding.warn(`RAM asignada (${(pedida / 1073741824).toFixed(1)} GB) mayor que la del equipo: paso a RAM automática.`)
+                // Solo para contar cuántos lo necesitan; al jugador no le sale error.
+                scEnviarAvisoError(SC_ERR.RAM, null, { x: 'autoajustada' })
+                if(typeof scMostrarAviso === 'function'){
+                    scMostrarAviso({
+                        clave: 'ram-ajustada',
+                        kicker: Lang.queryJS('landing.launch.ramAjustadaKicker'),
+                        titulo: Lang.queryJS('landing.launch.ramAjustadaTitulo'),
+                        texto: Lang.queryJS('landing.launch.ramAjustadaTexto')
+                            .replace('{antes}', (pedida / 1073741824).toFixed(1))
+                            .replace('{ahora}', ScRendimiento.formatoGb(auto))
+                    })
+                }
+            }
+        }
         const maxRAM = ConfigManager.getMaxRAM(serv)
-        const m = /^(\d+(?:\.\d+)?)([MG])$/i.exec(String(maxRAM).trim())
-        if(m != null){
-            const bytes = parseFloat(m[1]) * (m[2].toUpperCase() === 'G' ? 1073741824 : 1048576)
+        const bytes = bytesDe(maxRAM)
+        if(bytes != null){
             // La JVM no arranca si pide más memoria de la que hay físicamente.
             if(bytes > os.totalmem() * 0.92){
                 const gb = b => (b / 1073741824).toFixed(1)
@@ -2924,13 +3175,20 @@ async function downloadJava(effectiveJavaOptions, launchAfter = true) {
     // cuarentena el java.exe recién extraído, que es lo habitual.
     const validado = await validateSelectedJvm(ensureJavaDirIsRoot(newJavaExec), effectiveJavaOptions.supported)
     if(validado == null){
-        loggerLanding.error(`Java instalado en ${newJavaExec} pero no se puede ejecutar.`)
+        // Por qué no arranca, para el aviso (1.17.9): el SC-14 llegaba sin nada y no se
+        // sabía si era el antivirus, Windows o el procesador.
+        // En paralelo con la detección del antivirus, que el diálogo de abajo usa igual
+        // (queda en scAvCache): así el aviso dice también qué antivirus había.
+        const [sonda] = await Promise.all([scSondaJava(newJavaExec), scDetectarAntivirus().catch(() => null)])
+        loggerLanding.error(`Java instalado en ${newJavaExec} pero no se puede ejecutar (${sonda}).`)
         toggleLaunchArea(false)
         // Primero el diálogo básico, que además guarda el informe de soporte...
         scFalloArranque(
             SC_ERR.JAVA_BLOQUEADO,
-            Lang.queryJS('landing.launch.errJavaBloqueado').replace('{ruta}', newJavaExec),
-            new Error(`JVM extraído pero no validable: ${newJavaExec}`)
+            Lang.queryJS('landing.launch.errJavaBloqueado').replace('{ruta}', sc$escapeHtml(newJavaExec)),
+            new Error(`JVM extraído pero no validable: ${newJavaExec} (${sonda})`),
+            false,
+            { pista: { x: sonda, q: scAntivirusId(scAvCache) } }
         )
         // ...y encima, cuando termine de mirar qué antivirus hay, se sustituye
         // por uno que ofrece hacerlo por él. Sin await: si la detección tarda,
@@ -3386,6 +3644,16 @@ async function scDlAsyncInterno(login = true) {
     let scFalloGestionado = false
 
     fullRepairModule.childProcess.on('error', (err) => {
+        // Falso SC-05 (24-25/10, 11 avisos con ERR_IPC_DISCONNECTED, siempre detrás de un
+        // SC-03): el receptor manda su error y sale con process.exit(1) en el acto, y
+        // helios-core llama a disconnect() al recibirlo; si el canal ya se había cerrado,
+        // Node lo avisa con este 'error'. El fallo real ya lo enseña el catch (SC-03/SC-04)
+        // y una muerte de verdad la cuenta el 'close' de abajo: pintar aquí SC-05 tapaba
+        // el diálogo útil con «antivirus o disco lleno».
+        if(err && (err.code === 'ERR_IPC_DISCONNECTED' || err.code === 'ERR_IPC_CHANNEL_CLOSED')){
+            loggerLaunchSuite.warn('Canal con el proceso de reparación ya cerrado: ' + err.code)
+            return
+        }
         loggerLaunchSuite.error('Error during launch', err)
         scFalloArranque(SC_ERR.REPARACION, Lang.queryJS('landing.launch.errReparacion'), err)
     })
@@ -3594,6 +3862,9 @@ async function scDlAsyncInterno(login = true) {
                 return
             }
             scJuegoArranco = true
+            // La partida cargó: lo que hay en disco funciona. Huella para detectar en el
+            // próximo JUGAR lo que el antivirus se lleve entre medias (scborrados.js).
+            ScBorrados.guardar(serv, ConfigManager.getJavaExecutable(serv.rawServer.id))
             clearTimeout(scMargenHitos)
             scParaAnimacion()
             if(scFase === SC_FASES_PCT.length - 2){
@@ -3743,7 +4014,11 @@ async function scDlAsyncInterno(login = true) {
                     scAnalizarCierreDelJuego(code, scSalidaError.join('\n'), scInicioPartida)
                 } else {
                     // Se cerró con error a media partida: aviso anónimo (SC-90) con la pista del crash report.
-                    const cierre = code !== 0 ? scAvisoCrashPartida(code, scPerfilJugado, scInicioPartida) : null
+                    const cerradoFuera = SC_CODIGOS_CERRADO_FUERA.has(code)
+                    if(cerradoFuera){
+                        loggerLaunchSuite.info(`Juego terminado por Windows (código ${code}): no es un fallo.`)
+                    }
+                    const cierre = code !== 0 && !cerradoFuera ? scAvisoCrashPartida(code, scPerfilJugado, scInicioPartida) : null
                     // Partida jugada: si acabó sin memoria (o sin pack por falta de memoria), ofrecer un perfil más ligero.
                     const ofrecido = scOfrecerPerfilMasLigero(false, scPerfilJugado, scInicioPartida)
                     if(!ofrecido && cierre != null){

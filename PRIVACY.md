@@ -67,6 +67,13 @@ el launcher envía un aviso con:
   sistema** (por ejemplo, `ECONNRESET`), el **código HTTP** de una descarga fallida (por ejemplo, `403`) y
   **cuántos mods has añadido por tu cuenta** (solo el número, no cuáles). Son nombres de programa, nunca rutas
   ni nada de tu equipo.
+- desde la versión 1.17.9: el **tipo de procesador** (`x64` o `arm64`), el **número de compilación de Windows** (por
+  ejemplo, `19045`) y, en los fallos gráficos o de cierre a media partida, la **marca de la tarjeta gráfica**
+  (`nvidia`, `amd` o `intel`, nunca el modelo); si el juego dejó un informe de fallo y **cuánto duró la partida**, en
+  tramos (`30m`, `120m`…); cuando falla Java o el antivirus borra archivos del juego, **qué tipo de antivirus** hay
+  (por ejemplo, `defender` o `avast`, nunca más detalle), por qué no arrancó Java (por ejemplo, `EPERM`) y **cuántos
+  archivos** desaparecieron. Para detectar esos borrados, el launcher guarda en tu equipo (`sc-huella.json`) la lista
+  de archivos del modpack que tenía en la última partida; esa lista no sale de tu ordenador.
 
 Desde la versión 1.16.13, el juego también puede enviar un aviso igual de anónimo cuando, dentro de la partida,
 algo del paquete de recursos no carga: si el **paquete del servidor (SC-Pack) no está activo**, si **faltan texturas**
