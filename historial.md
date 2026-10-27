@@ -1,9 +1,14 @@
 # SC Launcher · historial
 
 ## Estado actual
-- **Rama `fix/avisos-errores-antivirus` (27-10), SIN publicar**: falso SC-05, pistas nuevas de SC-03/14/90, RAM
-  autoajustada (SC-08) y SC-19 «el antivirus borró archivos». Ver la entrada de abajo. Pendiente: firma y release
-  (1.17.9) con el OK de Felix, e instalar `tools/sc-stats.py` en OVH-A (`/usr/local/bin`; el modo automático no deja).
+- **1.17.9 publicada (27-10, OK de Felix)**: falso SC-05, pistas nuevas de SC-03/14/90, RAM autoajustada (SC-08) y
+  SC-19 «el antivirus borró archivos». Firmada (`Valid`, sello Certum, publisher ok), release v1.17.9 con 14 ficheros
+  (Mac/Linux del CI run 40539470213, todo en verde); las tres fichas `latest*.yml` dicen 1.17.9; `master` y `main`
+  subidas; los 3 exe de OVH-A renovados (por Cloudflare 93.673.816 B, sha256 `493a9130…` = build, firma `Valid`);
+  novedad `2026-10-27-launcher-1.17.9`. Los `.dmg`/AppImage fijos de OVH-A siguen en 1.17.8 (Felix pidió solo los exe;
+  se actualizan solos al abrir). **Pendiente:** instalar `tools/sc-stats.py` en OVH-A (`/usr/local/bin`; el modo
+  automático no deja): sin él, SC-19 y las pistas nuevas se cuentan por código pero no se guardan los detalles.
+  Mirar en unos días: SC-05 `ERR_IPC_DISCONNECTED` a cero, SC-19 por antivirus, `x` de los SC-14, `f`/`u` de los SC-90.
 - **1.17.8 publicada (26-10): Windows, Mac y Linux** con el OK de Felix. Release v1.17.8 con 14 ficheros (exe firmado
   en local, `comprueba-publisher` ok; Mac/Linux del CI run 40403813368, todas las pruebas en verde); las tres fichas
   `latest*.yml` públicas dicen 1.17.8. OVH-A: `packs.conf` sirve `.dmg|.AppImage` con `no-cache` (copia en
