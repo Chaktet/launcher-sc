@@ -2,6 +2,20 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-27-movil-0.1.0",
+      "fecha": "2026-10-27",
+      "tipo": "movil",
+      "clase": "nuevo",
+      "version": "0.1.0",
+      "titulo": "Ya puedes jugar desde el móvil",
+      "puntos": [
+        "Sacamos SC Launcher para Android, nuestra app oficial y gratis. La tienes en servidorcobblemon.es, en Cómo jugar › Móvil",
+        "Entras con tu cuenta, le das a JUGAR y en un rato estás dentro, sin buscar mods",
+        "Tu equipo y tus Pokémon son los mismos que en el ordenador",
+        "Se pone al día sola cuando sacamos algo nuevo"
+      ]
+    },
+    {
       "id": "2026-10-27-servidor-Las-mascotas-de-pesca-ya-dan-su-bono",
       "fecha": "2026-10-27",
       "tipo": "servidor",
