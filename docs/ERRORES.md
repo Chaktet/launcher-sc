@@ -41,7 +41,7 @@ SC-90/91/92/93.
 | Código | Qué pasa | Pistas |
 |---|---|---|
 | **SC-40** | No se pudo instalar o actualizar el modpack | `n` = clase del fallo de FCL; `k` = título del aviso |
-| **SC-41** | Una descarga se quedó a 0 B/s 3 minutos (el «se queda en 99 %») | `s` = paso/total donde se paró; `k` = paso que más llevaba corriendo (desde 0.1.15). Hasta la 0.1.14 también saltaba en pasos locales (descomprimir, `s=103-103`): falsa alarma. Una descarga cortada de verdad acaba en SC-40 (10 s sin datos × 3 reintentos) |
+| **SC-41** | Una descarga se quedó a 0 B/s 3 minutos (el «se queda en 99 %») | `s` = paso/total donde se paró; `k` = paso que más llevaba corriendo (desde 0.1.16). Hasta la 0.1.15 también saltaba en pasos locales (descomprimir, `s=103-103`): falsa alarma. Una descarga cortada de verdad acaba en SC-40 (10 s sin datos × 3 reintentos) |
 | **SC-42** | «Reparar archivos» falló | `k` |
 | **SC-43** | Fallo inesperado preparando el juego (como el de `modpack.cfg` del 27-10) | `n` = clase de la excepción |
 | **SC-44** | No hay espacio en el móvil para el modpack | — |
