@@ -224,7 +224,14 @@
     "2026-10-27-servidor-Los-rangos-vuelven-a-ensenar-tu-precio-de-mejora",
     "2026-10-27-servidor-El-boton-Volver-de-la-tienda-SCC-ya-funciona",
     "2026-10-27-servidor-La-Lluvia-de-objetos-dura-mas-y-se-ve-arriba",
-    "2026-10-27-servidor-Minijuegos-todo-desde-el-PokeNav"
+    "2026-10-27-servidor-Minijuegos-todo-desde-el-PokeNav",
+    "2026-10-27-servidor-GTS-las-MT-dicen-cual-son-y-los-objetos-tienen-filtros",
+    "2026-10-27-modpack-Iconos-de-Pokemon-en-el-minimapa",
+    "2026-10-27-movil-app-0.1.10",
+    "2026-10-27-servidor-Muebles-y-probador-de-cosmeticos-arreglados",
+    "2026-10-27-servidor-Mineria-tu-mineral-se-vende-aunque-uses-autopickup",
+    "2026-10-27-servidor-Ahora-ves-que-Poke-Ball-pide-tu-caceria-dificil",
+    "2026-10-27-movil-0.1.0"
   ],
   "mensajes": [
     {
@@ -673,6 +680,19 @@
         "2026-10-27-servidor-El-boton-Volver-de-la-tienda-SCC-ya-funciona",
         "2026-10-27-servidor-La-Lluvia-de-objetos-dura-mas-y-se-ve-arriba",
         "2026-10-27-servidor-Minijuegos-todo-desde-el-PokeNav"
+      ]
+    },
+    {
+      "fecha": "2026-10-28",
+      "mensaje": "1564827462268100749",
+      "entradas": [
+        "2026-10-27-servidor-GTS-las-MT-dicen-cual-son-y-los-objetos-tienen-filtros",
+        "2026-10-27-modpack-Iconos-de-Pokemon-en-el-minimapa",
+        "2026-10-27-movil-app-0.1.10",
+        "2026-10-27-servidor-Muebles-y-probador-de-cosmeticos-arreglados",
+        "2026-10-27-servidor-Mineria-tu-mineral-se-vende-aunque-uses-autopickup",
+        "2026-10-27-servidor-Ahora-ves-que-Poke-Ball-pide-tu-caceria-dificil",
+        "2026-10-27-movil-0.1.0"
       ]
     }
   ]
