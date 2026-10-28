@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-27-servidor-GTS-las-MT-dicen-cual-son-y-los-objetos-tienen-filtros",
+      "fecha": "2026-10-27",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "GTS: las MT dicen cuál son y los objetos tienen filtros",
+      "puntos": [
+        "Las MT de la GTS ya dicen qué movimiento enseñan y de qué tipo son, por ejemplo «MT Lanzallamas · Tipo Fuego».",
+        "En Comprar → Objetos, el botón «Filtros» abre filtros propios: categoría (MT, megapiedras y cristales Z, Poké Balls, entrenamiento…), tipo de MT, precio por unidad, vendedor y orden.",
+        "Busca una MT escribiendo el movimiento en «Buscar objeto».",
+        "Si no ves los filtros nuevos, cierra el juego y vuelve a abrirlo."
+      ]
+    },
+    {
       "id": "2026-10-27-modpack-Iconos-de-Pokemon-en-el-minimapa",
       "fecha": "2026-10-27",
       "tipo": "modpack",
