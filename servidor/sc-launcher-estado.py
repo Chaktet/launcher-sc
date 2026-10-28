@@ -22,6 +22,8 @@ import yaml
 SALIDA = '/var/www/packs/launcher/estado.json'
 CONFIG_EVENTOS = '/home/ubuntu/Kanto/plugins/SCEventos/config.yml'
 AVISO = '/etc/sc-launcher/aviso.json'
+# Next wheel turns written once a minute by SCRueda 0.8.4 on Kanto (title screen v2, Felix 27-10)
+RUEDA = '/home/ubuntu/Kanto/plugins/SCRueda/proximos.json'
 CERROJO = '/run/sc-launcher-estado.lock'
 REGIONES = [('kanto', 'Kanto', 25580), ('kalos', 'Kalos', 25599)]
 NOMBRES = {'kanto': 'Kanto', 'kalos': 'Kalos'}
@@ -255,6 +257,28 @@ def aviso():
     return None
 
 
+def rueda(ahora_ms):
+    """SCRueda's running slot and next turns, same shape as eventos(); [] when the file is missing, stale (> 5 min) or bad.
+    Separate key «rueda»: the launcher ignores it (no Windows notice every hour), the web's title-screen data reads it."""
+    try:
+        if ahora_ms - os.path.getmtime(RUEDA) * 1000 > 5 * 60 * 1000:
+            return []
+        with open(RUEDA, encoding='utf8') as f:
+            datos = json.load(f)
+        out = []
+        for d in datos[:8]:
+            nombre, ini, fin = d.get('nombre', ''), int(d.get('inicio', 0)), int(d.get('fin', 0))
+            if not isinstance(nombre, str):
+                continue
+            nombre = nombre[:60]
+            nombre.encode('utf-8', errors='strict')  # a lone surrogate would break the whole estado.json write: [] instead
+            if nombre and ini > 0 and fin > ahora_ms:
+                out.append({'id': 'rueda-{}'.format(ini), 'nombre': nombre, 'descripcion': '', 'inicio': ini, 'fin': fin, 'region': 'red'})
+        return out
+    except Exception:
+        return []
+
+
 def main():
     cerrojo = open(CERROJO, 'w')
     try:
@@ -273,6 +297,7 @@ def main():
     # Separate key (1.16.12): launchers before it ignore it, so they do not start sending a Windows notice for the
     # near-daily legendary raids; the new launcher shows them in the calendar and the card without notifying.
     estado['fijos'] = eventos_fijos(estado['actualizado'])
+    estado['rueda'] = rueda(estado['actualizado'])
     fd, tmp = tempfile.mkstemp(prefix='.estado-', suffix='.json', dir=os.path.dirname(SALIDA))
     try:
         with os.fdopen(fd, 'w', encoding='utf8') as f:
