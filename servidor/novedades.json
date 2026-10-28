@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-27-modpack-Iconos-de-Pokemon-en-el-minimapa",
+      "fecha": "2026-10-27",
+      "tipo": "modpack",
+      "clase": "arreglo",
+      "titulo": "Iconos de Pokémon en el minimapa",
+      "puntos": [
+        "Los Pokémon salen con su icono en el minimapa todo el rato, sin tener que pulsar TAB."
+      ]
+    },
+    {
       "id": "2026-10-27-launcher-1.17.10",
       "fecha": "2026-10-27",
       "tipo": "launcher",
