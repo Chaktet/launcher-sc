@@ -2156,9 +2156,15 @@ function sc$apuntarDecision(packName, activar){
  * enciende dos veces. Pasó el 2026-09-16 con la 3.2.17, por tres modelos de
  * Cobblemon con UV por cara (ver SC-16 en docs/ERRORES.md).
  *
- * Se actúa SOLO si la lista quedó completamente vacía, que es la firma de ese
- * borrado: apagar un pack suelto desde el juego no dispara nada. Y nunca se
- * enciende uno que el jugador apagara a propósito desde Ajustes.
+ * Se actúa SOLO si la lista quedó vacía, o con el SC-Pack y nada más, que es la
+ * firma de ese borrado: apagar un pack suelto desde el juego no dispara nada. Y
+ * nunca se enciende uno que el jugador apagara a propósito desde Ajustes.
+ *
+ * Lo de «solo el SC-Pack» es porque sc$asegurarPackOficial lo vuelve a meter
+ * antes de cada partida: hasta la 1.17.9, si eso llegaba antes que esta
+ * reposición (que va en segundo plano desde onDistroRefresh), la lista ya no
+ * estaba vacía y el resto de packs no volvía nunca. Le pasó a Felix el 28-10 con
+ * el E19 (iconos de Pokémon del minimapa).
  *
  * @returns {Promise<boolean>} true si ha repuesto algo.
  */
@@ -2166,6 +2172,18 @@ async function sc$repararPacksBorradosPorElJuego(){
     if(await sc$juegoAbiertoConfirmado()){
         return false
     }
+    return sc$reponerPacksVaciados(await sc$officialPackNames())
+}
+
+/**
+ * El núcleo síncrono de sc$repararPacksBorradosPorElJuego, para usarlo también
+ * justo antes de pb.build(). Quien llama ya ha comprobado que el juego está
+ * cerrado.
+ *
+ * @param {Set<string>} oficiales Los packs oficiales del perfil.
+ * @returns {boolean} true si ha repuesto algo.
+ */
+function sc$reponerPacksVaciados(oficiales){
     const nodeFs = require('fs')
     const nodePath = require('path')
     try {
@@ -2177,18 +2195,27 @@ async function sc$repararPacksBorradosPorElJuego(){
         if(!nodeFs.existsSync(d.options)){
             return false
         }
-        if(sc$readOptionsPacks().enabled.length > 0){
+        if(sc$readOptionsPacks().enabled.some(p => p !== SC_PACK_OFICIAL)){
             return false
         }
         const apagados = sc$leerApagados()
-        const oficiales = await sc$officialPackNames()
-        const reponer = [...oficiales].filter(p => !apagados.includes(p)
+        const reponer = [...oficiales].filter(p => p !== SC_PACK_OFICIAL && !apagados.includes(p)
             && nodeFs.existsSync(nodePath.join(d.packs, p)))
         if(reponer.length === 0){
             return false
         }
+        // Una lista vaciada por el juego tampoco trae vanilla ni fabric.
+        const { base, enabled } = sc$readOptionsPacks()
+        if(base.length === 0){
+            sc$writeOptionsPacks(['vanilla', 'fabric'], enabled)
+        }
         for(const p of reponer){
             sc$togglePack(p, true)
+        }
+        // Va el último: sc$togglePack mete los demás antes de él si ya está.
+        if(oficiales.has(SC_PACK_OFICIAL) && !apagados.includes(SC_PACK_OFICIAL)
+            && nodeFs.existsSync(nodePath.join(d.packs, SC_PACK_OFICIAL))){
+            sc$togglePack(SC_PACK_OFICIAL, true)
         }
         console.log('Paquetes repuestos tras el borrado del juego: ' + reponer.join(', '))
         return true
@@ -2223,6 +2250,11 @@ function sc$asegurarPackOficial(){
         // ni se apunta un pack que aún no se ha descargado.
         if(!nodeFs.existsSync(d.options) || !nodeFs.existsSync(nodePath.join(d.packs, SC_PACK_OFICIAL))){
             return
+        }
+        // Primero lo que vació el juego, aquí y no solo en segundo plano: si no,
+        // meter el SC-Pack solo le quitaba a la reposición su señal.
+        if(sc$ultimosOficiales.size > 0){
+            sc$reponerPacksVaciados(sc$ultimosOficiales)
         }
         const { base, enabled } = sc$readOptionsPacks()
         if(enabled[enabled.length - 1] === SC_PACK_OFICIAL){

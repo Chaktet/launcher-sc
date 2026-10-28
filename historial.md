@@ -34,7 +34,18 @@
   SC-90 de Voice Chat, `k` de los SC-04 y que bajen los SC-93 `sc-viejo`.
 - **Minimapa con iconos de Pokémon siempre (28-10, distribución en vivo)**: pendiente ver en el juego que salen los
   iconos sin TAB y que el launcher no vuelve a bajar el fichero en cada arranque (si Xaero lo reescribe distinto).
-  Pendiente aparte: la reposición de paquetes no salta si el juego borra la lista y luego entra el SC-Pack solo.
+- **1.17.10 lista en el repo, SIN publicar** (falta el OK de Felix y la firma con SimplySign): repone los paquetes
+  oficiales cuando el juego vació la lista aunque ya haya entrado el SC-Pack solo.
+
+## 2026-10-28 · 1.17.10: reponer los paquetes que vacía el juego (E19 apagado)
+- Felix: arreglar que el pack E19 (iconos del minimapa) se quede apagado cuando el juego vacía la lista.
+- Causa: `sc$repararPacksBorradosPorElJuego` solo actuaba con la lista vacía y corría en segundo plano;
+  `sc$asegurarPackOficial` (antes de `pb.build`) metía el SC-Pack primero y la reposición ya no saltaba nunca.
+- Cambio: núcleo síncrono `sc$reponerPacksVaciados` (vacía o solo SC-Pack = borrado del juego; respeta lo apagado en
+  Ajustes; repone `vanilla`/`fabric` si faltan; SC-Pack el último), llamado también desde `sc$asegurarPackOficial`;
+  `dlAsync` hace `await sc$officialPackNames()` antes de lanzar para tener la lista de oficiales al día.
+- Verificado: simulación con el código real de settings.js sobre ficheros en `E:/tmp/minimapa/test/sim.js`, 7/7 OK
+  (con el código anterior fallan 5); eslint y `node --check` limpios. Sin probar en el launcher compilado.
 
 ## 2026-10-28 · Minimapa: iconos de Pokémon siempre visibles
 - Felix: en el minimapa del launcher de PC no salen los iconos de los Pokémon.

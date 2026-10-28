@@ -108,8 +108,12 @@ admite (comprobación 4 de [tools/validar_pack.js](../tools/validar_pack.js)).
 La reposición corre desde `onDistroRefresh()` — al abrir el launcher y antes de cada partida — y al
 abrir Ajustes → Paquetes. Las reglas importan:
 
-- Solo actúa si la lista quedó **completamente vacía**, que es la firma de ese borrado. Apagar un
-  paquete suelto desde el juego no dispara nada.
+- Solo actúa si la lista quedó **vacía, o con el `SC-Pack.zip` y nada más** (desde la 1.17.10), que es la firma
+  de ese borrado. Apagar un paquete suelto desde el juego no dispara nada; apagarlos TODOS desde el juego sí (para
+  apagarlos de verdad, Ajustes → Paquetes).
+- Corre también **justo antes de lanzar**, dentro de `sc$asegurarPackOficial()` y antes de que meta el SC-Pack. Hasta
+  la 1.17.9 solo iba en segundo plano: si `sc$asegurarPackOficial()` escribía antes, la lista ya no estaba vacía y el
+  resto de paquetes no volvía nunca (28-10-2026: el E19 de los iconos del minimapa, en la instancia de Felix).
 - Nunca enciende uno que el jugador apagara desde Ajustes: `sc$togglePack()` apunta esa decisión en
   `.sc-packs-apagados.json`, al lado de `options.txt`.
 - Nunca escribe con el juego abierto (`sc$juegoAbierto()`).

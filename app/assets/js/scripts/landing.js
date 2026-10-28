@@ -3791,6 +3791,9 @@ async function scDlAsyncInterno(login = true) {
             toggleLaunchArea(false)
             return
         }
+        // sc$asegurarPackOficial (síncrona, justo antes de pb.build) necesita la lista
+        // de oficiales al día para reponer lo que vació el juego.
+        await sc$officialPackNames()
         const authUser = ConfigManager.getSelectedAccount()
         loggerLaunchSuite.info(`Sending selected account (${authUser.displayName}) to ProcessBuilder.`)
         let pb = new ProcessBuilder(serv, versionData, modLoaderData, authUser, remote.app.getVersion())
