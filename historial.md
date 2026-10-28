@@ -45,8 +45,8 @@
   filter, 0 certs», la sesión caducó aunque `comprueba-certificado.ps1` diga `ConClave: True`: Felix vuelve a entrar.
 - **No Chat Reports 2.9.1 en el modpack (28-10)**: quita el aviso «Mensajes de chat no verificados» a quien entra con
   el launcher. Novedad `2026-10-28-modpack-Adios-al-aviso-de-chat-no-verificado` (arreglo) solo en vista previa en
-  «diseño-pruebas» (mensaje 1564857375410757703): Felix quiere juntarla con más y avisará para publicarla; mismos
-  argumentos sin `--muestra`. El modpack móvil SC-Movil no lo lleva.
+  «diseño-pruebas» (mensaje 1564857375410757703). **Publicada en el launcher el 28-10 15:55 UTC** con la de las
+  misiones de escanear (OK de Felix: launcher sí, Discord no). El modpack móvil SC-Movil no lo lleva.
 
 ## 2026-10-28 · Modpack: No Chat Reports para quitar «Mensajes de chat no verificados»
 - Felix: que el aviso de chat no verificado no salga a nadie en Lobby y regiones. Sale porque la red no exige chat
