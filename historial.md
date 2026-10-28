@@ -1,10 +1,8 @@
 # SC Launcher · historial
 
 ## Estado actual
-- **iOS (27-10, decisión de Felix: opción A)**: sin app propia ni cuenta de pago de Apple; solo una guía web «modo
-  avanzado» con Amethyst + SideStore/LiveContainer + StikDebug. Informe: `docs/INVESTIGACION-IOS.md`. **Pendiente
-  antes de escribir la guía**: probar Amethyst + nuestro `.mrpack` en un iPhone real de 6 GB+ (staff) y ver FPS, RAM y
-  si entra al servidor. Nada publicado.
+- **iOS: CANCELADO (Felix, 27-10).** No se hace guía, app ni pruebas. Queda solo la investigación en
+  `docs/INVESTIGACION-IOS.md` por si se retoma (la ruta gratis es Amethyst + SideStore/LiveContainer + StikDebug).
 - **1.17.9 publicada (27-10, OK de Felix)**: falso SC-05, pistas nuevas de SC-03/14/90, RAM autoajustada (SC-08) y
   SC-19 «el antivirus borró archivos». Firmada (`Valid`, sello Certum, publisher ok), release v1.17.9 con 14 ficheros
   (Mac/Linux del CI run 40539470213, todo en verde); las tres fichas `latest*.yml` dicen 1.17.9; `master` y `main`
