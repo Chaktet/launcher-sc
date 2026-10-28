@@ -43,6 +43,18 @@
   1.17.8 (como en la 1.17.9). Novedades `2026-10-27-launcher-1.17.10` y `2026-10-27-modpack-Iconos-de-Pokemon-en-el-minimapa`
   solo en vista previa en «diseño-pruebas»: pendientes del OK de Felix. Si SimplySign falla con «After Private Key
   filter, 0 certs», la sesión caducó aunque `comprueba-certificado.ps1` diga `ConClave: True`: Felix vuelve a entrar.
+- **No Chat Reports 2.9.1 en el modpack (28-10)**: quita el aviso «Mensajes de chat no verificados» a quien entra con
+  el launcher. Novedad para jugadores sin publicar (pendiente de que Felix la pida). El modpack móvil SC-Movil no lo lleva.
+
+## 2026-10-28 · Modpack: No Chat Reports para quitar «Mensajes de chat no verificados»
+- Felix: que el aviso de chat no verificado no salga a nadie en Lobby y regiones. Sale porque la red no exige chat
+  firmado (cuentas no premium); exigirlo echaría a esos jugadores, así que se quita en el cliente.
+- `NoChatReports-FABRIC-1.21.1-v2.9.1.jar` (Modrinth, sha512 comprobado, md5 `2dce5b67…`) en `required/` de PRO y
+  LITE (SUPER LITE usa la URL de LITE). Su `hideWarningToast` ya viene a `true`: sin config. Método del 23-10: solo 3
+  entradas añadidas al `distribution.json` publicado, sin regenerar; copia `distribution.json.bak-nochatreports-20261028`
+  en OVH-A y en local. Por Cloudflare: JSON md5 `0227242d…` y los 3 jars = tamaño y MD5. Los .mrpack 1.1.59 y Móvil
+  PRO se regeneraron solos (APTO). El filtro de mods de SCSinLauncher solo mira los requeridos: no le afecta.
+- Probado con el cliente de pruebas en el servidor local: sin el mod sale el aviso, con el mod no.
 
 ## 2026-10-28 · 1.17.10: reponer los paquetes que vacía el juego (E19 apagado)
 - Felix: arreglar que el pack E19 (iconos del minimapa) se quede apagado cuando el juego vacía la lista.
