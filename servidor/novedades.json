@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-28-servidor-Las-misiones-de-escanear-ya-cuentan-con-la-Pokedex-completa",
+      "fecha": "2026-10-28",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Las misiones de escanear ya cuentan con la Pokédex completa",
+      "puntos": [
+        "Las misiones del pase de escanear especies no avanzaban si ya tenías esa especie registrada en la Pokédex.",
+        "Ahora también cuenta empezar un combate contra esa especie salvaje: escanéala o combate contra ella.",
+        "Cada especie suma una sola vez, la escanees o combatas contra ella."
+      ]
+    },
+    {
       "id": "2026-10-28-modpack-Adios-al-aviso-de-chat-no-verificado",
       "fecha": "2026-10-28",
       "tipo": "modpack",
