@@ -45,6 +45,7 @@ SC-90/91/92/93.
 | **SC-42** | «Reparar archivos» falló | `k` |
 | **SC-43** | Fallo inesperado preparando el juego (como el de `modpack.cfg` del 27-10) | `n` = clase de la excepción |
 | **SC-44** | No hay espacio en el móvil para el modpack | — |
+| **SC-45** | El juego se cerró solo (cierre inesperado), enviado automáticamente desde la 0.1.14 | modelo del móvil; perfil `p` |
 
 Sin conexión no se avisa (es la red del jugador).
 
