@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-28-modpack-Adios-al-aviso-de-chat-no-verificado",
+      "fecha": "2026-10-28",
+      "tipo": "modpack",
+      "clase": "arreglo",
+      "titulo": "Adiós al aviso de chat no verificado",
+      "puntos": [
+        "Al entrar al servidor ya no te salta el aviso de «Mensajes de chat no verificados» en la esquina de la pantalla.",
+        "Si juegas con el launcher se actualiza solo; si usas el modpack descargado, baja la última versión."
+      ]
+    },
+    {
       "id": "2026-10-27-servidor-GTS-las-MT-dicen-cual-son-y-los-objetos-tienen-filtros",
       "fecha": "2026-10-27",
       "tipo": "servidor",
