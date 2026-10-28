@@ -34,8 +34,13 @@
   SC-90 de Voice Chat, `k` de los SC-04 y que bajen los SC-93 `sc-viejo`.
 - **Minimapa con iconos de Pokémon siempre (28-10, distribución en vivo)**: pendiente ver en el juego que salen los
   iconos sin TAB y que el launcher no vuelve a bajar el fichero en cada arranque (si Xaero lo reescribe distinto).
-- **1.17.10 lista en el repo, SIN publicar** (falta el OK de Felix y la firma con SimplySign): repone los paquetes
-  oficiales cuando el juego vació la lista aunque ya haya entrado el SC-Pack solo.
+- **1.17.10 publicada (27-10 20:40 hora RD, OK de Felix)**: repone los paquetes oficiales cuando el juego vació la
+  lista aunque ya haya entrado el SC-Pack solo. Firmada (`comprueba-publisher` ok), release v1.17.10 con 14 ficheros
+  (Mac/Linux del CI run 40608709458, todo en verde), las tres fichas `latest*.yml` dicen 1.17.10; los 3 exe de OVH-A
+  renovados (por Cloudflare 93.676.544 B, sha256 `3eda1a43…` = build). `.dmg`/AppImage fijos de OVH-A siguen en
+  1.17.8 (como en la 1.17.9). Novedades `2026-10-27-launcher-1.17.10` y `2026-10-27-modpack-Iconos-de-Pokemon-en-el-minimapa`
+  solo en vista previa en «diseño-pruebas»: pendientes del OK de Felix. Si SimplySign falla con «After Private Key
+  filter, 0 certs», la sesión caducó aunque `comprueba-certificado.ps1` diga `ConClave: True`: Felix vuelve a entrar.
 
 ## 2026-10-28 · 1.17.10: reponer los paquetes que vacía el juego (E19 apagado)
 - Felix: arreglar que el pack E19 (iconos del minimapa) se quede apagado cuando el juego vacía la lista.
