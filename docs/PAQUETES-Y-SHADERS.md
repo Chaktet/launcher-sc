@@ -128,6 +128,14 @@ veces `IncompatibleClassChangeError` al montar modelos. El modpack lleva desde e
 ⚠️ Un pack que **fuerce una región** desde `server.properties` gana al del launcher y puede provocar
 lo mismo con una versión vieja. Está en [DISTRIBUCION.md](DISTRIBUCION.md).
 
+### Iconos de Pokémon en el minimapa (Xaero)
+
+El pack `E19 Cobblemon Minimap Icons.zip` pone los dibujos, pero quien decide si se ven es el radar de Xaero:
+`config/xaero/minimap/profiles/entity_radar_categories/default.cfg.json`, ajuste `icons` de la categoría raíz
+(0 = sin iconos, 1 = solo con TAB pulsado, 2 = siempre). Xaero trae 1; la distribución lleva desde el 28-10-2026 ese
+fichero con 2, **con hash** (se impone en cada arranque, a los ya instalados también). Si se cambia, se parte del
+fichero tal como lo escribe Xaero, para que al reescribirlo no cambie el MD5.
+
 ## Shaders
 
 Más simple, porque el estado es de un solo valor. Vive en `config/iris.properties`:

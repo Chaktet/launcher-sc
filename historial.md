@@ -32,6 +32,22 @@
 - **1.17.3 publicada (23-10)**: borra solos los SC-Pack viejos y afina las pistas de Voice Chat (`d` en «Could not
   initialize class») y de descargas (`k`, `n`). `sc-stats.py` nuevo instalado en OVH-A. Mirar en unos días: `d` de los
   SC-90 de Voice Chat, `k` de los SC-04 y que bajen los SC-93 `sc-viejo`.
+- **Minimapa con iconos de Pokémon siempre (28-10, distribución en vivo)**: pendiente ver en el juego que salen los
+  iconos sin TAB y que el launcher no vuelve a bajar el fichero en cada arranque (si Xaero lo reescribe distinto).
+  Pendiente aparte: la reposición de paquetes no salta si el juego borra la lista y luego entra el SC-Pack solo.
+
+## 2026-10-28 · Minimapa: iconos de Pokémon siempre visibles
+- Felix: en el minimapa del launcher de PC no salen los iconos de los Pokémon.
+- Causa: Xaero 25.3.12 trae en su categoría raíz del radar `"icons": 1.0`, que es «Lista de jugadores» (0 = sin
+  iconos, 1 = solo con TAB pulsado, 2 = siempre; orden de `EntityRadarCategorySettings`). Sin TAB se ven puntos.
+- Cambio: `config/xaero/minimap/profiles/entity_radar_categories/default.cfg.json` (el que escribe Xaero, solo
+  `icons` raíz a 2.0) en `files/` de PRO y LITE de sc-distribution, y a mano en el `distribution.json` de los tres
+  perfiles (SUPER LITE usa la URL de LITE), `?v=1`. Va CON hash: se impone en cada arranque (el ajuste del radar del
+  jugador se reinicia), es lo que hace que llegue también a los ya instalados.
+- Verificado: fichero por Cloudflare y por directo 200, 5531 B, MD5 `2e7e0503…` = manifiesto; `distribution.json` en
+  vivo `d4db2c1d…` = local (copia del anterior en `distribution.json.bak-20261028-radar` en OVH-A).
+- Visto de paso: en la instancia de Felix el pack E19 está apagado (el juego vació la lista por un modelo de prueba y
+  `sc$asegurarPackOficial` metió solo el SC-Pack, así que `sc$repararPacksBorradosPorElJuego` ya no ve la lista vacía).
 
 ## 2026-10-27 · Norma: novedades y Discord, primero vista previa con @chaktet y OK de Felix
 - Pedido: antes de publicar novedades del launcher o posts de Discord, enseñárselo y dejarlo en «diseño-pruebas»
