@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-29-modpack-El-brillo-de-tu-Pokemon-ya-sale-con-su-color",
+      "fecha": "2026-10-29",
+      "tipo": "modpack",
+      "clase": "arreglo",
+      "titulo": "El brillo de tu Pokémon ya sale con su color",
+      "puntos": [
+        "Si tu Pokémon tiene un aura de brillo de la Herrería, ahora tú también lo ves con el color del aura, no con el color de tu brillo de jugador.",
+        "Se actualiza solo al abrir el launcher."
+      ]
+    },
+    {
       "id": "2026-10-29-servidor-Sin-transformaciones-en-las-expediciones",
       "fecha": "2026-10-29",
       "tipo": "servidor",
