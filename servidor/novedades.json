@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-29-servidor-Tu-Pokemon-con-aura-de-brillo-ya-se-puede-guardar",
+      "fecha": "2026-10-29",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Tu Pokémon con aura de brillo ya se puede guardar",
+      "puntos": [
+        "Con un aura de brillo de la Herrería ya puedes guardar a tu Pokémon en su Poké Ball, sin el error «no es accesible o está demasiado lejos»",
+        "Ahora tú también ves su aura con su propio color, no con el de tu brillo de jugador"
+      ]
+    },
+    {
       "id": "2026-10-28-servidor-Las-misiones-de-escanear-ya-cuentan-con-la-Pokedex-completa",
       "fecha": "2026-10-28",
       "tipo": "servidor",
