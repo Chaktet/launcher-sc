@@ -241,7 +241,14 @@
     "2026-10-29-servidor-Escondite-siempre-vuelves-con-tus-cosas",
     "2026-10-29-servidor-Ponerte-un-cosmetico-ya-no-te-quita-lo-de-la-mano",
     "2026-10-29-servidor-Pase-de-batalla-los-premios-a-elegir-los-eliges-tu",
-    "2026-10-29-servidor-Tu-Pokemon-con-aura-de-brillo-ya-se-puede-guardar"
+    "2026-10-29-servidor-Tu-Pokemon-con-aura-de-brillo-ya-se-puede-guardar",
+    "2026-10-29-servidor-Menos-tirones-en-el-spawn-cuando-hay-mucha-gente",
+    "2026-10-29-servidor-Pase-de-batalla-pescar-y-evolucionar-ya-cuentan",
+    "2026-10-29-servidor-Menos-expulsiones-en-mitad-de-un-combate",
+    "2026-10-29-servidor-El-corazon-de-casados-sale-en-las-dos-regiones",
+    "2026-10-29-modpack-El-brillo-de-tu-Pokemon-ya-sale-con-su-color",
+    "2026-10-29-servidor-Sin-transformaciones-en-las-expediciones",
+    "2026-10-29-servidor-Adios-al-anuncio-repetido-de-la-tienda-de-cosmeticos"
   ],
   "mensajes": [
     {
@@ -719,6 +726,19 @@
         "2026-10-29-servidor-Ponerte-un-cosmetico-ya-no-te-quita-lo-de-la-mano",
         "2026-10-29-servidor-Pase-de-batalla-los-premios-a-elegir-los-eliges-tu",
         "2026-10-29-servidor-Tu-Pokemon-con-aura-de-brillo-ya-se-puede-guardar"
+      ]
+    },
+    {
+      "fecha": "2026-10-29",
+      "mensaje": "1565475537621749791",
+      "entradas": [
+        "2026-10-29-servidor-Menos-tirones-en-el-spawn-cuando-hay-mucha-gente",
+        "2026-10-29-servidor-Pase-de-batalla-pescar-y-evolucionar-ya-cuentan",
+        "2026-10-29-servidor-Menos-expulsiones-en-mitad-de-un-combate",
+        "2026-10-29-servidor-El-corazon-de-casados-sale-en-las-dos-regiones",
+        "2026-10-29-modpack-El-brillo-de-tu-Pokemon-ya-sale-con-su-color",
+        "2026-10-29-servidor-Sin-transformaciones-en-las-expediciones",
+        "2026-10-29-servidor-Adios-al-anuncio-repetido-de-la-tienda-de-cosmeticos"
       ]
     }
   ]
