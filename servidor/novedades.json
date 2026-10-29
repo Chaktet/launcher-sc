@@ -2,6 +2,22 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-29-movil-app-0.1.21",
+      "fecha": "2026-10-29",
+      "tipo": "movil",
+      "clase": "arreglo",
+      "version": "app-0.1.21",
+      "titulo": "La app del móvil, más ligera y para todos los móviles",
+      "puntos": [
+        "Los botones y textos ya no salen cortados en pantallas pequeñas o alargadas",
+        "Si la descarga se corta o se atasca, la app lo reintenta sola hasta 3 veces",
+        "Nuevo perfil «Móvil Lite» en Ajustes para móviles con poca memoria: ahora sí ves los objetos",
+        "Descargas más pequeñas: el modpack del móvil pesa casi la mitad",
+        "En móviles flojos la app baja los gráficos sola para que el juego vaya más fluido",
+        "Botón «Informe para soporte» en Ajustes: crea un archivo para mandarnos por Discord si algo falla"
+      ]
+    },
+    {
       "id": "2026-10-29-servidor-El-PokeNav-ya-no-sale-como-un-cofre-en-PCs-lentos",
       "fecha": "2026-10-29",
       "tipo": "servidor",
