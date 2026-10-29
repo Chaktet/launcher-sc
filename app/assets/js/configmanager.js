@@ -994,6 +994,15 @@ exports.setMinimizarAlJugar = function(v){
 }
 
 /**
+ * Lanzar el juego a través del vigilante (docs/PLAN-VIGILANTE.md): con la partida cargada el
+ * launcher se cierra entero en vez de quedarse en la bandeja. Encendido salvo que la config
+ * diga false; es el interruptor para apagarlo a mano si diera problemas en algún PC.
+ */
+exports.getVigilante = function(){
+    return config.settings.launcher.vigilante !== false
+}
+
+/**
  * Whether the anonymous code of a launch failure is sent (1.16.12). On by
  * default; configs from before have no value and count as on.
  *

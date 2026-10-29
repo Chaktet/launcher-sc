@@ -33,6 +33,7 @@ const DiscordWrapper          = require('./assets/js/discordwrapper')
 const ProcessBuilder          = require('./assets/js/processbuilder')
 const distroManager           = require('./assets/js/distromanager')
 const ScJuegoAbierto          = require('./assets/js/scjuegoabierto')
+const ScVigilante             = require('./assets/js/scvigilante')
 const ScRendimiento           = require('./assets/js/screndimiento')
 const ScBorrados              = require('./assets/js/scborrados')
 const ScJava                  = require('./assets/js/scjava')
@@ -3583,7 +3584,168 @@ async function scSesionLista() {
     return true
 }
 
+/**
+ * Lo que hace el launcher cuando se cierra el juego, en vivo o al reabrirse tras una partida que
+ * terminó con él cerrado (resultado del vigilante, scRevisarPartidasCerradas).
+ */
+function scTrasCerrarJuego({ code, juegoArranco, salida, perfil, inicioPartida }){
+    // Juego cerrado con error (en el arranque o a media partida): el
+    // siguiente arranque hashea todo, por si el fallo es un fichero dañado
+    // que la caché de validación daría por bueno.
+    if(code !== 0){
+        scInvalidarCacheValidacion('el juego se cerró con código ' + code)
+    }
+    // Si el juego murió ANTES de llegar a conectar y con error,
+    // hay que explicarlo: antes simplemente volvía el botón JUGAR
+    // y el jugador se quedaba sin saber qué había pasado.
+    if(code !== 0 && !juegoArranco){
+        // Solo ficheros de fallo de ESTE intento (revisión de Codex: un hs_err de hace
+        // 4 minutos convertía un OutOfMemoryError de ahora en SC-12).
+        scAnalizarCierreDelJuego(code, salida, inicioPartida)
+        return
+    }
+    // Se cerró con error a media partida: aviso anónimo (SC-90) con la pista del crash report.
+    const cerradoFuera = SC_CODIGOS_CERRADO_FUERA.has(code)
+    if(cerradoFuera){
+        loggerLaunchSuite.info(`Juego terminado por Windows (código ${code}): no es un fallo.`)
+    }
+    const cierre = code !== 0 && !cerradoFuera ? scAvisoCrashPartida(code, perfil, inicioPartida) : null
+    // Partida jugada: si acabó sin memoria (o sin pack por falta de memoria), ofrecer un perfil más ligero.
+    const ofrecido = scOfrecerPerfilMasLigero(false, perfil, inicioPartida)
+    if(!ofrecido && cierre != null){
+        if(SC_CODIGOS_NATIVOS.has(code)){
+            // Cierre de golpe (driver o superposición): explicarlo en vez de callar.
+            scDialogoCierreNativo(code, cierre.hsErr.dll)
+        } else if(cierre.propios.length > 0 && SC_RE_NO_CASA.test(cierre.crash)){
+            // Algo no casa y tiene mods propios: decirle cuáles. Ya contó como SC-90.
+            scDialogoModsPropios(cierre.propios, new Error(cierre.crash.slice(0, 3000)), { sinAviso: true })
+        }
+    }
+}
+
+/** Actividad de Discord ya traducida, para el vigilante (no tiene Lang). */
+function scDatosDiscord(gen, serv){
+    return {
+        clientId: gen.clientId,
+        actividad: {
+            details: Lang.queryJS('discord.waiting'),
+            state: Lang.queryJS('discord.state', { shortId: serv.shortId }),
+            largeImageKey: serv.largeImageKey,
+            largeImageText: serv.largeImageText,
+            smallImageKey: gen.smallImageKey,
+            smallImageText: gen.smallImageText
+        },
+        textos: {
+            cargando: Lang.queryJS('landing.discord.loading'),
+            unido: Lang.queryJS('landing.discord.joined'),
+            uniendose: Lang.queryJS('landing.discord.joining')
+        }
+    }
+}
+
+/**
+ * Lanza el juego con el vigilante si se puede.
+ * @returns {Promise<{juego: ?Object, errorJava: ?Error}>} juego null = lanzar directo (seguro: el
+ * vigilante no dejó ningún Java vivo); errorJava = Java no arrancó, como el 'error' de spawn.
+ */
+async function scLanzarConVigilante(pb, serv, discord, extra){
+    if(process.platform !== 'win32' || !ConfigManager.getVigilante()){
+        return { juego: null, errorJava: null }
+    }
+    let prep
+    try {
+        prep = pb.preparar()
+        const juego = await ScVigilante.lanzar(Object.assign({}, prep, extra, {
+            instancias: ConfigManager.getInstanceDirectory(),
+            servidorId: serv.rawServer.id,
+            discord
+        }))
+        loggerLaunchSuite.info('Juego lanzado por el vigilante (pid ' + juego.pid + ').')
+        return { juego, errorJava: null }
+    } catch(err){
+        if(err.errorJava === true){
+            return { juego: null, errorJava: err }
+        }
+        loggerLaunchSuite.warn('Vigilante no disponible: el juego se lanza directo.', err)
+        // pb.build() extrae otra vez las nativas en una carpeta nueva.
+        if(prep != null && prep.tempNativePath){
+            require('fs').rm(prep.tempNativePath, { recursive: true, force: true }, () => {})
+        }
+        return { juego: null, errorJava: null }
+    }
+}
+
+/**
+ * Con el juego cargado: con vigilante, el launcher se cierra entero (~25 MB en vez de ~520 MB);
+ * sin él, a la bandeja como antes. Si el vigilante no confirma, también a la bandeja.
+ */
+async function scApartarPorJuego(juego){
+    if(juego.vigilante === true){
+        try {
+            await juego.cargadoConfirmado
+            await juego.saliendoPorJuego()
+            if(proc === juego){
+                loggerLanding.info('Partida cargada: el launcher se cierra; el vigilante lo reabrirá al terminar.')
+                ipcRenderer.send('sc-ventana-juego', 'cerrar-por-juego')
+                return
+            }
+        } catch(e){
+            loggerLanding.warn('El vigilante no confirmó: el launcher se queda en la bandeja.', e)
+        }
+    }
+    if(proc === juego){
+        ipcRenderer.send('sc-ventana-juego', 'ocultar')
+    }
+}
+
+/**
+ * Partidas que terminaron con el launcher cerrado (vigilante). La caché se invalida en el acto;
+ * el aviso, solo el de la última y cuando la pantalla esté libre (como scPreguntarAbrirConWindows).
+ */
+let scPartidasPendientes = []
+function scRevisarPartidasCerradas(intentos = 0){
+    if(intentos === 0){
+        let nuevas = []
+        try {
+            nuevas = ScVigilante.reclamarResultados(ConfigManager.getInstanceDirectory())
+        } catch(e){
+            loggerLanding.warn('No se pudieron leer las partidas cerradas del vigilante.', e)
+        }
+        for(const r of nuevas){
+            loggerLanding.info(`Partida terminada con el launcher cerrado: código ${r.code}, cargó=${r.juegoArranco}.`)
+            if(r.code !== 0){
+                scInvalidarCacheValidacion('el juego se cerró con código ' + r.code + ' (launcher cerrado)')
+            }
+        }
+        if(nuevas.length === 0){
+            return
+        }
+        scPartidasPendientes = [nuevas[nuevas.length - 1]]
+    }
+    if(scPartidasPendientes.length === 0){
+        return
+    }
+    if(isOverlayVisible() || getCurrentView() !== VIEWS.landing || proc != null){
+        if(intentos < 90){
+            setTimeout(() => scRevisarPartidasCerradas(intentos + 1), 2000)
+        }
+        return
+    }
+    const r = scPartidasPendientes.pop()
+    try {
+        // La invalidación de la caché ya se hizo arriba; repetirla no cuesta nada.
+        scTrasCerrarJuego({ code: r.code, juegoArranco: r.juegoArranco === true, salida: String(r.salida || ''), perfil: r.perfil, inicioPartida: r.inicioPartida })
+    } catch(e){
+        loggerLanding.error('Fallo al explicar una partida cerrada.', e)
+    }
+}
+// El vigilante reabrió el launcher que ya estaba abierto (reabierto a mano durante la partida).
+ipcRenderer.on('sc-tras-juego', () => scRevisarPartidasCerradas())
+// index.js necesita saber dónde mira el vigilante para no instalar actualizaciones con él vivo.
+ipcRenderer.send('sc-vigilante-carpeta', ConfigManager.getInstanceDirectory())
+
 async function dlAsync(login = true) {
+
     try {
         // Los reintentos automáticos también pasan por aquí: si mientras tanto se ha
         // descubierto un juego abierto de otra sesión, no se lanza un segundo.
@@ -3927,6 +4089,12 @@ async function scDlAsyncInterno(login = true) {
                 return
             }
             scJuegoArranco = true
+            // Con vigilante la decisión de carga es esta, la del renderer: se le pasa antes de
+            // que el launcher se cierre, para que el diagnóstico al cerrar sea el mismo.
+            if(proc != null && proc.vigilante === true){
+                proc.cargadoConfirmado = proc.marcarCargado()
+                proc.cargadoConfirmado.catch(e => loggerLaunchSuite.warn('El vigilante no confirmó la carga.', e))
+            }
             // La partida cargó: lo que hay en disco funciona. Huella para detectar en el
             // próximo JUGAR lo que el antivirus se lleve entre medias (scborrados.js).
             ScBorrados.guardar(serv, ConfigManager.getJavaExecutable(serv.rawServer.id))
@@ -3945,7 +4113,7 @@ async function scDlAsyncInterno(login = true) {
                 const procCargado = proc
                 scTimerOcultar = setTimeout(() => {
                     if(proc != null && proc === procCargado){
-                        ipcRenderer.send('sc-ventana-juego', 'ocultar')
+                        scApartarPorJuego(procCargado)
                     }
                 }, 1500)
             }
@@ -4014,8 +4182,17 @@ async function scDlAsyncInterno(login = true) {
             sc$quitarPacksScViejos()
             sc$asegurarPackOficial()
 
-            // Build Minecraft process.
-            proc = pb.build()
+            // Build Minecraft process. En Windows el padre del juego es el vigilante, para que el
+            // launcher pueda cerrarse entero durante la partida (docs/PLAN-VIGILANTE.md).
+            const scDiscord = distro.rawDistribution.discord != null && serv.rawServer.discord != null
+            const scLanzado = await scLanzarConVigilante(pb, serv, scDiscord ? scDatosDiscord(distro.rawDistribution.discord, serv.rawServer.discord) : null,
+                { reConectando: SC_HITO_CONECTANDO, reServidorUnido: SERVER_JOINED_REGEX, reJuegoUnido: GAME_JOINED_REGEX, perfil: scPerfilJugado, inicioPartida: scInicioPartida })
+            if(scLanzado.errorJava != null){
+                scAlFallarProceso(scLanzado.errorJava)
+                return
+            }
+            proc = scLanzado.juego != null ? scLanzado.juego : pb.build()
+            const scJuegoActual = proc
             // El juego sobrevive al launcher (launchDetached): se anota en disco para
             // reconocerlo si el launcher se reabre con él aún abierto.
             const scPid = proc.pid
@@ -4047,7 +4224,8 @@ async function scDlAsyncInterno(login = true) {
             // 'error' y NUNCA emite 'close'. Sin este listener el botón de
             // JUGAR no volvía nunca y la guarda anti doble clic bloqueaba
             // todos los intentos siguientes: el launcher quedaba inservible.
-            proc.on('error', (err) => {
+            proc.on('error', scAlFallarProceso)
+            function scAlFallarProceso(err){
                 loggerLaunchSuite.error('El proceso del juego no pudo arrancar.', err)
                 scParaAnimacion()
                 toggleLaunchArea(false)
@@ -4056,10 +4234,24 @@ async function scDlAsyncInterno(login = true) {
                     loggerLanding.error('Fallo al reparar Java', e)
                     scFalloArranque(SC_ERR.JAVA_ROTO, Lang.queryJS('landing.launch.errJavaRoto'), e)
                 })
+            }
+
+            // El vigilante murió con la partida quizá abierta: nadie avisará del cierre. JUGAR
+            // sigue protegido por la marca de ScJuegoAbierto si el juego vive.
+            proc.on('perdido', () => {
+                loggerLaunchSuite.warn('Se perdió el vigilante del juego.')
+                clearTimeout(scMargenHitos)
+                scParaAnimacion()
+                toggleLaunchArea(false)
+                if(proc === scJuegoActual){
+                    proc = null
+                }
+                clearTimeout(scTimerOcultar)
+                ipcRenderer.send('sc-ventana-juego', 'restaurar')
             })
 
             // Si el juego muere o se cierra, restaurar el botón JUGAR.
-            proc.on('close', (code) => {
+            proc.on('close', (code, _signal, resultado) => {
                 clearTimeout(scMargenHitos)
                 scParaAnimacion()
                 toggleLaunchArea(false)
@@ -4067,42 +4259,26 @@ async function scDlAsyncInterno(login = true) {
                 // Back from the tray if it was hidden for the game.
                 clearTimeout(scTimerOcultar)
                 ipcRenderer.send('sc-ventana-juego', 'restaurar')
-                // Juego cerrado con error (en el arranque o a media partida): el
-                // siguiente arranque hashea todo, por si el fallo es un fichero dañado
-                // que la caché de validación daría por bueno.
-                if(code !== 0){
-                    scInvalidarCacheValidacion('el juego se cerró con código ' + code)
-                }
-                // Si el juego murió ANTES de llegar a conectar y con error,
-                // hay que explicarlo: antes simplemente volvía el botón JUGAR
-                // y el jugador se quedaba sin saber qué había pasado.
-                if(code !== 0 && !scJuegoArranco){
-                    // Solo ficheros de fallo de ESTE intento (revisión de Codex: un hs_err de hace
-                    // 4 minutos convertía un OutOfMemoryError de ahora en SC-12).
-                    scAnalizarCierreDelJuego(code, scSalidaError.join('\n'), scInicioPartida)
-                } else {
-                    // Se cerró con error a media partida: aviso anónimo (SC-90) con la pista del crash report.
-                    const cerradoFuera = SC_CODIGOS_CERRADO_FUERA.has(code)
-                    if(cerradoFuera){
-                        loggerLaunchSuite.info(`Juego terminado por Windows (código ${code}): no es un fallo.`)
-                    }
-                    const cierre = code !== 0 && !cerradoFuera ? scAvisoCrashPartida(code, scPerfilJugado, scInicioPartida) : null
-                    // Partida jugada: si acabó sin memoria (o sin pack por falta de memoria), ofrecer un perfil más ligero.
-                    const ofrecido = scOfrecerPerfilMasLigero(false, scPerfilJugado, scInicioPartida)
-                    if(!ofrecido && cierre != null){
-                        if(SC_CODIGOS_NATIVOS.has(code)){
-                            // Cierre de golpe (driver o superposición): explicarlo en vez de callar.
-                            scDialogoCierreNativo(code, cierre.hsErr.dll)
-                        } else if(cierre.propios.length > 0 && SC_RE_NO_CASA.test(cierre.crash)){
-                            // Algo no casa y tiene mods propios: decirle cuáles. Ya contó como SC-90.
-                            scDialogoModsPropios(cierre.propios, new Error(cierre.crash.slice(0, 3000)), { sinAviso: true })
-                        }
+                if(scJuegoActual.vigilante === true){
+                    // Un launcher reabierto a mano pudo reclamarlo antes: entonces lo explica él.
+                    const nuestro = ScVigilante.reclamarUno(ConfigManager.getInstanceDirectory(), scJuegoActual.runId)
+                    scJuegoActual.consumido()
+                    if(!nuestro){
+                        return
                     }
                 }
+                // Con vigilante vale su salida: la del renderer pudo perder trozos en la cola del IPC.
+                scTrasCerrarJuego({
+                    code,
+                    juegoArranco: scJuegoArranco,
+                    salida: resultado != null && typeof resultado.salida === 'string' ? resultado.salida : scSalidaError.join('\n'),
+                    perfil: scPerfilJugado,
+                    inicioPartida: scInicioPartida
+                })
             })
 
-            // Init Discord Hook
-            if(distro.rawDistribution.discord != null && serv.rawServer.discord != null){
+            // Init Discord Hook (con vigilante lo lleva él: sigue con el launcher cerrado).
+            if(scDiscord && scJuegoActual.vigilante !== true){
                 DiscordWrapper.initRPC(distro.rawDistribution.discord, serv.rawServer.discord)
                 hasRPC = true
                 proc.on('close', (code, signal) => {

@@ -166,6 +166,10 @@ async function showMainUI(data){
     if(typeof scPreguntarAbrirConWindows === 'function'){
         setTimeout(() => scPreguntarAbrirConWindows(), 8000)
     }
+    // Partidas que terminaron con el launcher cerrado (vigilante): su aviso de cierre.
+    if(typeof scRevisarPartidasCerradas === 'function'){
+        setTimeout(() => scRevisarPartidasCerradas(), 1500)
+    }
 
     // Detener el giro ANTES de ocultar, para dejar de animar cuanto antes.
     $('#loadSpinnerImage').removeClass('rotating')

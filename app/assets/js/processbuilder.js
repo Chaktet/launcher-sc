@@ -78,6 +78,46 @@ class ProcessBuilder {
      * Convienence method to run the functions typically used to build a process.
      */
     build(){
+        const { exe, args, cwd, env, tempNativePath } = this.preparar()
+        const child = child_process.spawn(exe, args, {
+            cwd,
+            detached: ConfigManager.getLaunchDetached(),
+            env
+        })
+
+        if(ConfigManager.getLaunchDetached()){
+            child.unref()
+        }
+
+        child.stdout.setEncoding('utf8')
+        child.stderr.setEncoding('utf8')
+
+        child.stdout.on('data', (data) => {
+            data.trim().split('\n').forEach(x => console.log(`\x1b[32m[Minecraft]\x1b[0m ${x}`))
+
+        })
+        child.stderr.on('data', (data) => {
+            data.trim().split('\n').forEach(x => console.log(`\x1b[31m[Minecraft]\x1b[0m ${x}`))
+        })
+        child.on('close', (code) => {
+            logger.info('Exited with code', code)
+            fs.remove(tempNativePath, (err) => {
+                if(err){
+                    logger.warn('Error while deleting temp dir', err)
+                } else {
+                    logger.info('Temp dir deleted successfully.')
+                }
+            })
+        })
+
+        return child
+    }
+
+    /**
+     * Todo lo de build() menos el spawn: ejecutable, argumentos, carpeta y entorno del juego.
+     * Lo usa también el vigilante (scvigilante.js), que lanza el juego como hijo suyo.
+     */
+    preparar(){
         fs.ensureDirSync(this.gameDir)
         const tempNativePath = path.join(os.tmpdir(), ConfigManager.getTempNativeFolder(), crypto.pseudoRandomBytes(16).toString('hex'))
         this.setupLiteLoader()
@@ -115,38 +155,7 @@ class ProcessBuilder {
         if(quitadas.length > 0){
             logger.warn(`Variables de Java del sistema ignoradas para el juego: ${quitadas.join(' · ')}`)
         }
-        const child = child_process.spawn(ConfigManager.getJavaExecutable(this.server.rawServer.id), args, {
-            cwd: this.gameDir,
-            detached: ConfigManager.getLaunchDetached(),
-            env
-        })
-
-        if(ConfigManager.getLaunchDetached()){
-            child.unref()
-        }
-
-        child.stdout.setEncoding('utf8')
-        child.stderr.setEncoding('utf8')
-
-        child.stdout.on('data', (data) => {
-            data.trim().split('\n').forEach(x => console.log(`\x1b[32m[Minecraft]\x1b[0m ${x}`))
-            
-        })
-        child.stderr.on('data', (data) => {
-            data.trim().split('\n').forEach(x => console.log(`\x1b[31m[Minecraft]\x1b[0m ${x}`))
-        })
-        child.on('close', (code) => {
-            logger.info('Exited with code', code)
-            fs.remove(tempNativePath, (err) => {
-                if(err){
-                    logger.warn('Error while deleting temp dir', err)
-                } else {
-                    logger.info('Temp dir deleted successfully.')
-                }
-            })
-        })
-
-        return child
+        return { exe: ConfigManager.getJavaExecutable(this.server.rawServer.id), args, cwd: this.gameDir, env, tempNativePath }
     }
 
     /**

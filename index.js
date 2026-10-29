@@ -13,6 +13,7 @@ const { pathToFileURL }                 = require('url')
 const { AZURE_CLIENT_ID, MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR, SHELL_OPCODE } = require('./app/assets/js/ipcconstants')
 const LangLoader                        = require('./app/assets/js/langloader')
 const scActualizaMac                    = require('./app/assets/js/scactualizamac')
+const ScVigilante                       = require('./app/assets/js/scvigilante')
 
 // Setup Lang
 LangLoader.setupLanguage()
@@ -158,6 +159,13 @@ ipcMain.on('autoUpdateAction', (event, arg, data) => {
             }
             break
         case 'installUpdateNow':
+            // El instalador NSIS mata todos los «SC Launcher.exe», también el vigilante de una
+            // partida en curso, y el juego perdería a quien lo vigila. La interfaz ya lo impide
+            // (scJuegoEnMarcha); esto es la red por si algo se le escapa.
+            if(process.platform === 'win32' && ScVigilante.hayVigilanteVivo(scCarpetaVigilante)){
+                console.warn('[SC] Actualización no instalada: hay una partida con vigilante en curso.')
+                break
+            }
             // (isSilent, isForceRunAfter): instala sin asistente y vuelve a abrir
             // el launcher automáticamente.
             if(process.platform === 'darwin'){
@@ -171,6 +179,23 @@ ipcMain.on('autoUpdateAction', (event, arg, data) => {
             break
     }
 })
+// Carpeta de instancias, que manda el renderer al arrancar: ahí deja el vigilante su marca.
+let scCarpetaVigilante = null
+ipcMain.on('sc-vigilante-carpeta', (_event, carpeta) => {
+    if(typeof carpeta === 'string' && carpeta.length > 0){
+        scCarpetaVigilante = carpeta
+    }
+})
+// Al cerrar (por el juego o a mano con una partida en curso), nada de instalar la
+// actualización descargada si hay un vigilante vivo: el instalador lo mataría. Se aplica en el
+// siguiente cierre sin partida. Se decide aquí y no al iniciar el autoUpdater porque el
+// vigilante puede nacer y morir mientras el launcher está abierto.
+app.on('before-quit', () => {
+    if(process.platform === 'win32' && !isDev && ScVigilante.hayVigilanteVivo(scCarpetaVigilante)){
+        autoUpdater.autoInstallOnAppQuit = false
+    }
+})
+
 // Mac: la actualización ya preparada se instala al cerrar el launcher, como hace
 // autoInstallOnAppQuit en Windows (que no conoce la descarga de scactualizamac.js). Sin
 // esto, quien cerraba con la cuenta atrás esperando a Minecraft la volvía a bajar cada vez.
@@ -559,6 +584,11 @@ ipcMain.on('sc-ventana-juego', (_event, accion) => {
         scOcultaPorJuego = true
     } else if(accion === 'restaurar' && scOcultaPorJuego){
         scMostrarVentana()
+    } else if(accion === 'cerrar-por-juego'){
+        // Partida cargada y el vigilante ya es el padre del juego: el launcher entero fuera
+        // (~520 MB → ~25 MB). El vigilante lo vuelve a abrir al cerrarse el juego.
+        autoUpdater.autoInstallOnAppQuit = false
+        app.quit()
     } else if(accion === 'mostrar'){
         // Click on a desktop reminder (eventos.js).
         scMostrarVentana()
@@ -614,12 +644,17 @@ if(process.platform === 'win32'){
 if(!app.requestSingleInstanceLock()){
     app.quit()
 } else {
-    app.on('second-instance', () => {
+    app.on('second-instance', (_event, argv) => {
         const [ventana] = require('electron').BrowserWindow.getAllWindows()
         if(ventana != null){
             scMostrarVentana(ventana)
+            // El vigilante intentó reabrirlo y ya estaba abierto: que mire el resultado de la partida.
+            if(Array.isArray(argv) && argv.includes('--tras-juego')){
+                ventana.webContents.send('sc-tras-juego')
+            }
         }
     })
+
 
     app.on('ready', createWindow)
     app.on('ready', scCrearBandeja)
