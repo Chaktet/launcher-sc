@@ -7,7 +7,7 @@
   Firmada (`comprueba-publisher` ok), release v1.17.13 con 14 ficheros (Mac/Linux del CI run 40895716817, todo en
   verde; commit 3f78978); las tres fichas `latest*.yml` dicen 1.17.13 y el sha512 = build; `master` y `main` subidas;
   los 3 exe de OVH-A renovados (por Cloudflare 93.695.824 B, sha256 `02ae23bc…` = build, firma `Valid`). Novedad:
-  vista previa en «diseño-pruebas» (mensaje 1565378110356987936), **sin publicar hasta el OK de Felix**. Mirar en
+  `2026-10-29-launcher-1.17.13` publicada con el OK de Felix. Mirar en
   unos días: que no suban los SC-06 ni los avisos de juego duplicado; `sc-vigilante/vigilante.log` en los informes.
 
 - **1.17.12 publicada (29-10 14:13 UTC, OK de Felix)**: aviso SC-12 con botón que abre la web del driver. Firmada (`comprueba-publisher` ok), release v1.17.12 con 14 ficheros (Mac/Linux del CI run 40887902351, todo en verde; commit dd1f784); las tres fichas `latest*.yml` dicen 1.17.12 y el sha512 = build; `master` y `main` subidas; los 3 exe de OVH-A renovados (por Cloudflare 93.685.912 B, sha256 `591c023a…` = build, firma `Valid`). Novedad `2026-10-29-launcher-1.17.12` publicada con el OK de Felix.
