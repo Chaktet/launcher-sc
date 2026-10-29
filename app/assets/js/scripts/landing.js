@@ -3669,7 +3669,13 @@ async function scLanzarConVigilante(pb, serv, discord, extra){
         if(err.errorJava === true){
             return { juego: null, errorJava: err }
         }
+        // Sin constancia de que no quedó ningún Java de este intento, lanzar directo podría abrir
+        // dos Minecraft: mejor un fallo de arranque (lo recoge el catch de dlAsync).
+        if(err.sinVigilante !== true){
+            throw err
+        }
         loggerLanding.warn('Vigilante no disponible: el juego se lanza directo.', err)
+
         // pb.build() extrae otra vez las nativas en una carpeta nueva.
         if(prep != null && prep.tempNativePath){
             require('fs').rm(prep.tempNativePath, { recursive: true, force: true }, () => {})

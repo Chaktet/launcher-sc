@@ -81,35 +81,57 @@ function regexPlana(r){
     return r == null ? null : { source: r.source, flags: r.flags }
 }
 
+function taskkill(args){
+    return new Promise((resolve) => {
+        child_process.execFile('taskkill', args, { windowsHide: true }, () => resolve())
+    })
+}
+
+/**
+ * ¿Consta que este intento no dejó ningún Java vivo? Lo dice la marca vivo-<runId>.json del
+ * vigilante (scvigilanteproceso.js): sin marca, o no llegó al spawn o la borró al terminar
+ * limpio; «lanzando» sin pid = pudo nacer un Java que nadie conoce; con su pid, se comprueba
+ * (y si vive, se mata y se vuelve a comprobar).
+ */
+async function sinJavaVivo(rutaVivo){
+    let d
+    try {
+        d = JSON.parse(fs.readFileSync(rutaVivo, 'utf8'))
+    } catch(e){
+        return e.code === 'ENOENT'
+    }
+    if(d.fase !== 'lanzado' || !Number.isInteger(d.javaPid)){
+        return false
+    }
+    if(vive(d.javaPid)){
+        await taskkill(['/F', '/PID', String(d.javaPid)])
+        await new Promise(r => setTimeout(r, 500))
+    }
+    if(vive(d.javaPid)){
+        return false
+    }
+    fs.rmSync(rutaVivo, { force: true })
+    return true
+}
+
 /**
  * Mata el vigilante y todo lo que haya lanzado (un Java incluido).
- * @returns {Promise<boolean>} true solo si consta que el vigilante murió y taskkill no falló
- * (con /T mata el árbol entero); con false NO se puede lanzar directo: habría dos Minecraft.
+ * @returns {Promise<boolean>} true solo si consta que el vigilante murió Y que no queda ningún Java
+ * de este intento (sinJavaVivo); con false NO se puede lanzar directo: habría dos Minecraft.
  */
-function matarArbol(hijo){
+function matarArbol(hijo, rutaVivo){
     return new Promise((resolve) => {
+        const comprobar = () => sinJavaVivo(rutaVivo).then(resolve, () => resolve(false))
         if(hijo.exitCode != null || hijo.signalCode != null){
-            resolve(true)
+            comprobar()
             return
-        }
-        let muerto = false
-        let killOk = null
-        const decidir = () => {
-            if(muerto && killOk != null){
-                clearTimeout(fin)
-                resolve(killOk)
-            }
         }
         const fin = setTimeout(() => resolve(false), 10000)
         hijo.once('exit', () => {
-            muerto = true
-            decidir()
+            clearTimeout(fin)
+            comprobar()
         })
-        child_process.execFile('taskkill', ['/T', '/F', '/PID', String(hijo.pid)], { windowsHide: true }, (err) => {
-            // Si el vigilante murió solo entre medias, taskkill no lo encuentra (128): no queda árbol.
-            killOk = err == null || err.code === 128
-            decidir()
-        })
+        taskkill(['/T', '/F', '/PID', String(hijo.pid)])
     })
 }
 
@@ -201,7 +223,8 @@ exports.lanzar = function(o){
                 return
             }
             resuelto = true
-            matarArbol(hijo).then((seguro) => {
+            matarArbol(hijo, path.join(carpetaDe(o.instancias), 'vivo-' + runId + '.json')).then((seguro) => {
+
                 const e = new Error('Vigilante no disponible: ' + motivo + (seguro ? '' : ' (y no se pudo confirmar que muriera)'))
                 // Sin confirmar la muerte del árbol no hay respaldo: podría quedar un Java vivo.
                 e.sinVigilante = seguro

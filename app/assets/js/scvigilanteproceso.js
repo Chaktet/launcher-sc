@@ -275,7 +275,9 @@ function lanzar(m){
     fs.mkdirSync(opciones.carpeta, { recursive: true })
     rutaLog = path.join(opciones.carpeta, 'vigilante.log')
     rutaVivo = path.join(opciones.carpeta, 'vivo-' + opciones.runId + '.json')
-    escribirAtomico(rutaVivo, { pid: process.pid, runId: opciones.runId, desde: Date.now() })
+    // «lanzando» ANTES del spawn y el pid de Java justo después: si este proceso muere entre
+    // medias, el launcher sabe por esta marca si puede haber un Java vivo (y no lanza otro).
+    escribirAtomico(rutaVivo, { pid: process.pid, runId: opciones.runId, desde: Date.now(), fase: 'lanzando' })
     log('Lanzando juego (runId ' + opciones.runId + ')')
 
     const reConectando = regex(opciones.reConectando)
@@ -308,6 +310,12 @@ function lanzar(m){
     if(juego.pid == null){
         // El 'error' llega en el siguiente tick.
         return
+    }
+    try {
+        escribirAtomico(rutaVivo, { pid: process.pid, runId: opciones.runId, desde: Date.now(), fase: 'lanzado', javaPid: juego.pid })
+    } catch(e){
+        // Sin esta marca el launcher no daría por seguro un respaldo: prefiere no lanzar otro.
+        log('No se pudo anotar el pid de Java: ' + e.message)
     }
     // Sin unref(): el juego es justo lo que debe mantener vivo a este proceso.
     enviar({ tipo: 'lanzado', pid: juego.pid }, true)
