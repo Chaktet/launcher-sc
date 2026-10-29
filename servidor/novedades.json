@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-29-servidor-Pase-de-batalla-pescar-y-evolucionar-ya-cuentan",
+      "fecha": "2026-10-29",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Pase de batalla: pescar y evolucionar ya cuentan",
+      "puntos": [
+        "Las misiones de pescar del pase no avanzaban con la caña de la pesca del servidor. Ahora cuenta cada pez que sacas (la basura y los tesoros no).",
+        "Las evoluciones que haces desde el menú de evoluciones ya cuentan para la misión de evolucionar.",
+        "La misión de volar ahora explica lo que pide: 30 segundos a lomos de un Pokémon por encima de la altura 250.",
+        "Si alguna misión no te avanza, avísanos por ticket."
+      ]
+    },
+    {
       "id": "2026-10-29-servidor-Menos-expulsiones-en-mitad-de-un-combate",
       "fecha": "2026-10-29",
       "tipo": "servidor",
