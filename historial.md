@@ -1,9 +1,13 @@
 # SC Launcher · historial
 
 ## Estado actual
-- **1.17.11 (28-10) en la rama `fix/sc10-java-repair`, sin fusionar a master, sin firmar ni publicar**: SC-10 se
-  repara solo (ver entrada del 28-10). Espera el OK de Felix. Ojo al fusionar: hay tres worktrees con cambios en
-  `landing.js` en sus ramas.
+- **1.17.11 publicada (29-10 03:01 UTC, OK de Felix)**: SC-10 real = `_JAVA_OPTIONS` del sistema (el juego se lanza sin
+  ella) + reparación automática de Java. Firmada (`comprueba-publisher` ok), release v1.17.11 con 14 ficheros
+  (Mac/Linux del CI run 40808669709, todo en verde; commit 9359975); las tres fichas `latest*.yml` dicen 1.17.11 y el
+  sha512 de `latest.yml` = build; `master` y `main` subidas; los 3 exe de OVH-A renovados (por Cloudflare 93.683.872 B,
+  sha256 `d138efb5…` = build, firma `Valid`). Novedad: vista previa en «diseño-pruebas» (mensaje
+  1565196038963339376), **sin publicar hasta el OK de Felix**. Mirar en unos días `x`/`f`/`u` de los SC-10.
+  Ojo: tres worktrees con cambios en `landing.js` en sus ramas tendrán conflictos con esta versión.
 - **iOS: CANCELADO (Felix, 27-10).** No se hace guía, app ni pruebas. Queda solo la investigación en
   `docs/INVESTIGACION-IOS.md` por si se retoma (la ruta gratis es Amethyst + SideStore/LiveContainer + StikDebug).
 - **1.17.9 publicada (27-10, OK de Felix)**: falso SC-05, pistas nuevas de SC-03/14/90, RAM autoajustada (SC-08) y
@@ -51,7 +55,7 @@
   «diseño-pruebas» (mensaje 1564857375410757703). **Publicada en el launcher el 28-10 15:55 UTC** con la de las
   misiones de escanear (OK de Felix: launcher sí, Discord no). El modpack móvil SC-Movil no lo lleva.
 
-## 2026-10-28 · 1.17.11 (sin publicar): SC-10 «Reparar Java» que no reparaba
+## 2026-10-28 · 1.17.11 (publicada 29-10 03:01 UTC): SC-10 «Reparar Java» que no reparaba
 - Felix: un jugador con SC-10 pulsa Reparar Java y sigue igual (antivirus quitado). Quiere que se arregle solo.
 - **Causa de este jugador, confirmada con su ZIP de soporte:** variable de Windows `_JAVA_OPTIONS=-Xmx512M` (gana a
   nuestro -Xmx; con -Xms8G la JVM no nace). Arreglo: el juego se lanza sin `_JAVA_OPTIONS`/`JAVA_TOOL_OPTIONS`/
