@@ -1463,7 +1463,10 @@ function scAnalizarCierreDelJuego(code, salida, desde = Date.now() - 300000){
         if(scOfrecerPerfilMasLigero(true)){
             return
         }
-        scFalloArranque(SC_ERR.MEMORIA, Lang.queryJS('landing.launch.errMemoria'), new Error(txt.slice(-3000)))
+        // Si Java no pudo ni reservar la memoria pedida, subirla es justo lo contrario de lo que hace falta.
+        const reserva = ScJava.esFalloDeMemoriaAlArrancar(txt) && !/OutOfMemoryError/.test(txt)
+        scFalloArranque(SC_ERR.MEMORIA, Lang.queryJS(reserva ? 'landing.launch.errMemoriaReserva' : 'landing.launch.errMemoria'),
+            new Error(txt.slice(-3000)), false, { pista: { x: reserva ? 'reserva' : 'agotada' } })
         return
     }
 
@@ -1472,7 +1475,10 @@ function scAnalizarCierreDelJuego(code, salida, desde = Date.now() - 300000){
     // interrumpida. Los patrones viven en scjava.js, con pruebas.
     const motivoJava = forzarJavaRoto ? 'modruntime' : ScJava.motivoJavaRoto(txt)
     if(motivoJava != null){
-        scJavaRoto(motivoJava, new Error(txt.slice(-3000)))
+        scJavaRoto(motivoJava, new Error(txt.slice(-3000))).catch(e => {
+            loggerLanding.error('Fallo al reparar Java', e)
+            scFalloArranque(SC_ERR.JAVA_ROTO, Lang.queryJS('landing.launch.errJavaRoto'), e)
+        })
         return
     }
 
@@ -4042,7 +4048,10 @@ async function scDlAsyncInterno(login = true) {
                 scParaAnimacion()
                 toggleLaunchArea(false)
                 proc = null
-                scJavaRoto('proceso', err)
+                scJavaRoto('proceso', err).catch(e => {
+                    loggerLanding.error('Fallo al reparar Java', e)
+                    scFalloArranque(SC_ERR.JAVA_ROTO, Lang.queryJS('landing.launch.errJavaRoto'), e)
+                })
             })
 
             // Si el juego muere o se cierra, restaurar el botón JUGAR.

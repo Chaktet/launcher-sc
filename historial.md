@@ -1,6 +1,9 @@
 # SC Launcher · historial
 
 ## Estado actual
+- **1.17.11 (28-10) en la rama `fix/sc10-java-repair`, sin fusionar a master, sin firmar ni publicar**: SC-10 se
+  repara solo (ver entrada del 28-10). Espera el OK de Felix. Ojo al fusionar: hay tres worktrees con cambios en
+  `landing.js` en sus ramas.
 - **iOS: CANCELADO (Felix, 27-10).** No se hace guía, app ni pruebas. Queda solo la investigación en
   `docs/INVESTIGACION-IOS.md` por si se retoma (la ruta gratis es Amethyst + SideStore/LiveContainer + StikDebug).
 - **1.17.9 publicada (27-10, OK de Felix)**: falso SC-05, pistas nuevas de SC-03/14/90, RAM autoajustada (SC-08) y
@@ -50,8 +53,10 @@
 
 ## 2026-10-28 · 1.17.11 (sin publicar): SC-10 «Reparar Java» que no reparaba
 - Felix: un jugador con SC-10 pulsa Reparar Java y sigue igual (antivirus quitado). Quiere que se arregle solo.
-- Causa: la reparación borraba solo nuestro runtime y el siguiente JUGAR elegía un Java 21 del sistema (roto) sin
-  volver a bajar el nuestro; además un fallo de memoria al arrancar y los mods con RuntimeException salían como SC-10.
+- Causa de este jugador: SIN CONFIRMAR (su aviso solo trae a/s/z, z=0; no hay ZIP). Tres causas posibles en el código,
+  las tres corregidas: la reparación borraba solo nuestro runtime y el siguiente JUGAR elegía un Java 21 del sistema
+  (roto) sin volver a bajar el nuestro; un fallo de memoria al arrancar salía como SC-10 (ahora SC-11 con consejo de
+  bajar la RAM); y los mods con RuntimeException también. Lo dirán su ZIP o las pistas nuevas x/f/u.
 - Arreglo: `app/assets/js/scjava.js` (nuestro Java primero, vetos, ficheros esenciales, clasificador) y `scJavaRoto()`:
   reparación automática con relanzado, comprobación antes de lanzar, aviso del antivirus si se repite. Detalle en
   `docs/ERRORES.md` (SC-10).
@@ -59,6 +64,8 @@
   E:/tmp/sc10) con nuestro Java roto: JUGAR lo quita, baja el nuestro entero y sigue; SC-10 simulado: 1.ª vez repara y
   relanza, 2.ª vez aviso del antivirus. Sin probar: el botón «Arreglarlo por mí» (cambia Defender) y Mac/Linux.
 - Pendiente: OK de Felix para firmar y publicar la 1.17.11; luego mirar `x`/`f`/`u` de los SC-10 en `stats.json`.
+  Sin hacer: con poco disco, si no cabe nuestro Java no se prueba el del sistema (sale SC-16); el orden memoria→Java
+  dentro de scAnalizarCierreDelJuego solo está probado por partes (clasificador), no con un arranque real.
 
 ## 2026-10-28 · Modpack: No Chat Reports para quitar «Mensajes de chat no verificados»
 - Felix: que el aviso de chat no verificado no salga a nadie en Lobby y regiones. Sale porque la red no exige chat
