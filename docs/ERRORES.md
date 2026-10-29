@@ -40,13 +40,14 @@ SC-90/91/92/93.
 
 | Código | Qué pasa | Pistas |
 |---|---|---|
-| **SC-40** | No se pudo instalar o actualizar el modpack | `n` = clase del fallo de FCL; `k` = título del aviso |
+| **SC-40** | No se pudo instalar o actualizar el modpack | `n` = clase del fallo de FCL; `k` = título del aviso. Desde la 0.1.21: `n` = causa del PRIMER paso que falló (antes salía solo `ModpackCompletionException`), `k` = clase de ese paso, `f` = archivo que bajaba, `h` = código HTTP si lo hubo. La 0.1.21 reintenta sola la instalación 3 veces antes de mostrar el error |
 | **SC-41** | Una descarga se quedó a 0 B/s 3 minutos (el «se queda en 99 %») | `s` = paso/total donde se paró; `k` = paso que más llevaba corriendo (desde 0.1.16). Hasta la 0.1.15 también saltaba en pasos locales (descomprimir, `s=103-103`): falsa alarma. Una descarga cortada de verdad acaba en SC-40 (10 s sin datos × 3 reintentos) |
 | **SC-42** | «Reparar archivos» falló | `k` |
 | **SC-43** | Fallo inesperado preparando el juego (como el de `modpack.cfg` del 27-10) | `n` = clase de la excepción |
 | **SC-44** | No hay espacio en el móvil para el modpack | — |
 | **SC-45** | El juego se cerró solo (cierre inesperado), enviado automáticamente desde la 0.1.14 | modelo del móvil; perfil `p` |
 | **SC-46** | La partida iba a tirones (menos de 20 FPS dos minutos) o el móvil se calentó; desde la 0.1.20 | `x` = fps/calor; `f` = FPS medio; `n` = escalón de rendimiento; `m` = modelo; `g` = gráfica |
+| **SC-47** | Preparar el juego (`u`) o abrirlo hasta el primer fotograma (`t`) tardó más de 2 min; desde la 0.1.21 | `t`, `u` = minutos (tope 60); `m` = modelo; `g` = gama baja/media/alta; `y` = GB de RAM |
 
 Sin conexión no se avisa (es la red del jugador).
 
