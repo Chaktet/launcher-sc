@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-29-pack-3.3.19",
+      "fecha": "2026-10-29",
+      "tipo": "pack",
+      "clase": "arreglo",
+      "version": "3.3.19",
+      "titulo": "Absol ya cambia de aspecto con la Absolita Z",
+      "puntos": [
+        "Al megaevolucionar a Absol con la Absolita Z se seguía viendo el Absol normal",
+        "Ahora se ve su forma Mega Z, también en variocolor"
+      ]
+    },
+    {
       "id": "2026-10-29-servidor-Menos-tirones-en-el-spawn-cuando-hay-mucha-gente",
       "fecha": "2026-10-29",
       "tipo": "servidor",
