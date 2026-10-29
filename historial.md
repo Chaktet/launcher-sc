@@ -1,6 +1,10 @@
 # SC Launcher · historial
 
 ## Estado actual
+- **Vigilante (29-10, rama `feat/vigilante`, SIN publicar ni fusionar)**: con la partida cargada el launcher se cierra
+  entero y un proceso Node de ~28 MB vigila el juego; al cerrarlo reabre el launcher con el diagnóstico. Medido en el
+  PC de Felix con Minecraft real: 483 MB → 28 MB, 0 CPU, ciclo completo bien. Plan + 3 revisiones de Codex:
+  `docs/PLAN-VIGILANTE.md`. Pendiente: OK de Felix para versión firmada + novedad; fusionar en `master`.
 - **SC-12 con botones (29-10, sin publicar)**: el aviso de gráficos abre la web del driver con un botón (antes texto que los niños no sabían copiar). Commit en master; entra en la próxima versión del launcher cuando Felix dé el OK.
 - **1.17.11 publicada (29-10 03:01 UTC, OK de Felix)**: SC-10 real = `_JAVA_OPTIONS` del sistema (el juego se lanza sin
   ella) + reparación automática de Java. Firmada (`comprueba-publisher` ok), release v1.17.11 con 14 ficheros
@@ -56,7 +60,21 @@
   «diseño-pruebas» (mensaje 1564857375410757703). **Publicada en el launcher el 28-10 15:55 UTC** con la de las
   misiones de escanear (OK de Felix: launcher sí, Discord no). El modpack móvil SC-Movil no lo lleva.
 
+## 2026-10-29 · Vigilante: el launcher deja de ocupar ~500 MB mientras se juega
+- Pedido: Felix vio que el launcher se queda en ~500 MB con el juego abierto.
+- Causa: al cargar el juego solo se ocultaba en la bandeja; Electron (main + GPU + renderer + red) seguía vivo porque
+  el renderer era el padre de Java (tuberías y código de salida). Cerrar solo la ventana deja ~240 MB (la GPU no muere).
+- Arreglo: `scvigilanteproceso.js` (el exe con `ELECTRON_RUN_AS_NODE`) es el padre del juego, drena la salida, lleva
+  Discord, guarda `sc-vigilante/resultado-<runId>.json` y reabre el launcher; `scvigilante.js` lo lanza y reclama
+  resultados (marca `hecho-<runId>`). Respaldo directo solo con prueba de que no quedó Java. Interruptor
+  `settings.launcher.vigilante`. Solo Windows.
+- Verificado: exe empaquetado (`--dir`) con Minecraft real: 4 procesos/483 MB privados → 1/28 MB, 0 CPU; cierre →
+  relanzado y resultado recogido; arnés con juego falso (cierre por juego, en vivo, Java roto). La 1.ª prueba real
+  sacó un fallo (`loggerLaunchSuite` fuera de ámbito → SC-06 falso y 2.º Minecraft), corregido antes de la 2.ª.
+- Sin probar: instalador NSIS real, crash a media partida con el diálogo al reabrir, Mac/Linux (siguen como antes).
+
 ## 2026-10-29 · SC-12: botón para descargar el driver
+
 - Pedido: un jugador con AMD no sabía copiar la web del driver del aviso SC-12.
 - Cambio: con marca detectada, texto corto + un botón grande `a.sc-btn-driver` (https, lo abre `uicore.js`) y pasos sencillos; sin marca, un botón por fabricante. CSS en `scpokenav.css`; doc en ERRORES.md.
 - Verificado en `npm start` por CDP: AMD sale con 1 botón y sin scroll en ventana de 700 px; genérico 3 botones (solo el consejo LITE queda bajo scroll); el clic llama a `shell.openExternal` con la web de AMD. Las 3 webs abren (Intel da 403 a curl, en navegador bien).
