@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-29-launcher-1.17.13",
+      "fecha": "2026-10-29",
+      "tipo": "launcher",
+      "version": "1.17.13",
+      "titulo": "El launcher ya no gasta memoria mientras juegas",
+      "puntos": [
+        "Cuando el juego termina de cargar, el launcher se cierra del todo: pasa de gastar unos 500 MB de memoria a unos 30 MB.",
+        "Más memoria libre para Minecraft, sobre todo en ordenadores con poca RAM.",
+        "Al cerrar el juego, el launcher vuelve a abrirse solo y, si el juego se cerró por un fallo, te lo explica como siempre."
+      ]
+    },
+    {
       "id": "2026-10-29-launcher-1.17.12",
       "fecha": "2026-10-29",
       "tipo": "launcher",
