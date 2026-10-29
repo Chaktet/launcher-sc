@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-29-servidor-El-PokeNav-ya-no-sale-como-un-cofre-en-PCs-lentos",
+      "fecha": "2026-10-29",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "El PokéNav ya no sale como un cofre en PCs lentos",
+      "puntos": [
+        "Si tu ordenador tardaba en cargar el juego, el PokéNav se abría como un menú de cofre toda la partida",
+        "Ahora sale con su pantalla de siempre aunque tu PC tarde en cargar"
+      ]
+    },
+    {
       "id": "2026-10-29-servidor-Ponte-y-quitate-el-color-de-chat-que-compraste",
       "fecha": "2026-10-29",
       "tipo": "servidor",
