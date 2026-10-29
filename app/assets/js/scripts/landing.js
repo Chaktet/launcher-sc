@@ -1450,7 +1450,11 @@ function scAnalizarCierreDelJuego(code, salida, desde = Date.now() - 300000){
         } else if(/intel|ig[0-9]{1,2}icd|igdumd|igdrcl|igxelp|iris xe|\barc\b/i.test(txt)){
             marca = Lang.queryJS('landing.launch.errGraficosIntel')
         }
-        const mensaje = Lang.queryJS('landing.launch.errGraficos') + (marca ? '<br><br>' + marca : '')
+        // Con la marca reconocida solo va SU botón: la lista de las tres webs liaba a
+        // los jugadores pequeños, que no sabían cuál era la suya ni copiar la dirección.
+        const mensaje = marca
+            ? Lang.queryJS('landing.launch.errGraficosCorto') + '<br><br>' + marca
+            : Lang.queryJS('landing.launch.errGraficos')
         scFalloArranque(SC_ERR.GRAFICOS, mensaje, new Error(txt.slice(-4000)))
         return
     }

@@ -97,8 +97,12 @@ Windows (`GDI Generic`, `llvmpipe`, `swiftshader`), y los ICD de los tres fabric
 (`ig4icd`/`ig7icd`/`ig9icd`/`igxelpicd`, Arc/Xe). También caídas con
 `EXCEPTION_ACCESS_VIOLATION` dentro de una biblioteca gráfica, y avisos del propio Sodium o Iris.
 
-Si se identifica el fabricante, el diálogo enseña **su enlace de drivers concreto** en vez de los
-tres (`landing.launch.errGraficosNvidia` / `errGraficosAmd` / `errGraficosIntel`).
+Si se identifica el fabricante, el diálogo enseña un texto corto (`errGraficosCorto`) y **un solo botón
+grande** con la web de drivers de su marca (`landing.launch.errGraficosNvidia` / `errGraficosAmd` /
+`errGraficosIntel`); si no, `errGraficos` con un botón por marca. Son `<a class='sc-btn-driver'>` https que
+`uicore.js` abre en el navegador: antes la web iba como texto y los jugadores no sabían copiarla (29-10).
+Webs: NVIDIA `nvidia.com/es-es/drivers/`, AMD `amd.com/es/support/download/drivers.html` (detecta sola),
+Intel `intel.com/content/www/es/es/support/detect.html` (Asistente; da 403 a curl, en navegador abre bien).
 
 ### SC-13 · Sodium rechaza el driver
 

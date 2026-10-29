@@ -1,6 +1,7 @@
 # SC Launcher · historial
 
 ## Estado actual
+- **SC-12 con botones (29-10, sin publicar)**: el aviso de gráficos abre la web del driver con un botón (antes texto que los niños no sabían copiar). Commit en master; entra en la próxima versión del launcher cuando Felix dé el OK.
 - **1.17.11 publicada (29-10 03:01 UTC, OK de Felix)**: SC-10 real = `_JAVA_OPTIONS` del sistema (el juego se lanza sin
   ella) + reparación automática de Java. Firmada (`comprueba-publisher` ok), release v1.17.11 con 14 ficheros
   (Mac/Linux del CI run 40808669709, todo en verde; commit 9359975); las tres fichas `latest*.yml` dicen 1.17.11 y el
@@ -54,6 +55,12 @@
   el launcher. Novedad `2026-10-28-modpack-Adios-al-aviso-de-chat-no-verificado` (arreglo) solo en vista previa en
   «diseño-pruebas» (mensaje 1564857375410757703). **Publicada en el launcher el 28-10 15:55 UTC** con la de las
   misiones de escanear (OK de Felix: launcher sí, Discord no). El modpack móvil SC-Movil no lo lleva.
+
+## 2026-10-29 · SC-12: botón para descargar el driver
+- Pedido: un jugador con AMD no sabía copiar la web del driver del aviso SC-12.
+- Cambio: con marca detectada, texto corto + un botón grande `a.sc-btn-driver` (https, lo abre `uicore.js`) y pasos sencillos; sin marca, un botón por fabricante. CSS en `scpokenav.css`; doc en ERRORES.md.
+- Verificado en `npm start` por CDP: AMD sale con 1 botón y sin scroll en ventana de 700 px; genérico 3 botones (solo el consejo LITE queda bajo scroll); el clic llama a `shell.openExternal` con la web de AMD. Las 3 webs abren (Intel da 403 a curl, en navegador bien).
+- Pendiente: publicar en la próxima versión (sin bump todavía).
 
 ## 2026-10-28 · 1.17.11 (publicada 29-10 03:01 UTC): SC-10 «Reparar Java» que no reparaba
 - Felix: un jugador con SC-10 pulsa Reparar Java y sigue igual (antivirus quitado). Quiere que se arregle solo.

@@ -2389,3 +2389,24 @@ body::before {
     border: 0 !important;
     box-shadow: inset 0 0 0 1px var(--pk-ink);
 }
+
+/* Botón de descarga del driver dentro del aviso SC-12. Antes la web iba como texto y
+   muchos jugadores (niños) no sabían copiarla al navegador: ahora es un botón que la
+   abre directamente (los enlaces https los abre uicore.js en el navegador). */
+#overlayDesc a.sc-btn-driver {
+    display: block;
+    margin: 10px 0;
+    padding: 12px 18px;
+    background: var(--pk-blue-deep);
+    box-shadow: var(--pk-sh-btn);
+    clip-path: var(--pk-corner-4);
+    color: #fff !important;
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform .08s ease, background-color .12s ease;
+}
+#overlayDesc a.sc-btn-driver:hover { background: var(--pk-blue-hover); }
+#overlayDesc a.sc-btn-driver:active { transform: translateY(3px); }
