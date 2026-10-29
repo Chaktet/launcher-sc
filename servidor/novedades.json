@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-29-servidor-Adios-al-anuncio-repetido-de-la-tienda-de-cosmeticos",
+      "fecha": "2026-10-29",
+      "tipo": "servidor",
+      "clase": "retoque",
+      "titulo": "Adiós al anuncio repetido de la tienda de cosméticos",
+      "puntos": [
+        "El aviso de la tienda de cosméticos ya no sale cada rato en el chat."
+      ]
+    },
+    {
       "id": "2026-10-29-launcher-1.17.13",
       "fecha": "2026-10-29",
       "tipo": "launcher",
