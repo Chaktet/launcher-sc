@@ -1,7 +1,7 @@
 # SC Launcher · historial
 
 ## Estado actual
-- **1.17.12 publicada (29-10 14:13 UTC, OK de Felix)**: aviso SC-12 con botón que abre la web del driver. Firmada (`comprueba-publisher` ok), release v1.17.12 con 14 ficheros (Mac/Linux del CI run 40887902351, todo en verde; commit dd1f784); las tres fichas `latest*.yml` dicen 1.17.12 y el sha512 = build; `master` y `main` subidas; los 3 exe de OVH-A renovados (por Cloudflare 93.685.912 B, sha256 `591c023a…` = build, firma `Valid`). Novedad: vista previa en «diseño-pruebas» (mensaje 1565369122357780541), **sin publicar hasta el OK de Felix**.
+- **1.17.12 publicada (29-10 14:13 UTC, OK de Felix)**: aviso SC-12 con botón que abre la web del driver. Firmada (`comprueba-publisher` ok), release v1.17.12 con 14 ficheros (Mac/Linux del CI run 40887902351, todo en verde; commit dd1f784); las tres fichas `latest*.yml` dicen 1.17.12 y el sha512 = build; `master` y `main` subidas; los 3 exe de OVH-A renovados (por Cloudflare 93.685.912 B, sha256 `591c023a…` = build, firma `Valid`). Novedad `2026-10-29-launcher-1.17.12` publicada con el OK de Felix.
 - **1.17.11 publicada (29-10 03:01 UTC, OK de Felix)**: SC-10 real = `_JAVA_OPTIONS` del sistema (el juego se lanza sin
   ella) + reparación automática de Java. Firmada (`comprueba-publisher` ok), release v1.17.11 con 14 ficheros
   (Mac/Linux del CI run 40808669709, todo en verde; commit 9359975); las tres fichas `latest*.yml` dicen 1.17.11 y el
