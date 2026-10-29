@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-29-servidor-Sin-transformaciones-en-las-expediciones",
+      "fecha": "2026-10-29",
+      "tipo": "servidor",
+      "clase": "retoque",
+      "titulo": "Sin transformaciones en las expediciones",
+      "puntos": [
+        "En las expediciones ya no se puede usar /pokemorph: si entras transformado, vuelves a ser humano y sin quedarte invisible."
+      ]
+    },
+    {
       "id": "2026-10-29-servidor-Adios-al-anuncio-repetido-de-la-tienda-de-cosmeticos",
       "fecha": "2026-10-29",
       "tipo": "servidor",
