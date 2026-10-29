@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-29-servidor-Menos-tirones-en-el-spawn-cuando-hay-mucha-gente",
+      "fecha": "2026-10-29",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Menos tirones en el spawn cuando hay mucha gente",
+      "puntos": [
+        "Con mucha gente en el spawn solo ves las alas, mochilas y muebles que tienes más cerca: el juego va más fluido",
+        "¿Tu PC va justo? Usa /cosmeticos ocultar otros para dejar de ver las alas y mochilas de los demás",
+        "Y /cosmeticos ocultar muebles para esconder muebles y peluches. Repite el comando para volver a verlos",
+        "Se guarda en cada región; /cosmeticos ocultar te dice cómo lo tienes"
+      ]
+    },
+    {
       "id": "2026-10-29-servidor-Pase-de-batalla-pescar-y-evolucionar-ya-cuentan",
       "fecha": "2026-10-29",
       "tipo": "servidor",
