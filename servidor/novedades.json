@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-29-servidor-Ponte-y-quitate-el-color-de-chat-que-compraste",
+      "fecha": "2026-10-29",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Ponte y quítate el color de chat que compraste",
+      "puntos": [
+        "Si compraste un color de chat en la tienda de lujo, ya puedes ponértelo y quitártelo desde su tarjeta con el botón Ponérmelo / Quitármelo",
+        "También desde /chatcolor, aunque tu rango no tenga ese comando"
+      ]
+    },
+    {
       "id": "2026-10-29-servidor-Escondite-siempre-vuelves-con-tus-cosas",
       "fecha": "2026-10-29",
       "tipo": "servidor",
