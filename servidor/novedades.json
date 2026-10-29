@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-29-servidor-Pase-de-batalla-los-premios-a-elegir-los-eliges-tu",
+      "fecha": "2026-10-29",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Pase de batalla: los premios a elegir los eliges tú",
+      "puntos": [
+        "En los niveles con premio a elegir, un doble clic en Reclamar ya no te elige un premio solo: ahora eliges el que quieras"
+      ]
+    },
+    {
       "id": "2026-10-29-servidor-Tu-Pokemon-con-aura-de-brillo-ya-se-puede-guardar",
       "fecha": "2026-10-29",
       "tipo": "servidor",
