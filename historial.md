@@ -48,6 +48,18 @@
   «diseño-pruebas» (mensaje 1564857375410757703). **Publicada en el launcher el 28-10 15:55 UTC** con la de las
   misiones de escanear (OK de Felix: launcher sí, Discord no). El modpack móvil SC-Movil no lo lleva.
 
+## 2026-10-28 · 1.17.11 (sin publicar): SC-10 «Reparar Java» que no reparaba
+- Felix: un jugador con SC-10 pulsa Reparar Java y sigue igual (antivirus quitado). Quiere que se arregle solo.
+- Causa: la reparación borraba solo nuestro runtime y el siguiente JUGAR elegía un Java 21 del sistema (roto) sin
+  volver a bajar el nuestro; además un fallo de memoria al arrancar y los mods con RuntimeException salían como SC-10.
+- Arreglo: `app/assets/js/scjava.js` (nuestro Java primero, vetos, ficheros esenciales, clasificador) y `scJavaRoto()`:
+  reparación automática con relanzado, comprobación antes de lanzar, aviso del antivirus si se repite. Detalle en
+  `docs/ERRORES.md` (SC-10).
+- Verificado: `node tools/prueba-java-roto.js` 29/29; Java real sin tzdb.dat → `tzdb`; launcher real (datos en
+  E:/tmp/sc10) con nuestro Java roto: JUGAR lo quita, baja el nuestro entero y sigue; SC-10 simulado: 1.ª vez repara y
+  relanza, 2.ª vez aviso del antivirus. Sin probar: el botón «Arreglarlo por mí» (cambia Defender) y Mac/Linux.
+- Pendiente: OK de Felix para firmar y publicar la 1.17.11; luego mirar `x`/`f`/`u` de los SC-10 en `stats.json`.
+
 ## 2026-10-28 · Modpack: No Chat Reports para quitar «Mensajes de chat no verificados»
 - Felix: que el aviso de chat no verificado no salga a nadie en Lobby y regiones. Sale porque la red no exige chat
   firmado (cuentas no premium); exigirlo echaría a esos jugadores, así que se quita en el cliente.

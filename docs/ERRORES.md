@@ -175,19 +175,37 @@ a ejecutarse.
 
 ### SC-10 · Java roto — y su reparación
 
-Se detecta por `tzdb.dat`, `Error occurred during initialization of VM`,
-`NoClassDefFoundError: java/…` o un `FileNotFoundException` apuntando a `runtime/` o `jdk-`.
+Patrones en `app/assets/js/scjava.js` (`motivoJavaRoto`, va a la pista `x`): `tzdb` (`tzdb.dat` o «Unable
+to load TZDB time-zone rules»), `jvmcfg`, `jvm` (falta `jvm.dll`/`libjvm`), `clasebase`
+(`NoClassDefFoundError: java/…`), `inicializador` y `fichero` (solo con la ruta `\runtime\` o `\jdk-N`), `iniciovm`,
+`modruntime` (SC-15 con el `.jar` dentro de runtime) y `proceso` (el proceso ni nace). Pruebas:
+`node tools/prueba-java-roto.js`.
 
 Causa casi siempre: **el antivirus ha puesto ficheros del JDK en cuarentena**, o una extracción
 interrumpida.
 
-Este código es el único con acción de reparación en el propio diálogo. `scRepararJava()`:
+**1.17.11 (informe del 28-10: «le doy a Reparar Java y no pasa nada»).** Tres fallos que hacían inútil el botón:
+1. La reparación borraba solo NUESTRO runtime y el siguiente JUGAR escaneaba el sistema: cogía cualquier Java 21
+   de JAVA_HOME, Archivos de programa o el registro, roto incluido, y no volvía a bajar el nuestro. Y con el nuestro
+   presente, Helios prefería a igual versión una ruta sin «jdk» (la nuestra es `jdk-21…`).
+2. «Could not reserve enough space for …KB object heap» sale bajo la misma línea «Error occurred during
+   initialization of VM»: un fallo de memoria se clasificaba como SC-10. Ahora la memoria se mira antes (SC-11).
+3. Con la `/i`, `runtime` casaba con `java.lang.RuntimeException`: un mod con un inicializador roto salía como SC-10.
 
-1. Borra `<dataDir>/runtime/` entero
-2. Pone el ejecutable de Java a `null` en la configuración
-3. Guarda
-
-En el siguiente intento el launcher se descarga Java de cero.
+Cómo funciona ahora (sin botón; `scJavaRoto()` en landing.js):
+- **Elección** (`ScJava.elegir`): siempre el nuestro. Sin el nuestro se descarga directamente (ya no se pregunta
+  «¿instalar Java?»). Uno del sistema solo si la descarga falla o tras un SC-14 / SC-10 repetido (un día, para que
+  el `.msi` de Adoptium que se sugiere funcione), y nunca uno vetado ni uno incompleto.
+- **Antes de lanzar**: si al Java configurado le faltan `bin/java(w).exe`, `java.dll`, `server/jvm.dll`,
+  `lib/modules`, `tzdb.dat` o `jvm.cfg` (o pesan 0), se repara sin esperar al SC-10 (aviso anónimo `x=previo`).
+  Tras extraer Java se mira lo mismo: si falta algo es un SC-14 con `x=faltan-<fichero>`.
+- **SC-10, primera vez**: se repara solo (veta el Java si era del sistema; nunca borra nada fuera de
+  `<datos>/runtime`; si `runtime` no se deja borrar se aparta como `runtime-roto-<fecha>` y se limpia en el
+  siguiente JUGAR), sale el aviso «Estamos reinstalando Java» y se relanza solo.
+- **SC-10 repetido en menos de 2 h**: diálogo del antivirus (`scOfrecerArreglarAntivirus`, excluir `runtime` en
+  Defender y reparar) más la salida del `.msi`.
+- Estado en `<launcher>/sc-java.json` (`vetados`, `reparaciones`, `propioBloqueado`). Pistas: `x` motivo, `f`
+  `propio`/`sistema`/`ninguno`, `u` `primero`/`repetido`.
 
 También se dispara desde `proc.on('error')`: si el proceso **ni siquiera llega a nacer** (ejecutable
 borrado por el antivirus, permisos, ruta rota), Node emite `error` y **nunca** emite `close`. Sin ese

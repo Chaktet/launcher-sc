@@ -22,10 +22,11 @@ const {
     validateSelectedJvm,
     ensureJavaDirIsRoot,
     javaExecFromRoot,
-    discoverBestJvmInstallation,
     latestOpenJDK,
     extractJdk
 }                             = require('helios-core/java')
+// Las piezas sueltas del buscador de Java, para que scjava.js ponga el nuestro primero.
+const JavaGuardSc             = require('helios-core/java')
 
 // Internal Requirements
 const DiscordWrapper          = require('./assets/js/discordwrapper')
@@ -34,6 +35,7 @@ const distroManager           = require('./assets/js/distromanager')
 const ScJuegoAbierto          = require('./assets/js/scjuegoabierto')
 const ScRendimiento           = require('./assets/js/screndimiento')
 const ScBorrados              = require('./assets/js/scborrados')
+const ScJava                  = require('./assets/js/scjava')
 
 // Launch Elements
 const launch_content          = document.getElementById('launch_content')
@@ -217,7 +219,28 @@ document.getElementById('launch_button').addEventListener('click', async e => {
     }
     try {
         const server = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
-        const jExe = ConfigManager.getJavaExecutable(ConfigManager.getSelectedServer())
+        // Restos de una reparación que no se dejaron borrar entonces (runtime-roto-*).
+        ScJava.limpiarApartados(ConfigManager.getDataDirectory())
+        let jExe = ConfigManager.getJavaExecutable(ConfigManager.getSelectedServer())
+        // Antes de lanzar: si a Java le falta un fichero esencial (tzdb.dat, jvm.dll…) o es
+        // uno del sistema que ya dio SC-10, se repara aquí, sin esperar a que el juego
+        // muera con un SC-10 (1.17.11). Nunca se borra un Java que no es nuestro.
+        if(jExe != null){
+            const faltan = ScJava.faltanEsenciales(jExe)
+            const vetado = ScJava.estaVetado(ConfigManager.getLauncherDirectory(), jExe)
+            if(faltan.length > 0 || vetado){
+                loggerLanding.warn(`Java no utilizable antes de lanzar (${vetado ? 'vetado' : 'faltan ' + faltan.join(', ')}): ${jExe}`)
+                if(ScJava.esPropio(jExe, ConfigManager.getDataDirectory())){
+                    // Solo para contar cuántos lo necesitan; al jugador no le sale error.
+                    scEnviarAvisoError(SC_ERR.JAVA_ROTO, null, { x: 'previo', f: 'propio' })
+                    await scRepararJava()
+                } else {
+                    ConfigManager.setJavaExecutable(ConfigManager.getSelectedServer(), null)
+                    ConfigManager.save()
+                }
+                jExe = null
+            }
+        }
         if(jExe == null){
             await asyncSystemScan(server.effectiveJavaOptions)
         } else {
@@ -618,12 +641,13 @@ function scSondaJava(exe){
 }
 
 /**
- * Borra la instalación de Java y la marca como no configurada, de modo que el
- * launcher la vuelva a descargar entera en el siguiente intento.
+ * Deja Java listo para bajarse de cero en el siguiente intento.
+ *
+ * Si el Java roto es uno del sistema (JAVA_HOME, Archivos de programa) no se toca: se veta
+ * para que no se vuelva a elegir. Antes solo se borraba el nuestro y el siguiente JUGAR
+ * cogía otra vez el del sistema roto: «Reparar Java» no hacía nada (informe del 28-10).
  */
 async function scRepararJava(){
-    const nodeFs = require('fs')
-    const nodePath = require('path')
     // Con un juego abierto el runtime está en uso: el borrado quedaría a medias.
     if(await ScJuegoAbierto.juegoPrevioAbiertoAsync() != null){
         loggerLanding.warn('No se repara Java: hay un juego abierto de una sesión anterior.')
@@ -631,17 +655,78 @@ async function scRepararJava(){
     }
     scInvalidarCacheValidacion('reparar Java')
     try {
-        const runtime = nodePath.join(ConfigManager.getDataDirectory(), 'runtime')
+        const nodePath = require('path')
+        const dataDir = ConfigManager.getDataDirectory()
+        const serv = ConfigManager.getSelectedServer()
+        const exe = ConfigManager.getJavaExecutable(serv)
+        if(exe != null && !ScJava.esPropio(exe, dataDir)){
+            ScJava.vetar(ConfigManager.getLauncherDirectory(), exe)
+        }
+        const runtime = nodePath.join(dataDir, 'runtime')
         // El runtime es de todos los perfiles: ninguno debe dar luego un SC-19 por este borrado.
         ScBorrados.olvidarBajo(runtime)
-        nodeFs.rmSync(runtime, { recursive: true, force: true })
-        ConfigManager.setJavaExecutable(ConfigManager.getSelectedServer(), null)
+        const quitado = ScJava.quitarRuntime(dataDir)
+        ConfigManager.setJavaExecutable(serv, null)
         ConfigManager.save()
-        return true
+        return quitado
     } catch(e){
         loggerLanding.error('No se pudo reparar la instalación de Java', e)
         return false
     }
+}
+
+/**
+ * SC-10, Java roto (1.17.11). La primera vez se repara solo y se vuelve a lanzar, sin
+ * preguntar: el jugador no tiene nada que decidir. Si vuelve a romperse en menos de 2 h
+ * ya no es una descarga a medias, es algo que lo rompe cada vez: se le explica y se le
+ * ofrece excluir la carpeta del antivirus (y que la repare después).
+ *
+ * @param {string} motivo pista `x`: qué patrón lo delató (ScJava.motivoJavaRoto) o 'proceso'.
+ */
+async function scJavaRoto(motivo, err){
+    const dataDir = ConfigManager.getDataDirectory()
+    const dirLauncher = ConfigManager.getLauncherDirectory()
+    const exe = ConfigManager.getJavaExecutable(ConfigManager.getSelectedServer())
+    const repetido = ScJava.reparacionReciente(dirLauncher)
+    const pista = {
+        x: motivo,
+        f: exe == null ? 'ninguno' : (ScJava.esPropio(exe, dataDir) ? 'propio' : 'sistema'),
+        u: repetido ? 'repetido' : 'primero'
+    }
+
+    if(!repetido){
+        // Informe y aviso anónimo como siempre, pero sin diálogo: se arregla solo.
+        scFalloArranque(SC_ERR.JAVA_ROTO, Lang.queryJS('landing.launch.errJavaRoto'), err, false, { pista })
+        toggleOverlay(false)
+        ScJava.anotarReparacion(dirLauncher)
+        if(await scRepararJava()){
+            loggerLanding.warn(`[SC-10] Java roto (${motivo}, ${pista.f}): reparado solo, se relanza.`)
+            if(typeof scMostrarAviso === 'function'){
+                scMostrarAviso({
+                    clave: 'java-reparado',
+                    kicker: Lang.queryJS('landing.launch.javaAutoKicker'),
+                    titulo: Lang.queryJS('landing.launch.javaAutoTitulo'),
+                    texto: Lang.queryJS('landing.launch.javaAutoTexto')
+                })
+            }
+            document.getElementById('launch_button').click()
+            return
+        }
+        // No se dejó quitar ni apartar: se cae al aviso con el antivirus de abajo.
+    } else {
+        scFalloArranque(SC_ERR.JAVA_ROTO, Lang.queryJS('landing.launch.errJavaRotoRepetido'), err, false, { pista })
+        // El aviso le sugiere el .msi de Adoptium: durante un día vale un Java del sistema,
+        // o el siguiente JUGAR volvería a bajar el nuestro en vez de usar el que instaló.
+        ScJava.marcarPropioBloqueado(dirLauncher)
+    }
+
+    scOfrecerArreglarAntivirus({
+        // La carpeta runtime entera: al reinstalar Java se borra y se recrea.
+        carpeta: require('path').join(dataDir, 'runtime'),
+        intro: Lang.queryJS('landing.launch.errJavaRotoRepetido') + '<br><br>' + Lang.queryJS('landing.launch.errJavaRotoManual'),
+        codigo: SC_ERR.JAVA_ROTO,
+        reparar: scRepararJava
+    })
 }
 
 // Antivirus con pasos conocidos. La clave apunta a una cadena de idioma con la
@@ -1370,46 +1455,24 @@ function scAnalizarCierreDelJuego(code, salida, desde = Date.now() - 300000){
         return
     }
 
-    // Java incompleto: falta algún archivo del propio JDK (tzdb.dat y compañía).
-    // Suele ser el antivirus poniendo ficheros en cuarentena o una extracción
-    // interrumpida.
-    const javaRoto = forzarJavaRoto
-        || /tzdb\.dat|Error occurred during initialization of VM|ExceptionInInitializerError[\s\S]{0,200}(runtime|jdk-)|java\.lang\.NoClassDefFoundError: java\//i.test(txt)
-        || /FileNotFoundException:[^\n]*(runtime|jdk-)[^\n]*/i.test(txt)
-
-    if(javaRoto){
-        scFalloArranque(SC_ERR.JAVA_ROTO, Lang.queryJS('landing.launch.errJavaRoto'), new Error(txt.slice(-3000)))
-        // Se ofrece la reparación como acción principal del diálogo.
-        setOverlayContent(
-            Lang.queryJS('landing.launch.failureTitle'),
-            `${Lang.queryJS('landing.launch.errJavaRoto')}<br><br>
-             <span class="sc-cod-error">${SC_ERR.JAVA_ROTO}</span>
-             <span class="sc-cod-ayuda">${Lang.queryJS('landing.launch.codigoAyuda')}</span>`,
-            Lang.queryJS('landing.launch.repararJava'),
-            Lang.queryJS('landing.launch.okay')
-        )
-        setOverlayHandler(async () => {
-            const ok = await scRepararJava()
-            setOverlayContent(
-                Lang.queryJS('landing.launch.failureTitle'),
-                Lang.queryJS(ok ? 'landing.launch.javaReparado' : 'landing.launch.javaNoReparado'),
-                Lang.queryJS('landing.launch.okay')
-            )
-            setOverlayHandler(() => toggleOverlay(false))
-            setDismissHandler(null)
-            toggleOverlay(true)
-        })
-        setDismissHandler(() => toggleOverlay(false))
-        toggleOverlay(true, true)
-        return
-    }
-
-    if(/OutOfMemoryError|Could not reserve enough space|Failed to allocate/i.test(txt)){
+    // Memoria ANTES que Java roto (1.17.11): «Could not reserve enough space» sale
+    // debajo de la misma línea «Error occurred during initialization of VM» que un
+    // Java roto, y se clasificaba como SC-10. Reinstalar Java no lo arregla nunca.
+    if(/OutOfMemoryError|Could not reserve enough space|Failed to allocate/i.test(txt) || ScJava.esFalloDeMemoriaAlArrancar(txt)){
         // Con un perfil más ligero disponible, la solución es cambiar de perfil, no tocar la RAM a mano.
         if(scOfrecerPerfilMasLigero(true)){
             return
         }
         scFalloArranque(SC_ERR.MEMORIA, Lang.queryJS('landing.launch.errMemoria'), new Error(txt.slice(-3000)))
+        return
+    }
+
+    // Java incompleto: falta algún archivo del propio JDK (tzdb.dat y compañía).
+    // Suele ser el antivirus poniendo ficheros en cuarentena o una extracción
+    // interrumpida. Los patrones viven en scjava.js, con pruebas.
+    const motivoJava = forzarJavaRoto ? 'modruntime' : ScJava.motivoJavaRoto(txt)
+    if(motivoJava != null){
+        scJavaRoto(motivoJava, new Error(txt.slice(-3000)))
         return
     }
 
@@ -2962,60 +3025,40 @@ async function asyncSystemScan(effectiveJavaOptions, launchAfter = true){
     toggleLaunchArea(true)
     setLaunchPercentage(0, 100)
 
-    const jvmDetails = await discoverBestJvmInstallation(
+    // Nuestro Java primero; uno del sistema solo si el nuestro no está, y nunca uno vetado
+    // o al que le falten ficheros (scjava.js). Antes Helios elegía cualquier Java 21 del
+    // sistema por delante del nuestro, roto incluido, y «Reparar Java» no servía de nada.
+    const jvmDetails = await ScJava.elegir(
         ConfigManager.getDataDirectory(),
-        effectiveJavaOptions.supported
+        ConfigManager.getLauncherDirectory(),
+        effectiveJavaOptions.supported,
+        JavaGuardSc
     )
 
     if(jvmDetails == null) {
-        // If the result is null, no valid Java installation was found.
-        // Show this information to the user.
-        setOverlayContent(
-            Lang.queryJS('landing.systemScan.noCompatibleJava'),
-            Lang.queryJS('landing.systemScan.installJavaMessage', { 'major': effectiveJavaOptions.suggestedMajor }),
-            Lang.queryJS('landing.systemScan.installJava'),
-            Lang.queryJS('landing.systemScan.installJavaManually')
-        )
-        setOverlayHandler(async () => {
-            setLaunchDetails(Lang.queryJS('landing.systemScan.javaDownloadPrepare'))
-            toggleOverlay(false)
-
-            // downloadJava es asíncrona: el try/catch síncrono que había aquí NO
-            // veía su rechazo. Si fallaba la red o la API de Adoptium, el aviso
-            // ya se había cerrado, no salía ninguno nuevo y el jugador se
-            // quedaba con la barra de progreso puesta y sin botón de JUGAR.
-            try {
-                await downloadJava(effectiveJavaOptions, launchAfter)
-            } catch(err) {
-                loggerLanding.error('Unhandled error in Java Download', err)
-                toggleLaunchArea(false)
-                scFalloArranque(SC_ERR.JAVA, Lang.queryJS('landing.launch.errJava'), err)
+        // Sin Java válido se descarga el nuestro directamente (1.17.11): preguntar «¿instalar
+        // Java?» solo paraba al jugador; la única respuesta útil era que sí.
+        setLaunchDetails(Lang.queryJS('landing.systemScan.javaDownloadPrepare'))
+        try {
+            await downloadJava(effectiveJavaOptions, launchAfter)
+        } catch(err) {
+            loggerLanding.error('Unhandled error in Java Download', err)
+            // Sin red hacia nuestro servidor ni Adoptium: si hay un Java del sistema sano, se
+            // juega con él antes que quedarse sin jugar.
+            const delSistema = await ScJava.elegir(ConfigManager.getDataDirectory(), ConfigManager.getLauncherDirectory(),
+                effectiveJavaOptions.supported, JavaGuardSc, true).catch(() => null)
+            if(delSistema != null){
+                loggerLanding.warn(`Descarga de Java fallida: se usa el del sistema ${delSistema.path}`)
+                ConfigManager.setJavaExecutable(ConfigManager.getSelectedServer(), javaExecFromRoot(delSistema.path))
+                ConfigManager.save()
+                if(launchAfter){
+                    await dlAsync()
+                }
+                return
             }
-        })
-        setDismissHandler(() => {
-            $('#overlayContent').fadeOut(250, () => {
-                //$('#overlayDismiss').toggle(false)
-                setOverlayContent(
-                    Lang.queryJS('landing.systemScan.javaRequired', { 'major': effectiveJavaOptions.suggestedMajor }),
-                    Lang.queryJS('landing.systemScan.javaRequiredMessage', { 'major': effectiveJavaOptions.suggestedMajor }),
-                    Lang.queryJS('landing.systemScan.javaRequiredDismiss'),
-                    Lang.queryJS('landing.systemScan.javaRequiredCancel')
-                )
-                setOverlayHandler(() => {
-                    toggleLaunchArea(false)
-                    toggleOverlay(false)
-                })
-                setDismissHandler(() => {
-                    toggleOverlay(false, true)
-
-                    asyncSystemScan(effectiveJavaOptions, launchAfter).catch(err => {
-                        scFalloArranque(SC_ERR.JAVA, Lang.queryJS('landing.launch.errJava'), err)
-                    })
-                })
-                $('#overlayContent').fadeIn(250)
-            })
-        })
-        toggleOverlay(true, true)
+            toggleLaunchArea(false)
+            scFalloArranque(SC_ERR.JAVA, Lang.queryJS('landing.launch.errJava'), err)
+        }
     } else {
         // Java installation found, use this to launch the game.
         const javaExec = javaExecFromRoot(jvmDetails.path)
@@ -3174,12 +3217,21 @@ async function downloadJava(effectiveJavaOptions, launchAfter = true) {
     // ningún mensaje ni código de error. Pasa cuando el antivirus pone en
     // cuarentena el java.exe recién extraído, que es lo habitual.
     const validado = await validateSelectedJvm(ensureJavaDirIsRoot(newJavaExec), effectiveJavaOptions.supported)
-    if(validado == null){
+    // java -version arranca aunque falte tzdb.dat: sin mirar los ficheros, un Java recién
+    // mordido por el antivirus pasaba y el juego moría luego con SC-10 (1.17.11).
+    const faltanTrasExtraer = ScJava.faltanEsenciales(newJavaExec)
+    if(validado == null || faltanTrasExtraer.length > 0){
         // Por qué no arranca, para el aviso (1.17.9): el SC-14 llegaba sin nada y no se
         // sabía si era el antivirus, Windows o el procesador.
         // En paralelo con la detección del antivirus, que el diálogo de abajo usa igual
         // (queda en scAvCache): así el aviso dice también qué antivirus había.
-        const [sonda] = await Promise.all([scSondaJava(newJavaExec), scDetectarAntivirus().catch(() => null)])
+        let [sonda] = await Promise.all([scSondaJava(newJavaExec), scDetectarAntivirus().catch(() => null)])
+        if(validado != null){
+            sonda = 'faltan-' + require('path').basename(faltanTrasExtraer[0])
+        }
+        // Desde ahora y durante un día vale un Java del sistema: así el .msi de Adoptium que
+        // se le sugiere funciona en el siguiente JUGAR en vez de volver a bajar el nuestro.
+        ScJava.marcarPropioBloqueado(ConfigManager.getLauncherDirectory())
         loggerLanding.error(`Java instalado en ${newJavaExec} pero no se puede ejecutar (${sonda}).`)
         toggleLaunchArea(false)
         // Primero el diálogo básico, que además guarda el informe de soporte...
@@ -3990,7 +4042,7 @@ async function scDlAsyncInterno(login = true) {
                 scParaAnimacion()
                 toggleLaunchArea(false)
                 proc = null
-                scFalloArranque(SC_ERR.JAVA_ROTO, Lang.queryJS('landing.launch.errJavaRoto'), err)
+                scJavaRoto('proceso', err)
             })
 
             // Si el juego muere o se cierra, restaurar el botón JUGAR.
