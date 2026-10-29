@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-29-launcher-1.17.11",
+      "fecha": "2026-10-29",
+      "tipo": "launcher",
+      "version": "1.17.11",
+      "titulo": "Arreglado el error de Java al abrir el juego",
+      "puntos": [
+        "Si tu Windows tenía guardada una opción de Java que limitaba la memoria, el juego no arrancaba (error SC-10) aunque repararas Java. Ahora el launcher la ignora y el juego abre normal.",
+        "Si la instalación de Java del juego está dañada, el launcher la vuelve a descargar y abre el juego solo, sin que tengas que pulsar nada.",
+        "Ya no usa por error otro Java roto que tengas instalado en el equipo."
+      ]
+    },
+    {
       "id": "2026-10-29-movil-app-0.1.21",
       "fecha": "2026-10-29",
       "tipo": "movil",
