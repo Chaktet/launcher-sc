@@ -155,7 +155,33 @@ function borrarMarcaJuego(pid){
     }
 }
 
-function relanzarLauncher(){
+function viveProceso(pid){
+    try {
+        process.kill(pid, 0)
+        return true
+    } catch(e){
+        return e.code === 'EPERM'
+    }
+}
+
+/**
+ * Reabre el launcher cuando el que se cerró por el juego ya no existe: si aún se está cerrando,
+ * el bloqueo de instancia única le mandaría la apertura a él y se perdería.
+ */
+function relanzarLauncher(hecho){
+    const desde = Date.now()
+    const esperar = () => {
+        if(Number.isInteger(opciones.pidLauncher) && viveProceso(opciones.pidLauncher) && Date.now() - desde < 30000){
+            setTimeout(esperar, 250)
+            return
+        }
+        abrirLauncher()
+        hecho()
+    }
+    esperar()
+}
+
+function abrirLauncher(){
     try {
         // Sin ELECTRON_RUN_AS_NODE: con ella el exe arrancaría otra vez en modo Node y no abriría nada.
         const env = Object.assign({}, process.env)
@@ -216,9 +242,16 @@ function alCerrarJuego(code, signal){
         }
         entregado = true
         if(saliendoPorJuego){
-            relanzarLauncher()
+            relanzarLauncher(terminar)
+        } else {
+            terminar()
         }
-        terminar()
+    }
+    // Comprometida la salida, el launcher se va a cerrar aunque procese el cierre: su
+    // `consumido` no vale y el resultado espera al launcher reabierto (revisión de Codex).
+    if(saliendoPorJuego){
+        sinAcuse()
+        return
     }
     process.on('message', (m) => {
         if(m && m.tipo === 'consumido' && m.runId === opciones.runId && !entregado){
@@ -258,14 +291,14 @@ function lanzar(m){
         })
     } catch(e){
         log('spawn lanzó: ' + e.message)
-        enviar({ tipo: 'error', error: errorPlano(e) }, true)
+        enviar({ tipo: 'error', origen: 'java', error: errorPlano(e) }, true)
         terminar()
         return
     }
 
     juego.on('error', (e) => {
         log('Error del proceso del juego: ' + e.message)
-        enviar({ tipo: 'error', error: errorPlano(e) }, true)
+        enviar({ tipo: 'error', origen: 'java', error: errorPlano(e) }, true)
         // Sin pid no hubo juego y no habrá 'close'.
         if(juego.pid == null){
             terminar()
@@ -312,7 +345,7 @@ process.on('message', (m) => {
             lanzar(m.opciones)
         } catch(e){
             log('Fallo al lanzar: ' + e.message)
-            enviar({ tipo: 'error', error: errorPlano(e) }, true)
+            enviar({ tipo: 'error', origen: 'vigilante', error: errorPlano(e) }, true)
             terminar()
         }
     } else if(m.tipo === 'cargado'){

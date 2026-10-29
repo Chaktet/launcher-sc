@@ -162,7 +162,7 @@ ipcMain.on('autoUpdateAction', (event, arg, data) => {
             // El instalador NSIS mata todos los «SC Launcher.exe», también el vigilante de una
             // partida en curso, y el juego perdería a quien lo vigila. La interfaz ya lo impide
             // (scJuegoEnMarcha); esto es la red por si algo se le escapa.
-            if(process.platform === 'win32' && ScVigilante.hayVigilanteVivo(scCarpetaVigilante)){
+            if(process.platform === 'win32' && scHayVigilanteVivo()){
                 console.warn('[SC] Actualización no instalada: hay una partida con vigilante en curso.')
                 break
             }
@@ -179,19 +179,25 @@ ipcMain.on('autoUpdateAction', (event, arg, data) => {
             break
     }
 })
-// Carpeta de instancias, que manda el renderer al arrancar: ahí deja el vigilante su marca.
-let scCarpetaVigilante = null
+// Carpetas de instancias donde un vigilante deja su marca. El renderer manda la suya al arrancar
+// y antes de cada lanzamiento; se guardan todas porque la carpeta de datos se puede cambiar en
+// Ajustes con una partida en marcha.
+const scCarpetasVigilante = new Set()
 ipcMain.on('sc-vigilante-carpeta', (_event, carpeta) => {
     if(typeof carpeta === 'string' && carpeta.length > 0){
-        scCarpetaVigilante = carpeta
+        scCarpetasVigilante.add(carpeta)
     }
 })
+function scHayVigilanteVivo(){
+    return [...scCarpetasVigilante].some(c => ScVigilante.hayVigilanteVivo(c))
+}
 // Al cerrar (por el juego o a mano con una partida en curso), nada de instalar la
 // actualización descargada si hay un vigilante vivo: el instalador lo mataría. Se aplica en el
 // siguiente cierre sin partida. Se decide aquí y no al iniciar el autoUpdater porque el
 // vigilante puede nacer y morir mientras el launcher está abierto.
 app.on('before-quit', () => {
-    if(process.platform === 'win32' && !isDev && ScVigilante.hayVigilanteVivo(scCarpetaVigilante)){
+    if(process.platform === 'win32' && !isDev && scHayVigilanteVivo()){
+
         autoUpdater.autoInstallOnAppQuit = false
     }
 })

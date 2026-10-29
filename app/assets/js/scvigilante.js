@@ -17,9 +17,8 @@ const path          = require('path')
 // Sin pid de Java en este tiempo se mata el árbol del vigilante y se lanza directo.
 const ESPERA_LANZADO_MS = 15000
 const ESPERA_RESPUESTA_MS = 3000
-// Resultados que nadie recogió (launcher desinstalado y reinstalado, PC apagado...).
+// Resultados y marcas que nadie recogió (launcher desinstalado y reinstalado, PC apagado...).
 const MAX_EDAD_RESULTADO_MS = 7 * 24 * 3600 * 1000
-const MAX_EDAD_PROCESANDO_MS = 24 * 3600 * 1000
 
 function carpetaDe(instancias){
     return path.join(instancias, 'sc-vigilante')
@@ -82,19 +81,35 @@ function regexPlana(r){
     return r == null ? null : { source: r.source, flags: r.flags }
 }
 
-/** Mata el vigilante y todo lo que haya lanzado (un Java incluido) y espera a que muera. */
+/**
+ * Mata el vigilante y todo lo que haya lanzado (un Java incluido).
+ * @returns {Promise<boolean>} true solo si consta que el vigilante murió y taskkill no falló
+ * (con /T mata el árbol entero); con false NO se puede lanzar directo: habría dos Minecraft.
+ */
 function matarArbol(hijo){
     return new Promise((resolve) => {
         if(hijo.exitCode != null || hijo.signalCode != null){
-            resolve()
+            resolve(true)
             return
         }
-        const fin = setTimeout(resolve, 5000)
+        let muerto = false
+        let killOk = null
+        const decidir = () => {
+            if(muerto && killOk != null){
+                clearTimeout(fin)
+                resolve(killOk)
+            }
+        }
+        const fin = setTimeout(() => resolve(false), 10000)
         hijo.once('exit', () => {
-            clearTimeout(fin)
-            resolve()
+            muerto = true
+            decidir()
         })
-        child_process.execFile('taskkill', ['/T', '/F', '/PID', String(hijo.pid)], { windowsHide: true }, () => {})
+        child_process.execFile('taskkill', ['/T', '/F', '/PID', String(hijo.pid)], { windowsHide: true }, (err) => {
+            // Si el vigilante murió solo entre medias, taskkill no lo encuentra (128): no queda árbol.
+            killOk = err == null || err.code === 128
+            decidir()
+        })
     })
 }
 
@@ -186,9 +201,10 @@ exports.lanzar = function(o){
                 return
             }
             resuelto = true
-            matarArbol(hijo).then(() => {
-                const e = new Error('Vigilante no disponible: ' + motivo)
-                e.sinVigilante = true
+            matarArbol(hijo).then((seguro) => {
+                const e = new Error('Vigilante no disponible: ' + motivo + (seguro ? '' : ' (y no se pudo confirmar que muriera)'))
+                // Sin confirmar la muerte del árbol no hay respaldo: podría quedar un Java vivo.
+                e.sinVigilante = seguro
                 reject(e)
             })
         }
@@ -222,7 +238,11 @@ exports.lanzar = function(o){
                     resolve(juego)
                     break
                 case 'error':
-                    if(!resuelto){
+                    if(!resuelto && m.origen !== 'java'){
+                        // Fallo del propio vigilante antes del spawn (disco lleno...): respaldo.
+                        clearTimeout(tLanzado)
+                        sinVigilante(m.error && m.error.message)
+                    } else if(!resuelto){
                         clearTimeout(tLanzado)
                         resuelto = true
                         const e = errorDe(m.error)
@@ -258,6 +278,9 @@ exports.lanzar = function(o){
             perfil: o.perfil,
             inicioPartida: o.inicioPartida,
             exeLauncher: process.execPath,
+            // Proceso principal: el vigilante espera a que muera antes de reabrir (si no, el bloqueo
+            // de instancia única mandaría la apertura a un launcher que se está cerrando).
+            pidLauncher: require('@electron/remote').process.pid,
             // En desarrollo el exe es electron.exe y necesita la carpeta de la app.
             argsLauncher: app.isPackaged ? [] : [app.getAppPath()],
             raizApp: app.getAppPath(),
@@ -269,9 +292,38 @@ exports.lanzar = function(o){
     })
 }
 
+/*
+ * Reclamar un resultado (una partida = un runId), revisión de Codex 29-10:
+ *   resultado-<runId>.json  --rename-->  resultado-<runId>.json.procesando-<pid>  (lo tiene ESA instancia)
+ *   y al terminar el diagnóstico           hecho-<runId>                          (marca de consumido)
+ * El renombrado es atómico: solo una instancia gana. La marca «hecho» distingue «ya lo procesó
+ * otro» de «nunca llegó a escribirse». Una reclamación de una instancia que murió a medias (su
+ * pid ya no vive) se recupera en el siguiente arranque, así el aviso no se pierde.
+ */
+const RE_PROCESANDO = /^resultado-([0-9a-f]+)\.json\.procesando-(\d+)$/
+
+function rutaResultado(instancias, runId){
+    return path.join(carpetaDe(instancias), 'resultado-' + runId + '.json')
+}
+
+function rutaHecho(instancias, runId){
+    return path.join(carpetaDe(instancias), 'hecho-' + runId)
+}
+
+function hayReclamacion(instancias, runId){
+    try {
+        return fs.readdirSync(carpetaDe(instancias)).some(f => {
+            const m = RE_PROCESANDO.exec(f)
+            return m != null && m[1] === runId
+        })
+    } catch(_e){
+        return false
+    }
+}
+
 /**
- * Resultados de partidas que terminaron sin el launcher delante. Cada uno se reclama con un
- * renombrado (solo una instancia gana) y se borra al leerlo.
+ * Resultados de partidas que terminaron sin el launcher delante, ya reclamados por esta
+ * instancia. Hay que cerrar cada uno con terminarResultado() cuando su aviso se haya dado.
  *
  * @returns {Array<Object>} Resultados, del más antiguo al más nuevo.
  */
@@ -289,8 +341,8 @@ exports.reclamarResultados = function(instancias){
         const ruta = path.join(carpeta, f)
         try {
             const edad = ahora - fs.statSync(ruta).mtimeMs
-            if(/^resultado-[0-9a-f]+\.json\.procesando-\d+$/.test(f) || /\.tmp-\d+$/.test(f)){
-                if(edad > MAX_EDAD_PROCESANDO_MS){
+            if(/\.tmp-\d+$/.test(f) || /^hecho-[0-9a-f]+$/.test(f)){
+                if(edad > MAX_EDAD_RESULTADO_MS){
                     fs.rmSync(ruta, { force: true })
                 }
                 continue
@@ -302,18 +354,31 @@ exports.reclamarResultados = function(instancias){
                 }
                 continue
             }
-            if(!/^resultado-[0-9a-f]+\.json$/.test(f)){
+            let origen = null
+            const m = RE_PROCESANDO.exec(f)
+            if(m != null){
+                // De una instancia que murió a medias: se recupera. Si sigue viva, es suya.
+                if(Number(m[2]) === process.pid || vive(Number(m[2]))){
+                    continue
+                }
+                origen = ruta
+            } else if(/^resultado-[0-9a-f]+\.json$/.test(f)){
+                origen = ruta
+            } else {
                 continue
             }
             if(edad > MAX_EDAD_RESULTADO_MS){
                 fs.rmSync(ruta, { force: true })
                 continue
             }
-            const reclamado = ruta + '.procesando-' + process.pid
-            fs.renameSync(ruta, reclamado)
-            const d = JSON.parse(fs.readFileSync(reclamado, 'utf8'))
-            fs.rmSync(reclamado, { force: true })
-            salida.push(d)
+            const runId = /^resultado-([0-9a-f]+)\.json/.exec(f)[1]
+            if(fs.existsSync(rutaHecho(instancias, runId))){
+                fs.rmSync(ruta, { force: true })
+                continue
+            }
+            const reclamado = rutaResultado(instancias, runId) + '.procesando-' + process.pid
+            fs.renameSync(origen, reclamado)
+            salida.push(JSON.parse(fs.readFileSync(reclamado, 'utf8')))
         } catch(_e){
             // Otra instancia lo reclamó primero, o está a medio escribir.
         }
@@ -322,26 +387,33 @@ exports.reclamarResultados = function(instancias){
 }
 
 /**
- * Reclama el resultado que acaba de llegar en vivo, con el mismo renombrado que
- * reclamarResultados(): si otra instancia (un launcher reabierto a mano) ya lo tiene, false.
+ * Reclama el resultado que acaba de llegar en vivo. false si otra instancia (un launcher
+ * reabierto a mano) ya lo tiene o lo terminó: entonces lo explica ella.
  */
 exports.reclamarUno = function(instancias, runId){
-    const ruta = path.join(carpetaDe(instancias), 'resultado-' + runId + '.json')
-    const reclamado = ruta + '.procesando-' + process.pid
-    try {
-        fs.renameSync(ruta, reclamado)
-    } catch(e){
-        // ENOENT sin haberse escrito nunca (disco lleno) también es nuestro; si otro lo
-        // renombró, el .procesando de esa instancia existe.
-        if(e.code !== 'ENOENT'){
-            return false
-        }
-        try {
-            return !fs.readdirSync(carpetaDe(instancias)).some(f => f.startsWith('resultado-' + runId + '.json.procesando-'))
-        } catch(_e){
-            return true
-        }
+    if(fs.existsSync(rutaHecho(instancias, runId)) || hayReclamacion(instancias, runId)){
+        return false
     }
-    fs.rmSync(reclamado, { force: true })
-    return true
+    try {
+        fs.renameSync(rutaResultado(instancias, runId), rutaResultado(instancias, runId) + '.procesando-' + process.pid)
+        return true
+    } catch(e){
+        // Sin fichero, sin reclamación y sin «hecho»: el vigilante no pudo escribirlo (disco lleno).
+        // Se vuelve a mirar por si otra instancia lo cogió en este mismo instante.
+        return e.code === 'ENOENT' && !hayReclamacion(instancias, runId) && !fs.existsSync(rutaHecho(instancias, runId))
+    }
+}
+
+/** El aviso de esta partida ya se dio: se cierra la reclamación y no vuelve a salir. */
+exports.terminarResultado = function(instancias, runId){
+    try {
+        fs.writeFileSync(rutaHecho(instancias, runId), '')
+    } catch(_e){
+        // Sin marca, la reclamación de abajo se borra igual.
+    }
+    try {
+        fs.rmSync(rutaResultado(instancias, runId) + '.procesando-' + process.pid, { force: true })
+    } catch(_e){
+        // Nada.
+    }
 }

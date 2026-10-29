@@ -3607,7 +3607,7 @@ function scTrasCerrarJuego({ code, juegoArranco, salida, perfil, inicioPartida }
     // Se cerró con error a media partida: aviso anónimo (SC-90) con la pista del crash report.
     const cerradoFuera = SC_CODIGOS_CERRADO_FUERA.has(code)
     if(cerradoFuera){
-        loggerLaunchSuite.info(`Juego terminado por Windows (código ${code}): no es un fallo.`)
+        loggerLanding.info(`Juego terminado por Windows (código ${code}): no es un fallo.`)
     }
     const cierre = code !== 0 && !cerradoFuera ? scAvisoCrashPartida(code, perfil, inicioPartida) : null
     // Partida jugada: si acabó sin memoria (o sin pack por falta de memoria), ofrecer un perfil más ligero.
@@ -3654,19 +3654,22 @@ async function scLanzarConVigilante(pb, serv, discord, extra){
     }
     let prep
     try {
+        // Antes de que nazca: index.js mira ahí si hay un vigilante vivo antes de instalar una
+        // actualización (la carpeta de datos se puede cambiar en Ajustes).
+        ipcRenderer.send('sc-vigilante-carpeta', ConfigManager.getInstanceDirectory())
         prep = pb.preparar()
         const juego = await ScVigilante.lanzar(Object.assign({}, prep, extra, {
             instancias: ConfigManager.getInstanceDirectory(),
             servidorId: serv.rawServer.id,
             discord
         }))
-        loggerLaunchSuite.info('Juego lanzado por el vigilante (pid ' + juego.pid + ').')
+        loggerLanding.info('Juego lanzado por el vigilante (pid ' + juego.pid + ').')
         return { juego, errorJava: null }
     } catch(err){
         if(err.errorJava === true){
             return { juego: null, errorJava: err }
         }
-        loggerLaunchSuite.warn('Vigilante no disponible: el juego se lanza directo.', err)
+        loggerLanding.warn('Vigilante no disponible: el juego se lanza directo.', err)
         // pb.build() extrae otra vez las nativas en una carpeta nueva.
         if(prep != null && prep.tempNativePath){
             require('fs').rm(prep.tempNativePath, { recursive: true, force: true }, () => {})
@@ -3683,6 +3686,9 @@ async function scApartarPorJuego(juego){
     if(juego.vigilante === true){
         try {
             await juego.cargadoConfirmado
+            // Antes de pedirlo: si el juego se cierra mientras tanto, ese cierre ya no es de esta
+            // instancia (el vigilante lo guarda y reabre el launcher).
+            juego.saliendo = true
             await juego.saliendoPorJuego()
             if(proc === juego){
                 loggerLanding.info('Partida cargada: el launcher se cierra; el vigilante lo reabrirá al terminar.')
@@ -3690,6 +3696,7 @@ async function scApartarPorJuego(juego){
                 return
             }
         } catch(e){
+            juego.saliendo = false
             loggerLanding.warn('El vigilante no confirmó: el launcher se queda en la bandeja.', e)
         }
     }
@@ -3720,12 +3727,18 @@ function scRevisarPartidasCerradas(intentos = 0){
         if(nuevas.length === 0){
             return
         }
+        // Solo se explica la última; las anteriores quedan cerradas ya (su caché, invalidada).
+        for(const r of nuevas.slice(0, -1)){
+            ScVigilante.terminarResultado(ConfigManager.getInstanceDirectory(), r.runId)
+        }
         scPartidasPendientes = [nuevas[nuevas.length - 1]]
     }
     if(scPartidasPendientes.length === 0){
         return
     }
     if(isOverlayVisible() || getCurrentView() !== VIEWS.landing || proc != null){
+        // Sin aviso todavía: la reclamación se queda y, si el launcher se cierra antes, el
+        // siguiente arranque la recupera (su pid ya no vive).
         if(intentos < 90){
             setTimeout(() => scRevisarPartidasCerradas(intentos + 1), 2000)
         }
@@ -3733,11 +3746,19 @@ function scRevisarPartidasCerradas(intentos = 0){
     }
     const r = scPartidasPendientes.pop()
     try {
-        // La invalidación de la caché ya se hizo arriba; repetirla no cuesta nada.
-        scTrasCerrarJuego({ code: r.code, juegoArranco: r.juegoArranco === true, salida: String(r.salida || ''), perfil: r.perfil, inicioPartida: r.inicioPartida })
+        const arranco = r.juegoArranco === true
+        // El análisis de un fallo de arranque lee informes y Java del perfil SELECCIONADO: si el
+        // jugador cambió de perfil, leería los de otro. Entonces solo queda en el log.
+        if(!arranco && r.code !== 0 && r.perfil !== ConfigManager.getSelectedServer()){
+            loggerLanding.info(`Fallo de arranque de ${r.perfil} sin explicar: el perfil seleccionado ya es otro.`)
+        } else {
+            // La invalidación de la caché ya se hizo arriba; repetirla no cuesta nada.
+            scTrasCerrarJuego({ code: r.code, juegoArranco: arranco, salida: String(r.salida || ''), perfil: r.perfil, inicioPartida: r.inicioPartida })
+        }
     } catch(e){
         loggerLanding.error('Fallo al explicar una partida cerrada.', e)
     }
+    ScVigilante.terminarResultado(ConfigManager.getInstanceDirectory(), r.runId)
 }
 // El vigilante reabrió el launcher que ya estaba abierto (reabierto a mano durante la partida).
 ipcRenderer.on('sc-tras-juego', () => scRevisarPartidasCerradas())
@@ -4260,22 +4281,34 @@ async function scDlAsyncInterno(login = true) {
                 clearTimeout(scTimerOcultar)
                 ipcRenderer.send('sc-ventana-juego', 'restaurar')
                 if(scJuegoActual.vigilante === true){
+                    // Este launcher ya se está cerrando por el juego: el resultado lo explica el
+                    // que reabra el vigilante.
+                    if(scJuegoActual.saliendo === true){
+                        return
+                    }
                     // Un launcher reabierto a mano pudo reclamarlo antes: entonces lo explica él.
-                    const nuestro = ScVigilante.reclamarUno(ConfigManager.getInstanceDirectory(), scJuegoActual.runId)
-                    scJuegoActual.consumido()
-                    if(!nuestro){
+                    if(!ScVigilante.reclamarUno(ConfigManager.getInstanceDirectory(), scJuegoActual.runId)){
+                        scJuegoActual.consumido()
                         return
                     }
                 }
                 // Con vigilante vale su salida: la del renderer pudo perder trozos en la cola del IPC.
-                scTrasCerrarJuego({
-                    code,
-                    juegoArranco: scJuegoArranco,
-                    salida: resultado != null && typeof resultado.salida === 'string' ? resultado.salida : scSalidaError.join('\n'),
-                    perfil: scPerfilJugado,
-                    inicioPartida: scInicioPartida
-                })
+                try {
+                    scTrasCerrarJuego({
+                        code,
+                        juegoArranco: scJuegoArranco,
+                        salida: resultado != null && typeof resultado.salida === 'string' ? resultado.salida : scSalidaError.join('\n'),
+                        perfil: scPerfilJugado,
+                        inicioPartida: scInicioPartida
+                    })
+                } finally {
+                    if(scJuegoActual.vigilante === true){
+                        ScVigilante.terminarResultado(ConfigManager.getInstanceDirectory(), scJuegoActual.runId)
+                        scJuegoActual.consumido()
+                    }
+                }
             })
+
 
             // Init Discord Hook (con vigilante lo lleva él: sigue con el launcher cerrado).
             if(scDiscord && scJuegoActual.vigilante !== true){
