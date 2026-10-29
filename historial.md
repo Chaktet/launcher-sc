@@ -5,7 +5,7 @@
   entero y un proceso Node de ~28 MB vigila el juego; al cerrarlo reabre el launcher con el diagnóstico. Medido en el
   PC de Felix con Minecraft real: 483 MB → 28 MB, 0 CPU, ciclo completo bien. Plan + 3 revisiones de Codex:
   `docs/PLAN-VIGILANTE.md`. Pendiente: OK de Felix para versión firmada + novedad; fusionar en `master`.
-- **SC-12 con botones (29-10, sin publicar)**: el aviso de gráficos abre la web del driver con un botón (antes texto que los niños no sabían copiar). Commit en master; entra en la próxima versión del launcher cuando Felix dé el OK.
+- **1.17.12 publicada (29-10 14:13 UTC, OK de Felix)**: aviso SC-12 con botón que abre la web del driver. Firmada (`comprueba-publisher` ok), release v1.17.12 con 14 ficheros (Mac/Linux del CI run 40887902351, todo en verde; commit dd1f784); las tres fichas `latest*.yml` dicen 1.17.12 y el sha512 = build; `master` y `main` subidas; los 3 exe de OVH-A renovados (por Cloudflare 93.685.912 B, sha256 `591c023a…` = build, firma `Valid`). Novedad `2026-10-29-launcher-1.17.12` publicada con el OK de Felix.
 - **1.17.11 publicada (29-10 03:01 UTC, OK de Felix)**: SC-10 real = `_JAVA_OPTIONS` del sistema (el juego se lanza sin
   ella) + reparación automática de Java. Firmada (`comprueba-publisher` ok), release v1.17.11 con 14 ficheros
   (Mac/Linux del CI run 40808669709, todo en verde; commit 9359975); las tres fichas `latest*.yml` dicen 1.17.11 y el
@@ -78,7 +78,7 @@
 - Pedido: un jugador con AMD no sabía copiar la web del driver del aviso SC-12.
 - Cambio: con marca detectada, texto corto + un botón grande `a.sc-btn-driver` (https, lo abre `uicore.js`) y pasos sencillos; sin marca, un botón por fabricante. CSS en `scpokenav.css`; doc en ERRORES.md.
 - Verificado en `npm start` por CDP: AMD sale con 1 botón y sin scroll en ventana de 700 px; genérico 3 botones (solo el consejo LITE queda bajo scroll); el clic llama a `shell.openExternal` con la web de AMD. Las 3 webs abren (Intel da 403 a curl, en navegador bien).
-- Pendiente: publicar en la próxima versión (sin bump todavía).
+- Publicado como 1.17.12 el mismo día (ver Estado actual). La primera firma falló por SimplySign sin sesión («After Private Key filter, 0 certs»): `comprueba-certificado.ps1` dice ConClave True igual; hay que pedir a Felix que inicie sesión.
 
 ## 2026-10-28 · 1.17.11 (publicada 29-10 03:01 UTC): SC-10 «Reparar Java» que no reparaba
 - Felix: un jugador con SC-10 pulsa Reparar Java y sigue igual (antivirus quitado). Quiere que se arregle solo.

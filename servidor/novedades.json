@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-29-launcher-1.17.12",
+      "fecha": "2026-10-29",
+      "tipo": "launcher",
+      "version": "1.17.12",
+      "titulo": "Más fácil arreglar el error de gráficos",
+      "puntos": [
+        "Si el juego no arranca por los drivers de la tarjeta gráfica (error SC-12), el aviso ahora trae un botón que abre directamente la web para descargarlos. Ya no hace falta copiar ninguna dirección.",
+        "Si el launcher reconoce tu tarjeta (NVIDIA, AMD o Intel), te enseña solo el botón de tu marca y los pasos: descargar, instalar y reiniciar el ordenador."
+      ]
+    },
+    {
       "id": "2026-10-29-servidor-Las-raids-te-dicen-por-que-no-te-toco-el-Pokemon",
       "fecha": "2026-10-29",
       "tipo": "servidor",
