@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-29-servidor-Ponerte-un-cosmetico-ya-no-te-quita-lo-de-la-mano",
+      "fecha": "2026-10-29",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Ponerte un cosmético ya no te quita lo de la mano",
+      "puntos": [
+        "Con el inventario lleno, ponerte un cosmético de la mano secundaria podía hacer desaparecer el objeto que llevabas",
+        "Ahora, si tu objeto no cabe en el inventario, el cosmético no se pone y te avisa en el chat"
+      ]
+    },
+    {
       "id": "2026-10-29-servidor-Pase-de-batalla-los-premios-a-elegir-los-eliges-tu",
       "fecha": "2026-10-29",
       "tipo": "servidor",
