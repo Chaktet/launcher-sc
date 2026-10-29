@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-29-servidor-El-corazon-de-casados-sale-en-las-dos-regiones",
+      "fecha": "2026-10-29",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "El corazón de casados sale en las dos regiones",
+      "puntos": [
+        "Si estás casado, el corazón junto a tu nombre ya sale también en el chat de la otra región. Antes a algunos no les salía."
+      ]
+    },
+    {
       "id": "2026-10-29-modpack-El-brillo-de-tu-Pokemon-ya-sale-con-su-color",
       "fecha": "2026-10-29",
       "tipo": "modpack",
