@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-29-servidor-Las-raids-te-dicen-por-que-no-te-toco-el-Pokemon",
+      "fecha": "2026-10-29",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Las raids te dicen por qué no te tocó el Pokémon",
+      "puntos": [
+        "Al acabar una raid, si no te llevas el Pokémon, te dice qué probabilidad tenías en tu puesto",
+        "Y cuánta hay en el TOP 3 de daño, para que sepas a qué puesto apuntar en la próxima"
+      ]
+    },
+    {
       "id": "2026-10-29-launcher-1.17.11",
       "fecha": "2026-10-29",
       "tipo": "launcher",
