@@ -53,8 +53,10 @@
 
 ## 2026-10-28 · 1.17.11 (sin publicar): SC-10 «Reparar Java» que no reparaba
 - Felix: un jugador con SC-10 pulsa Reparar Java y sigue igual (antivirus quitado). Quiere que se arregle solo.
-- Causa de este jugador: SIN CONFIRMAR (su aviso solo trae a/s/z, z=0; no hay ZIP). Tres causas posibles en el código,
-  las tres corregidas: la reparación borraba solo nuestro runtime y el siguiente JUGAR elegía un Java 21 del sistema
+- **Causa de este jugador, confirmada con su ZIP de soporte:** variable de Windows `_JAVA_OPTIONS=-Xmx512M` (gana a
+  nuestro -Xmx; con -Xms8G la JVM no nace). Arreglo: el juego se lanza sin `_JAVA_OPTIONS`/`JAVA_TOOL_OPTIONS`/
+  `JDK_JAVA_OPTIONS` (`processbuilder.js`); probado con el Java real (con la variable falla igual, sin ella arranca).
+- Además, tres fallos del código, corregidos: la reparación borraba solo nuestro runtime y el siguiente JUGAR elegía un Java 21 del sistema
   (roto) sin volver a bajar el nuestro; un fallo de memoria al arrancar salía como SC-10 (ahora SC-11 con consejo de
   bajar la RAM); y los mods con RuntimeException también. Lo dirán su ZIP o las pistas nuevas x/f/u.
 - Arreglo: `app/assets/js/scjava.js` (nuestro Java primero, vetos, ficheros esenciales, clasificador) y `scJavaRoto()`:

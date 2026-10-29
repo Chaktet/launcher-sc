@@ -261,7 +261,36 @@ async function elegir(dataDir, dirLauncher, rango, javaGuard, permitirSistema = 
     return permitirSistema || propioBloqueadoReciente(dirLauncher) ? (aptos[0] || null) : null
 }
 
+// Variables de entorno que Java lee SOLA y que ganan a nuestros argumentos.
+const VARIABLES_JAVA = ['_JAVA_OPTIONS', 'JAVA_TOOL_OPTIONS', 'JDK_JAVA_OPTIONS']
+
+/**
+ * Copia del entorno sin las variables con las que Java recibe opciones de fuera.
+ *
+ * Por qué (ZIP de soporte del 28-10, el SC-10 que «Reparar Java» no arreglaba): el jugador tenía
+ * en Windows `_JAVA_OPTIONS=-Xmx512M` (lo dejan otros programas o tutoriales). Java la aplica a
+ * todo lo que arranca y gana a nuestro -Xmx: con -Xms8G y un máximo de 512 MB la JVM ni nace
+ * («Initial heap size set to a larger value than the maximum heap size»). El juego no necesita
+ * ninguna de las tres: su memoria y opciones las pone el launcher.
+ *
+ * @returns {{ env: object, quitadas: string[] }} quitadas: «NOMBRE=valor» de las que había.
+ */
+function entornoSinOpcionesJava(entorno = process.env){
+    const env = {}
+    const quitadas = []
+    for(const [k, v] of Object.entries(entorno)){
+        // En Windows los nombres no distinguen mayúsculas: se compara en mayúsculas.
+        if(VARIABLES_JAVA.includes(k.toUpperCase())){
+            quitadas.push(`${k}=${String(v).slice(0, 200)}`)
+        } else {
+            env[k] = v
+        }
+    }
+    return { env, quitadas }
+}
+
 module.exports = {
+    entornoSinOpcionesJava,
     esPropio,
     faltanEsenciales,
     motivoJavaRoto,

@@ -184,7 +184,15 @@ to load TZDB time-zone rules»), `jvmcfg`, `jvm` (falta `jvm.dll`/`libjvm`), `cl
 Causa casi siempre: **el antivirus ha puesto ficheros del JDK en cuarentena**, o una extracción
 interrumpida.
 
-**1.17.11 (informe del 28-10: «le doy a Reparar Java y no pasa nada»).** Tres fallos que hacían inútil el botón:
+**Causa real del informe del 28-10 (ZIP de soporte):** el jugador tenía en Windows la variable de entorno
+`_JAVA_OPTIONS=-Xmx512M`. Java la aplica sola a todo lo que arranca y gana a nuestro `-Xmx`: con `-Xms8G` la JVM
+no nace («Picked up _JAVA_OPTIONS: -Xmx512M / Error occurred during initialization of VM / Initial heap size set
+to a larger value than the maximum heap size»). Ni Java roto ni antivirus. **Desde la 1.17.11 el juego se lanza
+sin `_JAVA_OPTIONS`, `JAVA_TOOL_OPTIONS` ni `JDK_JAVA_OPTIONS`** (`ScJava.entornoSinOpcionesJava`, en
+`processbuilder.js`; queda en el registro «Variables de Java del sistema ignoradas para el juego»). Probado con
+el Java real: con la variable falla igual que el jugador, sin ella arranca.
+
+**1.17.11, además:** tres fallos que hacían inútil el botón «Reparar Java»:
 1. La reparación borraba solo NUESTRO runtime y el siguiente JUGAR escaneaba el sistema: cogía cualquier Java 21
    de JAVA_HOME, Archivos de programa o el registro, roto incluido, y no volvía a bajar el nuestro. Y con el nuestro
    presente, Helios prefería a igual versión una ruta sin «jdk» (la nuestra es `jdk-21…`).

@@ -109,9 +109,16 @@ class ProcessBuilder {
 
         logger.info('Launch Arguments:', loggableArgs)
 
+        // Sin _JAVA_OPTIONS / JAVA_TOOL_OPTIONS / JDK_JAVA_OPTIONS del sistema: ganan a nuestros
+        // argumentos y un -Xmx512M heredado dejaba el juego sin arrancar (SC-10 falso, 28-10).
+        const { env, quitadas } = require('./scjava').entornoSinOpcionesJava(process.env)
+        if(quitadas.length > 0){
+            logger.warn(`Variables de Java del sistema ignoradas para el juego: ${quitadas.join(' · ')}`)
+        }
         const child = child_process.spawn(ConfigManager.getJavaExecutable(this.server.rawServer.id), args, {
             cwd: this.gameDir,
-            detached: ConfigManager.getLaunchDetached()
+            detached: ConfigManager.getLaunchDetached(),
+            env
         })
 
         if(ConfigManager.getLaunchDetached()){

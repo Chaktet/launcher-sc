@@ -38,6 +38,11 @@ for(const [txt, esperado] of casos){
 ok(ScJava.esFalloDeMemoriaAlArrancar('Error occurred during initialization of VM\nCould not reserve enough space for 4194304KB object heap'), 'reserva de heap = memoria')
 ok(!ScJava.esFalloDeMemoriaAlArrancar('tzdb.dat'), 'tzdb no es memoria')
 
+// --- Variables de Java del sistema (ZIP de soporte del 28-10: _JAVA_OPTIONS=-Xmx512M) ---
+const ent = ScJava.entornoSinOpcionesJava({ Path: 'p', _JAVA_OPTIONS: '-Xmx512M', java_tool_options: 'a', JDK_JAVA_OPTIONS: 'b', OTRA: 'c' })
+ok(ent.quitadas.length === 3 && ent.env.Path === 'p' && ent.env.OTRA === 'c' && !('_JAVA_OPTIONS' in ent.env),
+    'entornoSinOpcionesJava quita las tres (sin mirar mayúsculas) y deja el resto')
+
 // --- Ficheros esenciales, vetos y elección -------------------------------------------
 fs.rmSync(base, { recursive: true, force: true })
 const dataDir = path.join(base, 'datos')
