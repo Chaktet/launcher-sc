@@ -1,10 +1,15 @@
 # SC Launcher · historial
 
 ## Estado actual
-- **Vigilante (29-10, rama `feat/vigilante`, SIN publicar ni fusionar)**: con la partida cargada el launcher se cierra
+- **1.17.13 publicada (29-10 15:05 UTC, OK de Felix): el vigilante.** Con la partida cargada el launcher se cierra
   entero y un proceso Node de ~28 MB vigila el juego; al cerrarlo reabre el launcher con el diagnóstico. Medido en el
-  PC de Felix con Minecraft real: 483 MB → 28 MB, 0 CPU, ciclo completo bien. Plan + 3 revisiones de Codex:
-  `docs/PLAN-VIGILANTE.md`. Pendiente: OK de Felix para versión firmada + novedad; fusionar en `master`.
+  PC de Felix con Minecraft real: 483 MB → 28 MB, 0 CPU. Plan + 3 revisiones de Codex: `docs/PLAN-VIGILANTE.md`.
+  Firmada (`comprueba-publisher` ok), release v1.17.13 con 14 ficheros (Mac/Linux del CI run 40895716817, todo en
+  verde; commit 3f78978); las tres fichas `latest*.yml` dicen 1.17.13 y el sha512 = build; `master` y `main` subidas;
+  los 3 exe de OVH-A renovados (por Cloudflare 93.695.824 B, sha256 `02ae23bc…` = build, firma `Valid`). Novedad:
+  vista previa en «diseño-pruebas» (mensaje 1565378110356987936), **sin publicar hasta el OK de Felix**. Mirar en
+  unos días: que no suban los SC-06 ni los avisos de juego duplicado; `sc-vigilante/vigilante.log` en los informes.
+
 - **1.17.12 publicada (29-10 14:13 UTC, OK de Felix)**: aviso SC-12 con botón que abre la web del driver. Firmada (`comprueba-publisher` ok), release v1.17.12 con 14 ficheros (Mac/Linux del CI run 40887902351, todo en verde; commit dd1f784); las tres fichas `latest*.yml` dicen 1.17.12 y el sha512 = build; `master` y `main` subidas; los 3 exe de OVH-A renovados (por Cloudflare 93.685.912 B, sha256 `591c023a…` = build, firma `Valid`). Novedad `2026-10-29-launcher-1.17.12` publicada con el OK de Felix.
 - **1.17.11 publicada (29-10 03:01 UTC, OK de Felix)**: SC-10 real = `_JAVA_OPTIONS` del sistema (el juego se lanza sin
   ella) + reparación automática de Java. Firmada (`comprueba-publisher` ok), release v1.17.11 con 14 ficheros
