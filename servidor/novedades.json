@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-29-servidor-Menos-expulsiones-en-mitad-de-un-combate",
+      "fecha": "2026-10-29",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Menos expulsiones en mitad de un combate",
+      "puntos": [
+        "Arreglado un fallo que a veces te echaba del servidor en mitad de un combate (ranked, gimnasios, salvajes...) con un error de conexión.",
+        "Si te vuelve a pasar, avísanos por ticket."
+      ]
+    },
+    {
       "id": "2026-10-29-servidor-El-corazon-de-casados-sale-en-las-dos-regiones",
       "fecha": "2026-10-29",
       "tipo": "servidor",
