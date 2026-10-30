@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-29-pack-3.3.19",
+      "fecha": "2026-10-29",
+      "tipo": "pack",
+      "clase": "arreglo",
+      "version": "SC-3.3.19",
+      "titulo": "Absol ya cambia de aspecto con la Absolita Z",
+      "puntos": [
+        "Al megaevolucionar a Absol con la Absolita Z se seguía viendo el Absol normal",
+        "Ahora se ve su forma Mega Z, también en variocolor"
+      ]
+    },
+    {
       "id": "2026-10-29-pack-3.3.20",
       "fecha": "2026-10-29",
       "tipo": "pack",
@@ -10,18 +22,6 @@
       "titulo": "El PokéNav ya se ve bien en tu mano",
       "puntos": [
         "Al sacar el PokéNav en primera persona se veía del revés; ahora ves su pantalla de frente."
-      ]
-    },
-    {
-      "id": "2026-10-29-pack-3.3.19",
-      "fecha": "2026-10-29",
-      "tipo": "pack",
-      "clase": "arreglo",
-      "version": "3.3.19",
-      "titulo": "Absol ya cambia de aspecto con la Absolita Z",
-      "puntos": [
-        "Al megaevolucionar a Absol con la Absolita Z se seguía viendo el Absol normal",
-        "Ahora se ve su forma Mega Z, también en variocolor"
       ]
     },
     {
