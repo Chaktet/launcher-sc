@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-30-servidor-Las-tiradas-de-la-ruleta-en-la-Tienda-SCC",
+      "fecha": "2026-10-30",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Las tiradas de la ruleta, en la Tienda SCC",
+      "puntos": [
+        "«Comprar tiradas» en /ruleta te lleva a la Tienda SCC, con sus rebajas."
+      ]
+    },
+    {
       "id": "2026-10-30-servidor-Lo-que-no-te-cabe-en-el-inventario-va-a-tu-buzon",
       "fecha": "2026-10-30",
       "tipo": "servidor",
