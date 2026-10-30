@@ -2,6 +2,22 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-30-pack-SC-3.3.21",
+      "fecha": "2026-10-30",
+      "tipo": "pack",
+      "clase": "nuevo",
+      "version": "SC-3.3.21",
+      "titulo": "Nueva interfaz Holograma en todos los menús",
+      "puntos": [
+        "Inventario, cofres, hornos, PC, ficha, Pokédex, máquina de MT y combate estrenan el diseño Holograma",
+        "Va en su propio paquete: si prefieres el aspecto de siempre, apaga «SC · Interfaz Holograma» en Opciones → Paquetes de recursos",
+        "Nueva pantalla de carga al abrir el juego, al entrar al servidor y al cambiar de región",
+        "El panel de combate (información de la batalla, turnos y efectos) ahora está en español",
+        "El juego arranca más rápido y los menús del PokéNav gastan menos memoria",
+        "Quitamos extras que se dibujaban encima de los menús nuevos (bordes de objetos, partículas del inventario y estadísticas repetidas en combate)"
+      ]
+    },
+    {
       "id": "2026-10-29-pack-3.3.20",
       "fecha": "2026-10-29",
       "tipo": "pack",
