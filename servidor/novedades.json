@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-30-servidor-Ditto-Party-el-final-se-pelea-en-el-mismo-piso",
+      "fecha": "2026-10-30",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Ditto Party: el final se pelea en el mismo piso",
+      "puntos": [
+        "Cuando quedan 3 jugadores o menos (o entra la muerte súbita), los que están en pisos de arriba bajan al piso de los demás: ya no hay que esperar a que fallen, se pueden empujar.",
+        "Las bolas de nieve atraviesan los pisos de colores y empujan a quien esté al otro lado.",
+        "Al terminar la partida vuelves a donde estabas antes de entrar, ya no al spawn."
+      ]
+    },
+    {
       "id": "2026-10-30-servidor-Tu-perfil-de-la-pantalla-de-inicio-lleva-tu-skin",
       "fecha": "2026-10-30",
       "tipo": "servidor",
