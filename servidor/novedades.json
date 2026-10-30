@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-30-servidor-Tu-perfil-de-la-pantalla-de-inicio-lleva-tu-skin",
+      "fecha": "2026-10-30",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Tu perfil de la pantalla de inicio lleva tu skin",
+      "puntos": [
+        "En la pestaña Perfil a veces salía la skin de otro jugador; ahora sale la tuya, también sin cuenta premium."
+      ]
+    },
+    {
       "id": "2026-10-30-servidor-Pwarps-fuera-del-borde-ya-no-te-hacen-esperar",
       "fecha": "2026-10-30",
       "tipo": "servidor",
