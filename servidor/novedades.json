@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-30-movil-2.4.15",
+      "fecha": "2026-10-30",
+      "tipo": "movil",
+      "clase": "nuevo",
+      "version": "2.4.15",
+      "titulo": "La interfaz Holograma llega al móvil",
+      "puntos": [
+        "Inventario, cofres, PC, ficha, Pokédex, máquina de MT y combate con el diseño Holograma, adaptado al móvil",
+        "El panel de combate (información de la batalla, turnos y efectos) ahora está en español",
+        "Se quita el panel de estadísticas antiguo, que repetía lo mismo que el nuevo"
+      ]
+    },
+    {
       "id": "2026-10-30-pack-SC-3.3.21",
       "fecha": "2026-10-30",
       "tipo": "pack",
