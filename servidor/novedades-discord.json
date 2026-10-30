@@ -250,7 +250,15 @@
     "2026-10-29-servidor-Sin-transformaciones-en-las-expediciones",
     "2026-10-29-servidor-Adios-al-anuncio-repetido-de-la-tienda-de-cosmeticos",
     "2026-10-30-pack-SC-3.3.21",
-    "2026-10-30-movil-2.4.15"
+    "2026-10-30-movil-2.4.15",
+    "2026-10-29-pack-3.3.20",
+    "2026-10-29-pack-3.3.19",
+    "2026-10-30-servidor-Tu-perfil-de-la-pantalla-de-inicio-lleva-tu-skin",
+    "2026-10-30-servidor-Pwarps-fuera-del-borde-ya-no-te-hacen-esperar",
+    "2026-10-30-servidor-Raids-premios-con-movimientos-y-jefes-sin-Forcejeo",
+    "2026-10-30-servidor-Pase-de-batalla-eclosionar-huevos-ya-cuenta",
+    "2026-10-30-servidor-Las-tiradas-de-la-ruleta-en-la-Tienda-SCC",
+    "2026-10-30-servidor-Lo-que-no-te-cabe-en-el-inventario-va-a-tu-buzon"
   ],
   "mensajes": [
     {
@@ -741,6 +749,20 @@
         "2026-10-29-modpack-El-brillo-de-tu-Pokemon-ya-sale-con-su-color",
         "2026-10-29-servidor-Sin-transformaciones-en-las-expediciones",
         "2026-10-29-servidor-Adios-al-anuncio-repetido-de-la-tienda-de-cosmeticos"
+      ]
+    },
+    {
+      "fecha": "2026-10-30",
+      "mensaje": "1565712608248725575",
+      "entradas": [
+        "2026-10-29-pack-3.3.20",
+        "2026-10-29-pack-3.3.19",
+        "2026-10-30-servidor-Tu-perfil-de-la-pantalla-de-inicio-lleva-tu-skin",
+        "2026-10-30-servidor-Pwarps-fuera-del-borde-ya-no-te-hacen-esperar",
+        "2026-10-30-servidor-Raids-premios-con-movimientos-y-jefes-sin-Forcejeo",
+        "2026-10-30-servidor-Pase-de-batalla-eclosionar-huevos-ya-cuenta",
+        "2026-10-30-servidor-Las-tiradas-de-la-ruleta-en-la-Tienda-SCC",
+        "2026-10-30-servidor-Lo-que-no-te-cabe-en-el-inventario-va-a-tu-buzon"
       ]
     }
   ]
