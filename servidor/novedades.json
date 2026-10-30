@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-30-servidor-Pwarps-fuera-del-borde-ya-no-te-hacen-esperar",
+      "fecha": "2026-10-30",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Pwarps fuera del borde ya no te hacen esperar",
+      "puntos": [
+        "Si un pwarp está fuera del borde del mundo y no te lleva, ya no te pone el tiempo de espera.",
+        "El aviso del borde ahora sale en español."
+      ]
+    },
+    {
       "id": "2026-10-30-servidor-Raids-premios-con-movimientos-y-jefes-sin-Forcejeo",
       "fecha": "2026-10-30",
       "tipo": "servidor",
