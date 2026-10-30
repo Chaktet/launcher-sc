@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-30-servidor-Lo-que-no-te-cabe-en-el-inventario-va-a-tu-buzon",
+      "fecha": "2026-10-30",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Lo que no te cabe en el inventario va a tu buzón",
+      "puntos": [
+        "Si tienes el inventario lleno, los premios y compras ya no caen al suelo: te llegan al buzón (/buzon).",
+        "Vale para pesca, minería, herrería, legendarios, gimnasios, tienda, gemas, Zygarde, cosméticos y megapiedras."
+      ]
+    },
+    {
       "id": "2026-10-30-movil-2.4.15",
       "fecha": "2026-10-30",
       "tipo": "movil",
