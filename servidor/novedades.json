@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-31-modpack-El-boton-Reportes-de-la-pausa-ya-funciona",
+      "fecha": "2026-10-31",
+      "tipo": "modpack",
+      "clase": "arreglo",
+      "titulo": "El botón «Reportes» de la pausa ya funciona",
+      "puntos": [
+        "El botón «Reportes» del menú de pausa daba un error; ahora abre los reportes del servidor.",
+        "Si ves algo raro, avísanos por ticket."
+      ]
+    },
+    {
       "id": "2026-10-31-servidor-Avisos-de-kits-solo-de-los-que-te-tocan",
       "fecha": "2026-10-31",
       "tipo": "servidor",
