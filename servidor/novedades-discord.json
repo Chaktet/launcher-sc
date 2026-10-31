@@ -262,7 +262,15 @@
     "2026-10-30-servidor-Ditto-Party-el-final-se-pelea-en-el-mismo-piso",
     "2026-10-31-modpack-La-interfaz-Holograma-mas-pulida-y-en-mas-pantallas",
     "2026-10-31-modpack-Dialogos-chat-de-voz-y-emotes-con-el-estilo-Holograma",
-    "2026-10-31-servidor-Saca-de-golpe-tus-cebos-y-peces-de-la-mochila"
+    "2026-10-31-servidor-Saca-de-golpe-tus-cebos-y-peces-de-la-mochila",
+    "2026-10-31-modpack-El-boton-Reportes-de-la-pausa-ya-funciona",
+    "2026-10-31-servidor-Avisos-de-kits-solo-de-los-que-te-tocan",
+    "2026-10-31-servidor-La-barra-de-las-pokeparadas-ya-no-se-queda-fija",
+    "2026-10-31-servidor-La-rueda-de-eventos-ya-no-repite-juegos",
+    "2026-10-31-servidor-Vende-varios-Pokemon-a-la-vez-desde-el-PC",
+    "2026-10-31-servidor-Te-avisamos-cuando-te-dan-vuelo",
+    "2026-10-31-modpack-Vuelve-al-aspecto-de-siempre-con-interfaz",
+    "2026-10-31-modpack-Tus-saldos-a-la-vista-con-el-panel-Tu-cuenta"
   ],
   "mensajes": [
     {
@@ -777,6 +785,20 @@
         "2026-10-31-modpack-La-interfaz-Holograma-mas-pulida-y-en-mas-pantallas",
         "2026-10-31-modpack-Dialogos-chat-de-voz-y-emotes-con-el-estilo-Holograma",
         "2026-10-31-servidor-Saca-de-golpe-tus-cebos-y-peces-de-la-mochila"
+      ]
+    },
+    {
+      "fecha": "2026-10-31",
+      "mensaje": "1566096386435588280",
+      "entradas": [
+        "2026-10-31-modpack-El-boton-Reportes-de-la-pausa-ya-funciona",
+        "2026-10-31-servidor-Avisos-de-kits-solo-de-los-que-te-tocan",
+        "2026-10-31-servidor-La-barra-de-las-pokeparadas-ya-no-se-queda-fija",
+        "2026-10-31-servidor-La-rueda-de-eventos-ya-no-repite-juegos",
+        "2026-10-31-servidor-Vende-varios-Pokemon-a-la-vez-desde-el-PC",
+        "2026-10-31-servidor-Te-avisamos-cuando-te-dan-vuelo",
+        "2026-10-31-modpack-Vuelve-al-aspecto-de-siempre-con-interfaz",
+        "2026-10-31-modpack-Tus-saldos-a-la-vista-con-el-panel-Tu-cuenta"
       ]
     }
   ]
