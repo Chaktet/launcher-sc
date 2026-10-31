@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-31-modpack-Tus-saldos-a-la-vista-con-el-panel-Tu-cuenta",
+      "fecha": "2026-10-31",
+      "tipo": "modpack",
+      "clase": "nuevo",
+      "titulo": "Tus saldos a la vista con el panel «Tu cuenta»",
+      "puntos": [
+        "A la derecha de la pantalla tienes el panel «Tu cuenta» con tus saldos y el mundo en el que estás.",
+        "Escribe /panel para ocultarlo o volver a verlo.",
+        "Solo sale si juegas con el launcher, y se actualiza solo."
+      ]
+    },
+    {
       "id": "2026-10-31-modpack-La-interfaz-Holograma-mas-pulida-y-en-mas-pantallas",
       "fecha": "2026-10-31",
       "tipo": "modpack",
