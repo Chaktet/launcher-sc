@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-31-servidor-Te-avisamos-cuando-te-dan-vuelo",
+      "fecha": "2026-10-31",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Te avisamos cuando te dan vuelo",
+      "puntos": [
+        "Cuando te dan un /fly temporal (pase de batalla, cajas, tienda…) te sale un aviso en el chat con el tiempo que te queda, cómo se usa y dónde no se puede volar.",
+        "Desde ese momento /fly ya te sale al pulsar Tab.",
+        "Si te dan más tiempo, el aviso te dice el total."
+      ]
+    },
+    {
       "id": "2026-10-31-modpack-Vuelve-al-aspecto-de-siempre-con-interfaz",
       "fecha": "2026-10-31",
       "tipo": "modpack",
