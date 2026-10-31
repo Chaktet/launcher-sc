@@ -2,6 +2,20 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-31-modpack-La-interfaz-Holograma-mas-pulida-y-en-mas-pantallas",
+      "fecha": "2026-10-31",
+      "tipo": "modpack",
+      "clase": "cambio",
+      "titulo": "La interfaz Holograma, más pulida y en más pantallas",
+      "puntos": [
+        "La ficha de tus Pokémon encaja mejor: el objeto equipado, las pestañas y los nombres de los movimientos quedan en su sitio.",
+        "Adiós a los puntitos rojos sueltos en menús, cofres y la pausa, y a la raya roja que cruzaba la lente del inventario y de los cofres.",
+        "En el PC sale un solo embudo al buscar y los botones de ordenar son nuevos y se leen mejor.",
+        "Opciones, controles, lista de servidores, libros, logros, estadísticas y ajustes de los complementos también llevan el estilo Holograma.",
+        "En el móvil llega igual: abre la app SC Launcher y se actualiza sola."
+      ]
+    },
+    {
       "id": "2026-10-31-modpack-Dialogos-chat-de-voz-y-emotes-con-el-estilo-Holograma",
       "fecha": "2026-10-31",
       "tipo": "modpack",
