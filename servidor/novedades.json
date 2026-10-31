@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-31-servidor-La-barra-de-las-pokeparadas-ya-no-se-queda-fija",
+      "fecha": "2026-10-31",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "La barra de las pokeparadas ya no se queda fija",
+      "puntos": [
+        "En los pueblos, la barra «Pokeparadas → Cofre de ruta» se quedaba todo el rato en pantalla.",
+        "Ahora sale unos segundos al reclamar una parada o al acercarte a una que puedes reclamar, y luego se va."
+      ]
+    },
+    {
       "id": "2026-10-31-servidor-La-rueda-de-eventos-ya-no-repite-juegos",
       "fecha": "2026-10-31",
       "tipo": "servidor",
