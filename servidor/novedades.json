@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-31-servidor-Vende-varios-Pokemon-a-la-vez-desde-el-PC",
+      "fecha": "2026-10-31",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Vende varios Pokémon a la vez desde el PC",
+      "puntos": [
+        "En el PC marca los Pokémon que quieras y pulsa «Vender» para venderlos al servidor de una vez.",
+        "Antes de vender te enseña la lista para que lo confirmes.",
+        "Los Pokémon con skin, variocolor, legendarios, singulares y los que tienes marcados en el PC quedan protegidos: solo se venden si marcas la opción de incluirlos.",
+        "Si ves algo raro, avísanos por ticket."
+      ]
+    },
+    {
       "id": "2026-10-31-servidor-Te-avisamos-cuando-te-dan-vuelo",
       "fecha": "2026-10-31",
       "tipo": "servidor",
