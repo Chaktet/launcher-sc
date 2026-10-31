@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-31-modpack-La-pestana-Estadisticas-de-tus-Pokemon-bien-ordenada",
+      "fecha": "2026-10-31",
+      "tipo": "modpack",
+      "clase": "arreglo",
+      "titulo": "La pestaña Estadísticas de tus Pokémon, bien ordenada",
+      "puntos": [
+        "En la ficha de tus Pokémon, la barra de abajo de Estadísticas ahora tiene un botón por cada apartado que de verdad existe: 4, o 5 si el Pokémon se puede montar.",
+        "Se ilumina el apartado que estás viendo.",
+        "Te llega solo al abrir el launcher, en PC y en el móvil."
+      ]
+    },
+    {
       "id": "2026-10-31-modpack-El-boton-Reportes-de-la-pausa-ya-funciona",
       "fecha": "2026-10-31",
       "tipo": "modpack",
