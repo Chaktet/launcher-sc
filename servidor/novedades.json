@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-31-modpack-Dialogos-chat-de-voz-y-emotes-con-el-estilo-Holograma",
+      "fecha": "2026-10-31",
+      "tipo": "modpack",
+      "clase": "cambio",
+      "titulo": "Diálogos, chat de voz y emotes con el estilo Holograma",
+      "puntos": [
+        "Las conversaciones con los NPC ya tienen el nuevo estilo Holograma.",
+        "El menú del chat de voz (teclas V y G) y la rueda de emotes (tecla B) también se han rediseñado.",
+        "En el móvil llega igual: abre la app SC Launcher y se actualiza sola."
+      ]
+    },
+    {
       "id": "2026-10-31-servidor-Saca-de-golpe-tus-cebos-y-peces-de-la-mochila",
       "fecha": "2026-10-31",
       "tipo": "servidor",
