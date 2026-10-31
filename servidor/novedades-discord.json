@@ -258,7 +258,11 @@
     "2026-10-30-servidor-Raids-premios-con-movimientos-y-jefes-sin-Forcejeo",
     "2026-10-30-servidor-Pase-de-batalla-eclosionar-huevos-ya-cuenta",
     "2026-10-30-servidor-Las-tiradas-de-la-ruleta-en-la-Tienda-SCC",
-    "2026-10-30-servidor-Lo-que-no-te-cabe-en-el-inventario-va-a-tu-buzon"
+    "2026-10-30-servidor-Lo-que-no-te-cabe-en-el-inventario-va-a-tu-buzon",
+    "2026-10-30-servidor-Ditto-Party-el-final-se-pelea-en-el-mismo-piso",
+    "2026-10-31-modpack-La-interfaz-Holograma-mas-pulida-y-en-mas-pantallas",
+    "2026-10-31-modpack-Dialogos-chat-de-voz-y-emotes-con-el-estilo-Holograma",
+    "2026-10-31-servidor-Saca-de-golpe-tus-cebos-y-peces-de-la-mochila"
   ],
   "mensajes": [
     {
@@ -763,6 +767,16 @@
         "2026-10-30-servidor-Pase-de-batalla-eclosionar-huevos-ya-cuenta",
         "2026-10-30-servidor-Las-tiradas-de-la-ruleta-en-la-Tienda-SCC",
         "2026-10-30-servidor-Lo-que-no-te-cabe-en-el-inventario-va-a-tu-buzon"
+      ]
+    },
+    {
+      "fecha": "2026-10-31",
+      "mensaje": "1566060799024431257",
+      "entradas": [
+        "2026-10-30-servidor-Ditto-Party-el-final-se-pelea-en-el-mismo-piso",
+        "2026-10-31-modpack-La-interfaz-Holograma-mas-pulida-y-en-mas-pantallas",
+        "2026-10-31-modpack-Dialogos-chat-de-voz-y-emotes-con-el-estilo-Holograma",
+        "2026-10-31-servidor-Saca-de-golpe-tus-cebos-y-peces-de-la-mochila"
       ]
     }
   ]
