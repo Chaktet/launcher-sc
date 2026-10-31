@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-31-servidor-Saca-de-golpe-tus-cebos-y-peces-de-la-mochila",
+      "fecha": "2026-10-31",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Saca de golpe tus cebos y peces de la mochila",
+      "puntos": [
+        "En /pescamenu → Mochila hay dos botones nuevos abajo: «Sacar cebos» y «Sacar peces».",
+        "Pasan todo a tu inventario de una vez. Si no cabe todo, lo que sobra se queda guardado en la mochila."
+      ]
+    },
+    {
       "id": "2026-10-30-servidor-Ditto-Party-el-final-se-pelea-en-el-mismo-piso",
       "fecha": "2026-10-30",
       "tipo": "servidor",
