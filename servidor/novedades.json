@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-31-modpack-Vuelve-al-aspecto-de-siempre-con-interfaz",
+      "fecha": "2026-10-31",
+      "tipo": "modpack",
+      "clase": "cambio",
+      "titulo": "Vuelve al aspecto de siempre con /interfaz",
+      "puntos": [
+        "Escribe /interfaz clasica para quitar la interfaz Holograma y /interfaz holograma para volver a ponerla, sin entrar a los paquetes de recursos ni reiniciar el juego.",
+        "/interfaz a secas te dice cuál tienes puesta, y se queda guardada aunque cierres el juego.",
+        "La pausa, el PokéNav y el panel «Tu cuenta» siguen con el estilo Holograma."
+      ]
+    },
+    {
       "id": "2026-10-31-modpack-Tus-saldos-a-la-vista-con-el-panel-Tu-cuenta",
       "fecha": "2026-10-31",
       "tipo": "modpack",
