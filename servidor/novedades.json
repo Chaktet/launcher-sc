@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-10-31-servidor-Avisos-de-kits-solo-de-los-que-te-tocan",
+      "fecha": "2026-10-31",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Avisos de kits: solo de los que te tocan",
+      "puntos": [
+        "Si tienes rango, ya no te llegan avisos del kit Joven.",
+        "El punto rojo de kits del PokéNav ya no se queda encendido cuando has recogido todo lo que te toca.",
+        "Si ves algo raro, avísanos por ticket."
+      ]
+    },
+    {
       "id": "2026-10-31-servidor-La-barra-de-las-pokeparadas-ya-no-se-queda-fija",
       "fecha": "2026-10-31",
       "tipo": "servidor",
