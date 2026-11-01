@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-01-servidor-Autopickup-y-autosmelt-ventajas-de-rango",
+      "fecha": "2026-11-01",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Autopickup y autosmelt, ventajas de rango",
+      "puntos": [
+        "El autopickup pasa a ser solo para jugadores con rango. Sin rango, lo que picas y lo que sueltan los mobs cae al suelo.",
+        "Con rango As, Ultra, Élite, Maestro o Legendario, autopickup y autosmelt se activan solos al entrar en Kanto y en Kalos: los minerales te llegan ya refinados.",
+        "Antes el autosmelt de esos rangos no hacía nada si no activabas también /autopickup. Ya no hace falta ningún comando."
+      ]
+    },
+    {
       "id": "2026-11-01-servidor-La-mineria-ya-no-se-para-cuando-hay-lag",
       "fecha": "2026-11-01",
       "tipo": "servidor",
