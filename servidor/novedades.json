@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-01-servidor-La-Forja-ya-te-dice-cuanto-material-es-tuyo",
+      "fecha": "2026-11-01",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "La Forja ya te dice cuánto material es tuyo",
+      "puntos": [
+        "La pantalla contaba también lo picado por otros jugadores: decía que tenías de sobra y luego salía «Te faltan materiales».",
+        "Ahora ves cuánto es tuyo y cuánto te falta. Lo que ha picado otro jugador no vale para forjar."
+      ]
+    },
+    {
       "id": "2026-11-01-servidor-Torre-de-Batalla-tus-Pokemon-a-salvo-al-volver",
       "fecha": "2026-11-01",
       "tipo": "servidor",
