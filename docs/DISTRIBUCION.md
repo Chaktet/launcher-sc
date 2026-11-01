@@ -251,6 +251,10 @@ Desde entonces todas las releases tienen que salir firmadas (y una renovación d
 > cualquier `*setup*` que salga de la carpeta de prueba (el 21/10 se reinstaló así la 1.16.19 del PC de Felix).
 > Además, una descarga ya validada en `sclauncher-updater/pending` se acepta sin volver a comprobar la firma: bórrala
 > entre pruebas.
+> **Jugadores que vuelven (1/11/2026).** Quien no ha abierto el juego desde el 21/10 sigue con el launcher roto: el arreglo
+> del mod actúa solo al abrir el juego, y «Reintentar» no puede funcionar. Su botón de la web abre la release más reciente
+> de GitHub, que es lo único que se puede cambiar para ellos: **cada release lleva arriba el aviso con el enlace al `.exe`
+> estable** (`tools/aviso-launcher-viejo.md`, `node tools/notas-release.js`; paso 3b de abajo).
 > **1.16.20 (21/10):** «Jugar sin actualizar» dura hasta cerrar el launcher. `autoDownload` va a `false` y la descarga la
 > arranca `index.js` en `update-available`, salvo para la versión saltada (`skipVersion` por IPC; llega
 > `update-skipped` y la insignia dice «Actualización pendiente · pulsa para reintentar»). Reintentar, el botón de
@@ -283,6 +287,9 @@ gh release create vX.Y.Z --repo Chaktet/launcher-sc \
   dist/SC-Launcher-setup-X.Y.Z.exe \
   dist/SC-Launcher-setup-X.Y.Z.exe.blockmap \
   dist/latest.yml
+
+# 3b. el aviso para los launchers 1.16.16-1.16.18 arriba de las notas (obligatorio: sale con 1 si falta)
+node tools/notas-release.js vX.Y.Z --aplica && node tools/notas-release.js vX.Y.Z
 
 # 4. el .exe al VPS: el versionado Y el estable (SC-Launcher-setup.exe y -1.0.0.exe), que el VPS baja de GitHub
 

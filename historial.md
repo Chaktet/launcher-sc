@@ -1,6 +1,8 @@
 # SC Launcher · historial
 
 ## Estado actual
+- **Aviso para launchers 1.16.16-1.16.18 fijo en las releases (1-11, OK de Felix).** Cada release nueva: `node tools/notas-release.js vX.Y.Z --aplica`
+  (DISTRIBUCION.md, paso 3b). Puesto en v1.17.13.
 - **1.17.13 publicada (29-10 15:05 UTC, OK de Felix): el vigilante.** Con la partida cargada el launcher se cierra
   entero y un proceso Node de ~28 MB vigila el juego; al cerrarlo reabre el launcher con el diagnóstico. Medido en el
   PC de Felix con Minecraft real: 483 MB → 28 MB, 0 CPU. Plan + 3 revisiones de Codex: `docs/PLAN-VIGILANTE.md`.
@@ -64,6 +66,13 @@
   el launcher. Novedad `2026-10-28-modpack-Adios-al-aviso-de-chat-no-verificado` (arreglo) solo en vista previa en
   «diseño-pruebas» (mensaje 1564857375410757703). **Publicada en el launcher el 28-10 15:55 UTC** con la de las
   misiones de escanear (OK de Felix: launcher sí, Discord no). El modpack móvil SC-Movil no lo lleva.
+
+## 2026-11-01 · «No se pudo descargar la actualización» otra vez: jugadores que vuelven
+- Pedido de Felix: un jugador con v1.16.17 ve la puerta de error; arreglarlo de raíz.
+- Causa: no es avería nueva. Es el `publisherName` roto de la 1.16.16-1.16.18 (`F�lix`, visto en el instalador real). Badasanji entró por última vez el 20-10, antes del mod 1.2.0, así que el arreglo automático nunca se ejecutó. Su botón de la web abre `releases/latest`, cuyas notas ya no lo explicaban.
+- Hecho: `tools/aviso-launcher-viejo.md` + `tools/notas-release.js` (comprueba/pone el aviso, se puede repetir); paso 3b en DISTRIBUCION.md; aviso publicado en v1.17.13.
+- Verificado: el script fallaba antes y pasa después; la página de `releases/latest` muestra aviso y enlace; 14 ficheros y `latest.yml` 1.17.13 intactos; `releases.atom` se lee con `parseXml` de electron-updater; el `.exe` estable por Cloudflare = 93.695.824 B (el tamaño de la 1.17.13).
+- No verificado: instalar encima desde una 1.16.17 real hoy, ni la ruta «Jugar sin actualizar» (el `distribution.json` actual solo usa tipos de módulo conocidos). No hay telemetría de fallos del actualizador ni recuento de cuántos launchers rotos quedan.
 
 ## 2026-10-29 · Vigilante: el launcher deja de ocupar ~500 MB mientras se juega
 - Pedido: Felix vio que el launcher se queda en ~500 MB con el juego abierto.
