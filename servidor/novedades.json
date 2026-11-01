@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-01-servidor-Tienda-Nocturna-skins-de-ruletas-ya-terminadas",
+      "fecha": "2026-11-01",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Tienda Nocturna: skins de ruletas ya terminadas",
+      "puntos": [
+        "Las skins de las ruletas que ya acabaron (Anime, Games, Ben 10 y Kung Fu Panda) ya pueden salir en la Tienda Nocturna.",
+        "Las verás desde la próxima renovación de ofertas. Las de una ruleta en curso entran solas cuando esa ruleta termina.",
+        "Las skins exclusivas, de temporada, de raids, de clanes, míticas y de edición limitada se quedan fuera de la tienda."
+      ]
+    },
+    {
       "id": "2026-11-01-servidor-La-Forja-ya-te-dice-cuanto-material-es-tuyo",
       "fecha": "2026-11-01",
       "tipo": "servidor",
