@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-01-servidor-Packs-de-cosmeticos-mas-variados",
+      "fecha": "2026-11-01",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Packs de cosméticos más variados",
+      "puntos": [
+        "Los packs del mes de la tienda de cosméticos ahora traen de todo: gorros, herramientas y bastones en cada pack, en vez de casi solo un tipo.",
+        "La mayoría de los meses hay además un set de armadura completo, y los packs cambian solos el día 1."
+      ]
+    },
+    {
       "id": "2026-11-01-servidor-Pwarps-el-mensaje-de-exito-solo-si-te-lleva",
       "fecha": "2026-11-01",
       "tipo": "servidor",
