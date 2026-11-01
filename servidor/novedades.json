@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-01-servidor-Un-minijuego-ya-no-te-saca-de-otro",
+      "fecha": "2026-11-01",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Un minijuego ya no te saca de otro",
+      "puntos": [
+        "Si estás en el Escondite, el Royale o el Ditto Party, los otros dos ya no te llevan a mitad de ronda.",
+        "Si intentas apuntarte o mirar otro minijuego, te avisa de en cuál estás.",
+        "Así no te quedas con las cosas de un juego en vez de tu inventario. Si ves algo raro, avísanos por ticket."
+      ]
+    },
+    {
       "id": "2026-10-31-modpack-La-pestana-Estadisticas-de-tus-Pokemon-bien-ordenada",
       "fecha": "2026-10-31",
       "tipo": "modpack",
