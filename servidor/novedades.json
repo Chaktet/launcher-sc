@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-01-servidor-Discord-normas-mas-claras-y-mas-respuestas-del-bot",
+      "fecha": "2026-11-01",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Discord: normas más claras y más respuestas del bot",
+      "puntos": [
+        "El canal #reglas ahora va en tarjetas por tema y algunas normas cambian de número.",
+        "La norma 24 explica qué granjas se pueden hacer y cuáles no: míralo en #reglas antes de construir.",
+        "El bot de ayuda contesta más dudas: vincular o reiniciar tu cuenta, llaves, dar permisos en tu terreno, cámaras de prueba y granjas."
+      ]
+    },
+    {
       "id": "2026-11-01-servidor-Tienda-Nocturna-skins-de-ruletas-ya-terminadas",
       "fecha": "2026-11-01",
       "tipo": "servidor",
