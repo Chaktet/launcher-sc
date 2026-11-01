@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-01-servidor-Pwarps-el-mensaje-de-exito-solo-si-te-lleva",
+      "fecha": "2026-11-01",
+      "tipo": "servidor",
+      "clase": "retoque",
+      "titulo": "Pwarps: el mensaje de éxito solo si te lleva",
+      "puntos": [
+        "«¡Teletransportado con éxito!» ya solo sale cuando el viaje funciona de verdad."
+      ]
+    },
+    {
       "id": "2026-11-01-servidor-Discord-normas-mas-claras-y-mas-respuestas-del-bot",
       "fecha": "2026-11-01",
       "tipo": "servidor",
