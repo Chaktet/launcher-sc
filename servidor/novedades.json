@@ -9,8 +9,9 @@
       "titulo": "Autopickup y autosmelt, ventajas de rango",
       "puntos": [
         "El autopickup pasa a ser solo para jugadores con rango. Sin rango, lo que picas y lo que sueltan los mobs cae al suelo.",
-        "Con rango As, Ultra, Élite, Maestro o Legendario, autopickup y autosmelt se activan solos al entrar en Kanto y en Kalos: los minerales te llegan ya refinados.",
-        "Antes el autosmelt de esos rangos no hacía nada si no activabas también /autopickup. Ya no hace falta ningún comando."
+        "Si tienes rango, activa o apaga la recogida de lo que picas con /autopickup cuando quieras: viene apagada.",
+        "Con rango As, Ultra, Élite, Maestro o Legendario, usa también /autosmelt para que los minerales te lleguen ya refinados. Solo funciona con /autopickup activado.",
+        "Tu elección se guarda en cada región: actívalos una vez en Kanto y otra en Kalos."
       ]
     },
     {
