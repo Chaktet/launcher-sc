@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-01-servidor-Torre-de-Batalla-tus-Pokemon-a-salvo-al-volver",
+      "fecha": "2026-11-01",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Torre de Batalla: tus Pokémon, a salvo al volver",
+      "puntos": [
+        "Si salías de una partida con /lobby y al volver pulsabas «Continuar», la pantalla de equipo podía cambiar tus propios Pokémon.",
+        "Ahora la partida recupera primero el equipo de la Torre y tus Pokémon no se tocan.",
+        "Si ves algo raro, avísanos por ticket."
+      ]
+    },
+    {
       "id": "2026-11-01-servidor-Un-minijuego-ya-no-te-saca-de-otro",
       "fecha": "2026-11-01",
       "tipo": "servidor",
