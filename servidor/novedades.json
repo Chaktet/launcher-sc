@@ -2,6 +2,21 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-01-servidor-La-mineria-ya-no-se-para-cuando-hay-lag",
+      "fecha": "2026-11-01",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "La minería ya no se para cuando hay lag",
+      "puntos": [
+        "Con lag, la garantía de planos y los hallazgos de planos, gemas y reliquias se quedaban parados aunque siguieras subiendo de nivel. Ahora funcionan siempre.",
+        "Licencias de área, habilidades y consumibles siguen funcionando con lag; como mucho, el área va algo más despacio.",
+        "Te hemos devuelto a la garantía de planos lo que picaste este último mes mientras estuvo parada. Lo verás la próxima vez que entres.",
+        "La garantía ya no pierde avance al cambiar entre Kanto y Kalos.",
+        "Ya no sale el aviso de «revisamos tu cuenta»: era un error y nadie estaba revisando tu cuenta.",
+        "Cerca del tope diario, el mercado te enseña lo que vas a cobrar de verdad."
+      ]
+    },
+    {
       "id": "2026-11-01-servidor-Packs-de-cosmeticos-mas-variados",
       "fecha": "2026-11-01",
       "tipo": "servidor",
