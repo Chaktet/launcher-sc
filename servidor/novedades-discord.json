@@ -270,7 +270,14 @@
     "2026-10-31-servidor-Vende-varios-Pokemon-a-la-vez-desde-el-PC",
     "2026-10-31-servidor-Te-avisamos-cuando-te-dan-vuelo",
     "2026-10-31-modpack-Vuelve-al-aspecto-de-siempre-con-interfaz",
-    "2026-10-31-modpack-Tus-saldos-a-la-vista-con-el-panel-Tu-cuenta"
+    "2026-10-31-modpack-Tus-saldos-a-la-vista-con-el-panel-Tu-cuenta",
+    "2026-10-31-modpack-La-pestana-Estadisticas-de-tus-Pokemon-bien-ordenada",
+    "2026-11-01-servidor-Discord-normas-mas-claras-y-mas-respuestas-del-bot",
+    "2026-11-01-servidor-Tienda-Nocturna-skins-de-ruletas-ya-terminadas",
+    "2026-11-01-servidor-La-Forja-ya-te-dice-cuanto-material-es-tuyo",
+    "2026-11-01-servidor-Torre-de-Batalla-tus-Pokemon-a-salvo-al-volver",
+    "2026-11-01-servidor-Un-minijuego-ya-no-te-saca-de-otro",
+    "2026-11-01-servidor-Pwarps-el-mensaje-de-exito-solo-si-te-lleva"
   ],
   "mensajes": [
     {
@@ -799,6 +806,19 @@
         "2026-10-31-servidor-Te-avisamos-cuando-te-dan-vuelo",
         "2026-10-31-modpack-Vuelve-al-aspecto-de-siempre-con-interfaz",
         "2026-10-31-modpack-Tus-saldos-a-la-vista-con-el-panel-Tu-cuenta"
+      ]
+    },
+    {
+      "fecha": "2026-11-01",
+      "mensaje": "1566515964701446155",
+      "entradas": [
+        "2026-10-31-modpack-La-pestana-Estadisticas-de-tus-Pokemon-bien-ordenada",
+        "2026-11-01-servidor-Discord-normas-mas-claras-y-mas-respuestas-del-bot",
+        "2026-11-01-servidor-Tienda-Nocturna-skins-de-ruletas-ya-terminadas",
+        "2026-11-01-servidor-La-Forja-ya-te-dice-cuanto-material-es-tuyo",
+        "2026-11-01-servidor-Torre-de-Batalla-tus-Pokemon-a-salvo-al-volver",
+        "2026-11-01-servidor-Un-minijuego-ya-no-te-saca-de-otro",
+        "2026-11-01-servidor-Pwarps-el-mensaje-de-exito-solo-si-te-lleva"
       ]
     }
   ]
