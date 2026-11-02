@@ -7,7 +7,7 @@
   puesto, las tres `latest*.yml` dicen 1.17.15 y sha512 = build; `master` y `main` subidas. **Exe público CONGELADO en la
   1.17.15** (Felix 02-11): `SC-Launcher-setup.exe` y `-1.0.0.exe` = 1.17.15 (Cloudflare 93.702.048 B, sha256 `d224a87b…`,
   firma `Valid`) con `chattr +i`; desde ahora cada release sube solo el versionado (DISTRIBUCION.md paso 4). Felix manda
-  ESTE exe a Microsoft y a los antivirus. Novedad para jugadores: pendiente de su OK.
+  ESTE exe a Microsoft y a los antivirus. **Sin novedad** (Felix 02-11).
 - **1.17.14 publicada (02-11 ~11:15 hora RD, pedida por Felix): fuera lo que hacía que los antivirus marcaran el
   instalador.** McAfee y otros lo detectaban como virus. Quitado: exclusión de Defender por PowerShell elevado, oculto
   y codificado; lectura de exclusiones; lista de antivirus por WMI; `-ExecutionPolicy Bypass`. Ahora la exclusión la
