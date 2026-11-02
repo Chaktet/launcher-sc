@@ -2002,7 +2002,14 @@ function sc$togglePack(packName, activar){
  * persona en punchy:punchy y sin activarlo no se ve ninguna.
  *
  * Van por mod para no activarle el paquete a quien tenga el mod desactivado, y
- * solo en los perfiles donde ese mod existe (Punchy está en PRO, no en LITE).
+ * solo en los perfiles donde ese mod existe (Punchy: PRO, y LITE y SUPER LITE
+ * desde el 02-11-2026).
+ *
+ * No son ficheros: van en options.txt sin «file/», con vanilla y fabric (la
+ * parte `base` de sc$readOptionsPacks). Hasta la 1.17.14 se metían con
+ * sc$togglePack, que escribe «file/punchy:punchy»: Minecraft no lo reconoce y
+ * en LITE (donde no venía ya bien en la distribución) no salía ninguna
+ * animación de Punchy.
  */
 const SC_PACKS_INTERNOS = [
     { pack: 'punchy:punchy', mod: 'punchy' }
@@ -2036,6 +2043,16 @@ function scActivarPacksInternosDeMods(){
         if(nodeFs.existsSync(marcador)){
             yaHechos = JSON.parse(nodeFs.readFileSync(marcador, 'utf8'))
         }
+        // Repara lo que dejaron la 1.17.14 y anteriores («file/punchy:punchy»),
+        // aunque el marcador ya lo dé por hecho: lo pasa a su sitio sin «file/».
+        const internos = SC_PACKS_INTERNOS.map(x => x.pack)
+        const actual = sc$readOptionsPacks()
+        const rotos = actual.enabled.filter(p => internos.includes(p))
+        if(rotos.length > 0){
+            const base = [...actual.base, ...rotos.filter(p => !actual.base.includes(p))]
+            sc$writeOptionsPacks(base, actual.enabled.filter(p => !internos.includes(p)))
+            console.log('Paquetes internos reparados: ' + rotos.join(', '))
+        }
         let cambios = false
         for(const { pack, mod } of SC_PACKS_INTERNOS){
             if(yaHechos.includes(pack)){
@@ -2051,8 +2068,9 @@ function scActivarPacksInternosDeMods(){
             if(!activo){
                 continue
             }
-            if(!sc$readOptionsPacks().enabled.includes(pack)){
-                sc$togglePack(pack, true)
+            const { base, enabled } = sc$readOptionsPacks()
+            if(!base.includes(pack)){
+                sc$writeOptionsPacks([...base, pack], enabled)
             }
             yaHechos.push(pack)
             cambios = true
