@@ -1,6 +1,13 @@
 # SC Launcher · historial
 
 ## Estado actual
+- **1.17.15 publicada (02-11 ~17:50 hora RD, pedida por Felix): Punchy con animaciones en LITE y SUPER LITE** (el launcher
+  escribía `file/punchy:punchy`; ahora lo pone bien y repara a quien ya lo tenía roto). Firmada (`comprueba-publisher` ok),
+  release v1.17.15 con 14 ficheros (Mac/Linux del CI run 41530962104, en verde; commit fb40658), aviso de launcher viejo
+  puesto, las tres `latest*.yml` dicen 1.17.15 y sha512 = build; `master` y `main` subidas. **Exe público CONGELADO en la
+  1.17.15** (Felix 02-11): `SC-Launcher-setup.exe` y `-1.0.0.exe` = 1.17.15 (Cloudflare 93.702.048 B, sha256 `d224a87b…`,
+  firma `Valid`) con `chattr +i`; desde ahora cada release sube solo el versionado (DISTRIBUCION.md paso 4). Felix manda
+  ESTE exe a Microsoft y a los antivirus. Novedad para jugadores: pendiente de su OK.
 - **1.17.14 publicada (02-11 ~11:15 hora RD, pedida por Felix): fuera lo que hacía que los antivirus marcaran el
   instalador.** McAfee y otros lo detectaban como virus. Quitado: exclusión de Defender por PowerShell elevado, oculto
   y codificado; lectura de exclusiones; lista de antivirus por WMI; `-ExecutionPolicy Bypass`. Ahora la exclusión la
@@ -90,7 +97,7 @@
   Solo afecta a instalaciones nuevas (options.txt sin hash).
 - Código: lo mete en `base` (sin `file/`) y repara el `file/<interno>` aunque el marcador lo dé por hecho. Simulación con
   el código real `E:/tmp/punchy-lite/sim.js` 7/7 (con el código viejo fallan 3); la de 28-10 sigue 7/7. Commit sin release.
-- Pendiente: release firmada (SimplySign de Felix) para los LITE y SUPER LITE ya instalados.
+- Publicado en la 1.17.15 (ver Estado actual).
 
 ## 2026-11-02 · Punchy también en LITE y SUPER LITE (PokéNav de espaldas y sin brazo)
 - Felix: en LITE el PokéNav se ve de espaldas en primera persona y no se ve la mano; en PRO bien.

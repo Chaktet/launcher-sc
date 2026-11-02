@@ -291,7 +291,10 @@ gh release create vX.Y.Z --repo Chaktet/launcher-sc \
 # 3b. el aviso para los launchers 1.16.16-1.16.18 arriba de las notas (obligatorio: sale con 1 si falta)
 node tools/notas-release.js vX.Y.Z --aplica && node tools/notas-release.js vX.Y.Z
 
-# 4. el .exe al VPS: el versionado Y el estable (SC-Launcher-setup.exe y -1.0.0.exe), que el VPS baja de GitHub
+# 4. el .exe al VPS: SOLO el versionado (SC-Launcher-setup-X.Y.Z.exe), que el VPS baja de GitHub.
+#    ⛔ Los estables (SC-Launcher-setup.exe y -1.0.0.exe) están CONGELADOS en la 1.17.15 (Felix 02-11, chattr +i):
+#    los antivirus y Microsoft aprueban por fichero exacto. Quien lo instala se actualiza solo al abrirlo. No se
+#    renuevan sin que Felix lo pida (entonces: sudo chattr -i, renovar, sudo chattr +i y volver a mandarlo a los antivirus).
 
 # 5. la entrada para jugadores en «Novedades del servidor» (launcher/novedades.json)
 node E:/RESOURCE-MC/herramientas/anade_novedad.js --tipo launcher --version X.Y.Z \
