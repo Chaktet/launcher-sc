@@ -10,7 +10,8 @@
   Comprobado: prueba por CDP de los 3 pasos, asar firmado sin ninguno de esos textos, Codex (4 fallos arreglados),
   firma `Valid` y `comprueba-publisher` ok, release v1.17.14 con 14 ficheros (CI run 41466736751 en verde), las tres
   fichas `latest*.yml` dicen 1.17.14 y sha512 = build, los 3 exe de OVH-A renovados (por Cloudflare 93.700.208 B, sha256
-  `b2057f4c…` = build, firma `Valid`). **Pendiente:** novedad del launcher (espera el OK de Felix); Felix envía el exe
+  `b2057f4c…` = build, firma `Valid`). **Sin novedad (Felix 02-11: no se enseña como actualización;** la vista previa quedó solo en «diseño-pruebas»).
+  **Pendiente:** Felix envía el exe
   1.17.14 como falso positivo (McAfee, Microsoft, Avast/AVG, Norton…; ya mandó el 1.17.13); `tools/comprueba-publisher.js`
   falla si se lanza desde pwsh 7 (hereda `PSModulePath`): lanzarlo con `PSModulePath` vacío.
 - **Aviso para launchers 1.16.16-1.16.18 fijo en las releases (1-11, OK de Felix).** Cada release nueva: `node tools/notas-release.js vX.Y.Z --aplica`
