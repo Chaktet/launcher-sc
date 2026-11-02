@@ -1,6 +1,18 @@
 # SC Launcher · historial
 
 ## Estado actual
+- **1.17.14 publicada (02-11 ~11:15 hora RD, pedida por Felix): fuera lo que hacía que los antivirus marcaran el
+  instalador.** McAfee y otros lo detectaban como virus. Quitado: exclusión de Defender por PowerShell elevado, oculto
+  y codificado; lectura de exclusiones; lista de antivirus por WMI; `-ExecutionPolicy Bypass`. Ahora la exclusión la
+  pone el jugador (el aviso copia la ruta, abre Seguridad de Windows y repara al pulsar «Ya la he añadido»). El antivirus
+  se adivina por carpetas de Archivos de programa (en el PC de Felix hay una de Bitdefender desinstalado y McAfee no
+  deja carpeta, así que siempre salen también los pasos de Defender). `q` ahora `sincarpeta`/`varios`/marca.
+  Comprobado: prueba por CDP de los 3 pasos, asar firmado sin ninguno de esos textos, Codex (4 fallos arreglados),
+  firma `Valid` y `comprueba-publisher` ok, release v1.17.14 con 14 ficheros (CI run 41466736751 en verde), las tres
+  fichas `latest*.yml` dicen 1.17.14 y sha512 = build, los 3 exe de OVH-A renovados (por Cloudflare 93.700.208 B, sha256
+  `b2057f4c…` = build, firma `Valid`). **Pendiente:** novedad del launcher (espera el OK de Felix); Felix envía el exe
+  1.17.14 como falso positivo (McAfee, Microsoft, Avast/AVG, Norton…; ya mandó el 1.17.13); `tools/comprueba-publisher.js`
+  falla si se lanza desde pwsh 7 (hereda `PSModulePath`): lanzarlo con `PSModulePath` vacío.
 - **Aviso para launchers 1.16.16-1.16.18 fijo en las releases (1-11, OK de Felix).** Cada release nueva: `node tools/notas-release.js vX.Y.Z --aplica`
   (DISTRIBUCION.md, paso 3b). Puesto en v1.17.13.
 - **1.17.13 publicada (29-10 15:05 UTC, OK de Felix): el vigilante.** Con la partida cargada el launcher se cierra
