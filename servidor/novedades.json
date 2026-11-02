@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-02-servidor-Dia-comunitario-la-barra-de-meta-ya-no-se-queda-fija",
+      "fecha": "2026-11-02",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Día comunitario: la barra de meta ya no se queda fija",
+      "puntos": [
+        "Cuando el servidor cumple la meta, la barra sale unos minutos y se quita sola.",
+        "Después te recuerda de vez en cuando que termines tus capturas en las zonas."
+      ]
+    },
+    {
       "id": "2026-11-01-servidor-Autopickup-y-autosmelt-ventajas-de-rango",
       "fecha": "2026-11-01",
       "tipo": "servidor",
