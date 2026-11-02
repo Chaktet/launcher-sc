@@ -80,6 +80,18 @@
   «diseño-pruebas» (mensaje 1564857375410757703). **Publicada en el launcher el 28-10 15:55 UTC** con la de las
   misiones de escanear (OK de Felix: launcher sí, Discord no). El modpack móvil SC-Movil no lo lleva.
 
+## 2026-11-02 · Punchy sin animaciones en LITE: «file/punchy:punchy» (arreglo en código, release pendiente)
+- Felix: en LITE las animaciones de Punchy (al hacer clic con la mano) no salen; en PRO sí.
+- Causa: `scActivarPacksInternosDeMods` activaba el paquete interno con `sc$togglePack`, que escribe `file/` delante:
+  en LITE quedó `"file/punchy:punchy"` (instancia de Felix, marcador `.sc-packs-internos.json` ya puesto, así que no se
+  reintenta). Minecraft no lo reconoce. En PRO no se notaba porque `punchy:punchy` venía bien en el options.txt nuevo.
+- Distribución (en vivo, Cloudflare OK): options.txt de LITE y SUPER LITE con `punchy:punchy` antes del SC-Pack
+  (`?v=52fd1a62fa` / `?v=8dff1c1678`, manifiesto 15a90912; copias `.bak-20261102` en OVH-A y `_retirados/options-punchy-20261102/`).
+  Solo afecta a instalaciones nuevas (options.txt sin hash).
+- Código: lo mete en `base` (sin `file/`) y repara el `file/<interno>` aunque el marcador lo dé por hecho. Simulación con
+  el código real `E:/tmp/punchy-lite/sim.js` 7/7 (con el código viejo fallan 3); la de 28-10 sigue 7/7. Commit sin release.
+- Pendiente: release firmada (SimplySign de Felix) para los LITE y SUPER LITE ya instalados.
+
 ## 2026-11-02 · Punchy también en LITE y SUPER LITE (PokéNav de espaldas y sin brazo)
 - Felix: en LITE el PokéNav se ve de espaldas en primera persona y no se ve la mano; en PRO bien.
 - Causa (corregida el mismo día tras medirlo): Punchy dibuja el PokéNav con la pose de tercera persona, así que el giro
