@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-02-servidor-Tu-progreso-de-mineria-igual-en-Kanto-y-Kalos",
+      "fecha": "2026-11-02",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Tu progreso de minería, igual en Kanto y Kalos",
+      "puntos": [
+        "Al cambiar de región, la minería espera a que la otra región guarde tu progreso antes de cargarlo.",
+        "Ahora viajan contigo el pase, los potenciadores, los topes diarios, los consumibles, el capataz y los tiempos de espera."
+      ]
+    },
+    {
       "id": "2026-11-02-servidor-Dia-comunitario-la-barra-de-meta-ya-no-se-queda-fija",
       "fecha": "2026-11-02",
       "tipo": "servidor",
