@@ -80,6 +80,16 @@
   «diseño-pruebas» (mensaje 1564857375410757703). **Publicada en el launcher el 28-10 15:55 UTC** con la de las
   misiones de escanear (OK de Felix: launcher sí, Discord no). El modpack móvil SC-Movil no lo lleva.
 
+## 2026-11-02 · Punchy también en LITE y SUPER LITE (PokéNav de espaldas y sin brazo)
+- Felix: en LITE el PokéNav se ve de espaldas en primera persona y no se ve la mano; en PRO bien.
+- Causa: la pose de primera persona del PokéNav (girada 180° en SC-3.3.20) se ajustó viéndola con Punchy, que solo
+  iba en PRO (`optionalon`). Sin Punchy se dibuja girado; y sin Punchy Minecraft no dibuja el brazo con objeto en mano.
+- Cambio (método del 23-10, sin regenerar): `punchy-2.8e-fabric-1.21.1.jar` (md5 `53910a39…`, el mismo de PRO) en
+  `optionalon/` de LITE, local y en OVH-A; entrada añadida a LITE y SUPER LITE (SUPER LITE usa la URL de LITE).
+  Copia `distribution.json.bak-punchy-lite-20261102` en OVH-A y en local.
+- Verificado por Cloudflare: JSON md5 `c527fd90…`, jar 1.878.473 B y MD5 = manifiesto. Sin probar en un cliente LITE.
+- Pendiente: el móvil y quien apague Punchy siguen viendo el PokéNav de espaldas (pose válida con y sin Punchy).
+
 ## 2026-11-01 · «No se pudo descargar la actualización» otra vez: jugadores que vuelven
 - Pedido de Felix: un jugador con v1.16.17 ve la puerta de error; arreglarlo de raíz.
 - Causa: no es avería nueva. Es el `publisherName` roto de la 1.16.16-1.16.18 (`F�lix`, visto en el instalador real). Badasanji entró por última vez el 20-10, antes del mod 1.2.0, así que el arreglo automático nunca se ejecutó. Su botón de la web abre `releases/latest`, cuyas notas ya no lo explicaban.
