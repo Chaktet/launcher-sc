@@ -277,7 +277,13 @@
     "2026-11-01-servidor-La-Forja-ya-te-dice-cuanto-material-es-tuyo",
     "2026-11-01-servidor-Torre-de-Batalla-tus-Pokemon-a-salvo-al-volver",
     "2026-11-01-servidor-Un-minijuego-ya-no-te-saca-de-otro",
-    "2026-11-01-servidor-Pwarps-el-mensaje-de-exito-solo-si-te-lleva"
+    "2026-11-01-servidor-Pwarps-el-mensaje-de-exito-solo-si-te-lleva",
+    "2026-11-01-servidor-Autopickup-y-autosmelt-ventajas-de-rango",
+    "2026-11-01-servidor-La-mineria-ya-no-se-para-cuando-hay-lag",
+    "2026-11-01-servidor-Packs-de-cosmeticos-mas-variados",
+    "2026-11-02-servidor-Adios-a-los-Pokemon-fantasma-congelados",
+    "2026-11-02-servidor-Tu-progreso-de-mineria-igual-en-Kanto-y-Kalos",
+    "2026-11-02-servidor-Dia-comunitario-la-barra-de-meta-ya-no-se-queda-fija"
   ],
   "mensajes": [
     {
@@ -819,6 +825,18 @@
         "2026-11-01-servidor-Torre-de-Batalla-tus-Pokemon-a-salvo-al-volver",
         "2026-11-01-servidor-Un-minijuego-ya-no-te-saca-de-otro",
         "2026-11-01-servidor-Pwarps-el-mensaje-de-exito-solo-si-te-lleva"
+      ]
+    },
+    {
+      "fecha": "2026-11-02",
+      "mensaje": "1566895981050728580",
+      "entradas": [
+        "2026-11-01-servidor-Autopickup-y-autosmelt-ventajas-de-rango",
+        "2026-11-01-servidor-La-mineria-ya-no-se-para-cuando-hay-lag",
+        "2026-11-01-servidor-Packs-de-cosmeticos-mas-variados",
+        "2026-11-02-servidor-Adios-a-los-Pokemon-fantasma-congelados",
+        "2026-11-02-servidor-Tu-progreso-de-mineria-igual-en-Kanto-y-Kalos",
+        "2026-11-02-servidor-Dia-comunitario-la-barra-de-meta-ya-no-se-queda-fija"
       ]
     }
   ]
