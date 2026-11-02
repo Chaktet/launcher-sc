@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-02-servidor-Adios-a-los-Pokemon-fantasma-congelados",
+      "fecha": "2026-11-02",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Adiós a los Pokémon fantasma congelados",
+      "puntos": [
+        "A veces se quedaba quieto un Pokémon que ya no estaba, visible para todos hasta reconectar. Ya no debería pasar.",
+        "Si aún ves uno, avísanos en Discord con la región y lo que estabas haciendo."
+      ]
+    },
+    {
       "id": "2026-11-02-servidor-Tu-progreso-de-mineria-igual-en-Kanto-y-Kalos",
       "fecha": "2026-11-02",
       "tipo": "servidor",
