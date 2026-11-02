@@ -732,148 +732,78 @@ async function scJavaRoto(motivo, err){
 
 // Antivirus con pasos conocidos. La clave apunta a una cadena de idioma con la
 // ruta de clics exacta de ese producto; sin esto el jugador recibe "añádelo a
-// las excepciones" y no sabe por dónde empezar.
+// las excepciones" y no sabe por dónde empezar. `carpeta` es el nombre de su
+// carpeta en Archivos de programa (ver scDetectarAntivirus).
 const SC_ANTIVIRUS_CONOCIDOS = [
-    { re: /avast/i,                 clave: 'avAvast' },
-    { re: /\bavg\b/i,               clave: 'avAvg' },
-    { re: /kaspersky/i,             clave: 'avKaspersky' },
-    { re: /bitdefender/i,           clave: 'avBitdefender' },
-    { re: /norton/i,                clave: 'avNorton' },
-    { re: /mcafee/i,                clave: 'avMcafee' },
-    { re: /eset|nod32/i,            clave: 'avEset' },
-    { re: /malwarebytes/i,          clave: 'avMalwarebytes' },
-    { re: /panda/i,                 clave: 'avPanda' }
+    { re: /avast/i,                 carpeta: /^avast software$/i,   nombre: 'Avast',        clave: 'avAvast' },
+    { re: /\bavg\b/i,               carpeta: /^avg$/i,              nombre: 'AVG',          clave: 'avAvg' },
+    { re: /kaspersky/i,             carpeta: /^kaspersky lab$/i,    nombre: 'Kaspersky',    clave: 'avKaspersky' },
+    { re: /bitdefender/i,           carpeta: /^bitdefender$/i,      nombre: 'Bitdefender',  clave: 'avBitdefender' },
+    { re: /norton/i,                carpeta: /^norton/i,            nombre: 'Norton',       clave: 'avNorton' },
+    { re: /mcafee/i,                carpeta: /^mcafee$/i,           nombre: 'McAfee',       clave: 'avMcafee' },
+    { re: /eset|nod32/i,            carpeta: /^eset$/i,             nombre: 'ESET',         clave: 'avEset' },
+    { re: /malwarebytes/i,          carpeta: /^malwarebytes$/i,     nombre: 'Malwarebytes', clave: 'avMalwarebytes' },
+    { re: /panda/i,                 carpeta: /^panda security$/i,   nombre: 'Panda',        clave: 'avPanda' }
 ]
-
-const SC_ES_DEFENDER = /windows defender|microsoft defender/i
 
 // Último antivirus detectado. scInformeDiagnostico() es síncrona y la detección
 // no, así que se cachea aquí para poder incluirlo en el informe de soporte.
 let scAvCache = null
 
 /**
- * Pregunta a Windows qué antivirus hay instalado. Solo lectura.
+ * Qué antivirus parece tener el equipo, mirando solo las carpetas de Archivos de programa.
  *
- * Windows lleva su propio registro en WMI (`root\SecurityCenter2`), que además
- * da la ruta del ejecutable del antivirus: con eso se le puede ABRIR su propia
- * aplicación al jugador en vez de describírsela.
+ * Hasta la 1.17.13 se preguntaba a Windows por PowerShell (el registro de antivirus de WMI): listar los
+ * antivirus desde PowerShell es justo lo que hace un virus antes de atacar, y McAfee y otros
+ * marcaban el instalador (Felix, 02-11). Leer dos carpetas no lanza ningún proceso.
  *
- * @returns {Promise<{nombre: string, exe: string, esDefender: boolean}|null>}
+ * Es una pista, no una certeza: una carpeta puede quedar tras desinstalar (McAfee WebAdvisor
+ * deja `McAfee` sin antivirus). Por eso el aviso dice «si usas X» y enseña los pasos de todos
+ * los que encuentre. Sin ninguno de terceros, el que protege es Windows Defender.
+ *
+ * @returns {Promise<{nombre: string, claves: string[], esDefender: boolean}|null>}
  */
-function scDetectarAntivirus(){
-    return new Promise(resolve => {
-        if(process.platform !== 'win32'){
-            return resolve(null)
+async function scDetectarAntivirus(){
+    if(process.platform !== 'win32'){
+        return null
+    }
+    const nodeFs = require('fs')
+    const carpetas = []
+    for(const base of [process.env.ProgramFiles, process.env['ProgramFiles(x86)']]){
+        if(!base){
+            continue
         }
-        const { execFile } = require('child_process')
-        const ps = 'Get-CimInstance -Namespace \'root\\SecurityCenter2\' -ClassName AntiVirusProduct'
-            + ' | Select-Object displayName,productState,pathToSignedProductExe | ConvertTo-Json -Compress'
-        execFile('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', ps],
-            { timeout: 8000, windowsHide: true },
-            (err, stdout) => {
-                if(err || !stdout){
-                    return resolve(null)
-                }
-                try {
-                    let lista = JSON.parse(stdout)
-                    if(!Array.isArray(lista)){
-                        lista = [lista]
-                    }
-                    // El segundo byte de productState indica si la protección en
-                    // tiempo real está activa (0x10 / 0x11).
-                    const activos = lista.filter(a => {
-                        const b = (a.productState >> 8) & 0xFF
-                        return b === 0x10 || b === 0x11
-                    })
-                    const candidatos = activos.length ? activos : lista
-                    // Si hay uno de terceros, ese manda: cuando se instala uno,
-                    // Defender se aparta pero sigue figurando en la lista.
-                    const tercero = candidatos.find(a => !SC_ES_DEFENDER.test(a.displayName || ''))
-                    const el = tercero || candidatos[0]
-                    if(el == null){
-                        return resolve(null)
-                    }
-                    scAvCache = {
-                        nombre: (el.displayName || '').trim(),
-                        exe: (el.pathToSignedProductExe || '').trim(),
-                        esDefender: SC_ES_DEFENDER.test(el.displayName || '')
-                    }
-                    resolve(scAvCache)
-                } catch(_e){
-                    resolve(null)
-                }
-            })
-    })
+        try {
+            carpetas.push(...nodeFs.readdirSync(base))
+        } catch(_e){
+            // Sin permiso de lectura: se sigue con la otra.
+        }
+    }
+    const encontrados = SC_ANTIVIRUS_CONOCIDOS.filter(a => carpetas.some(c => a.carpeta.test(c)))
+    scAvCache = encontrados.length === 0
+        ? { nombre: '', claves: [], esDefender: true }
+        : { nombre: encontrados.map(a => a.nombre).join(', '), claves: encontrados.map(a => a.clave), esDefender: false }
+    return scAvCache
 }
 
 /**
- * Añade la carpeta del launcher a las exclusiones de Windows Defender.
+ * Abre la página de Seguridad de Windows donde están las exclusiones.
  *
- * Requiere permisos de administrador, así que se lanza con `-Verb RunAs` y es
- * el propio aviso del UAC de Windows el que hace de confirmación: no se toca
- * nada sin que el jugador acepte. Si cancela, `Start-Process` falla y se
- * devuelve false.
- *
- * Se excluye SOLO la carpeta del launcher, nunca una unidad entera.
- * `-EncodedCommand` evita problemas de comillas: la ruta lleva espacios y
- * puede llevar tildes o apóstrofos según el nombre de usuario de Windows.
- *
- * @param {string} carpeta Carpeta a excluir.
- * @returns {Promise<boolean>}
+ * Hasta la 1.17.13 el launcher añadía la exclusión él mismo (PowerShell elevado, oculto y con
+ * el comando codificado). Funcionaba, pero es la firma clásica de un virus que se esconde de
+ * Defender y los antivirus marcaban el instalador por eso (Felix, 02-11). Ahora la pone el
+ * jugador: le abrimos la página y la ruta ya está en el portapapeles.
  */
-function scExcluirEnDefender(carpeta){
-    return new Promise(resolve => {
-        if(process.platform !== 'win32'){
-            return resolve(false)
+async function scAbrirSeguridadWindows(){
+    try {
+        await shell.openExternal('windowsdefender://threatsettings')
+    } catch(e){
+        try {
+            await shell.openExternal('windowsdefender://')
+        } catch(e2){
+            loggerLanding.warn('No se pudo abrir Seguridad de Windows', e2)
         }
-        const { execFile } = require('child_process')
-        const interno = `Add-MpPreference -ExclusionPath '${String(carpeta).replace(/'/g, '\'\'')}'`
-        const b64 = Buffer.from(interno, 'utf16le').toString('base64')
-        const externo = 'Start-Process powershell -Verb RunAs -WindowStyle Hidden -Wait'
-            + ` -ArgumentList '-NoProfile','-ExecutionPolicy','Bypass','-EncodedCommand','${b64}'`
-        execFile('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', externo],
-            { timeout: 120000, windowsHide: true },
-            err => {
-                if(err){
-                    loggerLanding.warn('No se pudo añadir la exclusión en Defender', err)
-                }
-                resolve(!err)
-            })
-    })
-}
-
-/**
- * ¿Está ya esa carpeta en las exclusiones de Defender?
- *
- * Solo lectura, SIN elevación. Sirve para no volver a lanzarle un UAC a alguien
- * que ya excluyó la carpeta en un incidente anterior: si la exclusión está
- * puesta y aun así falla, el antivirus no es el culpable y pedir permisos otra
- * vez solo lo despista.
- *
- * @param {string} carpeta
- * @returns {Promise<boolean|null>} null si no se pudo averiguar.
- */
-function scExclusionYaPuesta(carpeta){
-    return new Promise(resolve => {
-        if(process.platform !== 'win32'){
-            return resolve(null)
-        }
-        const { execFile } = require('child_process')
-        const ps = 'try { (Get-MpPreference).ExclusionPath -join "`n" } catch { "" }'
-        execFile('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', ps],
-            { timeout: 8000, windowsHide: true },
-            (err, stdout) => {
-                if(err || stdout == null){
-                    return resolve(null)
-                }
-                const objetivo = String(carpeta).replace(/\\+$/, '').toLowerCase()
-                const puesta = String(stdout).split(/\r?\n/)
-                    .map(s => s.trim().replace(/\\+$/, '').toLowerCase())
-                    .filter(Boolean)
-                    .some(e => objetivo === e || objetivo.startsWith(e + '\\'))
-                resolve(puesta)
-            })
-    })
+    }
 }
 
 /**
@@ -921,7 +851,7 @@ async function scRepararModulo(rutaFichero){
  * @param {string} opts.carpeta Carpeta a excluir y a enseñar.
  * @param {string} opts.intro Texto de cabecera (clave ya resuelta).
  * @param {string} opts.codigo Código SC que se muestra.
- * @param {function(): Promise<boolean>} opts.reparar Qué reparar tras excluir.
+ * @param {function(): Promise<boolean>} opts.reparar Qué reparar cuando el jugador ya ha puesto la excepción.
  */
 async function scOfrecerArreglarAntivirus(opts){
     const carpeta = opts.carpeta
@@ -933,51 +863,32 @@ async function scOfrecerArreglarAntivirus(opts){
         loggerLanding.warn('No se pudo detectar el antivirus', e)
     }
 
-    // Si ya está excluida y sigue fallando, el antivirus no es el culpable:
-    // ofrecerle otro UAC sería mandarlo por un camino que ya recorrió.
-    let yaExcluida = null
-    if(av != null && av.esDefender){
-        try {
-            yaExcluida = await scExclusionYaPuesta(carpeta)
-        } catch(e){
-            loggerLanding.warn('No se pudo leer las exclusiones', e)
-        }
-    }
-
     const rutaSegura = sc$escapeHtml(carpeta)
     let cuerpo = opts.intro
 
-    if(av != null && av.nombre){
+    // Pasos de cada antivirus cuya carpeta se encontró y, SIEMPRE, los de Defender: la carpeta
+    // puede ser de uno ya desinstalado (el PC de Felix tenía la de Bitdefender con solo Defender
+    // activo) y los instalados desde la Microsoft Store no dejan carpeta.
+    if(av != null && !av.esDefender){
         cuerpo += '<br><br>' + Lang.queryJS('landing.launch.avDetectado')
             .replace('{nombre}', `<b>${sc$escapeHtml(av.nombre)}</b>`)
-        const conocido = SC_ANTIVIRUS_CONOCIDOS.find(a => a.re.test(av.nombre))
-        if(conocido != null && !av.esDefender){
-            cuerpo += '<br><br>' + Lang.queryJS('landing.launch.' + conocido.clave)
+        for(const clave of av.claves){
+            cuerpo += '<br><br>' + Lang.queryJS('landing.launch.' + clave)
         }
     }
-
-    if(yaExcluida === true){
-        cuerpo += '<br><br>' + Lang.queryJS('landing.launch.avYaExcluida')
+    if(process.platform === 'win32'){
+        cuerpo += '<br><br>' + Lang.queryJS('landing.launch.avDefender')
     }
 
     cuerpo += `<br><br>${Lang.queryJS('landing.launch.avCarpeta')}<span class="sc-ruta">${rutaSegura}</span>`
     cuerpo += `<br><br><span class="sc-cod-error">${opts.codigo}</span>`
         + `<span class="sc-cod-ayuda">${Lang.queryJS('landing.launch.codigoAyuda')}</span>`
 
-    // El botón principal se adapta a lo que REALMENTE se puede hacer en este
-    // equipo. Prometer "lo arreglo por ti" y luego no poder es peor que no
-    // ofrecerlo. Y si la carpeta YA está excluida, no se vuelve a pedir UAC.
-    const puedeAuto = av != null && av.esDefender && yaExcluida !== true
-    const textoAccion = puedeAuto
-        ? Lang.queryJS('landing.launch.avArreglar')
-        : (av != null && av.exe && av.exe !== 'windowsdefender://'
-            ? Lang.queryJS('landing.launch.avAbrirAntivirus')
-            : Lang.queryJS('landing.launch.avCopiarRuta'))
-
+    const conDefender = process.platform === 'win32'
     setOverlayContent(
         Lang.queryJS('landing.launch.failureTitle'),
         cuerpo,
-        textoAccion,
+        Lang.queryJS(conDefender ? 'landing.launch.avAbrirDefender' : 'landing.launch.avCopiarRuta'),
         Lang.queryJS('landing.launch.okay')
     )
 
@@ -987,41 +898,44 @@ async function scOfrecerArreglarAntivirus(opts){
         } catch(e){
             loggerLanding.warn('No se pudo copiar la ruta', e)
         }
+        // Sin esperar: la apertura no toca el aviso y un segundo clic no debe adelantarse al paso dos.
+        if(conDefender){
+            scAbrirSeguridadWindows()
+        }
 
-        if(puedeAuto){
+        // Segundo paso: la excepción no devuelve lo que ya esté en cuarentena, así que al
+        // volver hay que reparar. Sin esto el jugador pone la excepción y sigue sin poder jugar.
+        setOverlayContent(
+            Lang.queryJS('landing.launch.failureTitle'),
+            Lang.queryJS('landing.launch.avCuandoEste') + `<span class="sc-ruta">${rutaSegura}</span>`,
+            Lang.queryJS('landing.launch.avYaPuesta'),
+            Lang.queryJS('landing.launch.okay')
+        )
+        setOverlayHandler(async () => {
             setOverlayContent(
                 Lang.queryJS('landing.launch.failureTitle'),
-                Lang.queryJS(opts.claveAplicando || 'landing.launch.avAplicando'),
+                Lang.queryJS('landing.launch.avReparando'),
                 Lang.queryJS('landing.launch.okay')
             )
-            const ok = await scExcluirEnDefender(carpeta)
-            // Añadir la exclusión no devuelve lo que ya esté en cuarentena, así
-            // que hay que reparar después. Sin esto el jugador excluye la
-            // carpeta y sigue sin poder jugar.
-            const reparado = ok ? await opts.reparar() : false
+            // Mientras repara, ni otro clic lanza una segunda reparación ni se cierra el aviso: al
+            // terminar pintaría su resultado encima de otro aviso abierto entretanto.
+            setOverlayHandler(() => {})
+            setDismissHandler(() => {})
+            let reparado = false
+            try {
+                reparado = await opts.reparar()
+            } catch(e){
+                loggerLanding.warn('La reparación tras la excepción falló', e)
+            }
             setOverlayContent(
                 Lang.queryJS('landing.launch.failureTitle'),
-                Lang.queryJS(ok && reparado ? (opts.claveHecho || 'landing.launch.avHecho') : 'landing.launch.avNoHecho'),
+                Lang.queryJS(reparado ? (opts.claveHecho || 'landing.launch.avHecho') : 'landing.launch.avNoHecho'),
                 Lang.queryJS('landing.launch.okay')
             )
             setOverlayHandler(() => toggleOverlay(false))
             setDismissHandler(null)
-            return
-        }
-
-        if(av != null && av.exe && av.exe !== 'windowsdefender://'){
-            try {
-                shell.openPath(av.exe)
-            } catch(e){
-                loggerLanding.warn('No se pudo abrir el antivirus', e)
-            }
-        }
-        try {
-            shell.openPath(carpeta)
-        } catch(e){
-            loggerLanding.warn('No se pudo abrir la carpeta', e)
-        }
-        toggleOverlay(false)
+        })
+        setDismissHandler(() => toggleOverlay(false))
     })
     setDismissHandler(() => toggleOverlay(false))
     // Hay quien llama con el aviso ya cerrado (SC-15 «Revisar el antivirus», SC-19): sin
@@ -1075,7 +989,9 @@ async function scAvisarArchivosBorrados(){
     const carpeta = tipo === 'java'
         ? require('path').join(ConfigManager.getDataDirectory(), 'runtime')
         : (tipo === 'mods' ? ConfigManager.getCommonDirectory() : ConfigManager.getDataDirectory())
-    const nombreAv = av != null && av.nombre ? `<b>${sc$escapeHtml(av.nombre)}</b>` : Lang.queryJS('landing.launch.borradosTuAntivirus')
+    // Sin nombre: la detección por carpetas es solo una pista (puede ser un antivirus ya
+    // desinstalado) y culpar al que no es despista más que ayuda.
+    const nombreAv = Lang.queryJS('landing.launch.borradosTuAntivirus')
     const uno = faltan.mods.length === 1
     const que = Lang.queryJS(tipo === 'java' ? 'landing.launch.borradosJava'
         : (tipo === 'mods' ? 'landing.launch.borradosMods' : 'landing.launch.borradosAmbos'))
@@ -1096,7 +1012,6 @@ async function scAvisarArchivosBorrados(){
             carpeta,
             intro: Lang.queryJS('landing.launch.avIntroBorrados'),
             codigo: SC_ERR.BORRADOS,
-            claveAplicando: 'landing.launch.avAplicandoBorrados',
             claveHecho: 'landing.launch.avHechoBorrados',
             // Lo que falte lo vuelve a bajar el propio JUGAR: no hay nada más que reparar.
             reparar: async () => true
@@ -2100,7 +2015,7 @@ function scInformeDiagnostico(codigo, err){
         // ahora el informe no lo decía: soporte tenía que preguntarlo siempre.
         // Se pinta de una caché porque scDetectarAntivirus() es asíncrona y esto
         // no; si aún no ha resuelto, sale "sin comprobar" en vez de mentir.
-        `Antivirus: ${scAvCache == null ? '(sin comprobar)' : (scAvCache.nombre || '(ninguno registrado)')}`,
+        `Antivirus: ${scAvCache == null ? '(sin comprobar)' : (scAvCache.nombre ? `carpeta de ${scAvCache.nombre}` : '(ninguna carpeta de terceros: Defender o de la Microsoft Store)')}`,
         `TLS:       ${scLineaTls()}`,
         `Ruta:      ${scRutaUltimoIntento} en el ultimo intento · ahora ${scRutaDirectaActiva ? 'directa' : 'normal'} · cambios automaticos ${scCambiosRutaDirecta}/${SC_MAX_CAMBIOS_RUTA}`,
         '',
@@ -2505,11 +2420,16 @@ function scMarcaGpuId(){
 
 /** Antivirus como clase fija (defender, avast, kaspersky…, otro, ninguno), nunca el nombre. */
 function scAntivirusId(av){
-    if(av == null || !av.nombre){
+    if(av == null){
         return 'ninguno'
     }
+    // Desde la 1.17.14 sale de las carpetas de Archivos de programa: sin ninguna no se sabe si es
+    // Defender o uno de la Microsoft Store, y con varias no se sabe cuál está activo.
     if(av.esDefender){
-        return 'defender'
+        return 'sincarpeta'
+    }
+    if(av.claves != null && av.claves.length > 1){
+        return 'varios'
     }
     const conocido = SC_ANTIVIRUS_CONOCIDOS.find(a => a.re.test(av.nombre))
     return conocido ? conocido.clave.slice(2).toLowerCase() : 'otro'

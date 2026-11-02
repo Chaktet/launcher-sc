@@ -29,7 +29,7 @@ una explicación en cristiano y un botón que copia un informe completo al porta
 | **SC-16** | `DISCO` | No cabe en el disco lo que falta por descargar (más 512 MB de margen) | Liberar espacio; el mensaje dice cuánto queda y la carpeta |
 | **SC-17** | `NATIVAS` | Falta `lwjgl.dll` (u otra nativa) al arrancar: Sodium muere en preLaunch con `UnsatisfiedLinkError: Failed to locate library` | Reintentar; si se repite, excluir la carpeta del launcher y `%TEMP%` del antivirus y cerrar limpiadores |
 | **SC-18** | `MODS_PROPIOS` | Algo no casa (`NoSuchMethodError`, clase que falta, mixin, mod repetido) y el jugador tiene mods añadidos por su cuenta en `mods/` (Ajustes → Mods). Sale al arrancar y a media partida | El diálogo le lista sus mods: que los desactive y los active de uno en uno |
-| **SC-19** | `BORRADOS` | Desde la última partida buena han desaparecido mods (`.jar` del perfil, opcionales incluidos) o Java: el antivirus los puso en cuarentena (`scborrados.js`, 1.17.9). Sale al pulsar JUGAR; «Jugar ya» sigue y la descarga los repone | «Que no vuelva a pasar»: exclusión de la carpeta (Defender la pone el launcher con UAC) |
+| **SC-19** | `BORRADOS` | Desde la última partida buena han desaparecido mods (`.jar` del perfil, opcionales incluidos) o Java: el antivirus los puso en cuarentena (`scborrados.js`, 1.17.9). Sale al pulsar JUGAR; «Jugar ya» sigue y la descarga los repone | «Que no vuelva a pasar»: pasos para excluir la carpeta; desde la 1.17.14 la pone el jugador (el launcher abre Seguridad de Windows) |
 
 ### App Android (SC Launcher móvil, desde 0.1.4)
 
@@ -149,27 +149,26 @@ La causa es casi siempre el **antivirus**, que bloquea lo recién descargado en 
 Pedirle a un jugador que "añada una excepción en su antivirus" es pedirle demasiado. El diálogo
 ahora se adapta al equipo:
 
-1. `scDetectarAntivirus()` pregunta a Windows qué antivirus hay (WMI, `root\SecurityCenter2`). Es
-   solo lectura y devuelve además **la ruta del ejecutable** del antivirus.
-2. Según lo que encuentre, el botón principal cambia:
-
-| Antivirus detectado | Botón | Qué hace |
-|---|---|---|
-| **Windows Defender** | *Arreglarlo por mí* | Añade la exclusión y reinstala Java. Un clic |
-| Uno de terceros conocido | *Abrir mi antivirus* | Le abre su app y le enseña la ruta de clics de **ese** producto |
-| Nada identificable | *Copiar la ruta* | Copia y abre la carpeta en el explorador |
+1. `scDetectarAntivirus()` mira qué carpetas de antivirus conocidos hay en Archivos de programa
+   (`Program Files` y `(x86)`). No lanza ningún proceso. Es solo una pista: la carpeta puede ser de un
+   antivirus ya desinstalado y los de la Microsoft Store no dejan carpeta.
+2. El aviso enseña los pasos de cada antivirus encontrado («si es el que usas…») y **siempre** los de
+   Windows Defender. Botón *Abrir Seguridad de Windows*: copia la ruta y abre
+   `windowsdefender://threatsettings`. El jugador pone la excepción él.
+3. Segundo paso: *Ya la he añadido* → `opts.reparar()` (reinstala Java, repara el módulo o nada en SC-19).
 
 Hay pasos concretos escritos para Avast, AVG, Kaspersky, Bitdefender, Norton, McAfee, ESET,
 Malwarebytes y Panda (`landing.launch.av*` en `_custom.toml`).
 
-> **Sobre la exclusión automática.** Solo ocurre si el jugador pulsa el botón, y **el aviso de
-> administrador de Windows (UAC) es la confirmación**: si lo cancela, no se toca nada. Se excluye
-> únicamente `<dataDir>/runtime`, la carpeta de Java del propio launcher — nunca una unidad entera.
-> Se hace con `Add-MpPreference -ExclusionPath` lanzado con `-Verb RunAs`.
+> **Por qué ya no hay exclusión automática (1.17.14, Felix 02-11).** Hasta la 1.17.13 el launcher
+> añadía la exclusión con PowerShell elevado, oculto, con el comando codificado, y preguntaba por WMI
+> qué antivirus había. Es lo mismo que hace un virus para esconderse de Defender, y McAfee y otros
+> marcaban el instalador. **No volver a meterlo**: ni exclusiones desde el launcher, ni consultas de
+> antivirus por PowerShell, ni `-ExecutionPolicy Bypass`, `-EncodedCommand` u ocultar ventanas elevadas.
 >
-> ⚠ **Tras excluir hay que reinstalar Java, y por eso el botón hace las dos cosas.** La exclusión
-> evita bloqueos futuros pero **no devuelve lo que ya esté en cuarentena**: si solo se excluyera, el
-> jugador seguiría sin poder jugar y creería que no ha servido de nada.
+> ⚠ **Tras excluir hay que reparar, y por eso existe el segundo paso.** La exclusión evita bloqueos
+> futuros pero **no devuelve lo que ya esté en cuarentena**: si solo se excluyera, el jugador seguiría
+> sin poder jugar y creería que no ha servido de nada.
 
 Alternativa que siempre funciona: instalar Java 21 x64 a mano desde `adoptium.net` con el **`.msi`**
 — al quedar en Archivos de programa, los antivirus no suelen molestarlo.
@@ -214,8 +213,8 @@ Cómo funciona ahora (sin botón; `scJavaRoto()` en landing.js):
 - **SC-10, primera vez**: se repara solo (veta el Java si era del sistema; nunca borra nada fuera de
   `<datos>/runtime`; si `runtime` no se deja borrar se aparta como `runtime-roto-<fecha>` y se limpia en el
   siguiente JUGAR), sale el aviso «Estamos reinstalando Java» y se relanza solo.
-- **SC-10 repetido en menos de 2 h**: diálogo del antivirus (`scOfrecerArreglarAntivirus`, excluir `runtime` en
-  Defender y reparar) más la salida del `.msi`.
+- **SC-10 repetido en menos de 2 h**: diálogo del antivirus (`scOfrecerArreglarAntivirus`: el jugador excluye `runtime`
+  y, al volver, se repara) más la salida del `.msi`.
 - Estado en `<launcher>/sc-java.json` (`vetados`, `reparaciones`, `propioBloqueado`). Pistas: `x` motivo, `f`
   `propio`/`sistema`/`ninguno`, `u` `primero`/`repetido`.
 
@@ -298,7 +297,7 @@ que se resolvía solo es el peor desenlace posible.
 |---|---|---|---|
 | 1º | *Reintentar* | Relanza sin más | No |
 | 2º | *Descargarlo de nuevo* | Borra la carpeta de versión y redescarga | No |
-| 3º | *Revisar el antivirus* | Detecta el antivirus y ofrece la exclusión | UAC |
+| 3º | *Revisar el antivirus* | Pasos para que el jugador ponga la exclusión; luego repara | No (la pone él) |
 
 `scIntentosPorFichero` (un `Map` por ruta) lleva la cuenta. **Máximo un reintento y una reparación
 por archivo y sesión**: sin ese tope la escalera es un bucle — borrar, redescargar, el antivirus
@@ -323,17 +322,14 @@ Cuando se llega al tercer escalón se excluye `<commonDir>\mods`, **no** el dire
 entero. Ahí es donde aterrizan los `.jar` que sirve nuestro CDN, así que cuanto más estrecha sea la
 exclusión, menos superficie se abre si algún día la distribución se compromete.
 
-Y si la carpeta **ya estaba excluida**, `scExclusionYaPuesta()` lo detecta (lectura, sin elevación) y
-el diálogo lo dice en vez de volver a pedir UAC: si ya está excluida y sigue fallando, el antivirus
-no es el culpable.
-
 #### Lo que el launcher no puede hacer
 
 - **Sacar un archivo de cuarentena.** Excluir no devuelve lo ya secuestrado; por eso toda exclusión
   va seguida de redescarga, y aun así puede hacer falta restaurarlo desde el propio antivirus.
 - **Leer el historial de detecciones de Defender.** `Get-MpThreat` exige elevación, y devuelve vacío
   sin distinguirse de "no hay detecciones". Eso lo tiene que mirar el jugador.
-- **Poner exclusiones en antivirus de terceros.** Solo Defender es automatizable.
+- **Poner exclusiones.** Desde la 1.17.14 tampoco en Defender: hacerlo por PowerShell elevado hacía que
+  los antivirus marcaran el instalador como virus (ver «Por qué ya no hay exclusión automática»).
 
 #### Atajo para soporte
 
@@ -455,7 +451,9 @@ mismo código cuenta una vez por minuto. Se apaga en Ajustes → Launcher (`envi
   (`nvidia`, `amd`, `intel`, `otra`, `desconocida`). En SC-90: `f` qué dejó el juego (`crash`, `hserr`, `nada`) y
   `u` minutos jugados por tramos (`0m`, `2m`, `5m` … `240m`). En SC-14: `x` = por qué no arranca Java según
   `scSondaJava()` (`borrado`, `vacio`, `EPERM`/`EACCES`/`UNKNOWN`, `colgado`, `salidaN`, `ok`) y `q` antivirus como
-  clase fija (`defender`, `avast`, `kaspersky`…, `otro`, `ninguno`). En SC-03: `k=json` (un JSON local a medias) y `n`
+  clase fija (`defender`, `avast`, `kaspersky`…, `otro`, `ninguno`). Desde la 1.17.14 `q` sale de las carpetas de
+  Archivos de programa (`sincarpeta` = ninguna de terceros: Defender o uno de la Microsoft Store; `varios` = más de
+  una), no del registro de Windows: puede ser un antivirus ya desinstalado. En SC-03: `k=json` (un JSON local a medias) y `n`
   también con el nombre del error (`TypeError`) o `sindetalle` si el receptor no supo describirlo.
 - **SC-19 (1.17.9):** `n` cuántos archivos (máx. 99), `t` `mods`/`java`/`ambos`, `q` antivirus. La huella
   (`<launcher>/sc-huella.json`) se escribe cuando la partida carga; solo cuenta lo que la distribución sigue pidiendo,

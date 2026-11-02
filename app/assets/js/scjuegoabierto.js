@@ -52,10 +52,12 @@ function normalizar(p){
     return String(p || '').replace(/\//g, '\\').replace(/\\+$/, '').toLowerCase()
 }
 
+// Sin saltarse la directiva de ejecución: solo afecta a scripts en fichero, no a `-Command`,
+// y los antivirus puntúan ese salto como sospechoso (Felix, 02-11).
 function powershell(comando, timeout){
     return new Promise((resolve, reject) => {
         child_process.execFile('powershell.exe',
-            ['-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-Command', comando],
+            ['-NoProfile', '-NonInteractive', '-Command', comando],
             { encoding: 'utf8', timeout, windowsHide: true },
             (err, out) => err ? reject(err) : resolve(String(out)))
     })
