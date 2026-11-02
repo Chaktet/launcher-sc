@@ -82,13 +82,15 @@
 
 ## 2026-11-02 · Punchy también en LITE y SUPER LITE (PokéNav de espaldas y sin brazo)
 - Felix: en LITE el PokéNav se ve de espaldas en primera persona y no se ve la mano; en PRO bien.
-- Causa: la pose de primera persona del PokéNav (girada 180° en SC-3.3.20) se ajustó viéndola con Punchy, que solo
-  iba en PRO (`optionalon`). Sin Punchy se dibuja girado; y sin Punchy Minecraft no dibuja el brazo con objeto en mano.
+- Causa (corregida el mismo día tras medirlo): Punchy dibuja el PokéNav con la pose de tercera persona, así que el giro
+  de SC-3.3.20 solo afectó a quien no lleva Punchy y lo dejó de espaldas; el arreglo de la pose va en el pack
+  (RESOURCE-MC/historial.md 02-11 16:45). Punchy se añade igualmente porque sin él Minecraft no dibuja el brazo con un
+  objeto en la mano.
 - Cambio (método del 23-10, sin regenerar): `punchy-2.8e-fabric-1.21.1.jar` (md5 `53910a39…`, el mismo de PRO) en
   `optionalon/` de LITE, local y en OVH-A; entrada añadida a LITE y SUPER LITE (SUPER LITE usa la URL de LITE).
   Copia `distribution.json.bak-punchy-lite-20261102` en OVH-A y en local.
 - Verificado por Cloudflare: JSON md5 `c527fd90…`, jar 1.878.473 B y MD5 = manifiesto. Sin probar en un cliente LITE.
-- Pendiente: el móvil y quien apague Punchy siguen viendo el PokéNav de espaldas (pose válida con y sin Punchy).
+- Pendiente: publicar SC-3.3.22 (pose original) para el móvil y quien apague Punchy.
 
 ## 2026-11-01 · «No se pudo descargar la actualización» otra vez: jugadores que vuelven
 - Pedido de Felix: un jugador con v1.16.17 ve la puerta de error; arreglarlo de raíz.
