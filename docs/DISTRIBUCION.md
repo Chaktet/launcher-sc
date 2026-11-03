@@ -346,7 +346,21 @@ gh release upload vX.Y.Z -R Chaktet/launcher-sc dist/ci/*.dmg dist/ci/*.zip dist
   dist/ci/latest-mac.yml dist/ci/SC-Launcher-linux.AppImage dist/ci/latest-linux.yml
 ```
 
-- **Servidor de descargas:** los mismos nombres fijos en `/var/www/packs/` (la web y la puerta de Mac enlazan
+- **Mac Intel con macOS 10.15 Catalina (desde 02-11-2026):** Electron 39 pide macOS 12, así que el trabajo
+  `build-mac-catalina` (`macos-15-intel`) saca aparte `SC-Launcher-catalina-mac-x64.{dmg,zip}` con Electron 32.3.3 (el
+  último que arranca en 10.15; ya sin parches de seguridad) y canal propio `catalina-mac.yml`: esos Mac se actualizan
+  entre ellos y nunca bajan la versión normal. **Cada release lleva también estos ficheros** (artefacto
+  `instalador-mac-catalina`); sin `catalina-mac.yml` esos jugadores no se actualizan. Si `hdiutil` falla con «Resource
+  busy» es el runner: relanzar el trabajo (`gh run rerun <id> --failed`). Al subir Electron por encima de lo que
+  soporta 10.15 nada cambia aquí: el canal Catalina sigue en la 32.
+
+```bash
+gh run download <run-id> -R Chaktet/launcher-sc -n instalador-mac-catalina -D dist/ci
+gh release upload vX.Y.Z -R Chaktet/launcher-sc dist/ci/SC-Launcher-catalina-mac-x64.* dist/ci/catalina-mac.yml
+```
+
+- **Servidor de descargas:** los mismos nombres fijos en `/var/www/packs/` (también `SC-Launcher-catalina-mac-x64.dmg`,
+  que enlaza la guía `servidorcobblemon.es/como-jugar/mac`) (la web y la puerta de Mac enlazan
   `https://descargas.servidorcobblemon.es/SC-Launcher-mac-<arch>.dmg` y `/SC-Launcher-linux.AppImage`). Se renuevan
   en cada versión como el `.exe` estable, con el OK de Felix. **Antes de subirlos por primera vez**, `packs.conf`
   debe servir `.dmg` y `.AppImage` con `no-cache` como los `.exe`: Cloudflare cachea los `.dmg` por extensión y el nombre

@@ -1,6 +1,15 @@
 # SC Launcher · historial
 
 ## Estado actual
+- **Mac con macOS 10.15 Catalina (02-11 ~21:30 hora RD, pedido por Felix):** un jugador con iMac 2013 veía el icono
+  prohibido: Electron 39 pide macOS 12. Nuevo trabajo de CI `build-mac-catalina` (Intel, Electron 32.3.3, canal
+  `catalina-mac.yml`; commits c628d6b, b9cb490) y la puerta ofrece su .dmg en Darwin < 21. Comprobado en CI (run
+  41557227706): `LSMinimumSystemVersion` 10.15, Electron 32.3.3, arranca y sigue vivo a los 30 s en macOS Intel, y el
+  actualizador pide `catalina-mac.yml`. Subidos a la release v1.17.15 (zip, dmg, blockmaps, yml) y
+  `SC-Launcher-catalina-mac-x64.dmg` a `/var/www/packs` (por el enlace público sha512 = build). La guía web
+  `/como-jugar/mac` (botón «Guía para Mac» de #como-entrar) tiene ahora tres botones. **Sin probar en un Catalina
+  real**: falta que el jugador lo abra y entre a jugar (Java 21 y Minecraft en 10.15 tampoco se han probado).
+  Visto de paso: `SC-Launcher-mac-{arm64,x64}.dmg` de `/var/www/packs` siguen siendo los del 26-10 (1.17.8).
 - **Teclas de los mods (02-11): cero solapes de fábrica, `docs/TECLAS-MODS.md`.** En vivo: MaLiLib sin A→C, Inventory
   Profiles sin atajos salvo ordenar en ', PRO nuevo con guardar barra en 0 e Item Zoomer en Ç (manifiesto `5c43044c…`).
   **Pendiente:** esas dos teclas para jugadores que ya existen van en `SC_TECLAS_EN_CONFLICTO` y salen con la próxima release.
