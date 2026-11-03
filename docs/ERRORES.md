@@ -104,6 +104,11 @@ grande** con la web de drivers de su marca (`landing.launch.errGraficosNvidia` /
 Webs: NVIDIA `nvidia.com/es-es/drivers/`, AMD `amd.com/es/support/download/drivers.html` (detecta sola),
 Intel `intel.com/content/www/es/es/support/detect.html` (Asistente; da 403 a curl, en navegador abre bien).
 
+**En Mac no hay enlace de drivers** (desde 03-11-2026): los drivers vienen con macOS y esas webs solo dan los de
+Windows; un iMac 2013 con GTX 775M y Catalina recibió el botón de NVIDIA. En Mac sale `errGraficosMac` (reabrir,
+probar LITE/SUPER LITE, mandar el informe por ticket) y `scMarcaGraficos` no devuelve marca. La causa real de un SC-12
+en Mac hay que leerla en el informe.
+
 ### SC-13 · Sodium rechaza el driver
 
 Va **antes** que SC-12 a propósito. Sodium comprueba el driver antes de arrancar y se niega a seguir

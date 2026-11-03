@@ -1356,6 +1356,12 @@ function scAnalizarCierreDelJuego(code, salida, desde = Date.now() - 300000){
     const graficos = PATRONES_GRAFICOS.some(p => p.test(txt))
 
     if(graficos){
+        // Mac: los drivers vienen con macOS y las webs de NVIDIA/AMD/Intel solo dan los de
+        // Windows (un iMac 2013 con GTX 775M recibió el botón de NVIDIA, 03-11).
+        if(process.platform === 'darwin'){
+            scFalloArranque(SC_ERR.GRAFICOS, Lang.queryJS('landing.launch.errGraficosMac'), new Error(txt.slice(-4000)))
+            return
+        }
         // Si se puede identificar el fabricante, se le da su enlace concreto
         // en vez de la lista de los tres.
         let marca = ''
@@ -2291,6 +2297,10 @@ function scDialogoModsPropios(mods, err, opciones = {}){
 
 /** Marca del driver a partir del nombre de la DLL o del texto, para el enlace concreto. */
 function scMarcaGraficos(txt){
+    // En Mac no hay driver que descargar: sin enlace (los de las marcas son de Windows).
+    if(process.platform === 'darwin'){
+        return ''
+    }
     if(/nvidia|geforce|nvogl|nvd3d|nvwgf|nvapi|quadro/i.test(txt)){
         return Lang.queryJS('landing.launch.errGraficosNvidia')
     }
