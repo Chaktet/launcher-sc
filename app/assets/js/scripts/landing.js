@@ -1262,6 +1262,22 @@ function scMostrarOfertaPerfil(servSig){
     return true
 }
 
+/**
+ * Texto del error para el informe: el principio del crash report de Minecraft (Description y
+ * la excepción, que es lo que dice qué falló) más el final de todo. Con solo el final se perdía
+ * justo la causa: un SC-12 de Mac (03-11) llegó con la lista de mods y sin la excepción.
+ */
+function scRecorteInforme(txt){
+    const marca = '--- INFORME DE FALLO DE MINECRAFT ---'
+    const i = txt.indexOf(marca)
+    if(i < 0){
+        return txt.slice(-4000)
+    }
+    const cabeza = txt.slice(i, i + 3000)
+    const resto = txt.slice(i + 3000)
+    return resto.length === 0 ? txt.slice(Math.max(0, i - 1000)) : cabeza + '\n[…]\n' + txt.slice(-1500)
+}
+
 function scAnalizarCierreDelJuego(code, salida, desde = Date.now() - 300000){
     // El informe de fallo de Minecraft suele contener la causa real cuando el
     // problema es de gráficos, porque ahí no llega nada por la salida de error.
@@ -1288,7 +1304,7 @@ function scAnalizarCierreDelJuego(code, salida, desde = Date.now() - 300000){
         const mensaje = Lang.queryJS(esIntel ? 'landing.launch.errDriverIntel' : 'landing.launch.errDriverNvidia')
             .replace('{instalada}', instalada)
             .replace('{requerida}', requerida)
-        scFalloArranque(SC_ERR.DRIVER_SODIUM, mensaje, new Error(txt.slice(-4000)))
+        scFalloArranque(SC_ERR.DRIVER_SODIUM, mensaje, new Error(scRecorteInforme(txt)))
         return
     }
 
@@ -1297,7 +1313,7 @@ function scAnalizarCierreDelJuego(code, salida, desde = Date.now() - 300000){
     // antivirus o un limpiador la borre o la bloquee en la carpeta temporal. Va antes
     // que gráficos: la traza pasa por clases de Sodium y no es un problema del driver.
     if(/UnsatisfiedLinkError/.test(txt) && /Failed to locate library: (lwjgl|glfw|jemalloc|openal)[^\s]*\.dll|no lwjgl in java\.library\.path/i.test(txt)){
-        scFalloArranque(SC_ERR.NATIVAS, Lang.queryJS('landing.launch.errNativas'), new Error(txt.slice(-4000)), true)
+        scFalloArranque(SC_ERR.NATIVAS, Lang.queryJS('landing.launch.errNativas'), new Error(scRecorteInforme(txt)), true)
         return
     }
 
@@ -1359,7 +1375,7 @@ function scAnalizarCierreDelJuego(code, salida, desde = Date.now() - 300000){
         // Mac: los drivers vienen con macOS y las webs de NVIDIA/AMD/Intel solo dan los de
         // Windows (un iMac 2013 con GTX 775M recibió el botón de NVIDIA, 03-11).
         if(process.platform === 'darwin'){
-            scFalloArranque(SC_ERR.GRAFICOS, Lang.queryJS('landing.launch.errGraficosMac'), new Error(txt.slice(-4000)))
+            scFalloArranque(SC_ERR.GRAFICOS, Lang.queryJS('landing.launch.errGraficosMac'), new Error(scRecorteInforme(txt)))
             return
         }
         // Si se puede identificar el fabricante, se le da su enlace concreto
@@ -1377,7 +1393,7 @@ function scAnalizarCierreDelJuego(code, salida, desde = Date.now() - 300000){
         const mensaje = marca
             ? Lang.queryJS('landing.launch.errGraficosCorto') + '<br><br>' + marca
             : Lang.queryJS('landing.launch.errGraficos')
-        scFalloArranque(SC_ERR.GRAFICOS, mensaje, new Error(txt.slice(-4000)))
+        scFalloArranque(SC_ERR.GRAFICOS, mensaje, new Error(scRecorteInforme(txt)))
         return
     }
 
@@ -1392,7 +1408,7 @@ function scAnalizarCierreDelJuego(code, salida, desde = Date.now() - 300000){
         // Si Java no pudo ni reservar la memoria pedida, subirla es justo lo contrario de lo que hace falta.
         const reserva = ScJava.esFalloDeMemoriaAlArrancar(txt) && !/OutOfMemoryError/.test(txt)
         scFalloArranque(SC_ERR.MEMORIA, Lang.queryJS(reserva ? 'landing.launch.errMemoriaReserva' : 'landing.launch.errMemoria'),
-            new Error(txt.slice(-3000)), false, { pista: { x: reserva ? 'reserva' : 'agotada' } })
+            new Error(scRecorteInforme(txt)), false, { pista: { x: reserva ? 'reserva' : 'agotada' } })
         return
     }
 
@@ -1401,7 +1417,7 @@ function scAnalizarCierreDelJuego(code, salida, desde = Date.now() - 300000){
     // interrumpida. Los patrones viven en scjava.js, con pruebas.
     const motivoJava = forzarJavaRoto ? 'modruntime' : ScJava.motivoJavaRoto(txt)
     if(motivoJava != null){
-        scJavaRoto(motivoJava, new Error(txt.slice(-3000))).catch(e => {
+        scJavaRoto(motivoJava, new Error(scRecorteInforme(txt))).catch(e => {
             loggerLanding.error('Fallo al reparar Java', e)
             scFalloArranque(SC_ERR.JAVA_ROTO, Lang.queryJS('landing.launch.errJavaRoto'), e)
         })
@@ -1411,7 +1427,7 @@ function scAnalizarCierreDelJuego(code, salida, desde = Date.now() - 300000){
     // Algo no casa (método, clase o mixin) y el jugador tiene mods propios: lo más probable es uno de ellos.
     const propios = scModsPropios(ConfigManager.getSelectedServer())
     if(propios.length > 0 && SC_RE_NO_CASA.test(txt)){
-        scDialogoModsPropios(propios, new Error(`Código de salida ${code}\n\n${txt.slice(-3000)}`))
+        scDialogoModsPropios(propios, new Error(`Código de salida ${code}\n\n${scRecorteInforme(txt)}`))
         return
     }
 
@@ -1419,11 +1435,11 @@ function scAnalizarCierreDelJuego(code, salida, desde = Date.now() - 300000){
     if(SC_CODIGOS_NATIVOS.has(code)){
         const marca = scMarcaGraficos(hsErr.dll || '')
         scFalloArranque(SC_ERR.GRAFICOS, Lang.queryJS('landing.launch.errCierreNativo') + (marca ? '<br><br>' + marca : ''),
-            new Error(`Código de salida ${code}\n\n${txt.slice(-3000)}`))
+            new Error(`Código de salida ${code}\n\n${scRecorteInforme(txt)}`))
         return
     }
 
-    scFalloArranque(SC_ERR.JVM, Lang.queryJS('landing.launch.errJvm'), new Error(`Código de salida ${code}\n\n${txt.slice(-3000)}`))
+    scFalloArranque(SC_ERR.JVM, Lang.queryJS('landing.launch.errJvm'), new Error(`Código de salida ${code}\n\n${scRecorteInforme(txt)}`))
 }
 
 /**

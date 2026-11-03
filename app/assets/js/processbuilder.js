@@ -125,7 +125,18 @@ class ProcessBuilder {
         this.usingFabricLoader = this.server.modules.some(mdl => mdl.rawModule.type === Type.Fabric)
         logger.info('Using fabric loader:', this.usingFabricLoader)
         const modObj = this.resolveModConfiguration(ConfigManager.getModConfiguration(this.server.rawServer.id).mods, this.server.modules)
-        
+        // Ixeris abre la ventana y dibuja en hilos distintos; en macOS (que exige la ventana en el
+        // hilo principal) un iMac 2013 con Catalina caía al crear la ventana (SC-12, 03-11). Su
+        // mejora es sobre todo para ratones de Windows: en Mac no se carga.
+        if(process.platform === 'darwin'){
+            const antes = modObj.fMods.length
+            modObj.fMods = modObj.fMods.filter(m => !/:ixeris:/i.test(String(m.rawModule.id))
+                && !/(^|[\\/])ixeris-[^\\/]*\.jar$/i.test(m.getPath()))
+            if(modObj.fMods.length !== antes){
+                logger.info('Mac: Ixeris no se carga.')
+            }
+        }
+
         // Mod list below 1.13
         // Fabric only supports 1.14+
         if(!mcVersionAtLeast('1.13', this.server.rawServer.minecraftVersion)){
