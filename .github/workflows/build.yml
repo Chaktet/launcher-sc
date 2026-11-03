@@ -128,6 +128,65 @@ jobs:
             dist/latest-mac.yml
           if-no-files-found: error
 
+  # Macs Intel con macOS 10.15 Catalina (iMac 2013 y similares, desde la 1.17.15): Electron 39
+  # pide macOS 12, así que va aparte con Electron 32 (el último que arranca en 10.15; ya sin
+  # parches de seguridad). Canal propio: se actualiza con catalina-mac.yml y nunca baja la
+  # versión normal, que en su Mac no abriría.
+  build-mac-catalina:
+    runs-on: macos-15-intel
+
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v6
+
+      - name: Preparar Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Compilar el .dmg de Catalina
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: >-
+          npx electron-builder --mac dmg zip --x64 --publish never
+          -c.electronVersion=32.3.3
+          -c.publish.channel=catalina
+          '-c.mac.artifactName=SC-Launcher-catalina-mac-${arch}.${ext}'
+
+      # Que el .app pide 10.15, lleva el canal catalina, está firmado y arranca (vivo a los 30 s).
+      - name: Comprobar el .app de Catalina
+        run: |
+          ls dist
+          test -f dist/catalina-mac.yml
+          test ! -e dist/latest-mac.yml
+          cat dist/catalina-mac.yml
+          app="$(ls -d dist/mac*/*.app | head -1)"
+          minimo="$(/usr/libexec/PlistBuddy -c 'Print :LSMinimumSystemVersion' "$app/Contents/Info.plist")"
+          echo "LSMinimumSystemVersion=$minimo"
+          test "$minimo" = "10.15.0" -o "$minimo" = "10.15"
+          grep -E '^Electron/32\.' <(strings "$app/Contents/Frameworks/Electron Framework.framework/Electron Framework" | grep -oE '^Electron/[0-9.]+' | head -1)
+          grep -q 'channel: catalina' "$app/Contents/Resources/app-update.yml"
+          codesign --verify --deep --strict "$app"
+          "$app/Contents/MacOS/SC Launcher" > arranque.log 2>&1 &
+          sleep 30
+          tail -30 arranque.log
+          pgrep -fl "$app/Contents/MacOS/SC Launcher"
+          pkill -f "$app/Contents/MacOS/SC Launcher" || true
+
+      - name: Publicar artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: instalador-mac-catalina
+          path: |
+            dist/*.dmg
+            dist/*.zip
+            dist/*.blockmap
+            dist/catalina-mac.yml
+          if-no-files-found: error
+
   build-linux:
     runs-on: ubuntu-latest
 

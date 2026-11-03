@@ -26,7 +26,11 @@ const SC_PUERTA_DESCARGA = 'https://github.com/Chaktet/launcher-sc/releases/late
 // Mac cuando el .app no se puede sustituir solo (abierto desde el .dmg o desde Descargas,
 // ver scactualizamac.js): la puerta ofrece el .dmg nuevo, con nombre fijo en nuestro
 // servidor (siempre el último).
-const SC_PUERTA_DESCARGA_MAC = 'https://descargas.servidorcobblemon.es/SC-Launcher-mac-' + (process.arch === 'arm64' ? 'arm64' : 'x64') + '.dmg'
+// macOS 10.15 Catalina (Darwin 19-20) solo arranca la versión aparte con Electron 32: la
+// normal pide macOS 12 (Darwin 21).
+const SC_PUERTA_DESCARGA_MAC = process.platform === 'darwin' && parseInt(require('os').release(), 10) < 21
+    ? 'https://descargas.servidorcobblemon.es/SC-Launcher-catalina-mac-x64.dmg'
+    : 'https://descargas.servidorcobblemon.es/SC-Launcher-mac-' + (process.arch === 'arm64' ? 'arm64' : 'x64') + '.dmg'
 // Segundos de la cuenta atrás antes de instalar sola con el launcher ocioso.
 const SC_PUERTA_CUENTA = 10
 
