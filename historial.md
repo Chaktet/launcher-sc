@@ -1,6 +1,15 @@
 # SC Launcher · historial
 
 ## Estado actual
+- **1.17.18 publicada SOLO para Mac y Linux (03-11 ~19:45 hora RD): CAUSA REAL del SC-12 del iMac con Catalina.**
+  Los crash reports (Felix los pasó) dicen `UnsatisfiedLinkError` en `libawt.dylib` de Corretto 21.0.13: enlaza
+  `/System/Library/Frameworks/JavaRuntimeSupport.framework`, que Catalina no tiene; FancyMenu carga AWT
+  (`java.awt.Color`) y el juego muere al arrancar. **No era Ixeris** (quitado en Mac en la 1.17.17; no molesta).
+  Medido en `libawt.dylib` (Mach-O): Corretto y Temurin 21.0.10+ = minos 11.0; Temurin 21.0.5/8/9 = minos 10.12 y
+  enlazan JavaRuntimeSupport dentro de `JavaVM.framework`. Arreglo (`scjava.js`, `MAC_VIEJO` = Darwin < 20): se baja
+  el JRE Temurin **21.0.9+10** (sha256 comprobado) y se deja de usar cualquier Java 21.0.10+ ya instalado (config y
+  `elegir`). Probado simulando Darwin 19.6: 21.0.9 vale, Corretto 21.0.13 no. Commit 95afe9d, CI run 41728534016;
+  release v1.17.18 con Windows 1.17.16 copiado (latest.yml idéntico). **Sin probar en el iMac:** que entre a jugar.
 - **1.17.17 publicada SOLO para Mac y Linux (03-11 ~18:45 hora RD, Felix: «sácala», «no me cambies el Windows»):**
   el iMac 2013 con Catalina (launcher 1.17.16) daba SC-12: GLFW sin arrancar («GFLW Platform: <error>») y el informe
   cortado sin la excepción. Cambios: en macOS no se carga Ixeris (`processbuilder.js`; mueve ventana y dibujo a hilos
