@@ -1,8 +1,9 @@
 # SC Launcher · historial
 
 ## Estado actual
-- **Teclas de los mods revisadas (02-11, solo informe): `docs/TECLAS-MODS.md`.** Pendiente: Felix elige qué choques arreglar
-  (MaLiLib A→C, zoom C, R de Inventory Profiles/JEI).
+- **Teclas de los mods revisadas (02-11): `docs/TECLAS-MODS.md`.** MaLiLib A→C quitado (`config/malilib.json` con hash, en vivo,
+  manifiesto `011ed542…`). Sin tocar (bajos, Felix no los pidió): zoom C contra «guardar barra», R de Inventory Profiles/JEI
+  en inventarios. Sin probar en el juego que A+C ya no abra nada (el valor vacío sí se carga).
 - **1.17.15 publicada (02-11 ~17:50 hora RD, pedida por Felix): Punchy con animaciones en LITE y SUPER LITE** (el launcher
   escribía `file/punchy:punchy`; ahora lo pone bien y repara a quien ya lo tenía roto). Firmada (`comprueba-publisher` ok),
   release v1.17.15 con 14 ficheros (Mac/Linux del CI run 41530962104, en verde; commit fb40658), aviso de launcher viejo
@@ -98,7 +99,11 @@
 - Resultado: con los arreglos ya hechos no queda ningún choque grave entre teclas de Minecraft. Quedan: A→C de MaLiLib
   (abre sus ajustes, los 3 perfiles), C del zoom contra «guardar barra» (solo creativo, PRO), R de Inventory Profiles
   contra R de JEI en inventarios (PRO, sin probar) y combinaciones R+… de Inventory Profiles. Nada cambiado.
-- Pendiente: Felix decide qué choques arreglar; ninguno probado aún en el juego.
+- Felix: prioridad a Cobblemon de fábrica (R, M) y luego al mapa; quitar A→C de MaLiLib. Nada les quita R, M ni el mapa.
+- Arreglo: `config/malilib.json` con `openGuiConfigs` vacío (672 B, md5 `3966f35c…`), con hash y `?v=1` en los 3 perfiles
+  (SL usa la URL de LITE), local y OVH-A, sin regenerar; copias `distribution.json.bak-malilib-20261102`. Cliente de
+  pruebas: MaLiLib lo carga y lo reescribe idéntico al salir (no se re-descarga). Por Cloudflare: manifiesto `011ed542…`
+  = local, el fichero 200, 672 B, md5 = manifiesto en PRO y LITE.
 
 ## 2026-11-02 · Minimapa: los iconos de Pokémon seguían saliendo solo con TAB
 - Felix: en LITE salen puntos de colores; con TAB, las caritas. El arreglo del 28-10 no hacía nada.

@@ -134,7 +134,7 @@ launcher) la cambia. Las teclas son las de la posición en un teclado español (
 
 | Mod | Versión | Perfiles | Atajo (contexto) | De fábrica | Nuestra distribución |
 |---|---|---|---|---|---|
-| MaLiLib | 0.21.10 | PRO, LITE, SL | Abrir ajustes de MaLiLib (mundo) | A y luego C | no |
+| MaLiLib | 0.21.10 | PRO, LITE, SL | Abrir ajustes de MaLiLib (mundo) | A y luego C | **sí → sin atajo** (`config/malilib.json`, con hash) |
 | Inventory Profiles Next | 2.2.6 | PRO | Abrir sus ajustes (mundo) | R y luego C | no |
 | Inventory Profiles Next | 2.2.6 | PRO | Recargar configuración (mundo y pantallas) | R+Y | no |
 | Inventory Profiles Next | 2.2.6 | PRO | Ordenar inventario (pantallas) | R | no |
@@ -156,13 +156,19 @@ No hay atajos de Emotecraft por emote en la config que repartimos. FancyMenu tie
 
 ## Choques para un jugador nuevo
 
+**Prioridad que fijó Felix (02-11):** las teclas de fábrica de Cobblemon mandan (sobre todo R lanzar Pokémon y M
+resumen/menú del equipo), después las del mapa de Xaero; el resto se mueve si choca con ellas.
+Comprobado: ninguna acción de Minecraft ni atajo de mod en el mundo les quita la R, la M ni las teclas del mapa a un
+jugador nuevo. Las combinaciones R+… de Inventory Profiles solo actúan si se mantiene la R y se pulsa otra tecla
+(la R sola sigue lanzando); la M solo la tocaría Litematica, que viene apagado.
+
 Los arreglos ya hechos (V del panel de combate, M del micro, N del chat de voz, O de JEI y Too Many Entities, B de
 Xaero, K y TAB de Crafting Tweaks, V de Shulker Preview, R y O de Iris, M del mapa de Xaero) funcionan: con ellos no
 queda ningún choque grave entre teclas de Minecraft en LITE ni en SUPER LITE. Queda esto:
 
 | # | Perfil | Tecla | Quién | Qué pasa en el juego | Gravedad | Propuesta |
 |---|---|---|---|---|---|---|
-| 1 | PRO, LITE, SL | A y luego C | MaLiLib «abrir ajustes» contra andar a la izquierda (A) + Zoom cinemático (C, solo PRO) | Ir a la izquierda y pulsar C abre la pantalla de ajustes de MaLiLib y se come la C (en PRO, no hace zoom). MaLiLib es obligatorio en los tres perfiles. Calculado, sin probar. | Media | Dejarla **sin atajo** (sus ajustes siguen en Mod Menu). Mejor como parche de una vez en el launcher sobre `config/malilib.json`, como `SC_TECLAS_EN_CONFLICTO`, para no pisar el resto de su config. |
+| 1 | PRO, LITE, SL | A y luego C | MaLiLib «abrir ajustes» contra andar a la izquierda (A) + Zoom cinemático (C, solo PRO) | Ir a la izquierda y pulsar C abría la pantalla de ajustes de MaLiLib y se comía la C. | Media | **Arreglado el 02-11 (OK de Felix):** `config/malilib.json` con el atajo vacío, con hash en los 3 perfiles (llega a todos, también a los que ya jugaban). Sus ajustes siguen en Mod Menu. |
 | 2 | PRO | C | Zoom cinemático contra «Guardar barra» de Minecraft | Gana el zoom (calculado): en creativo, C+número ya no guarda la barra. En supervivencia no pasa nada. | Baja (solo creativo: Builders/staff) | Dejarlo así. Si los builders lo echan en falta: zoom al **botón lateral del ratón 4** (libre en todo). |
 | 3 | PRO | R (en inventarios) | Inventory Profiles «ordenar» (R) contra JEI «ver receta» (R) | Con el ratón encima de un objeto en un cofre o el inventario, R puede ordenar y abrir la receta a la vez, o solo una. Sin probar. | Baja-media | Probarlo en el juego antes de tocar nada. Si choca: ordenar con **clic central** o sin atajo (hay botón en pantalla). |
 | 4 | PRO | R y luego otra tecla | Inventory Profiles (R+C ajustes, R+Y recargar, Ctrl+R, R+H/Z/X, R+1…R+0) contra «Lanzar Pokémon» (R) | Lanzar con R funciona. Solo si mantienes R y pulsas otra: R+C abre los ajustes de IPN y R+1…0 podrían no cambiar de ranura (los perfiles y el auto-relleno están apagados, así que esas no hacen nada más). Sin probar. | Baja | Dejarlo; si molesta, dejar sin atajo R+C y R+Y. |
@@ -182,6 +188,16 @@ queda ningún choque grave entre teclas de Minecraft en LITE ni en SUPER LITE. Q
   jugador nuevo sí las tiene (ni I ni F8 chocan en LITE/SL).
 - Cobblemon 1.8.3 trae en el código la tecla del PokéNav (N) y la del Pokédex, pero no las registra: no salen en
   Controles y la N es del mapa de Xaero.
+
+## Cómo se aplicó el arreglo de MaLiLib (02-11)
+
+- `servers/ServidorCobblemon-1.21.1/files/config/malilib.json` y el de LITE: el fichero tal cual lo escribe MaLiLib con
+  `openGuiConfigs` = `""` (672 B, md5 `3966f35c…`). Entrada `File` con hash y `?v=1` en los 3 perfiles (SUPER LITE usa
+  la URL de LITE), añadida al manifiesto sin regenerar; copia `distribution.json.bak-malilib-20261102` en OVH-A y local.
+- Probado en el cliente de pruebas: MaLiLib lo carga y al salir del mundo lo reescribe con los mismos bytes, así que el
+  launcher no lo vuelve a descargar en cada arranque. Pisa el `malilib.json` de cada jugador: solo tiene ajustes de
+  depuración y este atajo.
+- Nebula lo recogerá solo al regenerar (está en `files/`).
 
 ## Para rehacer esta revisión
 
