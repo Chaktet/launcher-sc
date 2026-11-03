@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-03-servidor-La-lista-de-jugadores-otra-vez-ordenada-por-rango",
+      "fecha": "2026-11-03",
+      "tipo": "servidor",
+      "clase": "retoque",
+      "titulo": "La lista de jugadores, otra vez ordenada por rango",
+      "puntos": [
+        "Al cambiar entre Kanto y Kalos, algunos jugadores salían en la lista del TAB fuera de su sitio. Ya se ordena por rango.",
+        "Si aún ves a alguien fuera de su sitio, avísanos en Discord."
+      ]
+    },
+    {
       "id": "2026-11-03-servidor-Tienda-de-Expediciones-toda-en-espanol",
       "fecha": "2026-11-03",
       "tipo": "servidor",
