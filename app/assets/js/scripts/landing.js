@@ -2734,7 +2734,13 @@ const SC_TECLAS_EN_CONFLICTO = [
     { opcion: 'key_key.push_to_talk',                       porDefecto: 'key.keyboard.unknown',       nueva: 'key.keyboard.caps.lock' },
     // Shulker Preview (PRO) also takes the V, the key of Simple Voice Chat's menu: Minecraft gives a key to only one
     // action, so V did nothing for voice chat. The preview moves to F4 (free; no mod reads it).
-    { opcion: 'key_open_shulker',                           porDefecto: 'key.keyboard.v',             nueva: 'key.keyboard.f4' }
+    { opcion: 'key_open_shulker',                           porDefecto: 'key.keyboard.v',             nueva: 'key.keyboard.f4' },
+    // Revisión de teclas del 02-11 (docs/TECLAS-MODS.md): CinematicZoom (PRO) usa la C, la misma que «guardar
+    // barra» de vanilla, y se queda la tecla; guardar barra (solo creativo) pasa al 0, libre en todos los perfiles.
+    { opcion: 'key_key.saveToolbarActivator',               porDefecto: 'key.keyboard.c',             nueva: 'key.keyboard.0' },
+    // Item Zoomer (PRO) venía en la Z, que es ampliar el minimapa de Xaero (el mapa manda). Pasa a la Ç
+    // (backslash en GLFW), que no usa ningún mod.
+    { opcion: 'key_key.itemzoomer.toggle_zoom',             porDefecto: 'key.keyboard.z',             nueva: 'key.keyboard.backslash' }
 ]
 
 /**

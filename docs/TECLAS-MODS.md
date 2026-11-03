@@ -66,7 +66,7 @@ launcher) la cambia. Las teclas son las de la posición en un teclado español (
 | Minecraft (vanilla) | 1.21.1 | PRO, LITE, SL | Cambiar cámara `key.togglePerspective` | F5 | no |
 | Minecraft (vanilla) | 1.21.1 | PRO, LITE, SL | Pantalla completa `key.fullscreen` | F11 | no |
 | Minecraft (vanilla) | 1.21.1 | PRO, LITE, SL | Cambiar a la otra mano `key.swapOffhand` | F | no |
-| Minecraft (vanilla) | 1.21.1 | PRO, LITE, SL | Guardar barra (creativo) `key.saveToolbarActivator` | C | no |
+| Minecraft (vanilla) | 1.21.1 | PRO, LITE, SL | Guardar barra (creativo) `key.saveToolbarActivator` | C | **sí → 0** (02-11, la C es del zoom de PRO) |
 | Minecraft (vanilla) | 1.21.1 | PRO, LITE, SL | Cargar barra (creativo) `key.loadToolbarActivator` | X | no |
 | Minecraft (vanilla) | 1.21.1 | PRO, LITE, SL | Progresos `key.advancements` | L | no |
 | Minecraft (vanilla) | 1.21.1 | PRO, LITE, SL | Barra rápida 1–9 `key.hotbar.1` | 1 | no |
@@ -86,7 +86,7 @@ launcher) la cambia. Las teclas son las de la posición en un teclado español (
 | Iris | 1.8.8+mc1.21.1 | PRO, LITE, SL | Recargar shaders `iris.keybind.reload` | R | **sí → Fin** |
 | Iris | 1.8.8+mc1.21.1 | PRO, LITE, SL | Encender/apagar shaders `iris.keybind.toggleShaders` | K | no |
 | Iris | 1.8.8+mc1.21.1 | PRO, LITE, SL | Menú de shaders `iris.keybind.shaderPackSelection` | O | **sí → sin tecla** |
-| Item Zoomer | 2.2.2-1.21.1 | PRO | Ampliar objeto (en inventarios) `key.itemzoomer.toggle_zoom` | Z | no |
+| Item Zoomer | 2.2.2-1.21.1 | PRO | Ampliar objeto (en inventarios) `key.itemzoomer.toggle_zoom` | Z | **sí → Ç** (02-11, la Z es del minimapa) |
 | Jade | 15.10.5+fabric | PRO | Ajustes de Jade `key.jade.config` | 0 teclado num. | no |
 | Jade | 15.10.5+fabric | PRO | Mostrar/ocultar Jade `key.jade.show_overlay` | 1 teclado num. | no |
 | Jade | 15.10.5+fabric | PRO | Detectar líquidos `key.jade.toggle_liquid` | 2 teclado num. | no |
@@ -135,16 +135,16 @@ launcher) la cambia. Las teclas son las de la posición en un teclado español (
 | Mod | Versión | Perfiles | Atajo (contexto) | De fábrica | Nuestra distribución |
 |---|---|---|---|---|---|
 | MaLiLib | 0.21.10 | PRO, LITE, SL | Abrir ajustes de MaLiLib (mundo) | A y luego C | **sí → sin atajo** (`config/malilib.json`, con hash) |
-| Inventory Profiles Next | 2.2.6 | PRO | Abrir sus ajustes (mundo) | R y luego C | no |
-| Inventory Profiles Next | 2.2.6 | PRO | Recargar configuración (mundo y pantallas) | R+Y | no |
-| Inventory Profiles Next | 2.2.6 | PRO | Ordenar inventario (pantallas) | R | no |
-| Inventory Profiles Next | 2.2.6 | PRO | Mover todo / tirar todo (pantallas) | R+T / R+M | no |
-| Inventory Profiles Next | 2.2.6 | PRO | Saltar al cofre / al inventario (pantallas) | rueda arriba / abajo | no |
-| Inventory Profiles Next | 2.2.6 | PRO | Editor de botones (pantallas) | R+G | no |
-| Inventory Profiles Next | 2.2.6 | PRO | Auto-relleno: marcar ranura (ambos) / en juego (mundo) | Ctrl+clic / Ctrl+R | apagamos el auto-relleno |
-| Inventory Profiles Next | 2.2.6 | PRO | Comercio con aldeanos (pantalla del aldeano) | B, L, T, Mayús+T | no |
-| Inventory Profiles Next | 2.2.6 | PRO | Perfiles: aplicar, siguiente, anterior, 1–10 (mundo) | R+H, R+Z, R+X, R+1…R+0 | apagamos los perfiles |
-| Inventory Profiles Next | 2.2.6 | PRO | Guardar perfil (pantallas) / copiar componentes / copiar id | R+P / Ctrl+C / Ctrl+Mayús+C | no |
+| Inventory Profiles Next | 2.2.6 | PRO | Abrir sus ajustes (mundo) | R y luego C | **sí → sin atajo** |
+| Inventory Profiles Next | 2.2.6 | PRO | Recargar configuración (mundo y pantallas) | R+Y | **sí → sin atajo** |
+| Inventory Profiles Next | 2.2.6 | PRO | Ordenar inventario (pantallas) | R | **sí → ' (tecla a la derecha del 0)** |
+| Inventory Profiles Next | 2.2.6 | PRO | Mover todo / tirar todo (pantallas) | R+T / R+M | **sí → sin atajo** |
+| Inventory Profiles Next | 2.2.6 | PRO | Saltar al cofre / al inventario (pantallas) | rueda arriba / abajo | **sí → sin atajo** |
+| Inventory Profiles Next | 2.2.6 | PRO | Editor de botones (pantallas) | R+G | **sí → sin atajo** |
+| Inventory Profiles Next | 2.2.6 | PRO | Auto-relleno: marcar ranura (ambos) / en juego (mundo) | Ctrl+clic / Ctrl+R | **sí → sin atajo** |
+| Inventory Profiles Next | 2.2.6 | PRO | Comercio con aldeanos (pantalla del aldeano) | B, L, T, Mayús+T | **sí → sin atajo** |
+| Inventory Profiles Next | 2.2.6 | PRO | Perfiles: aplicar, siguiente, anterior, 1–10 (mundo) | R+H, R+Z, R+X, R+1…R+0 | **sí → sin atajo** |
+| Inventory Profiles Next | 2.2.6 | PRO | Guardar perfil (pantallas) / copiar componentes / copiar id | R+P / Ctrl+C / Ctrl+Mayús+C | **sí → sin atajo** |
 | Crafting Tweaks | 21.1.10 | PRO | Compactar uno / compactar todo (pantalla de crafteo, con modificador) | K con Mayús/Ctrl | no |
 | Jade | 15.10.5 | PRO | Ver más detalles (mantener) | Mayús izq. | no |
 | JEI | 19.25.1.332 | PRO, LITE, SL | 35 acciones, todas solo en pantallas: ocultar JEI (Ctrl+O), buscar (Ctrl+F), receta (R), usos (U), favorito (A), páginas (Re Pág/Av Pág), historial (↑ ↓), atrás (Retroceso)… | — | ocultar JEI → **F9** |
@@ -169,13 +169,34 @@ queda ningún choque grave entre teclas de Minecraft en LITE ni en SUPER LITE. Q
 | # | Perfil | Tecla | Quién | Qué pasa en el juego | Gravedad | Propuesta |
 |---|---|---|---|---|---|---|
 | 1 | PRO, LITE, SL | A y luego C | MaLiLib «abrir ajustes» contra andar a la izquierda (A) + Zoom cinemático (C, solo PRO) | Ir a la izquierda y pulsar C abría la pantalla de ajustes de MaLiLib y se comía la C. | Media | **Arreglado el 02-11 (OK de Felix):** `config/malilib.json` con el atajo vacío, con hash en los 3 perfiles (llega a todos, también a los que ya jugaban). Sus ajustes siguen en Mod Menu. |
-| 2 | PRO | C | Zoom cinemático contra «Guardar barra» de Minecraft | Gana el zoom (calculado): en creativo, C+número ya no guarda la barra. En supervivencia no pasa nada. | Baja (solo creativo: Builders/staff) | Dejarlo así. Si los builders lo echan en falta: zoom al **botón lateral del ratón 4** (libre en todo). |
-| 3 | PRO | R (en inventarios) | Inventory Profiles «ordenar» (R) contra JEI «ver receta» (R) | Con el ratón encima de un objeto en un cofre o el inventario, R puede ordenar y abrir la receta a la vez, o solo una. Sin probar. | Baja-media | Probarlo en el juego antes de tocar nada. Si choca: ordenar con **clic central** o sin atajo (hay botón en pantalla). |
-| 4 | PRO | R y luego otra tecla | Inventory Profiles (R+C ajustes, R+Y recargar, Ctrl+R, R+H/Z/X, R+1…R+0) contra «Lanzar Pokémon» (R) | Lanzar con R funciona. Solo si mantienes R y pulsas otra: R+C abre los ajustes de IPN y R+1…0 podrían no cambiar de ranura (los perfiles y el auto-relleno están apagados, así que esas no hacen nada más). Sin probar. | Baja | Dejarlo; si molesta, dejar sin atajo R+C y R+Y. |
-| 5 | PRO | Z | Item Zoomer contra «Ampliar minimapa» de Xaero | Nada: Item Zoomer solo actúa dentro de inventarios y Xaero en el mundo. Solo sale en rojo en Controles. | Ninguna | Nada. |
+| 2 | PRO | C | Zoom cinemático contra «Guardar barra» de Minecraft | Ganaba el zoom: en creativo, C+número no guardaba la barra. | Baja | **Arreglado el 02-11:** guardar barra pasa al **0**. |
+| 3 | PRO | R (en inventarios) | Inventory Profiles «ordenar» (R) contra JEI «ver receta» (R) | Las dos actuaban con R encima de un objeto. | Baja-media | **Arreglado el 02-11:** ordenar pasa a la tecla **'** (a la derecha del 0); los botones de ordenar siguen en pantalla. |
+| 4 | PRO | R y luego otra tecla, rueda, B/L/T, Ctrl+clic, Ctrl+C | El resto de atajos de Inventory Profiles contra «Lanzar Pokémon» (R), la rueda de Mouse Tweaks, emotes (B), progresos (L), chat (T)… | Solo actuaban con combinaciones, pero compartían teclas. | Baja | **Arreglado el 02-11:** todos sin atajo (perfiles, auto-relleno y comercio ya estaban apagados; sus ajustes siguen en Mod Menu). |
+| 5 | PRO | Z | Item Zoomer contra «Ampliar minimapa» de Xaero | En la práctica no se pisaban (uno en inventarios, otro en el mundo), pero salía en rojo en Controles. | Ninguna | **Arreglado el 02-11:** Item Zoomer pasa a la **Ç**; la Z queda para el mapa. |
 | 6 | PRO, LITE, SL (si el jugador activa Litematica) | M, I | Litematica «menú principal» (M) contra «Resumen del equipo» de Cobblemon (M); «info» (I) contra «Inspeccionar» de Punchy (I) | Sin probar. Litematica lee el teclado antes que Minecraft y suele cortar la tecla. | Baja (viene apagado) | Nada mientras siga apagado de serie. Si se enciende algún día: menú de Litematica a **M+Ñ** o sin atajo. |
 
-**Teclas libres de verdad** (ninguna acción de Minecraft ni atajo propio de ningún mod en los tres perfiles, comprobado con el mismo script): 6, 7, 8 y 9, «.» y «/» del teclado numérico, Supr, Pausa y los botones laterales 4 y 5 del ratón. Intro del teclado numérico también está libre en el mundo (Iris ya no la usa; JEI solo la mira dentro de su buscador). F4 solo está libre en LITE y SUPER LITE (en PRO es Shulker Preview). Todas las letras y los números de arriba ya los usa algo.
+**Teclas libres de verdad** (tras los cambios del 02-11): 6, 7, 8 y 9, «.» y «/» del teclado numérico, Supr, Pausa, ¡ (tecla `equal`), < (`world.1`) y los botones laterales 4 y 5 del ratón. F4 solo en LITE y SUPER LITE. Intro del teclado numérico la usa JEI dentro de su buscador.
+
+## Segunda revisión (02-11, noche): cero solapes de fábrica
+
+- Barrido de los 89 jars buscando cualquier forma de registrar teclas (tecla de Minecraft, `KeyBindingHelper`,
+  Architectury, Balm/Kuma, MaLiLib/libIPN, Fzzy, Cloth, lectura directa del teclado). Los únicos mods que registran
+  teclas son los 20 de la tabla; el resto de apariciones son librerías (Architectury, Balm, CreativeCore, UniLib, Fabric
+  API, Cloth, Fzzy) que no registran ninguna propia.
+- Con los cambios de abajo, **ninguna tecla de Minecraft tiene dos acciones** en PRO, LITE ni SUPER LITE (calculado
+  sobre las 163/136 acciones de un jugador nuevo), y Inventory Profiles y MaLiLib ya no usan teclas de nadie.
+- Cómo llega:
+  - Inventory Profiles: `config/inventoryprofilesnext/inventoryprofiles.json` de PRO lleva ahora un bloque `Hotkeys`
+    (ordenar en `MINUS`, el resto vacío). Tiene hash: llega a **todos** los de PRO en su próximo JUGAR. Probado en el
+    cliente de pruebas: lo carga sin avisos (el único aviso, `enable_profiles_announcement`, ya salía antes) y no lo
+    reescribe.
+  - Guardar barra en 0 e Item Zoomer en Ç: `options.txt` de PRO (jugadores nuevos, `?v=c3c2e8b447`) y dos entradas
+    nuevas en `SC_TECLAS_EN_CONFLICTO` para los que ya jugaban, que **solo llegan con una versión nueva del launcher**.
+    Minecraft acepta `key.keyboard.0` y `key.keyboard.backslash` (probado en el cliente de pruebas).
+- No se tocan, porque no son solapes en el juego: los atajos de JEI (A, R, U, Ctrl+F… solo dentro de sus pantallas,
+  con su propio contexto; Controles no los marca en rojo) y las combinaciones K+Mayús/Ctrl de Crafting Tweaks (solo en
+  la pantalla de crafteo, con contexto de Kuma). Litematica viene apagado; si un jugador lo enciende, su M y su I pisan
+  el resumen de Cobblemon y el inspeccionar de Punchy.
 
 ## Diferencias con las instancias de Felix (no afectan a jugadores nuevos)
 

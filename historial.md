@@ -1,9 +1,9 @@
 # SC Launcher · historial
 
 ## Estado actual
-- **Teclas de los mods revisadas (02-11): `docs/TECLAS-MODS.md`.** MaLiLib A→C quitado (`config/malilib.json` con hash, en vivo,
-  manifiesto `011ed542…`). Sin tocar (bajos, Felix no los pidió): zoom C contra «guardar barra», R de Inventory Profiles/JEI
-  en inventarios. Sin probar en el juego que A+C ya no abra nada (el valor vacío sí se carga).
+- **Teclas de los mods (02-11): cero solapes de fábrica, `docs/TECLAS-MODS.md`.** En vivo: MaLiLib sin A→C, Inventory
+  Profiles sin atajos salvo ordenar en ', PRO nuevo con guardar barra en 0 e Item Zoomer en Ç (manifiesto `5c43044c…`).
+  **Pendiente:** esas dos teclas para jugadores que ya existen van en `SC_TECLAS_EN_CONFLICTO` y salen con la próxima release.
 - **1.17.15 publicada (02-11 ~17:50 hora RD, pedida por Felix): Punchy con animaciones en LITE y SUPER LITE** (el launcher
   escribía `file/punchy:punchy`; ahora lo pone bien y repara a quien ya lo tenía roto). Firmada (`comprueba-publisher` ok),
   release v1.17.15 con 14 ficheros (Mac/Linux del CI run 41530962104, en verde; commit fb40658), aviso de launcher viejo
@@ -90,6 +90,16 @@
   el launcher. Novedad `2026-10-28-modpack-Adios-al-aviso-de-chat-no-verificado` (arreglo) solo en vista previa en
   «diseño-pruebas» (mensaje 1564857375410757703). **Publicada en el launcher el 28-10 15:55 UTC** con la de las
   misiones de escanear (OK de Felix: launcher sí, Discord no). El modpack móvil SC-Movil no lo lleva.
+
+## 2026-11-02 · Teclas: cero solapes de fábrica (segunda revisión)
+- Felix: que no quede ni un mod con teclas por defecto que se solapen.
+- Barrido de los 89 jars por todas las formas de registrar teclas: no faltaba ningún mod (20 registran teclas).
+- Cambios: Inventory Profiles (PRO) con todos sus atajos vacíos salvo ordenar en ' (`inventoryprofiles.json`, con hash,
+  `?v=2`, md5 `34ccbf7a…`); guardar barra C→0 e Item Zoomer Z→Ç en el `options.txt` de PRO (`?v=c3c2e8b447`) y en
+  `SC_TECLAS_EN_CONFLICTO`. Manifiesto `5c43044c…` en OVH-A (copias `*.bak-teclas-20261102` en OVH-A y local).
+- Verificado: cálculo sin teclas repetidas en los 3 perfiles; cliente de pruebas carga la config de IPN sin avisos nuevos
+  y acepta las teclas 0 y Ç; por Cloudflare los 3 ficheros = manifiesto; simulación del parche sobre un options.txt viejo.
+- Pendiente: el parche para jugadores que ya existen sale con la próxima versión del launcher (no publicada).
 
 ## 2026-11-02 · Revisión de las teclas de todos los mods (solo informe)
 - Felix: lista de todos los mods de PRO, LITE y SUPER LITE que añaden o necesitan teclas y qué choca a un jugador nuevo.
