@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-03-servidor-Tus-casas-de-Kanto-y-Kalos-en-un-solo-menu",
+      "fecha": "2026-11-03",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Tus casas de Kanto y Kalos, en un solo menú",
+      "puntos": [
+        "En /casas y /home ya salen también las casas que tienes en la otra región, con su nombre: «Kanto · Sinnoh», «Kalos · Alola»…",
+        "Pulsa una y quédate quieto unos segundos: te llevamos a esa región y directo a tu casa",
+        "Al llegar tienes «Volver» en el chat para regresar a donde estabas",
+        "Para cambiarle el nombre, el icono o borrarla, hazlo desde su propia región"
+      ]
+    },
+    {
       "id": "2026-11-03-servidor-La-lista-de-jugadores-otra-vez-ordenada-por-rango",
       "fecha": "2026-11-03",
       "tipo": "servidor",
