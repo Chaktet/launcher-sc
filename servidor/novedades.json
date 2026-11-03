@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-03-servidor-shop-vuelven-los-Materiales-MTs",
+      "fecha": "2026-11-03",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "/shop: vuelven los Materiales MTs",
+      "puntos": [
+        "En /shop, Cobblemon › Materiales MTs salía «Sin productos».",
+        "Ya vuelve a tener todos sus productos en Kanto y Kalos."
+      ]
+    },
+    {
       "id": "2026-11-03-servidor-Escondite-se-acabo-ganar-premios-estando-AFK",
       "fecha": "2026-11-03",
       "tipo": "servidor",
