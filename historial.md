@@ -16,7 +16,7 @@
   Comprobado por el enlace público (Cloudflare): los 4 dan el sha512 de la release.
 - **Teclas de los mods (02-11): cero solapes de fábrica, `docs/TECLAS-MODS.md`.** En vivo: MaLiLib sin A→C, Inventory
   Profiles sin atajos salvo ordenar en ', PRO nuevo con guardar barra en 0 e Item Zoomer en Ç (manifiesto `5c43044c…`).
-  Para quien ya jugaba salen en la **1.17.16, publicada (02-11 ~21:57 hora RD)**. Pendiente: novedad, solo con OK de Felix.
+  Para quien ya jugaba salen en la **1.17.16, publicada (02-11 ~21:57 hora RD)**. **Sin novedad** (Felix 02-11).
 - **1.17.15 publicada (02-11 ~17:50 hora RD, pedida por Felix): Punchy con animaciones en LITE y SUPER LITE** (el launcher
   escribía `file/punchy:punchy`; ahora lo pone bien y repara a quien ya lo tenía roto). Firmada (`comprueba-publisher` ok),
   release v1.17.15 con 14 ficheros (Mac/Linux del CI run 41530962104, en verde; commit fb40658), aviso de launcher viejo
@@ -113,7 +113,7 @@
   OVH-A (por Cloudflare 93.703.896 B, sha512 = build). Estables siguen congelados en la 1.17.15 (`chattr +i`).
 - Ojo: `npm run dist:win:firmado` desde Git Bash falla con «SignTool Error: No certificates were found»; desde PowerShell
   firma bien (mismo SimplySign conectado).
-- Pendiente: novedad para jugadores solo con el OK de Felix.
+- **Sin novedad** (Felix 02-11: no se enseña como actualización).
 
 ## 2026-11-02 · Teclas: cero solapes de fábrica (segunda revisión)
 - Felix: que no quede ni un mod con teclas por defecto que se solapen.
