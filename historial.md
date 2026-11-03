@@ -16,7 +16,7 @@
   Comprobado por el enlace público (Cloudflare): los 4 dan el sha512 de la release.
 - **Teclas de los mods (02-11): cero solapes de fábrica, `docs/TECLAS-MODS.md`.** En vivo: MaLiLib sin A→C, Inventory
   Profiles sin atajos salvo ordenar en ', PRO nuevo con guardar barra en 0 e Item Zoomer en Ç (manifiesto `5c43044c…`).
-  **Pendiente:** esas dos teclas para jugadores que ya existen van en `SC_TECLAS_EN_CONFLICTO` y salen con la próxima release.
+  Para quien ya jugaba salen en la **1.17.16, publicada (02-11 ~21:57 hora RD)**. Pendiente: novedad, solo con OK de Felix.
 - **1.17.15 publicada (02-11 ~17:50 hora RD, pedida por Felix): Punchy con animaciones en LITE y SUPER LITE** (el launcher
   escribía `file/punchy:punchy`; ahora lo pone bien y repara a quien ya lo tenía roto). Firmada (`comprueba-publisher` ok),
   release v1.17.15 con 14 ficheros (Mac/Linux del CI run 41530962104, en verde; commit fb40658), aviso de launcher viejo
@@ -103,6 +103,17 @@
   el launcher. Novedad `2026-10-28-modpack-Adios-al-aviso-de-chat-no-verificado` (arreglo) solo en vista previa en
   «diseño-pruebas» (mensaje 1564857375410757703). **Publicada en el launcher el 28-10 15:55 UTC** con la de las
   misiones de escanear (OK de Felix: launcher sí, Discord no). El modpack móvil SC-Movil no lo lleva.
+
+## 2026-11-02 · 1.17.16 publicada: teclas sin choques para quien ya jugaba
+- Felix: «Sí, sácala» (las dos teclas nuevas de `SC_TECLAS_EN_CONFLICTO`: guardar barra C→0, Item Zoomer Z→Ç). Lleva
+  además el trabajo de Catalina ya commiteado (c628d6b, b9cb490: la puerta ofrece su .dmg en Darwin < 21).
+- Firmada (`comprueba-publisher` ok, la app.asar lleva las dos teclas), release v1.17.16 con 19 ficheros (Mac, Catalina y
+  Linux del CI run 41560851406, en verde; commit de06e9c), aviso de launcher viejo puesto; las 4 fichas `latest*.yml`
+  y `catalina-mac.yml` dicen 1.17.16 y sha512 = build; `master` y `main` subidas; `SC-Launcher-setup-1.17.16.exe` en
+  OVH-A (por Cloudflare 93.703.896 B, sha512 = build). Estables siguen congelados en la 1.17.15 (`chattr +i`).
+- Ojo: `npm run dist:win:firmado` desde Git Bash falla con «SignTool Error: No certificates were found»; desde PowerShell
+  firma bien (mismo SimplySign conectado).
+- Pendiente: novedad para jugadores solo con el OK de Felix.
 
 ## 2026-11-02 · Teclas: cero solapes de fábrica (segunda revisión)
 - Felix: que no quede ni un mod con teclas por defecto que se solapen.

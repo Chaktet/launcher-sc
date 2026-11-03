@@ -213,7 +213,8 @@ GitHub Actions siguen compilando sin firmar.
 
 1. Felix conecta SimplySign Desktop; `pwsh -File tools/comprueba-certificado.ps1` debe listar el certificado con
    `ConClave: True`.
-2. `npm run dist:win:firmado` en lugar de `npm run dist:win` (firma solo SHA-256, sello de tiempo de Certum). Si
+2. `npm run dist:win:firmado` en lugar de `npm run dist:win`, **desde PowerShell** (desde Git Bash signtool no ve el
+   certificado: «No certificates were found», 02-11) (firma solo SHA-256, sello de tiempo de Certum). Si
    SimplySign no está conectado falla con `Cannot find certificate BCC98A…`.
 3. **`node tools/comprueba-publisher.js`** (sale con 1 → NO publicar): firma `Valid` y que el `publisherName` de
    `dist/win-unpacked/resources/app-update.yml` sea EXACTAMENTE el CN del firmante, sin caracteres rotos.
