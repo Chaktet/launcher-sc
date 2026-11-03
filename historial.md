@@ -1,6 +1,10 @@
 # SC Launcher · historial
 
 ## Estado actual
+- **SC-12 en Mac sin botón de drivers (03-11, commit d03d753, SIN publicar):** el iMac 2013 con Catalina ya abre el
+  launcher, pero el juego da SC-12 y el aviso ofrecía el driver de NVIDIA de Windows. En Mac ahora sale
+  `errGraficosMac` (reabrir, probar LITE/SUPER LITE, mandar el informe por ticket). Entra en la próxima release.
+  **Pendiente:** la causa real del SC-12 en ese Mac: hace falta su informe («Copiar informe»); Felix no tiene el Mac ahora.
 - **Mac con macOS 10.15 Catalina (02-11 ~21:30 hora RD, pedido por Felix):** un jugador con iMac 2013 veía el icono
   prohibido: Electron 39 pide macOS 12. Nuevo trabajo de CI `build-mac-catalina` (Intel, Electron 32.3.3, canal
   `catalina-mac.yml`; commits c628d6b, b9cb490) y la puerta ofrece su .dmg en Darwin < 21. Comprobado en CI (run
