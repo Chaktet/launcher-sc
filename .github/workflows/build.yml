@@ -167,7 +167,9 @@ jobs:
           minimo="$(/usr/libexec/PlistBuddy -c 'Print :LSMinimumSystemVersion' "$app/Contents/Info.plist")"
           echo "LSMinimumSystemVersion=$minimo"
           test "$minimo" = "10.15.0" -o "$minimo" = "10.15"
-          grep -E '^Electron/32\.' <(strings "$app/Contents/Frameworks/Electron Framework.framework/Electron Framework" | grep -oE '^Electron/[0-9.]+' | head -1)
+          electron="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$app/Contents/Frameworks/Electron Framework.framework/Resources/Info.plist")"
+          echo "Electron=$electron"
+          case "$electron" in 32.*) ;; *) exit 1 ;; esac
           grep -q 'channel: catalina' "$app/Contents/Resources/app-update.yml"
           codesign --verify --deep --strict "$app"
           "$app/Contents/MacOS/SC Launcher" > arranque.log 2>&1 &
