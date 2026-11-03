@@ -355,6 +355,11 @@ gh release upload vX.Y.Z -R Chaktet/launcher-sc dist/ci/*.dmg dist/ci/*.zip dist
   busy» es el runner: relanzar el trabajo (`gh run rerun <id> --failed`). Al subir Electron por encima de lo que
   soporta 10.15 nada cambia aquí: el canal Catalina sigue en la 32.
 
+**Release solo para Mac y Linux** (Windows sin tocar, como la 1.17.17): no se compila Windows; la release lleva los
+ficheros nuevos de Mac/Catalina/Linux del CI y **el `.exe`, `.blockmap` y `latest.yml` de la release anterior copiados
+tal cual** (`gh release download vANTERIOR -p "SC-Launcher-setup-*" -p latest.yml`). Sin `latest.yml` los launchers de
+Windows darían error de actualización; con el de la anterior ven que ya tienen la última.
+
 ```bash
 gh run download <run-id> -R Chaktet/launcher-sc -n instalador-mac-catalina -D dist/ci
 gh release upload vX.Y.Z -R Chaktet/launcher-sc dist/ci/SC-Launcher-catalina-mac-x64.* dist/ci/catalina-mac.yml

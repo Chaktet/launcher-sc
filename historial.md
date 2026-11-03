@@ -1,10 +1,16 @@
 # SC Launcher · historial
 
 ## Estado actual
-- **SC-12 en Mac sin botón de drivers (03-11, commit d03d753, SIN publicar):** el iMac 2013 con Catalina ya abre el
-  launcher, pero el juego da SC-12 y el aviso ofrecía el driver de NVIDIA de Windows. En Mac ahora sale
-  `errGraficosMac` (reabrir, probar LITE/SUPER LITE, mandar el informe por ticket). Entra en la próxima release.
-  **Pendiente:** la causa real del SC-12 en ese Mac: hace falta su informe («Copiar informe»); Felix no tiene el Mac ahora.
+- **1.17.17 publicada SOLO para Mac y Linux (03-11 ~18:45 hora RD, Felix: «sácala», «no me cambies el Windows»):**
+  el iMac 2013 con Catalina (launcher 1.17.16) daba SC-12: GLFW sin arrancar («GFLW Platform: <error>») y el informe
+  cortado sin la excepción. Cambios: en macOS no se carga Ixeris (`processbuilder.js`; mueve ventana y dibujo a hilos
+  distintos; ningún otro mod depende de él, 145 jars mirados); `scRecorteInforme` guarda el principio del crash report
+  + el final; en Mac el SC-12 sale `errGraficosMac` sin botón de drivers (d03d753). Commits 99cce4b/dacdcb2, CI run
+  41722524073 en verde (build-mac relanzado: GitHub sin máquina Mac libre). Release v1.17.17 = Mac, Catalina y Linux
+  1.17.17 + **el exe, blockmap y `latest.yml` de la 1.17.16 copiados tal cual** (latest.yml idéntico byte a byte):
+  Windows sigue en la 1.17.16 y no ve actualización. app.asar de Catalina comprobado (lleva los dos cambios).
+  **Sin probar en el iMac:** que el juego arranque sin Ixeris; si vuelve a fallar, su informe ya trae la excepción.
+  Sin novedad. Ojo: la próxima release de Windows llevará también `scRecorteInforme` (solo cambia el informe).
 - **Mac con macOS 10.15 Catalina (02-11 ~21:30 hora RD, pedido por Felix):** un jugador con iMac 2013 veía el icono
   prohibido: Electron 39 pide macOS 12. Nuevo trabajo de CI `build-mac-catalina` (Intel, Electron 32.3.3, canal
   `catalina-mac.yml`; commits c628d6b, b9cb490) y la puerta ofrece su .dmg en Darwin < 21. Comprobado en CI (run
