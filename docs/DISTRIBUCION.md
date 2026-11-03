@@ -361,8 +361,12 @@ gh release upload vX.Y.Z -R Chaktet/launcher-sc dist/ci/SC-Launcher-catalina-mac
 
 - **Servidor de descargas:** los mismos nombres fijos en `/var/www/packs/` (también `SC-Launcher-catalina-mac-x64.dmg`,
   que enlaza la guía `servidorcobblemon.es/como-jugar/mac`) (la web y la puerta de Mac enlazan
-  `https://descargas.servidorcobblemon.es/SC-Launcher-mac-<arch>.dmg` y `/SC-Launcher-linux.AppImage`). Se renuevan
-  en cada versión como el `.exe` estable, con el OK de Felix. **Antes de subirlos por primera vez**, `packs.conf`
+  `https://descargas.servidorcobblemon.es/SC-Launcher-mac-<arch>.dmg` y `/SC-Launcher-linux.AppImage`). **Se renuevan
+  solos, siempre a la última release** (Felix 02-11: en Mac y Linux no hay certificado que esperar):
+  `/home/ubuntu/descargas-auto/launcher_auto.js` en OVH-A (cron cada 10 min, minuto 7; log `launcher.log`; fuente
+  `E:/RESOURCE-MC/herramientas/descargas-auto/`) lee `latest-mac.yml`, `catalina-mac.yml` y `latest-linux.yml` de la
+  última release y cambia cada .dmg/.AppImage cuyo sha512 no coincida. Nunca a mano. Una release sin alguna de esas
+  fichas deja ese fichero como estaba y lo avisa en el log. El `.exe` de Windows no entra: va congelado aparte. **Antes de subirlos por primera vez**, `packs.conf`
   debe servir `.dmg` y `.AppImage` con `no-cache` como los `.exe`: Cloudflare cachea los `.dmg` por extensión y el nombre
   fijo serviría la versión vieja.
 

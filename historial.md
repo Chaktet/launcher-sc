@@ -9,7 +9,11 @@
   `SC-Launcher-catalina-mac-x64.dmg` a `/var/www/packs` (por el enlace público sha512 = build). La guía web
   `/como-jugar/mac` (botón «Guía para Mac» de #como-entrar) tiene ahora tres botones. **Sin probar en un Catalina
   real**: falta que el jugador lo abra y entre a jugar (Java 21 y Minecraft en 10.15 tampoco se han probado).
-  Visto de paso: `SC-Launcher-mac-{arm64,x64}.dmg` de `/var/www/packs` siguen siendo los del 26-10 (1.17.8).
+- **Descargas de Mac y Linux, siempre la última (02-11 ~21:45 hora RD, Felix):** los .dmg y el AppImage fijos de
+  `/var/www/packs` seguían en la 1.17.8. Nuevo `launcher_auto.js` en `descargas-auto` de OVH-A (cron cada 10 min,
+  minuto 7, `launcher.log`; copia del crontab en `crontab.bak-launcher-20261102`): los cambia por los de la última
+  release cuando el sha512 no coincide. Primera pasada: mac-x64, mac-arm64 y linux → 1.17.15; Catalina ya estaba.
+  Comprobado por el enlace público (Cloudflare): los 4 dan el sha512 de la release.
 - **Teclas de los mods (02-11): cero solapes de fábrica, `docs/TECLAS-MODS.md`.** En vivo: MaLiLib sin A→C, Inventory
   Profiles sin atajos salvo ordenar en ', PRO nuevo con guardar barra en 0 e Item Zoomer en Ç (manifiesto `5c43044c…`).
   **Pendiente:** esas dos teclas para jugadores que ya existen van en `SC_TECLAS_EN_CONFLICTO` y salen con la próxima release.
