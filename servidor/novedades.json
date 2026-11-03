@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-03-servidor-Tras-un-reinicio-vuelves-solo-a-tu-region",
+      "fecha": "2026-11-03",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Tras un reinicio, vuelves solo a tu región",
+      "puntos": [
+        "Cuando tu región se reinicia ya no te quedas tirado en el lobby: entras solo en la cola de vuelta.",
+        "En cuanto la región vuelve a estar lista, te devuelve a ella sin que tengas que hacer nada."
+      ]
+    },
+    {
       "id": "2026-11-03-servidor-Enviar-SCC-tokens-y-dinero-todo-con-enviar",
       "fecha": "2026-11-03",
       "tipo": "servidor",
