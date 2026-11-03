@@ -283,7 +283,13 @@
     "2026-11-01-servidor-Packs-de-cosmeticos-mas-variados",
     "2026-11-02-servidor-Adios-a-los-Pokemon-fantasma-congelados",
     "2026-11-02-servidor-Tu-progreso-de-mineria-igual-en-Kanto-y-Kalos",
-    "2026-11-02-servidor-Dia-comunitario-la-barra-de-meta-ya-no-se-queda-fija"
+    "2026-11-02-servidor-Dia-comunitario-la-barra-de-meta-ya-no-se-queda-fija",
+    "2026-11-03-servidor-Tras-un-reinicio-vuelves-solo-a-tu-region",
+    "2026-11-03-servidor-Enviar-SCC-tokens-y-dinero-todo-con-enviar",
+    "2026-11-03-servidor-shop-vuelven-los-Materiales-MTs",
+    "2026-11-03-servidor-Escondite-se-acabo-ganar-premios-estando-AFK",
+    "2026-11-03-servidor-La-lista-de-jugadores-otra-vez-ordenada-por-rango",
+    "2026-11-03-servidor-Tienda-de-Expediciones-toda-en-espanol"
   ],
   "mensajes": [
     {
@@ -837,6 +843,18 @@
         "2026-11-02-servidor-Adios-a-los-Pokemon-fantasma-congelados",
         "2026-11-02-servidor-Tu-progreso-de-mineria-igual-en-Kanto-y-Kalos",
         "2026-11-02-servidor-Dia-comunitario-la-barra-de-meta-ya-no-se-queda-fija"
+      ]
+    },
+    {
+      "fecha": "2026-11-03",
+      "mensaje": "1567145896943030313",
+      "entradas": [
+        "2026-11-03-servidor-Tras-un-reinicio-vuelves-solo-a-tu-region",
+        "2026-11-03-servidor-Enviar-SCC-tokens-y-dinero-todo-con-enviar",
+        "2026-11-03-servidor-shop-vuelven-los-Materiales-MTs",
+        "2026-11-03-servidor-Escondite-se-acabo-ganar-premios-estando-AFK",
+        "2026-11-03-servidor-La-lista-de-jugadores-otra-vez-ordenada-por-rango",
+        "2026-11-03-servidor-Tienda-de-Expediciones-toda-en-espanol"
       ]
     }
   ]
