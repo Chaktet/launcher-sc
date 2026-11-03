@@ -134,11 +134,16 @@ lo mismo con una versión vieja. Está en [DISTRIBUCION.md](DISTRIBUCION.md).
 
 ### Iconos de Pokémon en el minimapa (Xaero)
 
-El pack `E19 Cobblemon Minimap Icons.zip` pone los dibujos, pero quien decide si se ven es el radar de Xaero:
-`config/xaero/minimap/profiles/entity_radar_categories/default.cfg.json`, ajuste `icons` de la categoría raíz
-(0 = sin iconos, 1 = solo con TAB pulsado, 2 = siempre). Xaero trae 1; la distribución lleva desde el 28-10-2026 ese
-fichero con 2, **con hash** (se impone en cada arranque, a los ya instalados también). Si se cambia, se parte del
-fichero tal como lo escribe Xaero, para que al reescribirlo no cambie el MD5.
+El pack `E19 Cobblemon Minimap Icons.zip` pone los dibujos, pero quien decide si se ven es el radar de Xaero: ajuste
+`icons` de la categoría raíz (0 = sin iconos, 1 = solo con TAB pulsado, 2 = siempre; orden comprobado en
+`EntityRadarCategorySettings` de Xaero 25.3.12). Xaero trae 1.
+
+**El fichero que cuenta es `config/xaero/minimap/default_radar_categories_client.json`** (en la distribución con 2 y
+**con hash** desde el 02-11-2026: se impone en cada arranque, también a los ya instalados). El del 28-10,
+`profiles/entity_radar_categories/default.cfg.json`, Xaero 25.3.12 no lo usa: con solo ese en 2, los Pokémon seguían
+saliendo como puntos sin TAB (probado en el cliente de pruebas contra el servidor local, 02-11). Se dejan los dos.
+Si se cambia, se parte del fichero tal como lo escribe Xaero (solo cambia el `icons` de la raíz) para que el MD5 no
+cambie; Xaero no lo reescribe al arrancar.
 
 ## Shaders
 

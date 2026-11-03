@@ -73,8 +73,9 @@
 - **1.17.3 publicada (23-10)**: borra solos los SC-Pack viejos y afina las pistas de Voice Chat (`d` en «Could not
   initialize class») y de descargas (`k`, `n`). `sc-stats.py` nuevo instalado en OVH-A. Mirar en unos días: `d` de los
   SC-90 de Voice Chat, `k` de los SC-04 y que bajen los SC-93 `sc-viejo`.
-- **Minimapa con iconos de Pokémon siempre (28-10, distribución en vivo)**: pendiente ver en el juego que salen los
-  iconos sin TAB y que el launcher no vuelve a bajar el fichero en cada arranque (si Xaero lo reescribe distinto).
+- **Minimapa con iconos de Pokémon siempre (arreglado de verdad el 02-11, distribución en vivo)**: el fichero bueno es
+  `default_radar_categories_client.json` (ver la entrada del 02-11). Pendiente: que Felix lo vea en su LITE tras
+  cerrar el juego y darle a JUGAR.
 - **1.17.10 publicada (27-10 20:40 hora RD, OK de Felix)**: repone los paquetes oficiales cuando el juego vació la
   lista aunque ya haya entrado el SC-Pack solo. Firmada (`comprueba-publisher` ok), release v1.17.10 con 14 ficheros
   (Mac/Linux del CI run 40608709458, todo en verde), las tres fichas `latest*.yml` dicen 1.17.10; los 3 exe de OVH-A
@@ -86,6 +87,18 @@
   el launcher. Novedad `2026-10-28-modpack-Adios-al-aviso-de-chat-no-verificado` (arreglo) solo en vista previa en
   «diseño-pruebas» (mensaje 1564857375410757703). **Publicada en el launcher el 28-10 15:55 UTC** con la de las
   misiones de escanear (OK de Felix: launcher sí, Discord no). El modpack móvil SC-Movil no lo lleva.
+
+## 2026-11-02 · Minimapa: los iconos de Pokémon seguían saliendo solo con TAB
+- Felix: en LITE salen puntos de colores; con TAB, las caritas. El arreglo del 28-10 no hacía nada.
+- Causa: Xaero 25.3.12 no usa `profiles/entity_radar_categories/default.cfg.json` (estaba bien, con 2, y lo ignora);
+  lee `config/xaero/minimap/default_radar_categories_client.json`, que seguía con `icons` 1 (solo con TAB).
+- Cambio: ese fichero (el de Xaero con solo el `icons` raíz a 2, md5 `9ae88c2f…`, 5531 B) en `files/` de PRO y LITE,
+  local y en OVH-A, con hash en los 3 perfiles (SUPER LITE usa la URL de LITE), `?v=1`, sin regenerar. Copias
+  `distribution.json.bak-radar-default-20261102` en OVH-A y en local.
+- Verificado: cliente de pruebas contra el servidor local (sin Xaero, como Kanto/Kalos) con la config del launcher:
+  sin el fichero, Sableye = punto sin TAB y carita con TAB; con el fichero, carita sin TAB. Xaero no lo reescribe al
+  arrancar. Por Cloudflare: manifiesto `bfd6443a…` = local, el fichero 200, 5531 B, MD5 = manifiesto en los 2 perfiles.
+- Sin probar: en la instancia LITE de Felix (tenía el juego abierto; lo baja en su próximo JUGAR).
 
 ## 2026-11-02 · Punchy sin animaciones en LITE: «file/punchy:punchy» (arreglo en código, release pendiente)
 - Felix: en LITE las animaciones de Punchy (al hacer clic con la mano) no salen; en PRO sí.
