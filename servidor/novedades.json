@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-03-servidor-Tienda-de-Expediciones-toda-en-espanol",
+      "fecha": "2026-11-03",
+      "tipo": "servidor",
+      "clase": "retoque",
+      "titulo": "Tienda de Expediciones, toda en español",
+      "puntos": [
+        "Los objetos y efectos de la tienda de Expediciones ya salen en español, con los nombres de siempre de las Balls."
+      ]
+    },
+    {
       "id": "2026-11-03-servidor-Tras-un-reinicio-vuelves-solo-a-tu-region",
       "fecha": "2026-11-03",
       "tipo": "servidor",
