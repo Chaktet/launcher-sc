@@ -1,6 +1,8 @@
 # SC Launcher · historial
 
 ## Estado actual
+- **Teclas de los mods revisadas (02-11, solo informe): `docs/TECLAS-MODS.md`.** Pendiente: Felix elige qué choques arreglar
+  (MaLiLib A→C, zoom C, R de Inventory Profiles/JEI).
 - **1.17.15 publicada (02-11 ~17:50 hora RD, pedida por Felix): Punchy con animaciones en LITE y SUPER LITE** (el launcher
   escribía `file/punchy:punchy`; ahora lo pone bien y repara a quien ya lo tenía roto). Firmada (`comprueba-publisher` ok),
   release v1.17.15 con 14 ficheros (Mac/Linux del CI run 41530962104, en verde; commit fb40658), aviso de launcher viejo
@@ -87,6 +89,16 @@
   el launcher. Novedad `2026-10-28-modpack-Adios-al-aviso-de-chat-no-verificado` (arreglo) solo en vista previa en
   «diseño-pruebas» (mensaje 1564857375410757703). **Publicada en el launcher el 28-10 15:55 UTC** con la de las
   misiones de escanear (OK de Felix: launcher sí, Discord no). El modpack móvil SC-Movil no lo lleva.
+
+## 2026-11-02 · Revisión de las teclas de todos los mods (solo informe)
+- Felix: lista de todos los mods de PRO, LITE y SUPER LITE que añaden o necesitan teclas y qué choca a un jugador nuevo.
+- Hecho: `docs/TECLAS-MODS.md`. Un script leyó los 89 jars (PRO 87, LITE/SL 57) y sacó teclas de Minecraft, atajos
+  propios (MaLiLib, Litematica, Inventory Profiles) y lecturas directas del teclado; contrastado con el `options.txt` de
+  las instancias de Felix y con el orden en que Minecraft reparte una tecla (acierta el choque ya conocido de la V).
+- Resultado: con los arreglos ya hechos no queda ningún choque grave entre teclas de Minecraft. Quedan: A→C de MaLiLib
+  (abre sus ajustes, los 3 perfiles), C del zoom contra «guardar barra» (solo creativo, PRO), R de Inventory Profiles
+  contra R de JEI en inventarios (PRO, sin probar) y combinaciones R+… de Inventory Profiles. Nada cambiado.
+- Pendiente: Felix decide qué choques arreglar; ninguno probado aún en el juego.
 
 ## 2026-11-02 · Minimapa: los iconos de Pokémon seguían saliendo solo con TAB
 - Felix: en LITE salen puntos de colores; con TAB, las caritas. El arreglo del 28-10 no hacía nada.

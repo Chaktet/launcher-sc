@@ -234,6 +234,8 @@ jugadores nuevos, pero quien ya arrancó una vez tiene la `V` guardada para siem
 aplica **una sola vez y solo si la tecla sigue siendo la de fábrica**; si el jugador la había
 cambiado él, se respeta y se anota en `.sc-teclas-auto.json` para no volver a mirarla.
 
+> Lista completa de teclas de todos los mods y choques pendientes: [TECLAS-MODS.md](TECLAS-MODS.md) (02-11-2026).
+
 > **Para añadir una tecla nueva al parche**: añade la entrada a `SC_TECLAS_EN_CONFLICTO`
 > ([landing.js](../app/assets/js/scripts/landing.js)) con `opcion`, `porDefecto` y `nueva`.
 > Verifica antes que la tecla nueva está libre en **los dos perfiles**.
