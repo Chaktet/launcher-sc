@@ -2,6 +2,20 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-03-servidor-Enviar-SCC-tokens-y-dinero-todo-con-enviar",
+      "fecha": "2026-11-03",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Enviar SCC, tokens y dinero: todo con /enviar",
+      "puntos": [
+        "Para darle algo a otro jugador: /enviar scc, /enviar tokens o /enviar dinero, seguido de <jugador> <cantidad>.",
+        "C:/Program Files/Git/enviar dinero manda Pokédólares igual que /pay, que también sigue funcionando.",
+        "Pulsa TAB mientras lo escribes: el chat te dice qué poner en cada hueco y te sugiere los nombres de los jugadores.",
+        "/transfer ya no sirve para enviar: si lo escribes, te explica cómo usar /enviar.",
+        "Arreglado: escribir mal el comando ya no puede desconectar a otro jugador."
+      ]
+    },
+    {
       "id": "2026-11-02-servidor-Adios-a-los-Pokemon-fantasma-congelados",
       "fecha": "2026-11-02",
       "tipo": "servidor",
