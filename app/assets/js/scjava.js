@@ -25,6 +25,65 @@ const { LoggerUtil } = require('helios-core')
 
 const logger = LoggerUtil.getLogger('ScJava')
 
+// macOS 10.15 o anterior (Darwin < 20). Desde la 21.0.10 los Java 21 (Corretto y Temurin) se
+// compilan para macOS 11 y su libawt pide /System/Library/Frameworks/JavaRuntimeSupport, que
+// Catalina no tiene: FancyMenu carga AWT y el juego muere antes de abrir la ventana (iMac 2013,
+// 03-11). Temurin 21.0.9 es el último hecho para 10.12 (medido en libawt.dylib: minos y rutas).
+const MAC_VIEJO = process.platform === 'darwin' && parseInt(require('os').release(), 10) < 20
+const JAVA_MAC_VIEJO = 'jdk-21.0.9+10'
+
+/** ¿Esta versión de Java ({major, minor, patch}) arranca en este Mac? Fuera de macOS viejo, siempre. */
+function sirveEnEsteMac(v){
+    if(!MAC_VIEJO || v == null){
+        return true
+    }
+    return v.major < 21 || (v.major === 21 && v.minor === 0 && v.patch <= 9)
+}
+
+/** Lo mismo leyendo el fichero `release` del Java de `exe` (…/Contents/Home/bin/java). */
+function javaSirveEnEsteMac(exe){
+    if(!MAC_VIEJO){
+        return true
+    }
+    try {
+        const txt = fs.readFileSync(path.join(path.dirname(exe), '..', 'release'), 'utf8')
+        const m = /JAVA_VERSION="(\d+)\.(\d+)\.(\d+)/.exec(txt)
+        return m == null || sirveEnEsteMac({ major: +m[1], minor: +m[2], patch: +m[3] })
+    } catch(_e){
+        return true
+    }
+}
+
+/** Java para macOS viejo: el JRE Temurin 21.0.9 de Adoptium, en la forma de helios-core. */
+async function javaMacViejo(dataDir){
+    try {
+        return await javaMacViejoDeAdoptium(dataDir)
+    } catch(err){
+        logger.error(`No se pudo obtener ${JAVA_MAC_VIEJO} de Adoptium.`, err)
+        return null
+    }
+}
+
+async function javaMacViejoDeAdoptium(dataDir){
+    const res = await fetch('https://api.adoptium.net/v3/assets/release_name/eclipse/' + encodeURIComponent(JAVA_MAC_VIEJO)
+        + '?architecture=x64&image_type=jre&os=mac', { cache: 'no-store' })
+    if(!res.ok){
+        throw new Error('Adoptium HTTP ' + res.status)
+    }
+    const b = ((await res.json()).binaries || []).find(x => x.os === 'mac' && x.architecture === 'x64' && x.image_type === 'jre')
+    if(b == null){
+        return null
+    }
+    return {
+        url: b.package.link,
+        size: b.package.size,
+        id: b.package.name,
+        hash: b.package.checksum,
+        algo: 'sha256',
+        path: path.join(dataDir, 'runtime', process.arch, b.package.name)
+    }
+}
+
 const FICHERO = 'sc-java.json'
 // Reparaciones automáticas recientes: si vuelve a romperse dentro de esta ventana, ya no es
 // una descarga a medias sino algo que lo rompe cada vez (antivirus): se escala al aviso.
@@ -251,6 +310,10 @@ async function elegir(dataDir, dirLauncher, rango, javaGuard, permitirSistema = 
                 logger.warn(`Se salta un Java incompleto (${faltan.join(', ')}): ${d.path}`)
                 return false
             }
+            if(!sirveEnEsteMac(d.semver)){
+                logger.warn(`Se salta un Java ${d.semverStr} que pide macOS 11: ${d.path}`)
+                return false
+            }
             return true
         })
     javaGuard.rankApplicableJvms(aptos)
@@ -303,5 +366,8 @@ module.exports = {
     propioBloqueadoReciente,
     quitarRuntime,
     limpiarApartados,
-    elegir
+    elegir,
+    MAC_VIEJO,
+    javaSirveEnEsteMac,
+    javaMacViejo
 }

@@ -229,7 +229,14 @@ document.getElementById('launch_button').addEventListener('click', async e => {
         if(jExe != null){
             const faltan = ScJava.faltanEsenciales(jExe)
             const vetado = ScJava.estaVetado(ConfigManager.getLauncherDirectory(), jExe)
-            if(faltan.length > 0 || vetado){
+            // macOS 10.15: un Java 21.0.10+ arranca pero el juego muere al cargar AWT. Se deja
+            // de usar (sin borrarlo) y se baja el 21.0.9 (ver scjava.js, MAC_VIEJO).
+            if(!ScJava.javaSirveEnEsteMac(jExe)){
+                loggerLanding.warn(`Java que pide macOS 11, no se usa en este Mac: ${jExe}`)
+                ConfigManager.setJavaExecutable(ConfigManager.getSelectedServer(), null)
+                ConfigManager.save()
+                jExe = null
+            } else if(faltan.length > 0 || vetado){
                 loggerLanding.warn(`Java no utilizable antes de lanzar (${vetado ? 'vetado' : 'faltan ' + faltan.join(', ')}): ${jExe}`)
                 if(ScJava.esPropio(jExe, ConfigManager.getDataDirectory())){
                     // Solo para contar cuántos lo necesitan; al jugador no le sale error.
@@ -3088,7 +3095,10 @@ async function scJavaDesdeCdn(major, dataDir){
 async function downloadJava(effectiveJavaOptions, launchAfter = true) {
 
     const dataDir = ConfigManager.getDataDirectory()
-    const adoptium = () => latestOpenJDK(effectiveJavaOptions.suggestedMajor, dataDir, effectiveJavaOptions.distribution)
+    // macOS 10.15: el Java más nuevo pide macOS 11; siempre el Temurin 21.0.9 (scjava.js).
+    const adoptium = () => ScJava.MAC_VIEJO
+        ? ScJava.javaMacViejo(dataDir)
+        : latestOpenJDK(effectiveJavaOptions.suggestedMajor, dataDir, effectiveJavaOptions.distribution)
     let asset = await scJavaDesdeCdn(effectiveJavaOptions.suggestedMajor, dataDir)
     let desdeCdn = asset != null
     if(asset == null){
