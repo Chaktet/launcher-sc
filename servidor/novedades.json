@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-03-servidor-Escondite-se-acabo-ganar-premios-estando-AFK",
+      "fecha": "2026-11-03",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Escondite: se acabó ganar premios estando AFK",
+      "puntos": [
+        "Si te quedas quieto de escondido, primero te llega un aviso.",
+        "Si sigues sin moverte, tu disfraz empieza a brillar y dejas de sumar puntos por sobrevivir.",
+        "Y si aún sigues quieto, quedas eliminado y pierdes los puntos de esa partida.",
+        "Quien pasa buena parte de la partida brillando se queda sin bonus de ronda y fuera del MVP. Girar solo la cámara no cuenta como moverse."
+      ]
+    },
+    {
       "id": "2026-11-03-servidor-Enviar-SCC-tokens-y-dinero-todo-con-enviar",
       "fecha": "2026-11-03",
       "tipo": "servidor",
