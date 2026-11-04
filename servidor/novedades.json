@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-04-servidor-ruleta-abre-con-la-mas-nueva-primero",
+      "fecha": "2026-11-04",
+      "tipo": "servidor",
+      "clase": "retoque",
+      "titulo": "/ruleta abre con la más nueva primero",
+      "puntos": [
+        "El selector abre siempre en la primera página, con la ruleta más reciente al principio."
+      ]
+    },
+    {
       "id": "2026-11-04-servidor-Los-talentos-de-mineria-por-zona-ya-dan-su-XP",
       "fecha": "2026-11-04",
       "tipo": "servidor",
