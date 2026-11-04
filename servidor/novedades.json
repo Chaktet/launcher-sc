@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-04-servidor-El-Buzon-ya-no-te-borra-objetos-en-un-minijuego",
+      "fecha": "2026-11-04",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "El Buzón ya no te borra objetos en un minijuego",
+      "puntos": [
+        "Si recogías del Buzón durante una ronda de un minijuego, los objetos se perdían al salir. Ahora te avisa y siguen en el Buzón."
+      ]
+    },
+    {
       "id": "2026-11-04-servidor-ruleta-abre-con-la-mas-nueva-primero",
       "fecha": "2026-11-04",
       "tipo": "servidor",
