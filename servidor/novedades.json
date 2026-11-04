@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-04-pack-SC-3.3.24",
+      "fecha": "2026-11-04",
+      "tipo": "pack",
+      "clase": "nuevo",
+      "version": "SC-3.3.24",
+      "titulo": "Ruleta Carnaval Oscuro: 82 skins de terror",
+      "puntos": [
+        "Ya está abierta y cierra el 15 de noviembre, con 5 skins míticas como Giratina Tenebrosa y Xurkitree Terror.",
+        "Ábrela con /ruleta: las tiradas se compran en la Tienda SCC, con el botón «Comprar» de la ruleta."
+      ]
+    },
+    {
       "id": "2026-11-04-servidor-Envia-Pokemon-y-objetos-a-cualquier-jugador",
       "fecha": "2026-11-04",
       "tipo": "servidor",
