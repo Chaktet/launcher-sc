@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-03-servidor-Urshifu-ya-tiene-el-movimiento-de-su-estilo",
+      "fecha": "2026-11-03",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Urshifu ya tiene el movimiento de su estilo",
+      "puntos": [
+        "Algunos Urshifu Estilo Fluido tenían Golpe Oscuro, y algunos Estilo Brusco tenían Azote Torrencial.",
+        "Al entrar se corrige solo, en tu equipo y en el PC. El estilo de tu Urshifu no cambia.",
+        "Llega con el próximo reinicio del servidor."
+      ]
+    },
+    {
       "id": "2026-11-03-servidor-Gimnasios-apuntate-desde-cualquier-region",
       "fecha": "2026-11-03",
       "tipo": "servidor",
