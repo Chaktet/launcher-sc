@@ -289,7 +289,13 @@
     "2026-11-03-servidor-shop-vuelven-los-Materiales-MTs",
     "2026-11-03-servidor-Escondite-se-acabo-ganar-premios-estando-AFK",
     "2026-11-03-servidor-La-lista-de-jugadores-otra-vez-ordenada-por-rango",
-    "2026-11-03-servidor-Tienda-de-Expediciones-toda-en-espanol"
+    "2026-11-03-servidor-Tienda-de-Expediciones-toda-en-espanol",
+    "2026-11-03-servidor-Urshifu-ya-tiene-el-movimiento-de-su-estilo",
+    "2026-11-03-servidor-Gimnasios-apuntate-desde-cualquier-region",
+    "2026-11-03-servidor-rtp-al-Mundo-Recursos-ya-no-falla",
+    "2026-11-03-servidor-El-Buzon-ya-te-avisa-con-un-punto-rojo",
+    "2026-11-03-servidor-Tus-casas-de-Kanto-y-Kalos-en-un-solo-menu",
+    "2026-11-03-servidor-shop-ahora-en-espanol"
   ],
   "mensajes": [
     {
@@ -855,6 +861,18 @@
         "2026-11-03-servidor-Escondite-se-acabo-ganar-premios-estando-AFK",
         "2026-11-03-servidor-La-lista-de-jugadores-otra-vez-ordenada-por-rango",
         "2026-11-03-servidor-Tienda-de-Expediciones-toda-en-espanol"
+      ]
+    },
+    {
+      "fecha": "2026-11-04",
+      "mensaje": "1567356652460572734",
+      "entradas": [
+        "2026-11-03-servidor-Urshifu-ya-tiene-el-movimiento-de-su-estilo",
+        "2026-11-03-servidor-Gimnasios-apuntate-desde-cualquier-region",
+        "2026-11-03-servidor-rtp-al-Mundo-Recursos-ya-no-falla",
+        "2026-11-03-servidor-El-Buzon-ya-te-avisa-con-un-punto-rojo",
+        "2026-11-03-servidor-Tus-casas-de-Kanto-y-Kalos-en-un-solo-menu",
+        "2026-11-03-servidor-shop-ahora-en-espanol"
       ]
     }
   ]
