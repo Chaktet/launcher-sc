@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-04-servidor-Los-talentos-de-mineria-por-zona-ya-dan-su-XP",
+      "fecha": "2026-11-04",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Los talentos de minería por zona ya dan su XP",
+      "puntos": [
+        "Ritmo de Cantera, Carga de Trabajo, Excavador Maestro, Pie de Gato y Espeleólogo Maestro no sumaban XP: ya la suman en su zona (piedra, tierra, Nether y End, o bajo Y -40).",
+        "Los bonus de XP pequeños ya se notan en piedra y tierra: antes se perdían al redondear y ahora a veces el bloque te da 1 XP más.",
+        "El PokéNav vuelve a mostrar el % de cada talento y su texto completo."
+      ]
+    },
+    {
       "id": "2026-11-03-servidor-Urshifu-ya-tiene-el-movimiento-de-su-estilo",
       "fecha": "2026-11-03",
       "tipo": "servidor",
