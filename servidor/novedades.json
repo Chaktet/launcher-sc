@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-04-servidor-Envia-Pokemon-y-objetos-a-cualquier-jugador",
+      "fecha": "2026-11-04",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Envía Pokémon y objetos a cualquier jugador",
+      "puntos": [
+        "/enviar pokemon <jugador> <hueco 1-6>: manda un Pokémon de tu equipo a su Buzón, en cualquier región y aunque no esté conectado.",
+        "/enviar objeto <jugador>: manda lo que tengas en la mano.",
+        "/enviar pedir <jugador> <scc|tokens|dinero> <cantidad>: le pide un pago. /enviar historial: lo que has enviado y recibido.",
+        "Con TAB salen también los jugadores de la otra región. /enviar dinero sigue siendo solo para quien esté en tu región."
+      ]
+    },
+    {
       "id": "2026-11-04-servidor-Intercambia-Pokemon-tambien-con-la-otra-region",
       "fecha": "2026-11-04",
       "tipo": "servidor",
