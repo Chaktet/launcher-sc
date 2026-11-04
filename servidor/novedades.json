@@ -2,6 +2,20 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-03-servidor-Gimnasios-apuntate-desde-cualquier-region",
+      "fecha": "2026-11-03",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Gimnasios: apúntate desde cualquier región",
+      "puntos": [
+        "Cuando abre un gimnasio en la otra región, pulsa «Apuntarme» en el chat: entras en la cola sin moverte de donde estás.",
+        "Cuando llega tu turno, te lleva solo a su región y delante del líder, sin pulsar nada.",
+        "Si estás en pleno combate, espera a que termines.",
+        "Ojo: si te toca mientras estás en el lobby, pierdes el turno.",
+        "Llega con el próximo reinicio del servidor."
+      ]
+    },
+    {
       "id": "2026-11-03-servidor-shop-ahora-en-espanol",
       "fecha": "2026-11-03",
       "tipo": "servidor",
