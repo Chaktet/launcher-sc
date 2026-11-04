@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-03-servidor-rtp-al-Mundo-Recursos-ya-no-falla",
+      "fecha": "2026-11-03",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "/rtp al Mundo Recursos ya no falla",
+      "puntos": [
+        "A veces decía que no encontraba un lugar seguro: buscaba sitio fuera del borde del mundo y el viaje se cancelaba.",
+        "Ahora busca siempre dentro del borde de cada mundo, en Kanto y en Kalos."
+      ]
+    },
+    {
       "id": "2026-11-03-servidor-El-Buzon-ya-te-avisa-con-un-punto-rojo",
       "fecha": "2026-11-03",
       "tipo": "servidor",
