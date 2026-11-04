@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-04-servidor-Sin-cuenta-premium-vincula-Discord-o-correo",
+      "fecha": "2026-11-04",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Sin cuenta premium: vincula Discord o correo",
+      "puntos": [
+        "Si juegas sin cuenta premium, tienes que vincular tu Discord o tu correo: así recuperas la cuenta si olvidas la contraseña.",
+        "Las cuentas nuevas tienen 3 horas de juego para hacerlo; las que ya existían, 7 días.",
+        "Si se acaba el plazo, puedes seguir en el Hub, pero no pasar a las regiones hasta vincular. En el juego te sale un aviso con los botones."
+      ]
+    },
+    {
       "id": "2026-11-04-servidor-Contratos-de-mineria-ya-cuentan-tus-entregas",
       "fecha": "2026-11-04",
       "tipo": "servidor",
