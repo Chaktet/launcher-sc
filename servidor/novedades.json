@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-03-servidor-shop-ahora-en-espanol",
+      "fecha": "2026-11-03",
+      "tipo": "servidor",
+      "clase": "retoque",
+      "titulo": "/shop, ahora en español",
+      "puntos": [
+        "Los objetos de /shop ya salen con su nombre en español en el PokéNav; antes muchos salían en inglés.",
+        "Algunas secciones cambian de nombre: Botín y Objetos de Guardería.",
+        "Si aún ves algo en inglés, avísanos por ticket."
+      ]
+    },
+    {
       "id": "2026-11-03-servidor-rtp-al-Mundo-Recursos-ya-no-falla",
       "fecha": "2026-11-03",
       "tipo": "servidor",
