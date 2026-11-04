@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-04-servidor-Intercambia-Pokemon-tambien-con-la-otra-region",
+      "fecha": "2026-11-04",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Intercambia Pokémon también con la otra región",
+      "puntos": [
+        "/intercambio <jugador>: pídeselo a alguien conectado, en tu región o en la otra.",
+        "Hasta 3 Pokémon por cada lado, del equipo o del PC. Lo que recibes llega a tu PC.",
+        "Los legendarios y los shiny no se pueden intercambiar."
+      ]
+    },
+    {
       "id": "2026-11-04-servidor-Sin-cuenta-premium-vincula-Discord-o-correo",
       "fecha": "2026-11-04",
       "tipo": "servidor",
