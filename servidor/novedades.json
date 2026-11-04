@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-04-servidor-Contratos-de-mineria-ya-cuentan-tus-entregas",
+      "fecha": "2026-11-04",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Contratos de minería: ya cuentan tus entregas",
+      "puntos": [
+        "Lo entregado al mercado no hacía avanzar los contratos ni el pedido semanal: ya cuenta. La Cantera cuenta al entregar, no al picar.",
+        "«Aceptar» decía que la oferta ya no estaba en el tablón: ya funciona.",
+        "«Cambiar» un contrato no está disponible por ahora.",
+        "Lo que rompes con la habilidad de área no cuenta como picado por ti."
+      ]
+    },
+    {
       "id": "2026-11-04-servidor-El-Buzon-ya-no-te-borra-objetos-en-un-minijuego",
       "fecha": "2026-11-04",
       "tipo": "servidor",
