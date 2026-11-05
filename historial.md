@@ -123,13 +123,19 @@
   «diseño-pruebas» (mensaje 1564857375410757703). **Publicada en el launcher el 28-10 15:55 UTC** con la de las
   misiones de escanear (OK de Felix: launcher sí, Discord no). El modpack móvil SC-Movil no lo lleva.
 
+## 2026-11-04 22:40 (hora RD) · Too Many Players también respeta al jugador
+- Felix: «sí, respétalo». `config/toomanyplayers.json` sin hash en los 3 perfiles y en `untrackedFiles`.
+- Verificado: manifiesto en vivo = local, sin MD5 en ese módulo.
+- Riesgo aceptado por Felix: quien pulse la J sin querer sigue viendo jugadores invisibles al volver a entrar; se quita
+  con la J otra vez. Si vuelven esos reportes, esa es la primera causa a mirar.
+
 ## 2026-11-04 22:30 (hora RD) · Revisión de configs con hash: 4 ajustes del jugador pasan a sin hash
 - Pedido (Felix «sí, revísalos»): los otros config que el launcher repone en cada JUGAR.
 - Sin hash ahora (se pueden cambiar en el juego): `sodium-extra-options` (LITE, SUPER LITE), `inventoryprofiles` y
   `soundphysics` (PRO), `malilib` (todos). 7 módulos, `RESOURCE-MC/herramientas/config-sin-hash.js`, y en `untrackedFiles`
   de los `servermeta.json` para que Nebula no se lo vuelva a poner.
 - Se quedan con hash: `lithium` y `immediatelyfast` (sin pantalla de ajustes), `modernfix-mixins` (técnico, carga de
-  LITE), `toomanyplayers` (evita jugadores invisibles; pendiente de Felix, tiene tecla J).
+  LITE), `toomanyplayers` (decidido después: pasa a sin hash, entrada de arriba).
 - Verificado: manifiesto en vivo = local `b326270d…`; `validateLocalFile` real de helios-core: fichero editado con hash
   distinto = se sobrescribe, sin hash = se respeta, sin hash y ausente = se baja.
 - Sin probar: launcher real. Quien no haya abierto el juego desde el 02-11 conserva sus teclas viejas de IPN y MaLiLib.
