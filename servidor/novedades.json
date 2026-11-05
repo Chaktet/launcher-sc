@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-05-pack-SC-3.3.28",
+      "fecha": "2026-11-05",
+      "tipo": "pack",
+      "clase": "arreglo",
+      "version": "SC-3.3.28",
+      "titulo": "El juego ya no se cierra con dos skins de fusión",
+      "puntos": [
+        "Ver a la Armarouge o el Charizard de fusión de octubre podía cerrarte el juego a los pocos segundos. Ya no pasa."
+      ]
+    },
+    {
       "id": "2026-11-05-servidor-Los-Shedinja-nuevos-ya-salen-con-Superguarda",
       "fecha": "2026-11-05",
       "tipo": "servidor",
