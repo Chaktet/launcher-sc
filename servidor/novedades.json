@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-05-servidor-Tu-rol-de-Discord-llega-solo-con-un-clic",
+      "fecha": "2026-11-05",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Tu rol de Discord llega solo, con un clic",
+      "puntos": [
+        "Si tienes rango, ya recibes su rol en nuestro Discord sin hacer nada más, y cambia solo cuando cambia tu rango.",
+        "Unir tu Discord a tu cuenta es un clic: escribe /vincular discord, pulsa el botón y dale a Autorizar.",
+        "Con eso recuperas tu cuenta si olvidas la contraseña, recibes tus llaves de Discord y tu rol.",
+        "También tienes el botón Vincular Discord en las ventajas de tu rango y en las llaves del PokéNav."
+      ]
+    },
+    {
       "id": "2026-11-05-servidor-Cesta-en-la-tienda-compra-varias-cosas-de-una-vez",
       "fecha": "2026-11-05",
       "tipo": "servidor",
