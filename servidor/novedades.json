@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-05-servidor-Reta-a-otro-jugador-desde-el-PokeNav",
+      "fecha": "2026-11-05",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Reta a otro jugador desde el PokéNav",
+      "puntos": [
+        "En Combate, pulsa Retar a un jugador: eliges rival cercano, formato, número de Pokémon y nivel.",
+        "Cada uno elige su equipo en la misma pantalla y empieza el combate.",
+        "Es amistoso: tus Pokémon no cambian de nivel."
+      ]
+    },
+    {
       "id": "2026-11-05-servidor-Tu-rol-de-Discord-llega-solo-con-un-clic",
       "fecha": "2026-11-05",
       "tipo": "servidor",
