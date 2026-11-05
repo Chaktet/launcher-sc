@@ -134,7 +134,7 @@ launcher) la cambia. Las teclas son las de la posición en un teclado español (
 
 | Mod | Versión | Perfiles | Atajo (contexto) | De fábrica | Nuestra distribución |
 |---|---|---|---|---|---|
-| MaLiLib | 0.21.10 | PRO, LITE, SL | Abrir ajustes de MaLiLib (mundo) | A y luego C | **sí → sin atajo** (`config/malilib.json`, con hash) |
+| MaLiLib | 0.21.10 | PRO, LITE, SL | Abrir ajustes de MaLiLib (mundo) | A y luego C | **sí → sin atajo** (`config/malilib.json`, sin hash desde el 04-11) |
 | Inventory Profiles Next | 2.2.6 | PRO | Abrir sus ajustes (mundo) | R y luego C | **sí → sin atajo** |
 | Inventory Profiles Next | 2.2.6 | PRO | Recargar configuración (mundo y pantallas) | R+Y | **sí → sin atajo** |
 | Inventory Profiles Next | 2.2.6 | PRO | Ordenar inventario (pantallas) | R | **sí → ' (tecla a la derecha del 0)** |
@@ -187,7 +187,7 @@ queda ningún choque grave entre teclas de Minecraft en LITE ni en SUPER LITE. Q
   sobre las 163/136 acciones de un jugador nuevo), y Inventory Profiles y MaLiLib ya no usan teclas de nadie.
 - Cómo llega:
   - Inventory Profiles: `config/inventoryprofilesnext/inventoryprofiles.json` de PRO lleva ahora un bloque `Hotkeys`
-    (ordenar en `MINUS`, el resto vacío). Tiene hash: llega a **todos** los de PRO en su próximo JUGAR. Probado en el
+    (ordenar en `MINUS`, el resto vacío). Llevó hash hasta el 04-11-2026 para llegar a los de PRO; desde entonces va sin hash y solo llega a instalaciones nuevas. Probado en el
     cliente de pruebas: lo carga sin avisos (el único aviso, `enable_profiles_announcement`, ya salía antes) y no lo
     reescribe.
   - Guardar barra en 0 e Item Zoomer en Ç: `options.txt` de PRO (jugadores nuevos, `?v=c3c2e8b447`) y dos entradas

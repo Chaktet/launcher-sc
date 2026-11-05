@@ -113,7 +113,7 @@ el único perfil que lo distribuye):
 
 ```json
 "untrackedFiles": [
-  { "appliesTo": ["files"], "patterns": ["options.txt", "downloads/**", "servers.dat", "config/sodium-options.json", "config/emotecraft.json"] }
+  { "appliesTo": ["files"], "patterns": ["options.txt", "downloads/**", "servers.dat", "config/sodium-options.json", "config/emotecraft.json", "config/malilib.json", "..."] }
 ]
 ```
 
@@ -126,6 +126,13 @@ lee su carpeta `emotes/`. Cómo se montan: [tools/emotes/README.md](../tools/emo
 `servers.dat` y `sodium-options.json` los reescriben Minecraft y Sodium en cada partida: con MD5 no
 cuadraban nunca y el launcher los volvía a descargar en CADA arranque (hasta la 1.7.0). No metas en
 la distribución con hash ningún fichero que el juego reescriba.
+
+Desde el 04-11-2026 van también sin hash los ajustes que el jugador puede cambiar dentro del juego:
+`sodium-extra-options.json` (LITE y SUPER LITE), `inventoryprofiles.json` y `soundphysics.properties` (PRO) y
+`malilib.json` (todos). Un cambio en ellos solo llega a instalaciones nuevas.
+Siguen con hash a propósito, por ser técnicos o de protección: `lithium.properties`, `modernfix-mixins.properties`,
+`immediatelyfast.json` y `toomanyplayers.json`. ImmediatelyFast y ModernFix reescriben el suyo al arrancar, así que se
+descargan en cada JUGAR (pocos KB).
 
 `files/downloads/` (el pack del servidor pre-sembrado, 132,6 MB) se retiró el 24-09-2026 a
 `servers/_retirados/`: el servidor ya no manda pack y sc-lockserver lo rechaza. Para aplicar estos

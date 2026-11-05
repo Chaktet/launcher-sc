@@ -123,6 +123,17 @@
   «diseño-pruebas» (mensaje 1564857375410757703). **Publicada en el launcher el 28-10 15:55 UTC** con la de las
   misiones de escanear (OK de Felix: launcher sí, Discord no). El modpack móvil SC-Movil no lo lleva.
 
+## 2026-11-04 22:30 (hora RD) · Revisión de configs con hash: 4 ajustes del jugador pasan a sin hash
+- Pedido (Felix «sí, revísalos»): los otros config que el launcher repone en cada JUGAR.
+- Sin hash ahora (se pueden cambiar en el juego): `sodium-extra-options` (LITE, SUPER LITE), `inventoryprofiles` y
+  `soundphysics` (PRO), `malilib` (todos). 7 módulos, `RESOURCE-MC/herramientas/config-sin-hash.js`, y en `untrackedFiles`
+  de los `servermeta.json` para que Nebula no se lo vuelva a poner.
+- Se quedan con hash: `lithium` y `immediatelyfast` (sin pantalla de ajustes), `modernfix-mixins` (técnico, carga de
+  LITE), `toomanyplayers` (evita jugadores invisibles; pendiente de Felix, tiene tecla J).
+- Verificado: manifiesto en vivo = local `b326270d…`; `validateLocalFile` real de helios-core: fichero editado con hash
+  distinto = se sobrescribe, sin hash = se respeta, sin hash y ausente = se baja.
+- Sin probar: launcher real. Quien no haya abierto el juego desde el 02-11 conserva sus teclas viejas de IPN y MaLiLib.
+
 ## 2026-11-04 22:15 (hora RD) · Minimapa: el launcher borraba en cada JUGAR el radar que elige el jugador
 - Pedido (Felix, reporte de un jugador): cada vez que entra se le quitan los ajustes del minimapa («solo pokes»); los
   ajustes de los jugadores se respetan siempre. Dice además que los iconos siguen sin salir sin TAB en LITE y PRO.
@@ -137,8 +148,6 @@
   Xaero lo conserva; config de LITE de Felix sin la línea → caras sin TAB (Sableye, Charizard…).
 - Sin probar: edición desde la pantalla de Xaero (simulada escribiendo el fichero), launcher real, y en producción.
 - Pendiente: iconos en el cliente de Felix (no reproducido); quien ya perdió sus ajustes los configura una vez más.
-  Otros config con hash que se reponen en cada JUGAR, sin tocar: immediatelyfast, lithium, malilib, modernfix-mixins,
-  sodium-extra-options, inventoryprofiles, soundphysics, toomanyplayers (este a propósito).
 
 ## 2026-11-02 · 1.17.16 publicada: teclas sin choques para quien ya jugaba
 - Felix: «Sí, sácala» (las dos teclas nuevas de `SC_TECLAS_EN_CONFLICTO`: guardar barra C→0, Item Zoomer Z→Ç). Lleva
