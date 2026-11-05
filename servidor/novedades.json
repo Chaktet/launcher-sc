@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-05-servidor-Cesta-en-la-tienda-compra-varias-cosas-de-una-vez",
+      "fecha": "2026-11-05",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Cesta en la tienda: compra varias cosas de una vez",
+      "puntos": [
+        "En servidorcobblemon.es/tienda ya puedes añadir varios paquetes a la cesta y pagarlos juntos en un solo pago.",
+        "Al añadir algo te sugerimos lo que mejor combina con tu compra."
+      ]
+    },
+    {
       "id": "2026-11-05-servidor-Tus-MT-aprendidas-valen-en-Kanto-y-en-Kalos",
       "fecha": "2026-11-05",
       "tipo": "servidor",
