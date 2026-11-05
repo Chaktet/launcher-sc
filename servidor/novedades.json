@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-05-servidor-Tus-MT-aprendidas-valen-en-Kanto-y-en-Kalos",
+      "fecha": "2026-11-05",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Tus MT aprendidas valen en Kanto y en Kalos",
+      "puntos": [
+        "Las MT que aprendiste en una región ya las tienes también en la otra, sin hacer nada."
+      ]
+    },
+    {
       "id": "2026-11-05-modpack-JUGAR-te-lleva-al-menu-de-entrada",
       "fecha": "2026-11-05",
       "tipo": "modpack",
