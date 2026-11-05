@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-05-modpack-JUGAR-te-lleva-al-menu-de-entrada",
+      "fecha": "2026-11-05",
+      "tipo": "modpack",
+      "clase": "cambio",
+      "titulo": "JUGAR te lleva al menú de entrada",
+      "puntos": [
+        "Al pulsar JUGAR en el launcher llegas al menú de entrada y decides tú cuándo entrar al servidor.",
+        "Con cuenta premium, si los servidores de Mojang fallan al entrar, el juego reintenta solo unas veces con una cuenta atrás."
+      ]
+    },
+    {
       "id": "2026-11-05-modpack-Tus-ajustes-del-minimapa-ya-no-se-borran",
       "fecha": "2026-11-05",
       "tipo": "modpack",
