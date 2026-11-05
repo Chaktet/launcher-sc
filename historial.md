@@ -108,9 +108,9 @@
 - **1.17.3 publicada (23-10)**: borra solos los SC-Pack viejos y afina las pistas de Voice Chat (`d` en «Could not
   initialize class») y de descargas (`k`, `n`). `sc-stats.py` nuevo instalado en OVH-A. Mirar en unos días: `d` de los
   SC-90 de Voice Chat, `k` de los SC-04 y que bajen los SC-93 `sc-viejo`.
-- **Minimapa con iconos de Pokémon siempre (arreglado de verdad el 02-11, distribución en vivo)**: el fichero bueno es
-  `default_radar_categories_client.json` (ver la entrada del 02-11). Pendiente: que Felix lo vea en su LITE tras
-  cerrar el juego y darle a JUGAR.
+- **Minimapa (04-11):** el launcher ya no pisa el radar del jugador (entrada del 04-11). Iconos sin TAB comprobados en
+  cliente de pruebas con la config y los mods de LITE de Felix. Pendiente: Felix dijo que en su juego siguen sin salir en
+  LITE y PRO; aquí no se reproduce y falta verlo en su cliente.
 - **1.17.10 publicada (27-10 20:40 hora RD, OK de Felix)**: repone los paquetes oficiales cuando el juego vació la
   lista aunque ya haya entrado el SC-Pack solo. Firmada (`comprueba-publisher` ok), release v1.17.10 con 14 ficheros
   (Mac/Linux del CI run 40608709458, todo en verde), las tres fichas `latest*.yml` dicen 1.17.10; los 3 exe de OVH-A
@@ -122,6 +122,23 @@
   el launcher. Novedad `2026-10-28-modpack-Adios-al-aviso-de-chat-no-verificado` (arreglo) solo en vista previa en
   «diseño-pruebas» (mensaje 1564857375410757703). **Publicada en el launcher el 28-10 15:55 UTC** con la de las
   misiones de escanear (OK de Felix: launcher sí, Discord no). El modpack móvil SC-Movil no lo lleva.
+
+## 2026-11-04 22:15 (hora RD) · Minimapa: el launcher borraba en cada JUGAR el radar que elige el jugador
+- Pedido (Felix, reporte de un jugador): cada vez que entra se le quitan los ajustes del minimapa («solo pokes»); los
+  ajustes de los jugadores se respetan siempre. Dice además que los iconos siguen sin salir sin TAB en LITE y PRO.
+- Causa: Xaero guarda el radar del jugador en `profiles/entity_radar_categories/default.cfg.json` (lo lee si
+  `profiles/default.cfg` tiene la línea `entity_radar_categories`). Lo repartíamos con hash desde el 28-10, así que cada
+  JUGAR reponía el nuestro. La nota del 02-11 «Xaero no lo usa» era falsa: solo lo parecía sin esa línea.
+- Cambio: módulo fuera del manifiesto en los 3 perfiles (`RESOURCE-MC/herramientas/quita-radar-perfil.js`), fichero fuera
+  de `files/` local y en OVH-A (copia en `/home/ubuntu/retirados-radar-20261105`). Sigue el radar por defecto con hash.
+  Sin launcher nuevo. Regla en la skill `publicar-pack` y en `docs/PAQUETES-Y-SHADERS.md`.
+- Verificado: manifiesto en vivo = local y sin ese fichero; `.mrpack` PRO, LITE, SUPER LITE y Móvil PRO 2.4.31 regenerados
+  solo con el de por defecto. Cliente de pruebas, mods de LITE: fichero con iconos 0 + la línea → puntos al arrancar y
+  Xaero lo conserva; config de LITE de Felix sin la línea → caras sin TAB (Sableye, Charizard…).
+- Sin probar: edición desde la pantalla de Xaero (simulada escribiendo el fichero), launcher real, y en producción.
+- Pendiente: iconos en el cliente de Felix (no reproducido); quien ya perdió sus ajustes los configura una vez más.
+  Otros config con hash que se reponen en cada JUGAR, sin tocar: immediatelyfast, lithium, malilib, modernfix-mixins,
+  sodium-extra-options, inventoryprofiles, soundphysics, toomanyplayers (este a propósito).
 
 ## 2026-11-02 · 1.17.16 publicada: teclas sin choques para quien ya jugaba
 - Felix: «Sí, sácala» (las dos teclas nuevas de `SC_TECLAS_EN_CONFLICTO`: guardar barra C→0, Item Zoomer Z→Ç). Lleva

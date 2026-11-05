@@ -138,12 +138,18 @@ El pack `E19 Cobblemon Minimap Icons.zip` pone los dibujos, pero quien decide si
 `icons` de la categoría raíz (0 = sin iconos, 1 = solo con TAB pulsado, 2 = siempre; orden comprobado en
 `EntityRadarCategorySettings` de Xaero 25.3.12). Xaero trae 1.
 
-**El fichero que cuenta es `config/xaero/minimap/default_radar_categories_client.json`** (en la distribución con 2 y
-**con hash** desde el 02-11-2026: se impone en cada arranque, también a los ya instalados). El del 28-10,
-`profiles/entity_radar_categories/default.cfg.json`, Xaero 25.3.12 no lo usa: con solo ese en 2, los Pokémon seguían
-saliendo como puntos sin TAB (probado en el cliente de pruebas contra el servidor local, 02-11). Se dejan los dos.
-Si se cambia, se parte del fichero tal como lo escribe Xaero (solo cambia el `icons` de la raíz) para que el MD5 no
-cambie; Xaero no lo reescribe al arrancar.
+Son dos ficheros con papeles distintos (código de Xaero 25.3.12 y xaerolib 1.1.15, descompilado el 04-11-2026):
+
+- **`profiles/entity_radar_categories/default.cfg.json` es la configuración DEL JUGADOR.** Xaero lo lee solo si
+  `profiles/default.cfg` tiene la línea `entity_radar_categories = …`, que aparece cuando el jugador guarda el radar.
+  **Nunca va en la distribución:** con hash, el launcher lo reponía en cada JUGAR y borraba lo que el jugador había
+  elegido. Se quitó del manifiesto el 04-11-2026 (la nota del 02-11 «Xaero no lo usa» solo era cierta sin esa línea).
+- **`default_radar_categories_client.json` es el valor por defecto.** Xaero solo lo lee cuando el perfil no tiene
+  valor, y solo lo escribe si no existe, así que el hash no pisa nada del jugador. Va en la distribución con `icons` 2.
+  Si se cambia, se parte del fichero tal como lo escribe Xaero (solo cambia el `icons` de la raíz).
+
+**Regla (Felix 04-11-2026): las configuraciones de los jugadores se respetan siempre.** Un fichero que el juego
+reescribe con lo que elige el jugador no se reparte con hash.
 
 ## Shaders
 
