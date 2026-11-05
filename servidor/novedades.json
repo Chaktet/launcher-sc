@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-05-servidor-Tu-Urshifu-ya-no-cambia-de-movimiento-al-entrar",
+      "fecha": "2026-11-05",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Tu Urshifu ya no cambia de movimiento al entrar",
+      "puntos": [
+        "Al entrar al servidor, a algunos Urshifu se les cambiaba el movimiento. Ya se queda como lo tienes."
+      ]
+    },
+    {
       "id": "2026-11-04-pack-SC-3.3.24",
       "fecha": "2026-11-04",
       "tipo": "pack",
