@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-05-modpack-Tus-ajustes-del-minimapa-ya-no-se-borran",
+      "fecha": "2026-11-05",
+      "tipo": "modpack",
+      "clase": "arreglo",
+      "titulo": "Tus ajustes del minimapa ya no se borran",
+      "puntos": [
+        "Lo que elegías en el radar del minimapa volvía a su valor cada vez que pulsabas JUGAR. Ya se queda como lo dejas.",
+        "Tampoco se borran tus ajustes de inventario, sonido, gráficos en LITE y la tecla que oculta jugadores."
+      ]
+    },
+    {
       "id": "2026-11-05-pack-SC-3.3.28",
       "fecha": "2026-11-05",
       "tipo": "pack",
