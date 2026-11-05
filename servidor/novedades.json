@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-05-servidor-Los-Shedinja-nuevos-ya-salen-con-Superguarda",
+      "fecha": "2026-11-05",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Los Shedinja nuevos ya salen con Superguarda",
+      "puntos": [
+        "Algunos Shedinja salían con la habilidad del Nincada. Los que evolucionen a partir de ahora ya tienen Superguarda."
+      ]
+    },
+    {
       "id": "2026-11-05-servidor-Tu-Urshifu-ya-no-cambia-de-movimiento-al-entrar",
       "fecha": "2026-11-05",
       "tipo": "servidor",
