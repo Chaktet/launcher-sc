@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-05-servidor-El-intercambio-de-Pokemon-ya-tiene-su-pantalla",
+      "fecha": "2026-11-05",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "El intercambio de Pokémon ya tiene su pantalla",
+      "puntos": [
+        "En el PokéNav, Comercio > Intercambio: pide un cambio y mira la oferta del otro con sus Pokémon.",
+        "Vender Pokémon pasa a la página 2 de Comercio.",
+        "Actualiza el launcher para verlo."
+      ]
+    },
+    {
       "id": "2026-11-05-servidor-Reta-a-otro-jugador-desde-el-PokeNav",
       "fecha": "2026-11-05",
       "tipo": "servidor",
