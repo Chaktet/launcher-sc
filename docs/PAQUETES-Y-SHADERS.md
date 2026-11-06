@@ -166,8 +166,16 @@ shaderPack=BSL_v8.2.zip
 - Al reescribir se **filtran** las dos líneas anteriores y se vuelven a añadir, conservando el resto
   del fichero.
 
-**No distribuimos shaders.** La carpeta `shaderpacks/` empieza vacía y solo se llena con lo que el
-jugador importe desde Ajustes. La lista es siempre "Ninguno" + lo que haya en la carpeta.
+**Shaders que repartimos** (distribución): PRO lleva BSL, Complementary Reimagined, Complementary Unbound y
+superDuperVanilla; LITE y SUPER LITE solo superDuperVanilla (desde 06-11-2026, `RESOURCE-MC/herramientas/shader-lite.js`).
+El jugador puede importar más desde Ajustes. La lista es siempre "Ninguno" + lo que haya en la carpeta.
+
+**Shader por defecto para la tecla K (1.17.20):** la K de Iris solo cambia `enableShaders`; con `shaderPack=` vacío
+alterna «Cambiados los shaders a (off)» y «Shaders desactivados» sin cambiar nada. Al pulsar JUGAR,
+`ScRendimiento.shaderPorDefecto()` ([screndimiento.js](../app/assets/js/screndimiento.js)) pone Complementary
+Reimagined (o superDuperVanilla si no está) **apagado** cuando no hay ningún shader elegido (vacío o `(internal)`).
+Un shader elegido por el jugador, aunque ya no exista, no se toca. Elegir «Ninguno» en Ajustes deja los shaders
+apagados igual; solo hace que la K vuelva a tener algo que encender.
 
 En LITE se muestra un aviso (`settingsShadersNotice`): el perfil está pensado para PCs de pocos
 recursos y activar shaders va contra eso. Es un aviso, no un bloqueo.

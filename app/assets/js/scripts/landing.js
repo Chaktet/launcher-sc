@@ -2726,6 +2726,14 @@ function scAplicarRendimiento(serv){
     } catch(e){
         loggerLanding.warn('No se pudo aplicar la calidad gráfica', e)
     }
+    try {
+        const pack = ScRendimiento.shaderPorDefecto(require('path').join(ConfigManager.getInstanceDirectory(), id))
+        if(pack != null){
+            loggerLanding.info('Shader por defecto para la tecla K (apagado):', pack)
+        }
+    } catch(e){
+        loggerLanding.warn('No se pudo poner el shader por defecto', e)
+    }
 }
 
 /**

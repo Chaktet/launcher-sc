@@ -284,5 +284,53 @@ function aplicarCalidad(instancia, nivel){
     return true
 }
 
-module.exports = { ramAutomatica, formatoJvm, formatoGb, perfilRecomendado, aplicarCalidad, CALIDADES,
+/**
+ * Shader packs we ship, in order of preference: PRO gets Complementary Reimagined,
+ * LITE and SUPER LITE only carry superDuperVanilla.
+ */
+const SHADERS_POR_DEFECTO = [/^ComplementaryReimagined.*\.zip$/i, /^superDuperVanilla.*\.zip$/i]
+
+/**
+ * Gives Iris a shader pack to toggle when the player never picked one.
+ *
+ * Iris' K key only flips enableShaders; with an empty shaderPack it alternates
+ * between «Cambiados los shaders a (off)» and «Shaders desactivados» and nothing
+ * changes on screen. When the instance has no pack selected, this selects our
+ * default one and leaves shaders OFF (nobody loses FPS); K then really turns it
+ * on and off. A pack the player chose (even a missing one) is never touched.
+ * Must run with the game closed (Iris rewrites iris.properties when toggling).
+ *
+ * @param {string} instancia Instance directory of the profile.
+ * @returns {string|null} The pack written, or null if nothing changed.
+ */
+function shaderPorDefecto(instancia){
+    const carpeta = path.join(instancia, 'shaderpacks')
+    if(!fs.existsSync(carpeta)){
+        return null
+    }
+    const zips = fs.readdirSync(carpeta)
+    let pack = null
+    for(const patron of SHADERS_POR_DEFECTO){
+        pack = zips.find(f => patron.test(f)) || null
+        if(pack != null){
+            break
+        }
+    }
+    if(pack == null){
+        return null
+    }
+    const iris = path.join(instancia, 'config', 'iris.properties')
+    if(fs.existsSync(iris)){
+        const linea = fs.readFileSync(iris, 'utf8').split(/\r?\n/).find(l => l.startsWith('shaderPack='))
+        const actual = linea == null ? '' : linea.slice('shaderPack='.length).trim()
+        // Iris treats "(internal)" the same as empty: no pack.
+        if(actual !== '' && actual !== '(internal)'){
+            return null
+        }
+    }
+    editarLineas(iris, '=', { enableShaders: 'false', shaderPack: pack })
+    return pack
+}
+
+module.exports = { ramAutomatica, formatoJvm, formatoGb, perfilRecomendado, aplicarCalidad, CALIDADES, shaderPorDefecto,
     NIVELES, nivelDePerfil, infoGpu, perfilMasLigero, perfilDisponible, cierrePorMemoria }
