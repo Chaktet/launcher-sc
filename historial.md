@@ -7,8 +7,8 @@
   «No certificates were found» porque SimplySign no tenía sesión: con el certificado en el almacén `comprueba-certificado`
   dice `ConClave: True` igual, no prueba la sesión). Release v1.17.19 con 19 ficheros (CI run 42220442285, en verde),
   aviso de launcher viejo puesto, las 4 fichas `latest*.yml`/`catalina-mac.yml` públicas = build, exe por GitHub y por
-  Cloudflare con sha512 = build; `SC-Launcher-setup-1.17.19.exe` en OVH-A. Estables siguen en la 1.17.15. Sin novedad
-  (pendiente de lo que diga Felix). **Sin probar:** que un launcher 1.17.16 real se actualice solo a esta.
+  Cloudflare con sha512 = build; `SC-Launcher-setup-1.17.19.exe` en OVH-A. Estables siguen en la 1.17.15. **Sin novedad**
+  (Felix 06-11). **Sin probar:** que un launcher 1.17.16 real se actualice solo a esta.
 - **1.17.18 publicada SOLO para Mac y Linux (03-11 ~19:45 hora RD): CAUSA REAL del SC-12 del iMac con Catalina.**
   Los crash reports (Felix los pasó) dicen `UnsatisfiedLinkError` en `libawt.dylib` de Corretto 21.0.13: enlaza
   `/System/Library/Frameworks/JavaRuntimeSupport.framework`, que Catalina no tiene; FancyMenu carga AWT
