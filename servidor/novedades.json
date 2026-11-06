@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-06-servidor-Expediciones-Torre-y-Arceus-ya-ven-tus-Pokedolares",
+      "fecha": "2026-11-06",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Expediciones, Torre y Arceus ya ven tus Pokédólares",
+      "puntos": [
+        "Sus tiendas y pantallas decían que no tenías Pokédólares (0 ₽ o «Sin monedas») y no dejaban pagar con ellos.",
+        "Ya muestran tu saldo real y puedes pagar con tus ₽."
+      ]
+    },
+    {
       "id": "2026-11-06-servidor-Mira-en-grande-cada-pieza-de-los-packs",
       "fecha": "2026-11-06",
       "tipo": "servidor",
