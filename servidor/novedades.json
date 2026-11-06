@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-06-servidor-Los-talentos-de-mineria-explican-su-XP",
+      "fecha": "2026-11-06",
+      "tipo": "servidor",
+      "clase": "retoque",
+      "titulo": "Los talentos de minería explican su XP",
+      "puntos": [
+        "Ritmo de Cantera y Carga de Trabajo ya dicen cuánta XP dan de media: por ejemplo, con Ritmo de Cantera la piedra da 3 XP en 3 de cada 20 bloques."
+      ]
+    },
+    {
       "id": "2026-11-06-servidor-enviar-Pokemon-y-objetos-solo-a-jugadores-conectados",
       "fecha": "2026-11-06",
       "tipo": "servidor",
