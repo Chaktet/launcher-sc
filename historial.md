@@ -1,10 +1,13 @@
 # SC Launcher · historial
 
 ## Estado actual
-- **1.17.21 SOLO en el repo (commit 289e4e6, 06-11 ~19:10 hora RD), sin publicar:** la puerta ya no se queda para siempre
-  en «Actualizando el launcher… / Casi listo» (jugador con PC lento). Falta: release firmada (SimplySign) y que Felix diga
-  «publícala». Hasta que el jugador tenga la 1.17.21, su salida es cerrar el launcher en el Administrador de tareas e
-  instalar encima `SC-Launcher-setup.exe` de la web.
+- **1.17.21 publicada para Windows, Mac y Linux (06-11 ~19:40 hora RD, Felix: «Sí, publícala»):** la puerta ya no se
+  queda para siempre en «Actualizando el launcher… / Casi listo» (jugador con PC lento; entrada de hoy). Firmada
+  (`comprueba-publisher` ok, asar con el arreglo), release v1.17.21 con 19 ficheros (CI run 42311080545 en verde), aviso
+  de launcher viejo puesto, las 4 fichas públicas = build, exe por GitHub y por Cloudflare con sha512 = build;
+  `SC-Launcher-setup-1.17.21.exe` en OVH-A. Estables siguen en la 1.17.15. **Novedad: sin decidir.** Pendiente: ver en
+  `launcher.log` de OVH-A que `launcher_auto.js` renovó los .dmg/.AppImage (minuto 7 de cada 10). El jugador atascado
+  sigue en la versión vieja: cerrar el launcher en el Administrador de tareas e instalar encima el de la web.
 - **1.17.20 publicada para Windows, Mac y Linux (06-11 ~12:20 hora RD):** la K de Iris enciende un shader aunque el jugador
   no haya elegido ninguno (entrada de hoy). Firmada (`comprueba-publisher` ok), release v1.17.20 con 19 ficheros (CI run
   42246443735 en verde), las 4 fichas públicas = build, exe por Cloudflare sha512 = build, versionado en OVH-A. Estables
