@@ -4,7 +4,7 @@
 - **1.17.20 publicada para Windows, Mac y Linux (06-11 ~12:20 hora RD):** la K de Iris enciende un shader aunque el jugador
   no haya elegido ninguno (entrada de hoy). Firmada (`comprueba-publisher` ok), release v1.17.20 con 19 ficheros (CI run
   42246443735 en verde), las 4 fichas públicas = build, exe por Cloudflare sha512 = build, versionado en OVH-A. Estables
-  siguen en la 1.17.15. **Sin probar en el juego** pulsando K.
+  siguen en la 1.17.15. **Sin novedad** (Felix 06-11). **Sin probar en el juego** pulsando K.
 - **1.17.19 publicada para Windows, Mac y Linux (06-11 ~09:05 hora RD, Felix: «Sí, publícala»):** el aviso «No se ha
   podido renovar tu sesión» trae el botón «Volver a iniciar sesión» y el motivo (paso · código). Primera de Windows desde
   la 1.17.16: lleva también `scRecorteInforme` (1.17.17). Firmada (`comprueba-publisher` ok; la primera vez falló con
