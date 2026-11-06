@@ -219,7 +219,9 @@ app SimplySign del móvil de Felix + PIN). Por eso la firma va en un config apar
 GitHub Actions siguen compilando sin firmar.
 
 1. Felix conecta SimplySign Desktop; `pwsh -File tools/comprueba-certificado.ps1` debe listar el certificado con
-   `ConClave: True`.
+   `ConClave: True`. **Ojo: eso NO prueba que la sesión esté abierta** (06-11): el certificado sigue en el almacén con
+   la sesión caducada y signtool falla igual con «No certificates were found… The following certificates were
+   considered: Certum Code Signing 2021 CA». Ese error = pedir a Felix que entre en SimplySign Desktop, no otra causa.
 2. `npm run dist:win:firmado` en lugar de `npm run dist:win`, **desde PowerShell** (desde Git Bash signtool no ve el
    certificado: «No certificates were found», 02-11) (firma solo SHA-256, sello de tiempo de Certum). Si
    SimplySign no está conectado falla con `Cannot find certificate BCC98A…`.

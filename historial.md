@@ -1,9 +1,14 @@
 # SC Launcher · historial
 
 ## Estado actual
-- **1.17.19 en el repo, SIN publicar (06-11):** el aviso «No se ha podido renovar tu sesión» trae el botón «Volver a
-  iniciar sesión» y el motivo (paso · código). Es la primera release de Windows desde la 1.17.16: llevará también los
-  cambios de Mac 1.17.17/18 (`scRecorteInforme` es el único que toca Windows). Pendiente: el OK de Felix para la release.
+- **1.17.19 publicada para Windows, Mac y Linux (06-11 ~09:05 hora RD, Felix: «Sí, publícala»):** el aviso «No se ha
+  podido renovar tu sesión» trae el botón «Volver a iniciar sesión» y el motivo (paso · código). Primera de Windows desde
+  la 1.17.16: lleva también `scRecorteInforme` (1.17.17). Firmada (`comprueba-publisher` ok; la primera vez falló con
+  «No certificates were found» porque SimplySign no tenía sesión: con el certificado en el almacén `comprueba-certificado`
+  dice `ConClave: True` igual, no prueba la sesión). Release v1.17.19 con 19 ficheros (CI run 42220442285, en verde),
+  aviso de launcher viejo puesto, las 4 fichas `latest*.yml`/`catalina-mac.yml` públicas = build, exe por GitHub y por
+  Cloudflare con sha512 = build; `SC-Launcher-setup-1.17.19.exe` en OVH-A. Estables siguen en la 1.17.15. Sin novedad
+  (pendiente de lo que diga Felix). **Sin probar:** que un launcher 1.17.16 real se actualice solo a esta.
 - **1.17.18 publicada SOLO para Mac y Linux (03-11 ~19:45 hora RD): CAUSA REAL del SC-12 del iMac con Catalina.**
   Los crash reports (Felix los pasó) dicen `UnsatisfiedLinkError` en `libawt.dylib` de Corretto 21.0.13: enlaza
   `/System/Library/Frameworks/JavaRuntimeSupport.framework`, que Catalina no tiene; FancyMenu carga AWT
