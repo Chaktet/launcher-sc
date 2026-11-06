@@ -5,8 +5,8 @@
   queda para siempre en «Actualizando el launcher… / Casi listo» (jugador con PC lento; entrada de hoy). Firmada
   (`comprueba-publisher` ok, asar con el arreglo), release v1.17.21 con 19 ficheros (CI run 42311080545 en verde), aviso
   de launcher viejo puesto, las 4 fichas públicas = build, exe por GitHub y por Cloudflare con sha512 = build;
-  `SC-Launcher-setup-1.17.21.exe` en OVH-A. Estables siguen en la 1.17.15. **Novedad: sin decidir.** Pendiente: ver en
-  `launcher.log` de OVH-A que `launcher_auto.js` renovó los .dmg/.AppImage (minuto 7 de cada 10). El jugador atascado
+  `SC-Launcher-setup-1.17.21.exe` en OVH-A. Estables siguen en la 1.17.15. **Sin novedad** (Felix 06-11). `launcher_auto.js` renovó los 3 .dmg y el
+  .AppImage a la 1.17.21 (23:37 UTC = 19:37 hora RD). El jugador atascado
   sigue en la versión vieja: cerrar el launcher en el Administrador de tareas e instalar encima el de la web.
 - **1.17.20 publicada para Windows, Mac y Linux (06-11 ~12:20 hora RD):** la K de Iris enciende un shader aunque el jugador
   no haya elegido ninguno (entrada de hoy). Firmada (`comprueba-publisher` ok), release v1.17.20 con 19 ficheros (CI run
