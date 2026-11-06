@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-06-servidor-Envia-desde-el-PokeNav-paso-a-paso",
+      "fecha": "2026-11-06",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Envía desde el PokéNav, paso a paso",
+      "puntos": [
+        "En el PokéNav, Comercio › Enviar: eliges qué mandas (Pokémon, objeto, SCC, tokens o Pokédólares), a quién y cuánto.",
+        "Antes de enviar ves una pantalla para confirmar o cancelar, también cuando usas /enviar en el chat.",
+        "Actualiza el launcher para verlo."
+      ]
+    },
+    {
       "id": "2026-11-06-servidor-Los-talentos-de-mineria-explican-su-XP",
       "fecha": "2026-11-06",
       "tipo": "servidor",
