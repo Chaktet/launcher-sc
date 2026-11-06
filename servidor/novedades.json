@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-06-servidor-enviar-Pokemon-y-objetos-solo-a-jugadores-conectados",
+      "fecha": "2026-11-06",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "/enviar Pokémon y objetos: solo a jugadores conectados",
+      "puntos": [
+        "Para evitar envíos a un nombre parecido por error, /enviar pokemon y /enviar objeto solo funcionan con alguien conectado ahora en Kanto o Kalos.",
+        "Lo que envías le llega a su Buzón, como siempre."
+      ]
+    },
+    {
       "id": "2026-11-06-servidor-enviar-dinero-ya-llega-a-la-otra-region",
       "fecha": "2026-11-06",
       "tipo": "servidor",
