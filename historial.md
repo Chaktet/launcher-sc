@@ -1,6 +1,10 @@
 # SC Launcher · historial
 
 ## Estado actual
+- **1.17.21 SOLO en el repo (commit 289e4e6, 06-11 ~19:10 hora RD), sin publicar:** la puerta ya no se queda para siempre
+  en «Actualizando el launcher… / Casi listo» (jugador con PC lento). Falta: release firmada (SimplySign) y que Felix diga
+  «publícala». Hasta que el jugador tenga la 1.17.21, su salida es cerrar el launcher en el Administrador de tareas e
+  instalar encima `SC-Launcher-setup.exe` de la web.
 - **1.17.20 publicada para Windows, Mac y Linux (06-11 ~12:20 hora RD):** la K de Iris enciende un shader aunque el jugador
   no haya elegido ninguno (entrada de hoy). Firmada (`comprueba-publisher` ok), release v1.17.20 con 19 ficheros (CI run
   42246443735 en verde), las 4 fichas públicas = build, exe por Cloudflare sha512 = build, versionado en OVH-A. Estables
@@ -134,6 +138,17 @@
   el launcher. Novedad `2026-10-28-modpack-Adios-al-aviso-de-chat-no-verificado` (arreglo) solo en vista previa en
   «diseño-pruebas» (mensaje 1564857375410757703). **Publicada en el launcher el 28-10 15:55 UTC** con la de las
   misiones de escanear (OK de Felix: launcher sí, Discord no). El modpack móvil SC-Movil no lo lleva.
+
+## 2026-11-06 19:10 (hora RD) · 1.17.21: «Actualizando el launcher…» ya no se cuelga para siempre
+- Felix: un jugador con un PC malo se queda en «Actualizando el launcher… · Casi listo, unos segundos más…» sin fin.
+- Causa: en el estado `instalando` la puerta no tenía tiempo límite ni botones, e ignoraba todos los avisos. Si
+  `installUpdateNow` no instalaba (vigilante visto vivo: `break` en silencio; o `quitAndInstall` sin cerrar el
+  launcher, p. ej. antivirus) nadie lo decía. Al reabrir: «Terminando…» 3 min y vuelta a empezar (bucle).
+- Arreglo: `index.js` manda `install-refused`/`install-failed`; la puerta pasa a `fallo` (Reintentar, web, Jugar sin
+  actualizar) por ese aviso o a los max(90 s, 3x última duración); en `fallo` la comprobación de 5 min no relanza nada.
+- Probado por CDP en un launcher de desarrollo (datos aparte, sin instalar nada): 8/8 (refused → fallo con nota de
+  Minecraft, failed → fallo, eventos periódicos no lo quitan, 85 s sigue, 93 s fallo, «Jugar sin actualizar» lo oculta).
+- Pendiente: publicar (firma). Sin probar con un instalador real bloqueado.
 
 ## 2026-11-06 (hora RD) · 1.17.20: la K de Iris por fin enciende shaders
 - Felix: al pulsar K dice «desactivados» y no alterna; arreglarlo a todos por defecto.
