@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-06-servidor-Mira-en-grande-cada-pieza-de-los-packs",
+      "fecha": "2026-11-06",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Mira en grande cada pieza de los packs",
+      "puntos": [
+        "En la tienda de cosméticos, abre un pack y pulsa la lupa de una pieza: la ves en grande, girando en 3D.",
+        "Con < y > pasas a las demás piezas del pack, y desde ahí mismo puedes comprarlo.",
+        "Actualiza el launcher para verlo."
+      ]
+    },
+    {
       "id": "2026-11-06-servidor-Apaga-el-chat-de-jugadores-cuando-quieras",
       "fecha": "2026-11-06",
       "tipo": "servidor",
