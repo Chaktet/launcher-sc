@@ -3529,18 +3529,34 @@ async function scRefrescarDistribucion(logger){
 // pudo renovar y ya está caducada, y entrar así solo daría el aviso SC-PREMIUM. La espera
 // máxima (20 s) la pone AuthManager.validateSelected (Codex, 25-10).
 async function scSesionLista() {
-    const val = await validateSelectedAccount(60 * 60 * 1000)
+    const salida = {}
+    const val = await validateSelectedAccount(60 * 60 * 1000, salida)
     if(val === false || val === undefined) {
         loggerLanding.warn('La sesión de Microsoft ya no vale: se pide volver a iniciar sesión.')
         return false
     }
     const acc = ConfigManager.getSelectedAccount()
     if(acc != null && acc.type === 'microsoft' && Date.now() >= acc.expiresAt) {
-        loggerLanding.warn('No se pudo renovar la sesión de Microsoft y ya está caducada: no se lanza.')
-        setOverlayContent(Lang.queryJS('landing.sesion.title'), Lang.queryJS('landing.sesion.desc'),
-            Lang.queryJS('landing.launch.okay'))
-        setOverlayHandler(null)
-        toggleOverlay(true)
+        const detalle = salida.fallo || 'sin datos'
+        loggerLanding.warn(`No se pudo renovar la sesión de Microsoft (${detalle}) y ya está caducada: no se lanza.`)
+        // Botón para entrar de nuevo con Microsoft sin pasar por Ajustes → Cuenta (06-11: el
+        // jugador solo tenía «Cerrar» y no sabía qué hacer). La cuenta NO se quita antes: el
+        // login nuevo la sobrescribe (mismo uuid) y si lo cancela sigue como estaba. El detalle
+        // (paso · código) sale en el aviso para que una captura de soporte ya diga qué falló.
+        setOverlayContent(Lang.queryJS('landing.sesion.title'),
+            Lang.queryJS('landing.sesion.desc', { detalle: sc$escapeHtml(detalle) }),
+            Lang.queryJS('landing.sesion.reentrar'), Lang.queryJS('landing.sesion.cerrar'))
+        setOverlayHandler(() => {
+            toggleOverlay(false)
+            loginOptionsViewOnLoginSuccess = VIEWS.landing
+            loginOptionsViewOnLoginCancel = VIEWS.landing
+            loginOptionsViewOnCancel = VIEWS.landing
+            loginOptionsViewCancelHandler = null
+            loginOptionsCancelEnabled(true)
+            loginOptionMicrosoft.click()
+        })
+        setDismissHandler(null)
+        toggleOverlay(true, true)
         return false
     }
     return true

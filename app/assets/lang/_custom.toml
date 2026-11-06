@@ -257,7 +257,9 @@ desc = "Ha ocurrido un error desconocido. Mira la consola para más detalles."
 
 [js.landing.sesion]
 title = "No se ha podido renovar tu sesión"
-desc = "Tu sesión de Microsoft ha caducado y no hemos podido renovarla. Comprueba tu conexión a internet y pulsa JUGAR otra vez."
+desc = "Tu sesión de Microsoft ha caducado y no hemos podido renovarla. Pulsa <strong>Volver a iniciar sesión</strong>. Si tampoco funciona, revisa tu conexión a internet, que la fecha y la hora del PC estén en automático y que el antivirus o una VPN no bloqueen el launcher.<br><br><span class=\"sc-cod-error\">{detalle}</span>"
+reentrar = "Volver a iniciar sesión"
+cerrar = "Cerrar"
 
 [js.landing.launch]
 pleaseWait = "Espera un momento.."

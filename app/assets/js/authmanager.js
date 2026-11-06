@@ -58,16 +58,22 @@ function microsoftErrorDisplayable(errorCode) {
  * acababan en UNKNOWN y al abrir el launcher sin conexión se BORRABA la cuenta
  * premium del jugador.
  */
-function scRechazoMicrosoft(response){
+// paso: qué petición de la cadena falló (Microsoft, Xbox, XSTS, Minecraft, Perfil). Va en
+// scDetalle con el código HTTP o de red, para que el aviso y el registro digan QUÉ falló
+// (06-11: un jugador con el aviso «No se ha podido renovar» y ninguna pista de por qué).
+function scRechazoMicrosoft(response, paso){
     const d = microsoftErrorDisplayable(response.microsoftErrorCode)
         || microsoftErrorDisplayable(MicrosoftErrorCode.UNKNOWN)
     const error = response.error
     const status = error != null && error.response != null ? error.response.statusCode : null
     const body = error != null && error.response != null ? error.response.body : null
     const cuerpo = typeof body === 'string' ? body : JSON.stringify(body || '')
+    const motivo = status != null ? 'HTTP ' + status
+        : (error != null && (error.code || error.name)) || 'sin datos'
     return {
         ...d,
-        scErrorDeSesion: status === 400 || status === 401 || /invalid_grant/i.test(cuerpo)
+        scErrorDeSesion: status === 400 || status === 401 || /invalid_grant/i.test(cuerpo),
+        scDetalle: `${paso} · ${motivo}`
     }
 }
 
@@ -245,7 +251,7 @@ async function fullMicrosoftAuthFlow(entryCode, authMode) {
         if(authMode !== AUTH_MODE.MC_REFRESH) {
             const accessTokenResponse = await MicrosoftAuth.getAccessToken(entryCode, authMode === AUTH_MODE.MS_REFRESH, AZURE_CLIENT_ID)
             if(accessTokenResponse.responseStatus === RestResponseStatus.ERROR) {
-                return Promise.reject(scRechazoMicrosoft(accessTokenResponse))
+                return Promise.reject(scRechazoMicrosoft(accessTokenResponse, 'Microsoft'))
             }
             accessToken = accessTokenResponse.data
             accessTokenRaw = accessToken.access_token
@@ -255,19 +261,19 @@ async function fullMicrosoftAuthFlow(entryCode, authMode) {
         
         const xblResponse = await MicrosoftAuth.getXBLToken(accessTokenRaw)
         if(xblResponse.responseStatus === RestResponseStatus.ERROR) {
-            return Promise.reject(scRechazoMicrosoft(xblResponse))
+            return Promise.reject(scRechazoMicrosoft(xblResponse, 'Xbox'))
         }
         const xstsResonse = await MicrosoftAuth.getXSTSToken(xblResponse.data)
         if(xstsResonse.responseStatus === RestResponseStatus.ERROR) {
-            return Promise.reject(scRechazoMicrosoft(xstsResonse))
+            return Promise.reject(scRechazoMicrosoft(xstsResonse, 'XSTS'))
         }
         const mcTokenResponse = await MicrosoftAuth.getMCAccessToken(xstsResonse.data)
         if(mcTokenResponse.responseStatus === RestResponseStatus.ERROR) {
-            return Promise.reject(scRechazoMicrosoft(mcTokenResponse))
+            return Promise.reject(scRechazoMicrosoft(mcTokenResponse, 'Minecraft'))
         }
         const mcProfileResponse = await MicrosoftAuth.getMCProfile(mcTokenResponse.data.access_token)
         if(mcProfileResponse.responseStatus === RestResponseStatus.ERROR) {
-            return Promise.reject(scRechazoMicrosoft(mcProfileResponse))
+            return Promise.reject(scRechazoMicrosoft(mcProfileResponse, 'Perfil'))
         }
         return {
             accessToken,
@@ -281,7 +287,8 @@ async function fullMicrosoftAuthFlow(entryCode, authMode) {
         log.error(err)
         // Fallo inesperado del propio código, no una respuesta de Microsoft: no es
         // motivo para borrar la cuenta.
-        return Promise.reject({ ...microsoftErrorDisplayable(MicrosoftErrorCode.UNKNOWN), scErrorDeSesion: false })
+        return Promise.reject({ ...microsoftErrorDisplayable(MicrosoftErrorCode.UNKNOWN), scErrorDeSesion: false,
+            scDetalle: 'interno · ' + ((err != null && (err.code || err.name)) || 'sin datos') })
     }
 }
 
@@ -396,19 +403,67 @@ async function validateSelectedMojangAccount(){
  * red se renueva sola). Ojo: desde SCLogin (23-10) una cuenta premium SÍ necesita la
  * sesión viva para entrar; con una caducada el juego da el aviso SC-PREMIUM.
  */
-function scMantenerCuentaTrasFallo(err){
+// intento: el de validateSelected; guarda en intento.fallo por qué no se pudo renovar, para
+// que el aviso de landing.js enseñe el motivo de SU intento y no el de otro (Codex, 06-11).
+function scMantenerCuentaTrasFallo(err, intento){
+    const detalle = (err != null && err.scDetalle) || 'sin datos'
+    if(intento != null && intento.vencido){
+        log.warn(`Llegó tarde el fallo de una renovación ya dada por perdida (${detalle}); se ignora.`)
+        return true
+    }
     if(err != null && err.scErrorDeSesion === true){
-        log.warn('Microsoft rechaza la sesión guardada: hay que volver a iniciar sesión.')
+        log.warn(`Microsoft rechaza la sesión guardada (${detalle}): hay que volver a iniciar sesión.`)
         return false
     }
-    log.warn('No se pudo renovar la sesión de Microsoft (sin conexión o servicio caído); se mantiene la cuenta.')
+    if(intento != null){
+        intento.fallo = detalle
+    }
+    log.warn(`No se pudo renovar la sesión de Microsoft (${detalle}); se mantiene la cuenta.`)
+    return true
+}
+
+// Solo se guarda una renovación si la cuenta sigue con los tokens con los que empezó: una
+// renovación colgada que responde pasado el límite de 20 s pisaba el login nuevo que el
+// jugador acababa de hacer con el mismo uuid (Codex, 06-11). Si nadie la tocó, sí se guarda
+// aunque llegue tarde: Microsoft rota el refresh_token y tirar el nuevo dejaría la cuenta
+// con uno ya gastado.
+// antes es una COPIA de los tokens al empezar: getSelectedAccount devuelve el objeto vivo de
+// la config, que updateMicrosoftAuthAccount cambia en el sitio, y compararlo consigo mismo
+// daría siempre «sin cambios».
+function scFotoTokens(cuenta){
+    return {
+        uuid: cuenta.uuid,
+        accessToken: cuenta.accessToken,
+        msAccess: cuenta.microsoft.access_token,
+        msRefresh: cuenta.microsoft.refresh_token
+    }
+}
+
+function scCuentaSinCambios(antes){
+    const ahora = ConfigManager.getAuthAccount(antes.uuid)
+    return ahora != null && ahora.type === 'microsoft' && ahora.microsoft != null
+        && ahora.accessToken === antes.accessToken
+        && ahora.microsoft.access_token === antes.msAccess
+        && ahora.microsoft.refresh_token === antes.msRefresh
+}
+
+function scGuardarRenovacion(antes, intento, ...datos){
+    if(!scCuentaSinCambios(antes)){
+        log.warn('La cuenta cambió mientras se renovaba la sesión (nuevo login): se descarta la renovación vieja.')
+        return true
+    }
+    ConfigManager.updateMicrosoftAuthAccount(antes.uuid, ...datos)
+    ConfigManager.save()
+    if(intento != null && intento.vencido){
+        log.info('La renovación que había pasado del límite de 20 s terminó bien y se ha guardado.')
+    }
     return true
 }
 
 // margenMs: renueva también si la sesión caduca dentro de ese margen. Al pulsar JUGAR se
 // pide 1 h: la sesión de Minecraft dura 24 h y antes solo se renovaba al abrir el
 // launcher, así que quien lo dejaba abierto un día entraba con ella muerta (SC-PREMIUM).
-async function validateSelectedMicrosoftAccount(margenMs = 0){
+async function validateSelectedMicrosoftAccount(margenMs = 0, intento = null){
     const current = ConfigManager.getSelectedAccount()
     const now = new Date().getTime()
     const mcExpiresAt = current.expiresAt
@@ -422,43 +477,38 @@ async function validateSelectedMicrosoftAccount(margenMs = 0){
 
     const msExpiresAt = current.microsoft.expires_at
     const msExpired = now + margenMs >= msExpiresAt
+    const antes = scFotoTokens(current)
 
     if(msExpired) {
         // MS expired, do full refresh.
         try {
-            const res = await fullMicrosoftAuthFlow(current.microsoft.refresh_token, AUTH_MODE.MS_REFRESH)
+            const res = await fullMicrosoftAuthFlow(antes.msRefresh, AUTH_MODE.MS_REFRESH)
 
-            ConfigManager.updateMicrosoftAuthAccount(
-                current.uuid,
+            return scGuardarRenovacion(antes, intento,
                 res.mcToken.access_token,
                 res.accessToken.access_token,
                 res.accessToken.refresh_token,
                 calculateExpiryDate(now, res.accessToken.expires_in),
                 calculateExpiryDate(now, res.mcToken.expires_in)
             )
-            ConfigManager.save()
-            return true
         } catch(err) {
-            return scMantenerCuentaTrasFallo(err)
+            return scMantenerCuentaTrasFallo(err, intento)
         }
     } else {
         // Only MC expired, use existing MS token.
         try {
-            const res = await fullMicrosoftAuthFlow(current.microsoft.access_token, AUTH_MODE.MC_REFRESH)
+            const res = await fullMicrosoftAuthFlow(antes.msAccess, AUTH_MODE.MC_REFRESH)
 
-            ConfigManager.updateMicrosoftAuthAccount(
-                current.uuid,
+            return scGuardarRenovacion(antes, intento,
                 res.mcToken.access_token,
-                current.microsoft.access_token,
-                current.microsoft.refresh_token,
-                current.microsoft.expires_at,
+                antes.msAccess,
+                antes.msRefresh,
+                msExpiresAt,
                 calculateExpiryDate(now, res.mcToken.expires_in)
             )
-            ConfigManager.save()
-            return true
         }
         catch(err) {
-            return scMantenerCuentaTrasFallo(err)
+            return scMantenerCuentaTrasFallo(err, intento)
         }
     }
 }
@@ -472,7 +522,9 @@ async function validateSelectedMicrosoftAccount(margenMs = 0){
 // Una sola renovación a la vez: pulsar JUGAR nada más abrir el launcher lanzaba la del
 // arranque y la de JUGAR a la vez con el mismo refresh_token (Codex, 25-10).
 let scValidacionEnCurso = null
-exports.validateSelected = async function(margenMs = 0){
+// salida (opcional): objeto en el que se deja salida.fallo = por qué no se pudo renovar
+// (paso · código, o «sin respuesta en 20 s»); landing.js lo enseña en el aviso.
+exports.validateSelected = async function(margenMs = 0, salida = null){
     while(scValidacionEnCurso != null) {
         try {
             await scValidacionEnCurso
@@ -483,22 +535,36 @@ exports.validateSelected = async function(margenMs = 0){
     // 20 s como mucho: las peticiones de helios no tienen tiempo límite y una colgada
     // dejaría esperando para siempre a todas las siguientes. Pasado ese tiempo se trata como
     // «sin conexión» (se mantiene la cuenta; landing.js no lanza si ya está caducada).
+    // El intento vencido ya no cambia el motivo (scMantenerCuentaTrasFallo) y solo guarda
+    // si nadie tocó la cuenta mientras tanto (scGuardarRenovacion).
+    const intento = salida != null ? salida : {}
+    intento.fallo = null
+    intento.vencido = false
+    let reloj = null
     scValidacionEnCurso = Promise.race([
-        scValidarSeleccionada(margenMs),
-        new Promise(resolve => setTimeout(() => resolve(true), 20000))
+        scValidarSeleccionada(margenMs, intento),
+        new Promise(resolve => {
+            reloj = setTimeout(() => {
+                intento.vencido = true
+                intento.fallo = 'sin respuesta en 20 s'
+                log.warn('La renovación de la sesión de Microsoft no respondió en 20 s; se trata como sin conexión.')
+                resolve(true)
+            }, 20000)
+        })
     ])
     try {
         return await scValidacionEnCurso
     } finally {
+        clearTimeout(reloj)
         scValidacionEnCurso = null
     }
 }
 
-async function scValidarSeleccionada(margenMs){
+async function scValidarSeleccionada(margenMs, intento){
     const current = ConfigManager.getSelectedAccount()
 
     if(current.type === 'microsoft') {
-        return await validateSelectedMicrosoftAccount(margenMs)
+        return await validateSelectedMicrosoftAccount(margenMs, intento)
     } else {
         return await validateSelectedMojangAccount()
     }

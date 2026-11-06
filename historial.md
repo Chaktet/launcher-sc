@@ -1,6 +1,9 @@
 # SC Launcher · historial
 
 ## Estado actual
+- **1.17.19 en el repo, SIN publicar (06-11):** el aviso «No se ha podido renovar tu sesión» trae el botón «Volver a
+  iniciar sesión» y el motivo (paso · código). Es la primera release de Windows desde la 1.17.16: llevará también los
+  cambios de Mac 1.17.17/18 (`scRecorteInforme` es el único que toca Windows). Pendiente: el OK de Felix para la release.
 - **1.17.18 publicada SOLO para Mac y Linux (03-11 ~19:45 hora RD): CAUSA REAL del SC-12 del iMac con Catalina.**
   Los crash reports (Felix los pasó) dicen `UnsatisfiedLinkError` en `libawt.dylib` de Corretto 21.0.13: enlaza
   `/System/Library/Frameworks/JavaRuntimeSupport.framework`, que Catalina no tiene; FancyMenu carga AWT
@@ -122,6 +125,21 @@
   el launcher. Novedad `2026-10-28-modpack-Adios-al-aviso-de-chat-no-verificado` (arreglo) solo en vista previa en
   «diseño-pruebas» (mensaje 1564857375410757703). **Publicada en el launcher el 28-10 15:55 UTC** con la de las
   misiones de escanear (OK de Felix: launcher sí, Discord no). El modpack móvil SC-Movil no lo lleva.
+
+## 2026-11-06 08:50 (hora RD) · 1.17.19: «No se ha podido renovar tu sesión» con botón y motivo
+
+- Felix: Nox_AZN (Kalos, launcher 1.17.16 de Windows) ve al pulsar JUGAR el aviso «No se ha podido renovar tu sesión».
+  Ese aviso sale solo si la sesión ya caducó y la renovación falló SIN rechazo de Microsoft (red, 20 s sin respuesta,
+  403/429/5xx). Los 5 servicios del login respondían bien desde aquí: el fallo está en su PC o su red. El aviso no decía
+  por qué ni qué hacer (solo «Cerrar»).
+- Cambios: botón «Volver a iniciar sesión» (abre el login de Microsoft directo; la cuenta no se quita antes, el login
+  la sobrescribe por uuid) y «Cerrar»; el texto pide revisar conexión, hora del PC y antivirus/VPN; el motivo sale en
+  el aviso y en launcher.log (`Xbox · ENOTFOUND`, `Minecraft · HTTP 429`, `sin respuesta en 20 s`) por intento
+  (`validateSelected(margen, salida)`). Codex r1: una renovación colgada que respondía pasados los 20 s pisaba el login
+  nuevo → ahora solo guarda si la cuenta sigue con los tokens del principio (`scFotoTokens`). r2 «Sin hallazgos».
+- Comprobado con `electron .` + CDP, carpeta de datos aparte y helios simulado: ENOTFOUND, colgada (21 s), carrera con
+  login nuevo (se queda el nuevo), tardía sin cambios (se guarda), normal (lanza), botón abre login.live.com, cerrar
+  login vuelve con la cuenta, 401 igual que antes. **Sin probar con una sesión real caducada.**
 
 ## 2026-11-04 22:40 (hora RD) · Too Many Players también respeta al jugador
 - Felix: «sí, respétalo». `config/toomanyplayers.json` sin hash en los 3 perfiles y en `untrackedFiles`.
