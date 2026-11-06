@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-06-servidor-Apaga-el-chat-de-jugadores-cuando-quieras",
+      "fecha": "2026-11-06",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Apaga el chat de jugadores cuando quieras",
+      "puntos": [
+        "Escribe /chat o, en el PokéNav, Ajustes › Chat de jugadores: dejas de ver lo que escriben los demás en Kanto y Kalos.",
+        "Los mensajes privados y los avisos del servidor te siguen llegando, y tú puedes seguir escribiendo.",
+        "Se guarda para toda la red. Para volver a verlo, escribe /chat otra vez."
+      ]
+    },
+    {
       "id": "2026-11-05-servidor-El-intercambio-de-Pokemon-ya-tiene-su-pantalla",
       "fecha": "2026-11-05",
       "tipo": "servidor",
