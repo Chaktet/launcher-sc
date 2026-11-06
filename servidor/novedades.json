@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-06-servidor-enviar-dinero-ya-llega-a-la-otra-region",
+      "fecha": "2026-11-06",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "/enviar dinero ya llega a la otra región",
+      "puntos": [
+        "Enviar Pokédólares a alguien de la otra región no movía nada. Ya le llegan al momento, aunque no esté conectado.",
+        "/pay sigue funcionando, y te recuerda que puedes usar /enviar dinero."
+      ]
+    },
+    {
       "id": "2026-11-06-servidor-Expediciones-Torre-y-Arceus-ya-ven-tus-Pokedolares",
       "fecha": "2026-11-06",
       "tipo": "servidor",
