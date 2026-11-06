@@ -46,7 +46,7 @@
     background: var(--sc-accent, #4fa9de);
     box-shadow: 0 0 24px var(--sc-accent-soft, rgba(79, 169, 222, 0.35));
 }
-#scPuerta[estado="error"] #scPuertaIcono { background: #d9534f; box-shadow: 0 0 24px rgba(217, 83, 79, 0.35); }
+#scPuerta[estado="error"] #scPuertaIcono, #scPuerta[estado="fallo"] #scPuertaIcono { background: #d9534f; box-shadow: 0 0 24px rgba(217, 83, 79, 0.35); }
 #scPuerta[estado="lista"] #scPuertaIcono { background: #3fb36b; box-shadow: 0 0 24px rgba(63, 179, 107, 0.35); }
 #scPuertaTitulo {
     font-family: 'Avenir Medium';

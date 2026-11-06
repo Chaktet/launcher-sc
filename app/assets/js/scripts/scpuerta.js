@@ -40,6 +40,12 @@ let scPuertaSinActualizar = false // el jugador eligió "Jugar sin actualizar" t
 let scPuertaReloj = null          // intervalo de la cuenta atrás en 'lista'
 let scPuertaToastHecho = ''       // versión ya avisada por notificación de Windows
 let scPuertaRelojBarra = null     // intervalo de la barra estimada al instalar
+let scPuertaVigiaInstalar = null  // tiempo límite de "Actualizando el launcher…"
+
+// 1.17.21: si pasado este tiempo esta ventana sigue viva, el instalador no arrancó (quitAndInstall
+// cierra el launcher antes de instalar). Un jugador con un PC lento se quedó con la barra en
+// "Casi listo…" para siempre, sin ningún botón (06-11-2026). Mínimo 90 s o 3 veces lo que tardó la última.
+const SC_PUERTA_LIMITE_INSTALAR_MIN = 90000
 
 // El instalador de Windows no dice por dónde va: la barra de "Actualizando" y
 // "Terminando" se estima con lo que tardó la última actualización en este PC
@@ -177,8 +183,35 @@ function scPuertaInstalar(){
         })
 }
 
+/** El instalador no llegó a cerrar este launcher: botones para reintentar, bajarlo de la web o jugar. */
+function scPuertaFalloInstalar(nota){
+    clearTimeout(scPuertaVigiaInstalar)
+    scPuertaVigiaInstalar = null
+    // Sin la marca, al reabrir no sale "Terminando de actualizar…" otros 3 minutos.
+    try {
+        require('fs').unlinkSync(require('path').join(require('@electron/remote').app.getPath('userData'), 'sc-actualizando.json'))
+    } catch(e) { /* no había marca */ }
+    console.warn('[SC Puerta] La actualización ' + scPuertaVersion + ' no se instaló' + (nota ? ' (' + nota + ')' : ''))
+    scPuertaPinta('fallo')
+    if(nota === 'vigilante'){
+        scPuertaNota(scPuertaTxt('notaVigilante', 'Parece que Minecraft sigue abierto. Ciérralo y pulsa «Reintentar».'))
+    }
+}
+
+function scPuertaVigilaInstalar(){
+    clearTimeout(scPuertaVigiaInstalar)
+    scPuertaVigiaInstalar = setTimeout(() => {
+        scPuertaVigiaInstalar = null
+        if(scPuertaEstado === 'instalando'){
+            scPuertaFalloInstalar('tiempo')
+        }
+    }, Math.max(SC_PUERTA_LIMITE_INSTALAR_MIN, scPuertaDuracion() * 3))
+}
+
 function scPuertaPulsaBoton(){
-    if(scPuertaEstado === 'manual'){
+    if(scPuertaEstado === 'fallo'){
+        scPuertaInstalar()
+    } else if(scPuertaEstado === 'manual'){
         shell.openExternal(SC_PUERTA_DESCARGA_MAC)
         scPuertaNota(scPuertaTxt('notaMac', 'Abre el archivo descargado, arrastra SC Launcher a Aplicaciones y elige «Reemplazar». Luego cierra este launcher y abre el nuevo.'))
     } else if(scPuertaEstado === 'lista'){
@@ -292,6 +325,10 @@ function scPuertaPinta(estado, extra = {}){
     if(estado !== 'lista'){
         scPuertaParaCuenta()
     }
+    if(estado !== 'instalando'){
+        clearTimeout(scPuertaVigiaInstalar)
+        scPuertaVigiaInstalar = null
+    }
     if(estado === 'oculta'){
         n.removeAttribute('visible')
         scPuertaJugar(false)
@@ -335,6 +372,14 @@ function scPuertaPinta(estado, extra = {}){
         desc = estado === 'instalando'
             ? scPuertaTxt('descInstalando', 'Se cierra y <b>vuelve a abrirse solo</b> en unos segundos. No hace falta que hagas nada.')
             : scPuertaTxt('descTerminando', 'Se está instalando la versión{v}. Este launcher se cerrará y se abrirá el nuevo en unos segundos.').replace('{v}', v)
+    } else if(estado === 'fallo'){
+        titulo = scPuertaTxt('tituloFallo', 'No se pudo instalar la actualización')
+        desc = scPuertaTxt('descFallo', 'El launcher no llegó a cerrarse para actualizarse. Suele ser el antivirus o Windows bloqueando el instalador. Vuelve a intentarlo o descarga el launcher nuevo desde la web.')
+        boton = scPuertaTxt('botonError', 'Reintentar')
+        web = scPuertaTxt('enlaceWeb', 'Descargar el launcher desde la web')
+        saltar = scPuertaTxt('saltar', 'Jugar sin actualizar')
+        q('#scPuertaPct').textContent = ''
+        barra = false
     } else if(estado === 'error'){
         titulo = scPuertaTxt('tituloError', 'No se pudo descargar la actualización')
         desc = scPuertaTxt('descError', 'Puede ser la conexión o el antivirus. Vuelve a intentarlo o descarga el launcher nuevo desde la web.')
@@ -349,7 +394,7 @@ function scPuertaPinta(estado, extra = {}){
     q('#scPuertaSub').textContent = scPuertaVersion
         ? scPuertaTxt('subtituloVersion', 'Versión {v}').replace('{v}', scPuertaVersion)
         : scPuertaTxt('subtitulo', 'Actualización del launcher')
-    q('#scPuertaIcono').textContent = estado === 'error' ? '!' : (estado === 'lista' ? '✓' : (estado === 'disponible' || estado === 'descargando' || estado === 'manual' ? '⬇' : '↻'))
+    q('#scPuertaIcono').textContent = estado === 'error' || estado === 'fallo' ? '!' : (estado === 'lista' ? '✓' : (estado === 'disponible' || estado === 'descargando' || estado === 'manual' ? '⬇' : '↻'))
     q('#scPuertaTitulo').textContent = titulo
     q('#scPuertaDesc').innerHTML = desc
     q('#scPuertaBoton').textContent = boton
@@ -367,6 +412,9 @@ function scPuertaPinta(estado, extra = {}){
         scPuertaCuenta()
     } else if(estado === 'instalando' || estado === 'terminando'){
         scPuertaBarraEstimada(extra.desde || Date.now())
+        if(estado === 'instalando'){
+            scPuertaVigilaInstalar()
+        }
     }
 }
 
@@ -379,7 +427,17 @@ function scPuerta(evento, info){
     try {
         // Instalando o terminando, el launcher está a punto de cerrarse: una
         // comprobación periódica que llegue entretanto no debe cambiar la pantalla.
+        // Salvo el aviso del proceso principal de que no instaló (1.17.21).
+        if(scPuertaEstado === 'instalando' && (evento === 'install-refused' || evento === 'install-failed')){
+            scPuertaFalloInstalar(evento === 'install-refused' && info != null ? info.motivo : 'error')
+            return
+        }
         if(scPuertaEstado === 'instalando' || scPuertaEstado === 'terminando'){
+            return
+        }
+        // Con el fallo a la vista mandan sus botones: la comprobación de cada 5 minutos no debe volver
+        // a "lista" y relanzar la cuenta atrás, o el jugador entraría en un bucle instalar → fallo.
+        if(scPuertaEstado === 'fallo'){
             return
         }
         switch(evento){

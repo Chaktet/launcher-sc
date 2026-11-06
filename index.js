@@ -162,16 +162,24 @@ ipcMain.on('autoUpdateAction', (event, arg, data) => {
             // El instalador NSIS mata todos los «SC Launcher.exe», también el vigilante de una
             // partida en curso, y el juego perdería a quien lo vigila. La interfaz ya lo impide
             // (scJuegoEnMarcha); esto es la red por si algo se le escapa.
+            // 1.17.21: cada negativa o fallo se le dice a la interfaz. Antes se salía en silencio y la puerta se
+            // quedaba en "Actualizando el launcher…" para siempre, sin botones (jugador con PC lento, 06-11-2026).
             if(process.platform === 'win32' && scHayVigilanteVivo()){
                 console.warn('[SC] Actualización no instalada: hay una partida con vigilante en curso.')
+                event.sender.send('autoUpdateNotification', 'install-refused', { motivo: 'vigilante' })
                 break
             }
             // (isSilent, isForceRunAfter): instala sin asistente y vuelve a abrir
             // el launcher automáticamente.
-            if(process.platform === 'darwin'){
-                scActualizaMac.instalar()
-            } else {
-                autoUpdater.quitAndInstall(true, true)
+            try {
+                if(process.platform === 'darwin'){
+                    scActualizaMac.instalar()
+                } else {
+                    autoUpdater.quitAndInstall(true, true)
+                }
+            } catch(err){
+                console.error('[SC] Fallo al lanzar el instalador: ' + String(err && err.message || err))
+                event.sender.send('autoUpdateNotification', 'install-failed', { message: String(err && err.message || err) })
             }
             break
         default:

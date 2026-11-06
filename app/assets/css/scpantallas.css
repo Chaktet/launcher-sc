@@ -1514,7 +1514,7 @@
     text-align: left !important;
     animation: none !important;
 }
-#scPuerta[estado="error"] #scPuertaCaja { border-image-source: url('../images/ui/frame-error@2x.png') !important; }
+#scPuerta[estado="error"] #scPuertaCaja, #scPuerta[estado="fallo"] #scPuertaCaja { border-image-source: url('../images/ui/frame-error@2x.png') !important; }
 #scPuertaCabecera { display: flex; align-items: flex-start; gap: calc(14 * var(--u)); padding-bottom: calc(21 * var(--u)); }
 #scPuertaIcono {
     width: calc(46 * var(--u)) !important;
@@ -1531,7 +1531,7 @@
     font-size: calc(21 * var(--u)) !important;
 }
 #scPuerta[estado="lista"] #scPuertaIcono { border-color: var(--v5-azul); }
-#scPuerta[estado="error"] #scPuertaIcono { border-color: #ac625d; background: #302025 !important; color: var(--v5-error) !important; }
+#scPuerta[estado="error"] #scPuertaIcono, #scPuerta[estado="fallo"] #scPuertaIcono { border-color: #ac625d; background: #302025 !important; color: var(--v5-error) !important; }
 #scPuertaTitulos { display: grid; gap: calc(5 * var(--u)); min-width: 0; }
 #scPuertaTitulo {
     font-size: calc(25 * var(--u)) !important;

@@ -1884,7 +1884,7 @@ body::before {
     filter: drop-shadow(6px 6px 0 var(--pk-night));
     color: var(--pk-ink);
 }
-#scPuerta[estado="error"] #scPuertaCaja {
+#scPuerta[estado="error"] #scPuertaCaja, #scPuerta[estado="fallo"] #scPuertaCaja {
     border-image: none !important;
     box-shadow: inset 0 0 0 3px var(--pk-ink), inset 0 0 0 7px var(--pk-red), inset 0 0 0 9px var(--pk-line) !important;
 }
@@ -1900,7 +1900,7 @@ body::before {
     font-size: 26px !important;
     font-weight: 700;
 }
-#scPuerta[estado="error"] #scPuertaIcono { background: var(--pk-red) !important; color: var(--pk-cream) !important; }
+#scPuerta[estado="error"] #scPuertaIcono, #scPuerta[estado="fallo"] #scPuertaIcono { background: var(--pk-red) !important; color: var(--pk-cream) !important; }
 #scPuerta[estado="lista"] #scPuertaIcono { background: var(--pk-offer-bg) !important; color: var(--pk-offer) !important; }
 #scPuertaTitulo { font-size: 26px !important; font-weight: 700 !important; line-height: 33px; letter-spacing: 0 !important; color: var(--pk-ink) !important; }
 #scPuertaSub { font-size: 14px !important; color: var(--pk-muted) !important; }
