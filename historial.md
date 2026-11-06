@@ -1,6 +1,10 @@
 # SC Launcher · historial
 
 ## Estado actual
+- **1.17.20 publicada para Windows, Mac y Linux (06-11 ~12:20 hora RD):** la K de Iris enciende un shader aunque el jugador
+  no haya elegido ninguno (entrada de hoy). Firmada (`comprueba-publisher` ok), release v1.17.20 con 19 ficheros (CI run
+  42246443735 en verde), las 4 fichas públicas = build, exe por Cloudflare sha512 = build, versionado en OVH-A. Estables
+  siguen en la 1.17.15. **Sin probar en el juego** pulsando K.
 - **1.17.19 publicada para Windows, Mac y Linux (06-11 ~09:05 hora RD, Felix: «Sí, publícala»):** el aviso «No se ha
   podido renovar tu sesión» trae el botón «Volver a iniciar sesión» y el motivo (paso · código). Primera de Windows desde
   la 1.17.16: lleva también `scRecorteInforme` (1.17.17). Firmada (`comprueba-publisher` ok; la primera vez falló con
@@ -130,6 +134,22 @@
   el launcher. Novedad `2026-10-28-modpack-Adios-al-aviso-de-chat-no-verificado` (arreglo) solo en vista previa en
   «diseño-pruebas» (mensaje 1564857375410757703). **Publicada en el launcher el 28-10 15:55 UTC** con la de las
   misiones de escanear (OK de Felix: launcher sí, Discord no). El modpack móvil SC-Movil no lo lleva.
+
+## 2026-11-06 (hora RD) · 1.17.20: la K de Iris por fin enciende shaders
+- Felix: al pulsar K dice «desactivados» y no alterna; arreglarlo a todos por defecto.
+- Causa (Iris 1.8.8 descompilado): la K solo cambia `enableShaders`; con `shaderPack=` vacío alterna «Cambiados los
+  shaders a (off)» y «¡Shaders desactivados!». Casi nadie elige shader en Ajustes, y LITE/SUPER LITE no traían ninguno.
+- Cambios: `ScRendimiento.shaderPorDefecto()` al pulsar JUGAR pone Complementary Reimagined (PRO) o superDuperVanilla
+  APAGADO si no hay ninguno elegido; el elegido por el jugador no se toca (commit 78e7b98). Distribución en vivo:
+  superDuperVanilla en LITE y SUPER LITE (`RESOURCE-MC/herramientas/shader-lite.js`, misma URL/MD5 que PRO; copia del
+  zip también en las carpetas LITE/SL del servidor y de `sc-distribution`; backup
+  `/home/ubuntu/_backups/distribution.json.bak-shader-lite-20261106`). Decisiones de Felix: Complementary Reimagined,
+  superDuperVanilla en LITE, sacar release.
+- Verificado: 9/9 casos de la función (vacío, sin fichero, `(internal)`, elegido, CRLF, sin shaders, re-ejecutar);
+  manifiesto en vivo por Cloudflare (md5 aaaacbba…, los 3 perfiles con el zip, Content-Length y MD5 = manifiesto).
+  **Sin probar en el juego** pulsando K tras el cambio (el código de Iris carga el pack elegido al encender).
+- Release: firma falló una vez (SimplySign sin sesión), tras conectar Felix OK. `.mrpack` regenerados (1.1.109); el
+  Móvil PRO deja fuera Iris y sus shaders como antes.
 
 ## 2026-11-06 08:50 (hora RD) · 1.17.19: «No se ha podido renovar tu sesión» con botón y motivo
 
