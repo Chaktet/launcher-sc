@@ -34,6 +34,44 @@ function vive(pid){
     }
 }
 
+// Si Windows no contesta quién es el proceso, solo se cree a una marca reciente.
+const MAX_SIN_VERIFICAR_MS = 12 * 3600 * 1000
+const NOMBRE_EXE = path.basename(process.execPath).toLowerCase()
+
+/**
+ * ¿Es `pid` de verdad un «SC Launcher.exe» nuestro (un vigilante, o el launcher)?
+ *
+ * 1.17.22: antes bastaba con vive(pid), y EPERM contaba como vivo. Si el PC se apagaba o el
+ * juego moría de golpe, la marca vivo-*.json se quedaba; tras reiniciar, Windows daba ese PID a
+ * un servicio del sistema (EPERM) o a otro programa, y el launcher creía para siempre que había
+ * una partida en curso: se negaba a instalar la actualización y muchos jugadores se quedaron en
+ * «Actualizando el launcher… Casi listo» sin poder ni actualizar ni jugar (07-11-2026).
+ * El vigilante corre con el mismo usuario que el launcher: EPERM nunca es nuestro.
+ */
+function esNuestro(pid, desde){
+    if(!Number.isInteger(pid) || pid <= 0){
+        return false
+    }
+    try {
+        process.kill(pid, 0)
+    } catch(_e){
+        return false
+    }
+    if(process.platform !== 'win32'){
+        return true
+    }
+    try {
+        // CSV sin cabecera: «"SC Launcher.exe","1234",…». El nombre y el PID no dependen del idioma.
+        const out = child_process.execFileSync('tasklist', ['/FI', 'PID eq ' + pid, '/FO', 'CSV', '/NH'],
+            { windowsHide: true, timeout: 5000, encoding: 'utf8' })
+        const m = /^"([^"]+)","(\d+)"/m.exec(out)
+        return m != null && Number(m[2]) === pid && m[1].toLowerCase() === NOMBRE_EXE
+    } catch(_e){
+        return Number.isFinite(desde) && Date.now() - desde < MAX_SIN_VERIFICAR_MS
+    }
+}
+exports.esNuestro = esNuestro
+
 /**
  * ¿Hay un vigilante vivo con su juego? Lo pregunta index.js antes de instalar una
  * actualización: el instalador NSIS mata todos los «SC Launcher.exe», vigilante incluido.
@@ -49,7 +87,7 @@ exports.hayVigilanteVivo = function(instancias){
             }
             try {
                 const d = JSON.parse(fs.readFileSync(path.join(carpetaDe(instancias), f), 'utf8'))
-                if(Number.isInteger(d.pid) && vive(d.pid)){
+                if(esNuestro(d.pid, d.desde)){
                     return true
                 }
             } catch(_e){
@@ -372,7 +410,8 @@ exports.reclamarResultados = function(instancias){
             }
             if(/^vivo-[0-9a-f]+\.json$/.test(f)){
                 const d = JSON.parse(fs.readFileSync(ruta, 'utf8'))
-                if(!Number.isInteger(d.pid) || !vive(d.pid)){
+                // La marca huérfana se borra aunque su PID lo tenga ahora otro proceso (1.17.22).
+                if(!esNuestro(d.pid, d.desde)){
                     fs.rmSync(ruta, { force: true })
                 }
                 continue
@@ -381,7 +420,7 @@ exports.reclamarResultados = function(instancias){
             const m = RE_PROCESANDO.exec(f)
             if(m != null){
                 // De una instancia que murió a medias: se recupera. Si sigue viva, es suya.
-                if(Number(m[2]) === process.pid || vive(Number(m[2]))){
+                if(Number(m[2]) === process.pid || esNuestro(Number(m[2]), Date.now())){
                     continue
                 }
                 origen = ruta

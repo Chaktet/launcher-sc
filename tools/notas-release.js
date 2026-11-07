@@ -18,9 +18,12 @@ const aplica = process.argv.includes('--aplica')
 const tag = process.argv.slice(2).find(a => !a.startsWith('--'))
 const gh = (args, input) => execFileSync('gh', args, { encoding: 'utf8', input })
 
-const aviso = fs.readFileSync(path.join(__dirname, 'aviso-launcher-viejo.md'), 'utf8').replace(/\r\n/g, '\n').trim()
-const bloque = `${INICIO}\n${aviso}\n${FIN}`
 const release = JSON.parse(gh(['release', 'view', ...(tag ? [tag] : []), '-R', REPO, '--json', 'tagName,body']))
+// {VERSION} = la de esta release. El exe estable sigue congelado en la 1.17.15, que también se queda atascada al
+// actualizarse si el PC tiene una marca de vigilante huérfana (07-11-2026): el enlace debe dar una versión arreglada.
+const aviso = fs.readFileSync(path.join(__dirname, 'aviso-launcher-viejo.md'), 'utf8').replace(/\r\n/g, '\n').trim()
+    .replace(/\{VERSION\}/g, release.tagName.replace(/^v/, ''))
+const bloque = `${INICIO}\n${aviso}\n${FIN}`
 // GitHub puede devolver las notas con CRLF.
 const notas = release.body.replace(/\r\n/g, '\n')
 

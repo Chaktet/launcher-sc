@@ -428,7 +428,9 @@ function scPuerta(evento, info){
         // Instalando o terminando, el launcher está a punto de cerrarse: una
         // comprobación periódica que llegue entretanto no debe cambiar la pantalla.
         // Salvo el aviso del proceso principal de que no instaló (1.17.21).
-        if(scPuertaEstado === 'instalando' && (evento === 'install-refused' || evento === 'install-failed')){
+        // 1.17.22: también 'realerror'. electron-updater no lanza excepción si no puede instalar
+        // (sin instalador descargado, fallo al arrancarlo): emite 'error', que antes se ignoraba aquí.
+        if(scPuertaEstado === 'instalando' && (evento === 'install-refused' || evento === 'install-failed' || evento === 'realerror')){
             scPuertaFalloInstalar(evento === 'install-refused' && info != null ? info.motivo : 'error')
             return
         }
