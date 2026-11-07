@@ -19,7 +19,7 @@ const tag = process.argv.slice(2).find(a => !a.startsWith('--'))
 const gh = (args, input) => execFileSync('gh', args, { encoding: 'utf8', input })
 
 const release = JSON.parse(gh(['release', 'view', ...(tag ? [tag] : []), '-R', REPO, '--json', 'tagName,body']))
-// {VERSION} = la de esta release. El exe estable sigue congelado en la 1.17.15, que también se queda atascada al
+// {VERSION} = la de esta release. Los launchers <= 1.17.21 (y el estable 1.17.15 que hubo hasta el 07-11) se quedan atascados al
 // actualizarse si el PC tiene una marca de vigilante huérfana (07-11-2026): el enlace debe dar una versión arreglada.
 const aviso = fs.readFileSync(path.join(__dirname, 'aviso-launcher-viejo.md'), 'utf8').replace(/\r\n/g, '\n').trim()
     .replace(/\{VERSION\}/g, release.tagName.replace(/^v/, ''))

@@ -1,6 +1,7 @@
 # SC Launcher · historial
 
 ## Estado actual
+- **1.17.22 publicada para Windows (07-11 ~19:35 hora RD): CAUSA REAL de «Actualizando el launcher… Casi listo» para siempre** (muchos jugadores, captura de LAUTIXDY676672L en la 1.17.20). Una marca `sc-vigilante/vivo-*.json` huérfana (PC apagado o juego muerto de golpe) apuntaba a un PID que Windows había dado a un servicio (EPERM, contado como vivo) u otro programa: `hayVigilanteVivo` = true para siempre, index.js no instalaba y la puerta (<=1.17.20) se quedaba sin botones. Release, exe por GitHub y Cloudflare con sha512 = build, estables de la web renovados a la 1.17.22 (Felix OK 07-11; copia de la 1.17.15 en `_backups/launcher-exe-congelado-1.17.15`). **Los atascados en <=1.17.21 no salen solos**: instalar a mano la 1.17.22 encima (aviso arriba de la release). Sin aviso en Discord ni en el launcher (Felix 07-11). Pendiente: volver a mandar el exe estable nuevo a Microsoft (WDSI) y antivirus.
 - **1.17.21 publicada para Windows, Mac y Linux (06-11 ~19:40 hora RD, Felix: «Sí, publícala»):** la puerta ya no se
   queda para siempre en «Actualizando el launcher… / Casi listo» (jugador con PC lento; entrada de hoy). Firmada
   (`comprueba-publisher` ok, asar con el arreglo), release v1.17.21 con 19 ficheros (CI run 42311080545 en verde), aviso
@@ -141,6 +142,14 @@
   el launcher. Novedad `2026-10-28-modpack-Adios-al-aviso-de-chat-no-verificado` (arreglo) solo en vista previa en
   «diseño-pruebas» (mensaje 1564857375410757703). **Publicada en el launcher el 28-10 15:55 UTC** con la de las
   misiones de escanear (OK de Felix: launcher sí, Discord no). El modpack móvil SC-Movil no lo lleva.
+
+## 2026-11-07 19:35 (hora RD) · 1.17.22: una marca de vigilante huérfana ya no bloquea la actualización
+- Pedido: muchos jugadores no pueden actualizar ni jugar (puerta en «Casi listo» para siempre), «resuélvelo de por vida».
+- Causa: `scvigilante.vive()` contaba EPERM como vivo y no miraba qué proceso era. Medido: `process.kill(4,0)` = EPERM; con el código 1.17.21 una marca con PID 4 da vigilante vivo = true.
+- Arreglo (a3a9920): `esNuestro(pid)` = proceso del mismo usuario cuyo exe (tasklist) es el del launcher; la limpieza borra marcas huérfanas. La puerta pasa a «fallo» también con `realerror` durante «instalando» (electron-updater no lanza excepción, emite error).
+- Verificado: 7/7 casos con procesos reales (PID 4, explorer.exe, inexistente, propio; marcas huérfana/reciclada/real), asar con el arreglo, firma y publisherName ok, latest.yml = 1.17.22, exe por Cloudflare = build, estables = 1.17.22.
+- `tools/aviso-launcher-viejo.md` enlaza ahora el exe de cada versión (`{VERSION}`).
+- Sin probar: un jugador real atascado reinstalando la 1.17.22.
 
 ## 2026-11-06 19:10 (hora RD) · 1.17.21: «Actualizando el launcher…» ya no se cuelga para siempre
 - Felix: un jugador con un PC malo se queda en «Actualizando el launcher… · Casi listo, unos segundos más…» sin fin.
