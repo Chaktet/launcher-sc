@@ -46,7 +46,7 @@ SC-90/91/92/93.
 | **SC-43** | Fallo inesperado preparando el juego (como el de `modpack.cfg` del 27-10) | `n` = clase de la excepción |
 | **SC-44** | No hay espacio en el móvil para el modpack | — |
 | **SC-45** | El juego se cerró solo (cierre inesperado), enviado automáticamente desde la 0.1.14 | modelo del móvil; perfil `p` |
-| **SC-46** | La partida iba a tirones (menos de 20 FPS dos minutos) o el móvil se calentó; desde la 0.1.20 | `x` = fps/calor; `f` = FPS medio; `n` = escalón de rendimiento; `m` = modelo; `g` = gráfica |
+| **SC-46** | La partida iba a tirones (menos de 20 FPS dos minutos) o el móvil se calentó; desde la 0.1.20 | `x` = fps/calor; `f` = FPS medio; `n` = escalón de rendimiento; `m` = modelo; `g` = gráfica. **Hasta la 0.1.23 `f` valía ~5× los FPS reales** (el contador se ponía a 0 en cada lectura y se leía cada 5 s; con «mostrar FPS» activado, menos): el umbral de 20 era ~4 FPS reales, y los `calor` con `f=0` eran de la pantalla de carga. Desde la 0.1.24 son FPS reales y se mide 2 min después del primer fotograma |
 | **SC-47** | Preparar el juego (`u`) o abrirlo hasta el primer fotograma (`t`) tardó más de 2 min; desde la 0.1.21 | `t`, `u` = minutos (tope 60); `m` = modelo; `g` = gama baja/media/alta; `y` = GB de RAM |
 
 Sin conexión no se avisa (es la red del jugador).
