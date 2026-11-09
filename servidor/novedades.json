@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-07-servidor-La-ruleta-del-PokeNav-ya-no-te-chafa-la-sorpresa",
+      "fecha": "2026-11-07",
+      "tipo": "servidor",
+      "clase": "retoque",
+      "titulo": "La ruleta del PokéNav ya no te chafa la sorpresa",
+      "puntos": [
+        "El chat dice tu premio cuando termina el giro, no antes."
+      ]
+    },
+    {
       "id": "2026-11-07-servidor-Adios-al-objeto-fantasma-en-el-casco",
       "fecha": "2026-11-07",
       "tipo": "servidor",
