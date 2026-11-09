@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-07-servidor-La-web-tiene-boton-de-Discord",
+      "fecha": "2026-11-07",
+      "tipo": "servidor",
+      "clase": "retoque",
+      "titulo": "La web tiene botón de Discord",
+      "puntos": [
+        "En servidorcobblemon.es, arriba en todas las páginas, un botón te lleva directo a nuestro Discord, también en el móvil."
+      ]
+    },
+    {
       "id": "2026-11-07-servidor-Felicita-tambien-las-compras-de-cosmeticos",
       "fecha": "2026-11-07",
       "tipo": "servidor",
