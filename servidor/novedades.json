@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-07-servidor-Los-clanes-con-sitio-vuelven-a-reclutar",
+      "fecha": "2026-11-07",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Los clanes con sitio vuelven a reclutar",
+      "puntos": [
+        "Algunos clanes decían que estaban llenos aunque tuvieran menos de 15 miembros, y no dejaban aceptar ni invitar a nadie.",
+        "Ya puede entrar gente mientras el clan tenga menos de 15."
+      ]
+    },
+    {
       "id": "2026-11-07-servidor-Vender-Pokemon-vuelve-a-funcionar",
       "fecha": "2026-11-07",
       "tipo": "servidor",
