@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-09-servidor-Tus-cosmeticos-ya-no-te-delatan-en-los-minijuegos",
+      "fecha": "2026-11-09",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Tus cosméticos ya no te delatan en los minijuegos",
+      "puntos": [
+        "Dentro de los minijuegos, como el Escondite, ya no se ven tu mochila, tus alas, tu globo, el aura de la Torre ni tu brillo de color.",
+        "Así nadie descubre tu disfraz del Escondite por ellos.",
+        "Al salir del minijuego todo vuelve solo. Gorros, armaduras y bastones se siguen viendo.",
+        "Si ves algo raro, avísanos por ticket."
+      ]
+    },
+    {
       "id": "2026-11-07-servidor-La-web-tiene-boton-de-Discord",
       "fecha": "2026-11-07",
       "tipo": "servidor",
