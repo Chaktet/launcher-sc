@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-07-servidor-Las-misiones-de-clan-ya-cuentan-en-el-PokeNav",
+      "fecha": "2026-11-07",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Las misiones de clan ya cuentan en el PokéNav",
+      "puntos": [
+        "La pantalla de Misiones del clan enseñaba las misiones antiguas, que ya no avanzaban y se quedaban en 0/3.",
+        "Ahora ves las misiones nuevas con su premio y su barra de progreso, y quien gestiona las misiones elige y activa 3 de las 6 propuestas.",
+        "Actualiza el launcher para verlo. Si ves algo raro, avísanos por ticket."
+      ]
+    },
+    {
       "id": "2026-11-07-servidor-Los-clanes-con-sitio-vuelven-a-reclutar",
       "fecha": "2026-11-07",
       "tipo": "servidor",
