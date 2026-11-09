@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-07-servidor-Vender-Pokemon-vuelve-a-funcionar",
+      "fecha": "2026-11-07",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Vender Pokémon vuelve a funcionar",
+      "puntos": [
+        "Desde el 5 de noviembre, al vender un Pokémon salía «tu saldo está en el máximo permitido» y no dejaba vender.",
+        "Ya puedes vender con normalidad en Kanto y en Kalos.",
+        "Nadie perdió ningún Pokémon: la venta se paraba antes de sacarlo."
+      ]
+    },
+    {
       "id": "2026-11-06-servidor-Envia-desde-el-PokeNav-paso-a-paso",
       "fecha": "2026-11-06",
       "tipo": "servidor",
