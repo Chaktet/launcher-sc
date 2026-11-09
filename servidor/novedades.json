@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-09-servidor-El-Escondite-te-dice-quien-se-lleva-la-llave",
+      "fecha": "2026-11-09",
+      "tipo": "servidor",
+      "clase": "retoque",
+      "titulo": "El Escondite te dice quién se lleva la llave",
+      "puntos": [
+        "Si ganas sin ser el MVP de la partida, te sale tu puesto, tus puntos y que la llave del evento es solo para el MVP."
+      ]
+    },
+    {
       "id": "2026-11-09-servidor-Nuevas-normas-en-las-rankeds",
       "fecha": "2026-11-09",
       "tipo": "servidor",
