@@ -2,6 +2,20 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-09-servidor-Misiones-de-clan-pesca-evoluciones-y-contratos-ya-avanzan",
+      "fecha": "2026-11-09",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Misiones de clan: pesca, evoluciones y contratos ya avanzan",
+      "puntos": [
+        "«Pesca salmones» no contaba los salmones de las cañas del servidor, como el Salmón del Vacío. Ya cuentan.",
+        "Las misiones de evolucionar ya cuentan cualquier evolución, no solo las de /evofix.",
+        "Cobrar un contrato del tablón de minería ya suma a la misión de contratos.",
+        "La misión del Community Day ya solo sale el domingo, que es cuando hay evento.",
+        "Si alguna misión sigue sin avanzar, avísanos por ticket."
+      ]
+    },
+    {
       "id": "2026-11-09-servidor-Tus-cosmeticos-ya-no-te-delatan-en-los-minijuegos",
       "fecha": "2026-11-09",
       "tipo": "servidor",
