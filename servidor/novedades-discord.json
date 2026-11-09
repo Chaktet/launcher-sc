@@ -319,7 +319,18 @@
     "2026-11-06-servidor-Expediciones-Torre-y-Arceus-ya-ven-tus-Pokedolares",
     "2026-11-06-servidor-Mira-en-grande-cada-pieza-de-los-packs",
     "2026-11-06-servidor-Apaga-el-chat-de-jugadores-cuando-quieras",
-    "2026-11-06-servidor-Los-talentos-de-mineria-explican-su-XP"
+    "2026-11-06-servidor-Los-talentos-de-mineria-explican-su-XP",
+    "2026-11-06-servidor-Envia-desde-el-PokeNav-paso-a-paso",
+    "2026-11-07-servidor-Adios-al-objeto-fantasma-en-el-casco",
+    "2026-11-07-servidor-Las-misiones-de-clan-ya-cuentan-en-el-PokeNav",
+    "2026-11-07-servidor-Los-clanes-con-sitio-vuelven-a-reclutar",
+    "2026-11-07-servidor-Vender-Pokemon-vuelve-a-funcionar",
+    "2026-11-09-servidor-Nuevas-normas-en-las-rankeds",
+    "2026-11-09-servidor-Misiones-de-clan-pesca-evoluciones-y-contratos-ya-avanzan",
+    "2026-11-07-servidor-La-web-tiene-boton-de-Discord",
+    "2026-11-07-servidor-Felicita-tambien-las-compras-de-cosmeticos",
+    "2026-11-07-servidor-La-ruleta-del-PokeNav-ya-no-te-chafa-la-sorpresa",
+    "2026-11-09-servidor-El-Escondite-te-dice-quien-se-lleva-la-llave"
   ],
   "mensajes": [
     {
@@ -939,6 +950,23 @@
         "2026-11-06-servidor-Mira-en-grande-cada-pieza-de-los-packs",
         "2026-11-06-servidor-Apaga-el-chat-de-jugadores-cuando-quieras",
         "2026-11-06-servidor-Los-talentos-de-mineria-explican-su-XP"
+      ]
+    },
+    {
+      "fecha": "2026-11-09",
+      "mensaje": "1569355292431622255",
+      "entradas": [
+        "2026-11-06-servidor-Envia-desde-el-PokeNav-paso-a-paso",
+        "2026-11-07-servidor-Adios-al-objeto-fantasma-en-el-casco",
+        "2026-11-07-servidor-Las-misiones-de-clan-ya-cuentan-en-el-PokeNav",
+        "2026-11-07-servidor-Los-clanes-con-sitio-vuelven-a-reclutar",
+        "2026-11-07-servidor-Vender-Pokemon-vuelve-a-funcionar",
+        "2026-11-09-servidor-Nuevas-normas-en-las-rankeds",
+        "2026-11-09-servidor-Misiones-de-clan-pesca-evoluciones-y-contratos-ya-avanzan",
+        "2026-11-07-servidor-La-web-tiene-boton-de-Discord",
+        "2026-11-07-servidor-Felicita-tambien-las-compras-de-cosmeticos",
+        "2026-11-07-servidor-La-ruleta-del-PokeNav-ya-no-te-chafa-la-sorpresa",
+        "2026-11-09-servidor-El-Escondite-te-dice-quien-se-lleva-la-llave"
       ]
     }
   ]
