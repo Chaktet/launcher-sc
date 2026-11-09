@@ -2,6 +2,20 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-09-servidor-Nuevas-normas-en-las-rankeds",
+      "fecha": "2026-11-09",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Nuevas normas en las rankeds",
+      "puntos": [
+        "Megas: solo se prohíben las de una lista (14 en singles y 12 en dobles).",
+        "Singles: de Deoxys solo se prohíben las formas Normal y Ataque, y de Landorus solo la forma Avatar. Se permiten Walking Wake, Iron Bundle y las habilidades Potencia Bruta y Fuerte Afecto.",
+        "Dobles: se permiten Mewtwo, Kyurem, Zamazenta y Ursaluna Luna Carmesí, y las habilidades Veleta y Fuerte Afecto. Como mucho 2 de Mewtwo, Kyurem y Zamazenta por equipo.",
+        "En dobles siguen prohibidos Kyurem Blanco, Kyurem Negro y Zamazenta Escudo Supremo.",
+        "Si un Pokémon que debería valer te sale rechazado, avísanos por ticket."
+      ]
+    },
+    {
       "id": "2026-11-09-servidor-Misiones-de-clan-pesca-evoluciones-y-contratos-ya-avanzan",
       "fecha": "2026-11-09",
       "tipo": "servidor",
