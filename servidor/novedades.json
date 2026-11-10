@@ -2,6 +2,21 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-10-modpack-Organiza-tu-PC-mueve-varios-ordena-e-intercambia-cajas",
+      "fecha": "2026-11-10",
+      "tipo": "modpack",
+      "clase": "nuevo",
+      "titulo": "Organiza tu PC: mueve varios, ordena e intercambia cajas",
+      "puntos": [
+        "Pulsa la flecha a la izquierda de «Buscar» para entrar en «Mover»: toca hasta 30 Pokémon de cualquier caja, abre la caja de destino y pulsa «Soltar aquí».",
+        "Con una búsqueda o un filtro puesto, «Marcar filtrados» los marca todos de una vez.",
+        "El botón a la derecha de «Buscar» ordena la caja abierta por Pokédex, nombre, nivel, tipo o género, con los shinys primero o quitando los huecos.",
+        "Toca el nombre de la caja para ver todas tus cajas; con «Intercambiar» cambias de sitio los Pokémon de dos cajas.",
+        "Con una búsqueda puesta, «Ver todo» te enseña lo que encuentra en todas las cajas juntas.",
+        "Te llega solo al abrir el launcher, en PC y en el móvil."
+      ]
+    },
+    {
       "id": "2026-11-09-servidor-El-Escondite-te-dice-quien-se-lleva-la-llave",
       "fecha": "2026-11-09",
       "tipo": "servidor",
