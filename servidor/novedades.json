@@ -2,6 +2,21 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-10-servidor-La-GTS-estrena-pantalla-nueva",
+      "fecha": "2026-11-10",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "La GTS estrena pantalla nueva",
+      "puntos": [
+        "Abre /gts desde el launcher del PC y verás la GTS nueva: los Pokémon en 3D, con sus estadísticas y su precio medio a la vista",
+        "El color del marco te dice qué es: dorado legendario, morado con skin, azul shiny y gris normal",
+        "Los diamantes marcan los IV: naranja 6IV, azul 5IV y morado IV altos (150 o más). El precio sale en verde si está en la media o por debajo y en rojo si se pasa mucho",
+        "Filtra por tipo, precio, skin, shiny, legendarios, 5IV y 6IV, cría y habilidad oculta; Objetos, Subastas y Vender tienen sección propia",
+        "Al vender te enseñamos el precio al que se suele vender, y puedes marcar favoritos con el corazón y crear alertas",
+        "En el móvil sigues teniendo los menús de siempre"
+      ]
+    },
+    {
       "id": "2026-11-10-modpack-Organiza-tu-PC-mueve-varios-ordena-e-intercambia-cajas",
       "fecha": "2026-11-10",
       "tipo": "modpack",
