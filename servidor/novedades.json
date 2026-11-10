@@ -8,11 +8,11 @@
       "clase": "nuevo",
       "titulo": "Organiza tu PC: mueve varios, ordena e intercambia cajas",
       "puntos": [
-        "Pulsa la flecha a la izquierda de «Buscar» para entrar en «Mover»: toca hasta 30 Pokémon de cualquier caja, abre la caja de destino y pulsa «Soltar aquí».",
-        "Con una búsqueda o un filtro puesto, «Marcar filtrados» los marca todos de una vez.",
-        "El botón a la derecha de «Buscar» ordena la caja abierta por Pokédex, nombre, nivel, tipo o género, con los shinys primero o quitando los huecos.",
-        "Toca el nombre de la caja para ver todas tus cajas; con «Intercambiar» cambias de sitio los Pokémon de dos cajas.",
-        "Con una búsqueda puesta, «Ver todo» te enseña lo que encuentra en todas las cajas juntas.",
+        "Pulsa la flecha a la izquierda de «Buscar» para entrar en «Mover» y toca hasta 30 Pokémon de cualquier caja.",
+        "Toca el nombre de la caja («Caja 1 ▾») para ver todas tus cajas en grande, con cuántos Pokémon lleva cada una; con «Intercambiar» cambias de sitio dos cajas enteras.",
+        "Con Pokémon marcados, toca una caja y se sueltan ahí; o abre la caja y pulsa «Soltar aquí».",
+        "Con una búsqueda puesta, «Ver todo» (también dentro de «Mover») te enseña lo que encuentra en todas las cajas juntas; la «x» borra la búsqueda.",
+        "El botón a la derecha de «Buscar» ordena la caja abierta por número, nombre, nivel, tipo o género, con los shinys primero o quitando los huecos.",
         "Te llega solo al abrir el launcher, en PC y en el móvil."
       ]
     },
