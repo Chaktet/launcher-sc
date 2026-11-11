@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-11-servidor-Los-combates-ya-no-se-congelan-al-cambiar-de-Pokemon",
+      "fecha": "2026-11-11",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Los combates ya no se congelan al cambiar de Pokémon",
+      "puntos": [
+        "A veces, al cambiar de Pokémon en un combate (sobre todo en rankeds), todo se quedaba esperando y al volver el juego elegía por ti.",
+        "Ahora, si tu Pokémon tarda en salir, el combate sigue en pocos segundos y siempre eliges tú tu movimiento.",
+        "Si una ranked se rompe sin culpa de nadie, se cierra sin que nadie gane ni pierda puntos."
+      ]
+    },
+    {
       "id": "2026-11-10-servidor-La-GTS-estrena-pantalla-nueva",
       "fecha": "2026-11-10",
       "tipo": "servidor",
