@@ -334,7 +334,16 @@
     "2026-11-09-servidor-Tus-cosmeticos-ya-no-te-delatan-en-los-minijuegos",
     "2026-11-10-servidor-La-GTS-estrena-pantalla-nueva",
     "2026-11-10-modpack-Organiza-tu-PC-mueve-varios-ordena-e-intercambia-cajas",
-    "2026-11-11-servidor-Los-combates-ya-no-se-congelan-al-cambiar-de-Pokemon"
+    "2026-11-11-servidor-Los-combates-ya-no-se-congelan-al-cambiar-de-Pokemon",
+    "2026-11-11-servidor-Las-mentas-de-la-lluvia-ya-valen-en-el-PokeBuilder",
+    "2026-11-11-servidor-Ya-no-apareces-en-el-techo-del-Nether-al-hacer-back",
+    "2026-11-11-servidor-Misiones-de-huevos-ahora-sabes-por-que-no-cuentan",
+    "2026-11-11-servidor-Mineria-contratos-y-forja-mas-claros",
+    "2026-11-11-servidor-Las-megas-ya-no-dejan-su-habilidad-al-volver",
+    "2026-11-11-servidor-Las-crias-ya-salen-con-la-habilidad-de-su-especie",
+    "2026-11-11-servidor-GTS-retira-tus-ventas-y-publica-gratis",
+    "2026-11-11-servidor-PokeBuilder-con-carrito-todos-los-cambios-de-una-vez",
+    "2026-11-11-servidor-El-Canje-dice-que-categoria-es-la-megapiedra-al-azar"
   ],
   "mensajes": [
     {
@@ -981,6 +990,21 @@
         "2026-11-10-servidor-La-GTS-estrena-pantalla-nueva",
         "2026-11-10-modpack-Organiza-tu-PC-mueve-varios-ordena-e-intercambia-cajas",
         "2026-11-11-servidor-Los-combates-ya-no-se-congelan-al-cambiar-de-Pokemon"
+      ]
+    },
+    {
+      "fecha": "2026-11-11",
+      "mensaje": "1570148206132731988",
+      "entradas": [
+        "2026-11-11-servidor-Las-mentas-de-la-lluvia-ya-valen-en-el-PokeBuilder",
+        "2026-11-11-servidor-Ya-no-apareces-en-el-techo-del-Nether-al-hacer-back",
+        "2026-11-11-servidor-Misiones-de-huevos-ahora-sabes-por-que-no-cuentan",
+        "2026-11-11-servidor-Mineria-contratos-y-forja-mas-claros",
+        "2026-11-11-servidor-Las-megas-ya-no-dejan-su-habilidad-al-volver",
+        "2026-11-11-servidor-Las-crias-ya-salen-con-la-habilidad-de-su-especie",
+        "2026-11-11-servidor-GTS-retira-tus-ventas-y-publica-gratis",
+        "2026-11-11-servidor-PokeBuilder-con-carrito-todos-los-cambios-de-una-vez",
+        "2026-11-11-servidor-El-Canje-dice-que-categoria-es-la-megapiedra-al-azar"
       ]
     }
   ]
