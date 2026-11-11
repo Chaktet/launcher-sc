@@ -330,7 +330,11 @@
     "2026-11-07-servidor-La-web-tiene-boton-de-Discord",
     "2026-11-07-servidor-Felicita-tambien-las-compras-de-cosmeticos",
     "2026-11-07-servidor-La-ruleta-del-PokeNav-ya-no-te-chafa-la-sorpresa",
-    "2026-11-09-servidor-El-Escondite-te-dice-quien-se-lleva-la-llave"
+    "2026-11-09-servidor-El-Escondite-te-dice-quien-se-lleva-la-llave",
+    "2026-11-09-servidor-Tus-cosmeticos-ya-no-te-delatan-en-los-minijuegos",
+    "2026-11-10-servidor-La-GTS-estrena-pantalla-nueva",
+    "2026-11-10-modpack-Organiza-tu-PC-mueve-varios-ordena-e-intercambia-cajas",
+    "2026-11-11-servidor-Los-combates-ya-no-se-congelan-al-cambiar-de-Pokemon"
   ],
   "mensajes": [
     {
@@ -967,6 +971,16 @@
         "2026-11-07-servidor-Felicita-tambien-las-compras-de-cosmeticos",
         "2026-11-07-servidor-La-ruleta-del-PokeNav-ya-no-te-chafa-la-sorpresa",
         "2026-11-09-servidor-El-Escondite-te-dice-quien-se-lleva-la-llave"
+      ]
+    },
+    {
+      "fecha": "2026-11-11",
+      "mensaje": "1570053871592542301",
+      "entradas": [
+        "2026-11-09-servidor-Tus-cosmeticos-ya-no-te-delatan-en-los-minijuegos",
+        "2026-11-10-servidor-La-GTS-estrena-pantalla-nueva",
+        "2026-11-10-modpack-Organiza-tu-PC-mueve-varios-ordena-e-intercambia-cajas",
+        "2026-11-11-servidor-Los-combates-ya-no-se-congelan-al-cambiar-de-Pokemon"
       ]
     }
   ]
