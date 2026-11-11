@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-11-servidor-Mineria-contratos-y-forja-mas-claros",
+      "fecha": "2026-11-11",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Minería: contratos y forja, más claros",
+      "puntos": [
+        "Al entregar un contrato, el Mercado enseña toda la familia de rocas que valen, no solo la variante exacta.",
+        "Si te falta una gema para forjar, el aviso te dice si la tienes engarzada en el pico y dónde sacarla.",
+        "Refinar una gema sube su grado, no su nivel: el aviso ahora lo explica."
+      ]
+    },
+    {
       "id": "2026-11-11-servidor-Las-megas-ya-no-dejan-su-habilidad-al-volver",
       "fecha": "2026-11-11",
       "tipo": "servidor",
