@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-11-servidor-Ya-no-apareces-en-el-techo-del-Nether-al-hacer-back",
+      "fecha": "2026-11-11",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Ya no apareces en el techo del Nether al hacer /back",
+      "puntos": [
+        "Si morías en el Nether y hacías /back, podías aparecer encima de la bedrock. Ahora te lleva a un hueco seguro cerca de donde moriste."
+      ]
+    },
+    {
       "id": "2026-11-11-servidor-Misiones-de-huevos-ahora-sabes-por-que-no-cuentan",
       "fecha": "2026-11-11",
       "tipo": "servidor",
