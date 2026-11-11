@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-11-servidor-GTS-retira-tus-ventas-y-publica-gratis",
+      "fecha": "2026-11-11",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "GTS: retira tus ventas y publica gratis",
+      "puntos": [
+        "Ya puedes retirar tus propias ventas desde la GTS nueva: se cobra un 3 % (mínimo 100) y, si caducan solas, es gratis.",
+        "Publicar es gratis: se cobra un 3 % solo cuando se vende.",
+        "Las subastas solo se pueden cancelar si todavía no tienen pujas.",
+        "La GTS abre más rápido."
+      ]
+    },
+    {
       "id": "2026-11-11-servidor-PokeBuilder-con-carrito-todos-los-cambios-de-una-vez",
       "fecha": "2026-11-11",
       "tipo": "servidor",
