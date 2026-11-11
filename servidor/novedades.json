@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-11-servidor-PokeBuilder-con-carrito-todos-los-cambios-de-una-vez",
+      "fecha": "2026-11-11",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "PokeBuilder con carrito: todos los cambios de una vez",
+      "puntos": [
+        "En el PokeBuilder ya no pagas cambio a cambio: eliges IVs, EVs, naturaleza, habilidad, Poké Ball, shiny, género y lo demás, y lo confirmas todo junto.",
+        "Antes de pagar ves un resumen con cada cambio y el total, y puedes quitar lo que no quieras.",
+        "Cada cambio cuesta lo mismo que antes.",
+        "Si un cambio no se puede aplicar, ese no se cobra y los demás siguen adelante."
+      ]
+    },
+    {
       "id": "2026-11-11-servidor-Los-combates-ya-no-se-congelan-al-cambiar-de-Pokemon",
       "fecha": "2026-11-11",
       "tipo": "servidor",
