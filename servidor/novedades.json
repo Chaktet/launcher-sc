@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-11-servidor-Las-mentas-de-la-lluvia-ya-valen-en-el-PokeBuilder",
+      "fecha": "2026-11-11",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Las mentas de la lluvia ya valen en el PokeBuilder",
+      "puntos": [
+        "Las mentas que caían en la lluvia de objetos salían como «antigua» en el PokeBuilder. Ahora valen igual que las demás."
+      ]
+    },
+    {
       "id": "2026-11-11-servidor-Ya-no-apareces-en-el-techo-del-Nether-al-hacer-back",
       "fecha": "2026-11-11",
       "tipo": "servidor",
