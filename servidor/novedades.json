@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-11-servidor-El-Canje-dice-que-categoria-es-la-megapiedra-al-azar",
+      "fecha": "2026-11-11",
+      "tipo": "servidor",
+      "clase": "retoque",
+      "titulo": "El Canje dice qué categoría es la megapiedra al azar",
+      "puntos": [
+        "Ahora el Canje dice «una A al azar» o «una S al azar», para que sepas qué categoría sale."
+      ]
+    },
+    {
       "id": "2026-11-11-servidor-Las-mentas-de-la-lluvia-ya-valen-en-el-PokeBuilder",
       "fecha": "2026-11-11",
       "tipo": "servidor",
