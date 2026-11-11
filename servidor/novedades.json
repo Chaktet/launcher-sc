@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-11-servidor-Las-megas-ya-no-dejan-su-habilidad-al-volver",
+      "fecha": "2026-11-11",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Las megas ya no dejan su habilidad al volver",
+      "puntos": [
+        "Si mega evolucionabas fuera de combate, tu Pokémon podía quedarse con la habilidad de la mega al volver a su forma normal (un Charizard con Sequía, por ejemplo).",
+        "Ya no pasa: la habilidad es siempre la de su forma normal."
+      ]
+    },
+    {
       "id": "2026-11-11-servidor-Las-crias-ya-salen-con-la-habilidad-de-su-especie",
       "fecha": "2026-11-11",
       "tipo": "servidor",
