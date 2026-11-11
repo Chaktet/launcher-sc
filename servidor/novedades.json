@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-11-servidor-Las-crias-ya-salen-con-la-habilidad-de-su-especie",
+      "fecha": "2026-11-11",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Las crías ya salen con la habilidad de su especie",
+      "puntos": [
+        "Antes una cría podía salir con la habilidad del Ditto o de otra especie (Flexibilidad en un Charmander, por ejemplo).",
+        "Ahora la habilidad siempre es de su propia forma, y la vista previa de la crianza enseña la correcta."
+      ]
+    },
+    {
       "id": "2026-11-11-servidor-GTS-retira-tus-ventas-y-publica-gratis",
       "fecha": "2026-11-11",
       "tipo": "servidor",
