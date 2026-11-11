@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-11-servidor-Misiones-de-huevos-ahora-sabes-por-que-no-cuentan",
+      "fecha": "2026-11-11",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Misiones de huevos: ahora sabes por qué no cuentan",
+      "puntos": [
+        "Si todavía no cuentas para las misiones de tu clan (llevas poco tiempo en el clan o pocas horas esa semana), el menú ahora te lo dice en vez de dejarte en «sin aportar»."
+      ]
+    },
+    {
       "id": "2026-11-11-servidor-Mineria-contratos-y-forja-mas-claros",
       "fecha": "2026-11-11",
       "tipo": "servidor",
