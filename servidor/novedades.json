@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-11-servidor-Adios-a-los-Pokemon-atascados-en-mega",
+      "fecha": "2026-11-11",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Adiós a los Pokémon atascados en mega",
+      "puntos": [
+        "Algunos Pokémon se quedaban en su forma mega o primigenia y no volvían a la normal.",
+        "Al entrar al servidor se arreglan solos y te sale un aviso en el chat.",
+        "Ponerle una skin de la tienda a un Pokémon en mega ya no lo deja atascado.",
+        "Si a alguno tuyo le sigue pasando, avísanos por ticket."
+      ]
+    },
+    {
       "id": "2026-11-11-servidor-Los-Tauros-de-Paldea-vuelven-a-aparecer",
       "fecha": "2026-11-11",
       "tipo": "servidor",
