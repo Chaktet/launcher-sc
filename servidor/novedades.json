@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-11-servidor-Los-Tauros-de-Paldea-vuelven-a-aparecer",
+      "fecha": "2026-11-11",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Los Tauros de Paldea vuelven a aparecer",
+      "puntos": [
+        "Los Tauros de Paldea (Lucha, Lucha/Fuego y Lucha/Agua) aparecían como Tauros normales.",
+        "Ya aparecen con su forma de Paldea.",
+        "Los Tauros que ya capturaste siguen siendo como eran."
+      ]
+    },
+    {
       "id": "2026-11-11-pack-SC-3.3.39",
       "fecha": "2026-11-11",
       "tipo": "pack",
