@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-12-servidor-El-GTS-te-ensena-si-cada-Pokemon-es-macho-o-hembra",
+      "fecha": "2026-11-12",
+      "tipo": "servidor",
+      "clase": "retoque",
+      "titulo": "El GTS te enseña si cada Pokémon es macho o hembra",
+      "puntos": [
+        "Junto al nombre verás ♂ (macho) o ♀ (hembra) en la lista, en la ficha de cada Pokémon y en las subastas",
+        "Los Pokémon sin género no llevan símbolo",
+        "Necesitas el launcher o la app actualizados"
+      ]
+    },
+    {
       "id": "2026-11-12-servidor-Cobra-tus-ventas-sin-salir-del-GTS",
       "fecha": "2026-11-12",
       "tipo": "servidor",
