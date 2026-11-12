@@ -2,6 +2,21 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-11-pack-SC-3.3.39",
+      "fecha": "2026-11-11",
+      "tipo": "pack",
+      "clase": "arreglo",
+      "version": "SC-3.3.39",
+      "titulo": "Skins que se veían mal, arregladas",
+      "puntos": [
+        "Roaring Moon e Iron Moth de Halloween y Celebi Shadow ya se ven bien.",
+        "Los pies de Cinderace All Stars ya no se quedan sueltos en el suelo, y una skin de Sylveon ya anda con su propia animación.",
+        "La forma Luna Carmesí de Ursaluna vuelve a verse como tal, también en el pack más ligero.",
+        "Casi 40 skins de colección (Shadow, Heaven, Sakura, Gilded, Galaxy…) ya usan el modelo para el que se pintaron.",
+        "Si alguna skin sigue viéndose rara, avísanos por ticket."
+      ]
+    },
+    {
       "id": "2026-11-11-servidor-El-Canje-dice-que-categoria-es-la-megapiedra-al-azar",
       "fecha": "2026-11-11",
       "tipo": "servidor",
