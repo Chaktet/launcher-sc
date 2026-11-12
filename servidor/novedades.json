@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-12-movil-2.4.55",
+      "fecha": "2026-11-12",
+      "tipo": "movil",
+      "clase": "cambio",
+      "version": "2.4.55",
+      "titulo": "El juego en el móvil abre antes y gasta menos memoria",
+      "puntos": [
+        "Los Pokémon se preparan la primera vez que aparecen en pantalla, no todos al abrir el juego: la carga es bastante más corta.",
+        "Al usar menos memoria, el juego se cierra solo con menos frecuencia en móviles con poca RAM.",
+        "Se actualiza solo al pulsar JUGAR en la app."
+      ]
+    },
+    {
       "id": "2026-11-12-servidor-El-GTS-te-ensena-si-cada-Pokemon-es-macho-o-hembra",
       "fecha": "2026-11-12",
       "tipo": "servidor",
