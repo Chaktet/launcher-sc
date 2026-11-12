@@ -2,6 +2,20 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-12-servidor-Entra-con-una-pantalla-sin-escribir-comandos",
+      "fecha": "2026-11-12",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Entra con una pantalla, sin escribir comandos",
+      "puntos": [
+        "Si tu cuenta no es premium, al entrar verás una pantalla para poner tu contraseña (o crearla si eres nuevo). Ya no hace falta escribir /login ni /register.",
+        "Marca «Recordar en este dispositivo» y las próximas veces entrarás sin escribir nada.",
+        "En el móvil la pantalla trae su propio teclado, así que entrar desde el teléfono es mucho más cómodo.",
+        "¿Olvidaste la contraseña? Desde la misma pantalla puedes recuperarla con Discord o con tu correo vinculado.",
+        "Para verla solo tienes que abrir el juego desde el launcher o desde la app del móvil: se actualiza solo."
+      ]
+    },
+    {
       "id": "2026-11-11-servidor-Subir-IV-en-el-PokeBuilder-cuesta-un-tercio-menos",
       "fecha": "2026-11-11",
       "tipo": "servidor",
