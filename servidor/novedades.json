@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-11-servidor-Rankeds-como-mucho-pierdes-20-puntos-por-combate",
+      "fecha": "2026-11-11",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Rankeds: como mucho pierdes 20 puntos por combate",
+      "puntos": [
+        "Perder un combate de ranked te quita como mucho 20 puntos, aunque el rival tenga menos puntos que tú."
+      ]
+    },
+    {
       "id": "2026-11-11-servidor-Adios-a-los-Pokemon-atascados-en-mega",
       "fecha": "2026-11-11",
       "tipo": "servidor",
