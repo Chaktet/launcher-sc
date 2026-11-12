@@ -1,6 +1,7 @@
 # SC Launcher · historial
 
 ## Estado actual
+- **TooManyPlayers fuera de PRO, LITE y SUPER LITE (11-11 21:00 hora RD):** su NPE en los menús de FancyMenu llenaba el log. Sin novedad publicada (pendiente del OK de Felix si se quiere).
 - **1.17.22 publicada para Windows, Mac y Linux (07-11 ~19:35 hora RD; Mac/Linux del CI run 42425717741, en verde, 19 ficheros): CAUSA REAL de «Actualizando el launcher… Casi listo» para siempre** (muchos jugadores, captura de LAUTIXDY676672L en la 1.17.20). Una marca `sc-vigilante/vivo-*.json` huérfana (PC apagado o juego muerto de golpe) apuntaba a un PID que Windows había dado a un servicio (EPERM, contado como vivo) u otro programa: `hayVigilanteVivo` = true para siempre, index.js no instalaba y la puerta (<=1.17.20) se quedaba sin botones. Release, exe por GitHub y Cloudflare con sha512 = build, estables de la web renovados a la 1.17.22 (Felix OK 07-11; copia de la 1.17.15 en `_backups/launcher-exe-congelado-1.17.15`). **Los atascados en <=1.17.21 no salen solos**: instalar a mano la 1.17.22 encima (aviso arriba de la release). Sin aviso en Discord ni en el launcher (Felix 07-11). Pendiente: volver a mandar el exe estable nuevo a Microsoft (WDSI) y antivirus.
 - **1.17.21 publicada para Windows, Mac y Linux (06-11 ~19:40 hora RD, Felix: «Sí, publícala»):** la puerta ya no se
   queda para siempre en «Actualizando el launcher… / Casi listo» (jugador con PC lento; entrada de hoy). Firmada
@@ -142,6 +143,19 @@
   el launcher. Novedad `2026-10-28-modpack-Adios-al-aviso-de-chat-no-verificado` (arreglo) solo en vista previa en
   «diseño-pruebas» (mensaje 1564857375410757703). **Publicada en el launcher el 28-10 15:55 UTC** con la de las
   misiones de escanear (OK de Felix: launcher sí, Discord no). El modpack móvil SC-Movil no lo lleva.
+
+## 2026-11-11 21:00 (hora RD) · Quitado TooManyPlayers de los tres perfiles
+- Pedido: log de un jugador (Dorkii39810) «crashea con el launcher». El log no tiene crash (se copió con el juego abierto),
+  pero TooManyPlayers 1.1.5 lanzaba un NullPointerException en cada fotograma de los menús de FancyMenu que dibujan al
+  jugador (`HidingAreas.getArea` mira `MinecraftClient.player`, que es null fuera del mundo): ~5.000 trazas en 3 min,
+  tirones en el menú y un log de 18 MB. Felix: «Quítalo».
+- Cambio: fuera el mod y su `toomanyplayers.json` de PRO, LITE y SUPER LITE en el `distribution.json` publicado (solo
+  esas 6 entradas; copia `distribution.json.bak-sin-toomany-2026-11-12-0056` en OVH-A). El launcher pasa solo los mods
+  del manifiesto a `--fabric.addMods`, así que deja de cargarse en el siguiente JUGAR.
+- Verificado: MD5 por Cloudflare = el subido (80f74f9d…), 0 menciones de toomanyplayers; copia local igualada con
+  `sincroniza_distro_completa.js --aplicar` (los ficheros, en `sc-distribution/_retirados/sync-2026-11-12T00-56-29`).
+- Visto de paso: `C:\ProgramData\SCLauncher\natives-*` no existe en su PC y hace fallar el informe de crash de
+  Minecraft («Negative index in crash report handler»): un crash real podría no dejar crash-report. Sin tocar.
 
 ## 2026-11-07 19:35 (hora RD) · 1.17.22: una marca de vigilante huérfana ya no bloquea la actualización
 - Pedido: muchos jugadores no pueden actualizar ni jugar (puerta en «Casi listo» para siempre), «resuélvelo de por vida».
