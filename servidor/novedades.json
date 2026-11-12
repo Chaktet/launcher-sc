@@ -2,6 +2,20 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-12-servidor-Cobra-tus-ventas-sin-salir-del-GTS",
+      "fecha": "2026-11-12",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Cobra tus ventas sin salir del GTS",
+      "puntos": [
+        "El GTS tiene un botón nuevo, «Cobros», que te muestra cuánto dinero de tus ventas tienes pendiente",
+        "Cobra cada venta por separado o pulsa «Cobrar todo» para cobrarlas de golpe",
+        "En la pestaña «Buzón» recoges los Pokémon que ganaste en subastas o que te devolvieron: van directos a tu equipo o a tu PC",
+        "El comando /gts cobrar también te lleva ahí",
+        "¿No ves el botón? Entra con el launcher o la app actualizados"
+      ]
+    },
+    {
       "id": "2026-11-12-servidor-Entra-con-una-pantalla-sin-escribir-comandos",
       "fecha": "2026-11-12",
       "tipo": "servidor",
