@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-12-modpack-El-juego-arranca-mas-rapido-en-PC",
+      "fecha": "2026-11-12",
+      "tipo": "modpack",
+      "clase": "cambio",
+      "titulo": "El juego arranca más rápido en PC",
+      "puntos": [
+        "Desde que pulsas JUGAR hasta el menú del juego tarda unos 20 segundos menos: en nuestras pruebas, de 1 minuto a unos 40 segundos.",
+        "Los Pokémon se preparan la primera vez que aparecen, en vez de todos de golpe al abrir el juego.",
+        "Te llega solo al abrir el launcher: no tienes que hacer nada."
+      ]
+    },
+    {
       "id": "2026-11-12-movil-2.4.55",
       "fecha": "2026-11-12",
       "tipo": "movil",
