@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-11-servidor-Subir-IV-en-el-PokeBuilder-cuesta-un-tercio-menos",
+      "fecha": "2026-11-11",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Subir IV en el PokeBuilder cuesta un tercio menos",
+      "puntos": [
+        "Subir los IV de tus Pokémon en el PokeBuilder cuesta ahora un tercio menos de tokens.",
+        "Habilidad, naturaleza, género, Poké Ball, shiny y EV cuestan lo mismo que antes."
+      ]
+    },
+    {
       "id": "2026-11-11-servidor-Rankeds-como-mucho-pierdes-20-puntos-por-combate",
       "fecha": "2026-11-11",
       "tipo": "servidor",
