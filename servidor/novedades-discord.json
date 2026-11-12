@@ -343,7 +343,14 @@
     "2026-11-11-servidor-Las-crias-ya-salen-con-la-habilidad-de-su-especie",
     "2026-11-11-servidor-GTS-retira-tus-ventas-y-publica-gratis",
     "2026-11-11-servidor-PokeBuilder-con-carrito-todos-los-cambios-de-una-vez",
-    "2026-11-11-servidor-El-Canje-dice-que-categoria-es-la-megapiedra-al-azar"
+    "2026-11-11-servidor-El-Canje-dice-que-categoria-es-la-megapiedra-al-azar",
+    "2026-11-11-servidor-Subir-IV-en-el-PokeBuilder-cuesta-un-tercio-menos",
+    "2026-11-11-servidor-Rankeds-como-mucho-pierdes-20-puntos-por-combate",
+    "2026-11-11-servidor-Adios-a-los-Pokemon-atascados-en-mega",
+    "2026-11-11-servidor-Los-Tauros-de-Paldea-vuelven-a-aparecer",
+    "2026-11-11-pack-SC-3.3.39",
+    "2026-11-12-servidor-Cobra-tus-ventas-sin-salir-del-GTS",
+    "2026-11-12-servidor-Entra-con-una-pantalla-sin-escribir-comandos"
   ],
   "mensajes": [
     {
@@ -1005,6 +1012,19 @@
         "2026-11-11-servidor-GTS-retira-tus-ventas-y-publica-gratis",
         "2026-11-11-servidor-PokeBuilder-con-carrito-todos-los-cambios-de-una-vez",
         "2026-11-11-servidor-El-Canje-dice-que-categoria-es-la-megapiedra-al-azar"
+      ]
+    },
+    {
+      "fecha": "2026-11-12",
+      "mensaje": "1570476140462735361",
+      "entradas": [
+        "2026-11-11-servidor-Subir-IV-en-el-PokeBuilder-cuesta-un-tercio-menos",
+        "2026-11-11-servidor-Rankeds-como-mucho-pierdes-20-puntos-por-combate",
+        "2026-11-11-servidor-Adios-a-los-Pokemon-atascados-en-mega",
+        "2026-11-11-servidor-Los-Tauros-de-Paldea-vuelven-a-aparecer",
+        "2026-11-11-pack-SC-3.3.39",
+        "2026-11-12-servidor-Cobra-tus-ventas-sin-salir-del-GTS",
+        "2026-11-12-servidor-Entra-con-una-pantalla-sin-escribir-comandos"
       ]
     }
   ]
