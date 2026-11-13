@@ -23,7 +23,7 @@
       "titulo": "Elige dónde jugar nada más entrar",
       "puntos": [
         "Al entrar te sale «¿Dónde quieres jugar?»: elige Kanto o Kalos viendo cuánta gente hay y si hay cola.",
-        "Si ya jugabas, pulsa «Continuar» o espera 5 segundos y vuelves a tu última región.",
+        "Si ya jugabas, pulsa «Continuar» o espera 3 segundos y vuelves a tu última región.",
         "¿Es tu primera vez? Pulsa «Es mi primera vez» y te llevamos a la región con menos espera.",
         "Marca «Recordar mi elección» para entrar siempre directo a tu región.",
         "Para volver a abrirla: escribe /regiones, usa la estrella del Lobby o pulsa «Cambiar región» en el menú de pausa.",
