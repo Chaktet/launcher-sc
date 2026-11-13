@@ -2,6 +2,21 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-12-servidor-Elige-donde-jugar-nada-mas-entrar",
+      "fecha": "2026-11-12",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Elige dónde jugar nada más entrar",
+      "puntos": [
+        "Al entrar te sale «¿Dónde quieres jugar?»: elige Kanto o Kalos viendo cuánta gente hay y si hay cola.",
+        "Si ya jugabas, pulsa «Continuar» o espera 5 segundos y vuelves a tu última región.",
+        "¿Es tu primera vez? Pulsa «Es mi primera vez» y te llevamos a la región con menos espera.",
+        "Marca «Recordar mi elección» para entrar siempre directo a tu región.",
+        "Para volver a abrirla: escribe /regiones, usa la estrella del Lobby o pulsa «Cambiar región» en el menú de pausa.",
+        "¿Necesitas ayuda? Tienes un botón de Discord en esta pantalla y en la de iniciar sesión."
+      ]
+    },
+    {
       "id": "2026-11-12-modpack-El-juego-arranca-mas-rapido-en-PC",
       "fecha": "2026-11-12",
       "tipo": "modpack",
