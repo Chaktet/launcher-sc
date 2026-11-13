@@ -350,7 +350,14 @@
     "2026-11-11-servidor-Los-Tauros-de-Paldea-vuelven-a-aparecer",
     "2026-11-11-pack-SC-3.3.39",
     "2026-11-12-servidor-Cobra-tus-ventas-sin-salir-del-GTS",
-    "2026-11-12-servidor-Entra-con-una-pantalla-sin-escribir-comandos"
+    "2026-11-12-servidor-Entra-con-una-pantalla-sin-escribir-comandos",
+    "2026-11-12-servidor-Elige-donde-jugar-nada-mas-entrar",
+    "2026-11-12-modpack-El-juego-arranca-mas-rapido-en-PC",
+    "2026-11-12-movil-2.4.55",
+    "2026-11-13-servidor-Nueva-PokeNav-tiendas-y-cosmeticos-renovados",
+    "2026-11-13-pack-SC-3.3.40",
+    "2026-11-13-servidor-Entra-directo-a-tu-region-desde-el-menu-del-juego",
+    "2026-11-12-servidor-El-GTS-te-ensena-si-cada-Pokemon-es-macho-o-hembra"
   ],
   "mensajes": [
     {
@@ -1025,6 +1032,19 @@
         "2026-11-11-pack-SC-3.3.39",
         "2026-11-12-servidor-Cobra-tus-ventas-sin-salir-del-GTS",
         "2026-11-12-servidor-Entra-con-una-pantalla-sin-escribir-comandos"
+      ]
+    },
+    {
+      "fecha": "2026-11-13",
+      "mensaje": "1570927001529876602",
+      "entradas": [
+        "2026-11-12-servidor-Elige-donde-jugar-nada-mas-entrar",
+        "2026-11-12-modpack-El-juego-arranca-mas-rapido-en-PC",
+        "2026-11-12-movil-2.4.55",
+        "2026-11-13-servidor-Nueva-PokeNav-tiendas-y-cosmeticos-renovados",
+        "2026-11-13-pack-SC-3.3.40",
+        "2026-11-13-servidor-Entra-directo-a-tu-region-desde-el-menu-del-juego",
+        "2026-11-12-servidor-El-GTS-te-ensena-si-cada-Pokemon-es-macho-o-hembra"
       ]
     }
   ]
