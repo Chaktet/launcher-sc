@@ -2,6 +2,20 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-13-servidor-Nueva-PokeNav-tiendas-y-cosmeticos-renovados",
+      "fecha": "2026-11-13",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Nueva PokéNav: tiendas y cosméticos renovados",
+      "puntos": [
+        "La PokéNav estrena portada: ves de un vistazo lo que tienes por recoger hoy y entras a todo desde un solo sitio",
+        "Nuevo Centro de tiendas con todas las tiendas juntas: ábrelo desde la PokéNav o con /tiendas",
+        "Todas las tiendas (Minería, Pesca, Raids, Torre, Tienda SCC, MTs, clanes y más) con el mismo diseño nuevo, el filtro «Puedo comprarlo» y una ventana para revisar la compra antes de pagar",
+        "Cosméticos renovados en /cosmetics: buscador, ficha de cada pieza para verla antes de comprar, y lo que llevas puesto se mantiene al cambiar de región",
+        "Se descarga solo: abre el juego desde el launcher o la app del móvil"
+      ]
+    },
+    {
       "id": "2026-11-13-pack-SC-3.3.40",
       "fecha": "2026-11-13",
       "tipo": "pack",
