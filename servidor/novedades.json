@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-13-pack-SC-3.3.40",
+      "fecha": "2026-11-13",
+      "tipo": "pack",
+      "clase": "arreglo",
+      "version": "SC-3.3.40",
+      "titulo": "Colagrito ya se ve bien",
+      "puntos": [
+        "Colagrito estrena modelo: ya no tiene los ojos tapados ni los brazos tiesos.",
+        "Tiene animaciones nuevas: anda moviendo las patas, parpadea, duerme y te sigue con la mirada.",
+        "También su versión shiny."
+      ]
+    },
+    {
       "id": "2026-11-13-servidor-Entra-directo-a-tu-region-desde-el-menu-del-juego",
       "fecha": "2026-11-13",
       "tipo": "servidor",
