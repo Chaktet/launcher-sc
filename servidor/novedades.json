@@ -2,6 +2,20 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-13-servidor-Entra-directo-a-tu-region-desde-el-menu-del-juego",
+      "fecha": "2026-11-13",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Entra directo a tu región desde el menú del juego",
+      "puntos": [
+        "Pulsa Kanto o Kalos en la pantalla de inicio y entras directo a esa región, sin pasar por el Lobby.",
+        "Si tienes que iniciar sesión, al hacerlo vas a la región que elegiste, sin más pantallas.",
+        "Si esa región tiene cola o se está reiniciando, esperas en su cola desde el Lobby.",
+        "«Continuar en…» ahora espera 3 segundos en vez de 5.",
+        "Te llega solo al abrir el launcher o la app del móvil: no tienes que hacer nada."
+      ]
+    },
+    {
       "id": "2026-11-12-servidor-Elige-donde-jugar-nada-mas-entrar",
       "fecha": "2026-11-12",
       "tipo": "servidor",
