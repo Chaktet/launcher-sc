@@ -357,7 +357,11 @@
     "2026-11-13-servidor-Nueva-PokeNav-tiendas-y-cosmeticos-renovados",
     "2026-11-13-pack-SC-3.3.40",
     "2026-11-13-servidor-Entra-directo-a-tu-region-desde-el-menu-del-juego",
-    "2026-11-12-servidor-El-GTS-te-ensena-si-cada-Pokemon-es-macho-o-hembra"
+    "2026-11-12-servidor-El-GTS-te-ensena-si-cada-Pokemon-es-macho-o-hembra",
+    "2026-11-13-servidor-Todas-las-tiendas-de-aspecto-en-una-sola",
+    "2026-11-13-servidor-Las-bodas-estrenan-pantallas-nuevas",
+    "2026-11-13-modpack-La-PokeNav-mas-comoda-buscador-pestanas-y-tiendas",
+    "2026-11-14-modpack-Tienda-nueva-encuentra-cualquier-objeto-al-momento"
   ],
   "mensajes": [
     {
@@ -1045,6 +1049,16 @@
         "2026-11-13-pack-SC-3.3.40",
         "2026-11-13-servidor-Entra-directo-a-tu-region-desde-el-menu-del-juego",
         "2026-11-12-servidor-El-GTS-te-ensena-si-cada-Pokemon-es-macho-o-hembra"
+      ]
+    },
+    {
+      "fecha": "2026-11-14",
+      "mensaje": "1571163851687469248",
+      "entradas": [
+        "2026-11-13-servidor-Todas-las-tiendas-de-aspecto-en-una-sola",
+        "2026-11-13-servidor-Las-bodas-estrenan-pantallas-nuevas",
+        "2026-11-13-modpack-La-PokeNav-mas-comoda-buscador-pestanas-y-tiendas",
+        "2026-11-14-modpack-Tienda-nueva-encuentra-cualquier-objeto-al-momento"
       ]
     }
   ]
