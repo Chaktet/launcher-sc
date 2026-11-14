@@ -2,6 +2,20 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-14-modpack-Tienda-nueva-encuentra-cualquier-objeto-al-momento",
+      "fecha": "2026-11-14",
+      "tipo": "modpack",
+      "clase": "nuevo",
+      "titulo": "Tienda nueva: encuentra cualquier objeto al momento",
+      "puntos": [
+        "Abre /shop o PokéNav → Tienda: la tienda estrena diseño, más clara y rápida",
+        "Escribe en el buscador y te salen los objetos de toda la tienda, sin ir categoría por categoría",
+        "Arrastra la barra azul para recorrer las categorías",
+        "Marca «Puedo comprarlo» para ver solo lo que te alcanza",
+        "En pantallas grandes (2K) las letras de la PokéNav ahora se ven nítidas"
+      ]
+    },
+    {
       "id": "2026-11-13-servidor-Todas-las-tiendas-de-aspecto-en-una-sola",
       "fecha": "2026-11-13",
       "tipo": "servidor",
