@@ -2,6 +2,20 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-13-servidor-Todas-las-tiendas-de-aspecto-en-una-sola",
+      "fecha": "2026-11-13",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Todas las tiendas de aspecto, en una sola",
+      "puntos": [
+        "Cosméticos, muebles, peluches, skins, placas, la tienda nocturna y la de lujo, ahora juntos en la tienda «Cosméticos»",
+        "Cuatro pestañas: Ropa, Muebles, Skins y Placas, con buscador y filtros",
+        "Ábrela desde el PokéNav, en Tiendas → Cosméticos",
+        "Antes de pagar ves lo que compras y lo que te queda; si cancelas, no se cobra nada",
+        "/tiendanocturna, /placas y /lujo siguen abriendo su tienda como siempre"
+      ]
+    },
+    {
       "id": "2026-11-13-servidor-Las-bodas-estrenan-pantallas-nuevas",
       "fecha": "2026-11-13",
       "tipo": "servidor",
