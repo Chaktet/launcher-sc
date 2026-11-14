@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-13-servidor-Las-bodas-estrenan-pantallas-nuevas",
+      "fecha": "2026-11-13",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Las bodas estrenan pantallas nuevas",
+      "puntos": [
+        "Pedir matrimonio, vuestra pareja, la familia, la iglesia y los regalos se abren en pantallas del estilo de la PokéNav, sin cofres",
+        "Escribe /boda, /casarse, /pareja o /divorcio y todo se hace con botones",
+        "Antes de enviar un regalo, invitar a alguien a la familia, reservar la iglesia o divorciarte te pide confirmación, para que no te equivoques"
+      ]
+    },
+    {
       "id": "2026-11-13-modpack-La-PokeNav-mas-comoda-buscador-pestanas-y-tiendas",
       "fecha": "2026-11-13",
       "tipo": "modpack",
