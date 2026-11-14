@@ -2,6 +2,21 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-14-servidor-La-Ruleta-Pokemon-se-renueva-en-la-PokeNav",
+      "fecha": "2026-11-14",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "La Ruleta Pokémon se renueva en la PokéNav",
+      "puntos": [
+        "Gira la ruleta con carretes animados: cuanto más rara la skin, más espectacular el premio",
+        "Tus tiradas y tu contador hacia la elección son los mismos en Kanto y en Kalos",
+        "Nuevo álbum de cada ruleta con las skins que ya tienes, y «Anteriores» con las ruletas terminadas",
+        "Prueba una skin en tu Pokémon antes de girar y mira en «En vivo» lo que gana toda la red",
+        "La Ruleta y la Tienda Nocturna ya salen en Tiendas → SCC",
+        "Reinicia el launcher para tenerla"
+      ]
+    },
+    {
       "id": "2026-11-14-modpack-Tienda-nueva-encuentra-cualquier-objeto-al-momento",
       "fecha": "2026-11-14",
       "tipo": "modpack",
