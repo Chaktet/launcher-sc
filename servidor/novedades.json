@@ -2,6 +2,21 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-13-modpack-La-PokeNav-mas-comoda-buscador-pestanas-y-tiendas",
+      "fecha": "2026-11-13",
+      "tipo": "modpack",
+      "clase": "cambio",
+      "titulo": "La PokéNav, más cómoda: buscador, pestañas y tiendas",
+      "puntos": [
+        "El buscador ya se ve como una casilla para escribir: pulsa «Escribe aquí…» y busca cualquier cosa",
+        "En Jugar, Premios, Mis cosas e Ir a, las secciones de la izquierda son pestañas: al pulsar una ves solo lo suyo",
+        "En la tienda de /shop puedes bajar la lista de categorías con la rueda del ratón y todos los nombres salen al mismo tamaño",
+        "En Ir a, «Más destinos» lleva a los warps del servidor y «Warps de jugadores» a los de los jugadores",
+        "La casilla «Puedo comprarlo» de las tiendas ya se marca bien dentro de su cuadro",
+        "Iconos sin fondos raros, textos centrados en Tiendas y la cabecera de cada función ya no sale cortada"
+      ]
+    },
+    {
       "id": "2026-11-13-servidor-Nueva-PokeNav-tiendas-y-cosmeticos-renovados",
       "fecha": "2026-11-13",
       "tipo": "servidor",
