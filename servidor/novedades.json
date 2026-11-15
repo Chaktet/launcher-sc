@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-15-modpack-El-Probador-de-la-Ruleta-arreglado",
+      "fecha": "2026-11-15",
+      "tipo": "modpack",
+      "clase": "arreglo",
+      "titulo": "El Probador de la Ruleta, arreglado",
+      "puntos": [
+        "El Pokémon ya no se sale del cuadro y gira sobre sí mismo",
+        "Ya se ven las skins de la caja de temporada, como la de Phione",
+        "El filtro «Me faltan» ya esconde las skins que tienes"
+      ]
+    },
+    {
       "id": "2026-11-15-servidor-Las-misiones-del-Pase-dicen-bien-lo-que-piden",
       "fecha": "2026-11-15",
       "tipo": "servidor",
