@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-15-servidor-Hoopa-Desatado-y-otras-formas-recuperan-sus-movimientos",
+      "fecha": "2026-11-15",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Hoopa Desatado y otras formas recuperan sus movimientos",
+      "puntos": [
+        "33 formas usaban los movimientos de su forma normal: por ejemplo, Hoopa Desatado no tenía Cerco Dimensión",
+        "Ya tienen los suyos: Deoxys, Shaymin Cielo, Dialga, Palkia y Giratina Origen, Zygarde Completo, Palafin Heroico, Silvally, Aegislash, Mimikyu y más",
+        "Si a tu Hoopa Desatado le sigue faltando Cerco Dimensión, cámbialo a Contenido y otra vez a Desatado"
+      ]
+    },
+    {
       "id": "2026-11-15-servidor-Entra-con-tu-cuenta-original-aunque-cambien-las-mayusculas",
       "fecha": "2026-11-15",
       "tipo": "servidor",
