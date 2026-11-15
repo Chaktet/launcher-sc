@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-15-servidor-Entra-con-tu-cuenta-original-aunque-cambien-las-mayusculas",
+      "fecha": "2026-11-15",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Entra con tu cuenta original aunque cambien las mayúsculas",
+      "puntos": [
+        "Si tu cuenta original de Minecraft escribe tu nombre con otras mayúsculas que tu cuenta del servidor, antes no te dejaba entrar",
+        "Ahora entras sin problema y tu nombre queda escrito como en tu cuenta original"
+      ]
+    },
+    {
       "id": "2026-11-15-modpack-El-Probador-de-la-Ruleta-arreglado",
       "fecha": "2026-11-15",
       "tipo": "modpack",
