@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-15-servidor-Las-placas-ya-se-ven-con-su-diseno-en-la-tienda",
+      "fecha": "2026-11-15",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Las placas ya se ven con su diseño en la tienda",
+      "puntos": [
+        "En la tienda de placas de la PokéNav las placas salían negras",
+        "Ahora ves cada placa con sus colores, también en la ventana «Revisa tu compra»"
+      ]
+    },
+    {
       "id": "2026-11-15-servidor-Hoopa-Desatado-y-otras-formas-recuperan-sus-movimientos",
       "fecha": "2026-11-15",
       "tipo": "servidor",
