@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-15-servidor-Cambiar-de-region-ya-no-te-saca-de-la-cola-del-gimnasio",
+      "fecha": "2026-11-15",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Cambiar de región ya no te saca de la cola del gimnasio",
+      "puntos": [
+        "Antes, si te apuntabas a un gimnasio y te ibas a otra región, a veces perdías tu puesto en la fila.",
+        "Ahora lo conservas: cuando te toque, te llevamos solo al gimnasio desde la región donde estés.",
+        "Solo lo pierdes si pasas 3 minutos sin estar en ninguna región (desconectado o en el Lobby)."
+      ]
+    },
+    {
       "id": "2026-11-14-servidor-La-Ruleta-Pokemon-se-renueva-en-la-PokeNav",
       "fecha": "2026-11-14",
       "tipo": "servidor",
