@@ -361,7 +361,15 @@
     "2026-11-13-servidor-Todas-las-tiendas-de-aspecto-en-una-sola",
     "2026-11-13-servidor-Las-bodas-estrenan-pantallas-nuevas",
     "2026-11-13-modpack-La-PokeNav-mas-comoda-buscador-pestanas-y-tiendas",
-    "2026-11-14-modpack-Tienda-nueva-encuentra-cualquier-objeto-al-momento"
+    "2026-11-14-modpack-Tienda-nueva-encuentra-cualquier-objeto-al-momento",
+    "2026-11-14-servidor-La-Ruleta-Pokemon-se-renueva-en-la-PokeNav",
+    "2026-11-15-servidor-Las-tiendas-ensenan-bien-los-objetos-especiales",
+    "2026-11-15-servidor-Las-placas-ya-se-ven-con-su-diseno-en-la-tienda",
+    "2026-11-15-servidor-Hoopa-Desatado-y-otras-formas-recuperan-sus-movimientos",
+    "2026-11-15-servidor-Entra-con-tu-cuenta-original-aunque-cambien-las-mayusculas",
+    "2026-11-15-modpack-El-Probador-de-la-Ruleta-arreglado",
+    "2026-11-15-servidor-Cambiar-de-region-ya-no-te-saca-de-la-cola-del-gimnasio",
+    "2026-11-15-servidor-Las-misiones-del-Pase-dicen-bien-lo-que-piden"
   ],
   "mensajes": [
     {
@@ -1059,6 +1067,20 @@
         "2026-11-13-servidor-Las-bodas-estrenan-pantallas-nuevas",
         "2026-11-13-modpack-La-PokeNav-mas-comoda-buscador-pestanas-y-tiendas",
         "2026-11-14-modpack-Tienda-nueva-encuentra-cualquier-objeto-al-momento"
+      ]
+    },
+    {
+      "fecha": "2026-11-15",
+      "mensaje": "1571492369147109446",
+      "entradas": [
+        "2026-11-14-servidor-La-Ruleta-Pokemon-se-renueva-en-la-PokeNav",
+        "2026-11-15-servidor-Las-tiendas-ensenan-bien-los-objetos-especiales",
+        "2026-11-15-servidor-Las-placas-ya-se-ven-con-su-diseno-en-la-tienda",
+        "2026-11-15-servidor-Hoopa-Desatado-y-otras-formas-recuperan-sus-movimientos",
+        "2026-11-15-servidor-Entra-con-tu-cuenta-original-aunque-cambien-las-mayusculas",
+        "2026-11-15-modpack-El-Probador-de-la-Ruleta-arreglado",
+        "2026-11-15-servidor-Cambiar-de-region-ya-no-te-saca-de-la-cola-del-gimnasio",
+        "2026-11-15-servidor-Las-misiones-del-Pase-dicen-bien-lo-que-piden"
       ]
     }
   ]
