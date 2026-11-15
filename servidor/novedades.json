@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-15-servidor-Las-tiendas-ensenan-bien-los-objetos-especiales",
+      "fecha": "2026-11-15",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Las tiendas enseñan bien los objetos especiales",
+      "puntos": [
+        "Las máscaras de Ogerpon, la Pulsera Mega, los orbes y otros objetos especiales salían como una esmeralda o un diamante en las tiendas de Raids y de la Torre y en las recompensas del Pase de Batalla",
+        "Ahora se ven con su dibujo, y en la tienda de Raids con su nombre en español",
+        "Al comprar un pack, la ventana «Revisa tu compra» ya enseña su icono"
+      ]
+    },
+    {
       "id": "2026-11-15-servidor-Las-placas-ya-se-ven-con-su-diseno-en-la-tienda",
       "fecha": "2026-11-15",
       "tipo": "servidor",
