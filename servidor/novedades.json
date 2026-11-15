@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-15-servidor-Las-misiones-del-Pase-dicen-bien-lo-que-piden",
+      "fecha": "2026-11-15",
+      "tipo": "servidor",
+      "clase": "retoque",
+      "titulo": "Las misiones del Pase dicen bien lo que piden",
+      "puntos": [
+        "«Evoluciona 10 Pokémon» ahora avisa de que tienen que ser de tipo fuego",
+        "Las de subir de nivel ya dicen que cuentan niveles: «Sube 10 niveles a tus Pokémon»"
+      ]
+    },
+    {
       "id": "2026-11-15-servidor-Cambiar-de-region-ya-no-te-saca-de-la-cola-del-gimnasio",
       "fecha": "2026-11-15",
       "tipo": "servidor",
