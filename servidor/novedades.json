@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-16-pack-SC-3.3.41",
+      "fecha": "2026-11-16",
+      "tipo": "pack",
+      "clase": "cambio",
+      "version": "SC-3.3.41",
+      "titulo": "Muebles y peluches más ligeros",
+      "puntos": [
+        "Los muebles y peluches gastan menos FPS: donde hay muchos juntos el juego va más fluido"
+      ]
+    },
+    {
       "id": "2026-11-16-servidor-Tu-nivel-de-mineria-y-tu-pico-ya-se-notan-al-ganar",
       "fecha": "2026-11-16",
       "tipo": "servidor",
