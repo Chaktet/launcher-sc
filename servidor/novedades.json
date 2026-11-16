@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-16-servidor-Fusion-de-Ditto-6x31-en-el-PokeBuilder",
+      "fecha": "2026-11-16",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Fusión de Ditto 6x31 en el PokéBuilder",
+      "puntos": [
+        "Un Ditto con skin puede quedar 6x31: entregas un Ditto 6x31 sin skin y desaparece.",
+        "Solo pasan los IVs: skin, naturaleza, habilidad, shiny, ball, EVs, nivel y puestas se quedan.",
+        "Cuesta 580 SCC.",
+        "Ábrela con el botón «Fusión 6×31» en la ficha del Ditto o con /cobblebuilder fusion."
+      ]
+    },
+    {
       "id": "2026-11-15-servidor-Las-tiendas-ensenan-bien-los-objetos-especiales",
       "fecha": "2026-11-15",
       "tipo": "servidor",
