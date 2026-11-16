@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-16-servidor-Ya-puedes-evaluar-tus-peces-desde-la-Mochila",
+      "fecha": "2026-11-16",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Ya puedes evaluar tus peces «???» desde la Mochila",
+      "puntos": [
+        "En el PokéNav, ve a Pesca › Mochila › «Llevas encima»: cada pez sin evaluar tiene su botón «Evaluar». Es gratis y el pez se queda en el mismo hueco.",
+        "La pestaña «Llevas encima» ya enseña los peces y cebos que llevas, para guardarlos en la mochila o venderlos desde ahí."
+      ]
+    },
+    {
       "id": "2026-11-16-pack-SC-3.3.41",
       "fecha": "2026-11-16",
       "tipo": "pack",
