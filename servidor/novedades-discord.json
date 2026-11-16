@@ -369,7 +369,11 @@
     "2026-11-15-servidor-Entra-con-tu-cuenta-original-aunque-cambien-las-mayusculas",
     "2026-11-15-modpack-El-Probador-de-la-Ruleta-arreglado",
     "2026-11-15-servidor-Cambiar-de-region-ya-no-te-saca-de-la-cola-del-gimnasio",
-    "2026-11-15-servidor-Las-misiones-del-Pase-dicen-bien-lo-que-piden"
+    "2026-11-15-servidor-Las-misiones-del-Pase-dicen-bien-lo-que-piden",
+    "2026-11-16-servidor-Ya-puedes-evaluar-tus-peces-desde-la-Mochila",
+    "2026-11-16-pack-SC-3.3.41",
+    "2026-11-16-servidor-Tu-nivel-de-mineria-y-tu-pico-ya-se-notan-al-ganar",
+    "2026-11-16-servidor-Fusion-de-Ditto-6x31-en-el-PokeBuilder"
   ],
   "mensajes": [
     {
@@ -1081,6 +1085,16 @@
         "2026-11-15-modpack-El-Probador-de-la-Ruleta-arreglado",
         "2026-11-15-servidor-Cambiar-de-region-ya-no-te-saca-de-la-cola-del-gimnasio",
         "2026-11-15-servidor-Las-misiones-del-Pase-dicen-bien-lo-que-piden"
+      ]
+    },
+    {
+      "fecha": "2026-11-16",
+      "mensaje": "1571988407822057534",
+      "entradas": [
+        "2026-11-16-servidor-Ya-puedes-evaluar-tus-peces-desde-la-Mochila",
+        "2026-11-16-pack-SC-3.3.41",
+        "2026-11-16-servidor-Tu-nivel-de-mineria-y-tu-pico-ya-se-notan-al-ganar",
+        "2026-11-16-servidor-Fusion-de-Ditto-6x31-en-el-PokeBuilder"
       ]
     }
   ]
