@@ -2,6 +2,20 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-16-servidor-Tu-nivel-de-mineria-y-tu-pico-ya-se-notan-al-ganar",
+      "fecha": "2026-11-16",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Tu nivel de minería y tu pico ya se notan al ganar",
+      "puntos": [
+        "Cada pico a partir del T5 pica más rápido: un 8 % más por cada pico por encima del T4 (el T6 un 16 %, el T12 un 64 %).",
+        "La velocidad de picado de gemas, reliquias y encantamientos ya funciona de verdad: antes no hacía nada.",
+        "Desde el nivel 25 de minería, cada nivel te paga un 0,5 % más en el mercado, hasta un 37,5 % más a nivel 100. Prestigiar no te lo quita.",
+        "Cuanto más nivel tienes, más puedes entregar de un mismo material antes de que te baje el precio.",
+        "El dinero máximo del día no cambia: ahora llegas antes a él."
+      ]
+    },
+    {
       "id": "2026-11-16-servidor-Fusion-de-Ditto-6x31-en-el-PokeBuilder",
       "fecha": "2026-11-16",
       "tipo": "servidor",
