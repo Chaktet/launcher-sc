@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-17-servidor-Gimnasios-la-pantalla-te-dice-por-que-no-puedes-entrar",
+      "fecha": "2026-11-17",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Gimnasios: la pantalla te dice por qué no puedes entrar",
+      "puntos": [
+        "Si no podías unirte a la cola de un gimnasio, la pantalla solo te mandaba a mirar el chat",
+        "Ahora el motivo sale en la propia pantalla (por ejemplo, que te faltan horas de juego), también si el gimnasio es de la otra región",
+        "Los avisos largos del menú ya no se cortan a medias"
+      ]
+    },
+    {
       "id": "2026-11-17-servidor-Mineria-el-Encargo-Gemologico-ya-se-puede-completar",
       "fecha": "2026-11-17",
       "tipo": "servidor",
