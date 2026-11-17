@@ -2,6 +2,20 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-17-servidor-Mira-cada-placa-antes-de-comprarla",
+      "fecha": "2026-11-17",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Mira cada placa antes de comprarla",
+      "puntos": [
+        "La tienda de placas muestra cada placa en grande y con sus colores (antes algunas se veían en negro).",
+        "Pulsa una placa y se abre una vista previa: la ves en grande, con su animación, y cómo queda en el chat con tu nombre.",
+        "Desde la vista previa puedes comprarla o ponértela al momento.",
+        "En «Revisa tu compra» también ves la placa que vas a comprar.",
+        "Ábrela con /placas y pulsa «Conseguir más»."
+      ]
+    },
+    {
       "id": "2026-11-17-servidor-Los-Mega-Shard-antiguos-vuelven-a-servir",
       "fecha": "2026-11-17",
       "tipo": "servidor",
