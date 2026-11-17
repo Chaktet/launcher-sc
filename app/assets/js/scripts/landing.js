@@ -2173,6 +2173,77 @@ function scPistaCrash(texto){
     return pista
 }
 
+// Mensajes de Cobblemon 1.8.3 cuando le falta algo del resource pack (sacados de sus clases:
+// BedrockAnimationRepository, VaryingRenderableResolver, JsonPose). Solo cuentan como LÍNEA
+// ENTERA de una IllegalArgumentException/IllegalStateException (la cabecera de la excepción o
+// su «Caused by:»), nunca como texto suelto en otra parte del informe, y además la traza que
+// sigue tiene que pasar por com.cobblemon (revisión de Codex 17-11: buscado en texto libre,
+// cualquier otra línea con esas palabras podía colar un nombre de jugador o un trozo de ruta).
+// Cada nombre: identificador sin "/" ni "\" ni espacios y hasta el final de la línea, así
+// que una ruta del disco (C:\Users\Alice\…, /home/alice/…) no casa nunca.
+// Hasta 200 caracteres para reconocer el mensaje aunque el nombre sea largo: el tope de 60
+// se aplica al montar b, y así w llega igual (revisión de Codex r3).
+const SC_NOMBRE_PACK = '((?:[a-z0-9_.-]{1,40}:)?[A-Za-z0-9_.-]{1,200})'
+const SC_FALTA_COBBLEMON = [
+    ['Unknown animation group: ' + SC_NOMBRE_PACK, 'grupo'],
+    ['Animation ([A-Za-z0-9_.-]{1,200}) not found in animation group ' + SC_NOMBRE_PACK, 'animacion'],
+    ['Unable to find a poser for ' + SC_NOMBRE_PACK + ' with aspects .*', 'poser'],
+    ['No poser found for name: ' + SC_NOMBRE_PACK, 'poser'],
+    ['Unable to find a model for ' + SC_NOMBRE_PACK + '(?: .*)?', 'modelo'],
+    ['Unable to find a texture for ' + SC_NOMBRE_PACK + '(?: .*)?', 'textura'],
+    ['Unknown pose type ' + SC_NOMBRE_PACK, 'pose']
+].map(([msg, w]) => [new RegExp('^\\s*(?:Caused by: )?java\\.lang\\.Illegal(?:Argument|State)Exception: ' + msg + '\\s*$'), w])
+
+/** Una parte del nombre ya limpia (namespace:id → namespace.id), o null si no es un identificador. */
+function scParteNombrePack(s){
+    const limpio = String(s || '').replace(/:/g, '.').replace(/\.{2,}/g, '.').replace(/^\.|\.$/g, '')
+    // Fuera lo que parece una IP o un número suelto: un grupo del pack siempre lleva letras.
+    if(!/^[A-Za-z0-9_-]+(\.[A-Za-z0-9_-]+)*$/.test(limpio) || !/[A-Za-z]/.test(limpio)
+        || /^\d{1,3}(\.\d{1,3}){3}$/.test(limpio)){
+        return null
+    }
+    return limpio
+}
+
+/**
+ * Qué recurso del pack no encontró Cobblemon (1.17.23, Felix 17-11). Los SC-90 con
+ * IllegalArgumentException en com.cobblemon subieron a 6 en un día y no se sabía cuál era:
+ * los dos casos aclarados (Armarouge 04-11, Zeraora 16-11) eran un grupo de animación que
+ * faltaba. El nombre es el que Cobblemon buscó en el pack (grupo, poser o especie), no algo
+ * que escriba el jugador. Se manda como «tipo.nombre» en b (grupo.zeraora,
+ * animacion.medicham.ground_idle) para que el tipo y el nombre lleguen juntos; si no cabe
+ * entero en 60 caracteres no se recorta: va solo el grupo o nada (w llega igual).
+ *
+ * @returns {{w: string, b: string|null}|null} Tipo fijo (w) y «tipo.nombre» (b), o null.
+ */
+function scRecursoCobblemonQueFalta(texto){
+    const lineas = String(texto || '').split('\n').slice(0, 200)
+    for(let i = 0; i < lineas.length; i++){
+        for(const [re, w] of SC_FALTA_COBBLEMON){
+            const m = re.exec(lineas[i].replace(/\r$/, ''))
+            if(!m){
+                continue
+            }
+            // El PRIMER marco de esta excepción, justo en la línea siguiente, tiene que ser el código
+            // de render de Cobblemon que lanza esos mensajes (BedrockAnimationRepository,
+            // VaryingRenderableResolver, JsonPose…). Mirar más abajo dejaba pasar un mensaje de otro
+            // mod si el «Caused by:» siguiente tenía un marco de Cobblemon (revisión de Codex r2).
+            if(!/^\s*at (?:[\w-]+\/\/)?com\.cobblemon\.mod\.common\.client\.render\.[\w.$]+\.[\w$<>]+\(/.test(lineas[i + 1] || '')){
+                continue
+            }
+            const grupo = scParteNombrePack(w === 'animacion' ? m[2] : m[1])
+            const anim = w === 'animacion' ? scParteNombrePack(m[1]) : null
+            if(!grupo){
+                return { w, b: null }
+            }
+            const completo = [w, grupo, anim].filter(Boolean).join('.')
+            const soloGrupo = w + '.' + grupo
+            return { w, b: completo.length <= 60 ? completo : (soloGrupo.length <= 60 ? soloGrupo : null) }
+        }
+    }
+    return null
+}
+
 /**
  * Pista anónima de un fallo de arranque (1.16.18). Hasta ahora SC-04 "otro", SC-05 y
  * SC-06 llegaban sin nada más que el código y no había forma de saber qué arreglar.
@@ -2357,6 +2428,15 @@ function scAvisoCrashPartida(code, perfilJugado, inicio){
         // una anterior (revisión de Codex).
         const crash = scCrashReportDe(perfilJugado, inicio)
         const pista = scPistaCrash(crash)
+        // Qué recurso del pack no encontró Cobblemon (1.17.23): solo en SC-90, en campos propios
+        // (w tipo, b tipo.nombre) para no mezclarlo con la pista Java de d.
+        const recurso = scRecursoCobblemonQueFalta(crash)
+        if(recurso){
+            pista.w = recurso.w
+            if(recurso.b){
+                pista.b = recurso.b
+            }
+        }
         pista.e = String(code).replace(/[^0-9-]/g, '').slice(0, 11) || 'x'
         pista.p = /superlite/i.test(perfilJugado) ? 'superlite' : (/lite/i.test(perfilJugado) ? 'lite' : 'pro')
         // Cierre nativo: la biblioteca donde murió es la pista (nvoglv64.dll = driver NVIDIA).

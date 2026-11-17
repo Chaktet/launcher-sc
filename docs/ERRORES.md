@@ -428,6 +428,8 @@ mismo código cuenta una vez por minuto. Se apaga en Ajustes → Launcher (`envi
   | Campo | Qué es | De dónde sale |
   |---|---|---|
   | `d` | Lo que falta en un `NoSuchMethodError`, `NoClassDefFoundError`… (`…battle.BattleGUI.renderTypeIcon`) | `scPistaCrash()` |
+  | `w` | Solo SC-90, desde la 1.17.23 (17-11): qué recurso del pack no encontró Cobblemon: `grupo`, `animacion`, `poser`, `modelo`, `textura` o `pose`. Solo cuenta la línea entera de una `IllegalArgumentException`/`IllegalStateException` cuyo primer marco es el render de Cobblemon (`com.cobblemon.mod.common.client.render.…`) | `scRecursoCobblemonQueFalta()`, desde `scAvisoCrashPartida()` |
+  | `b` | Solo SC-90, desde la 1.17.23: `tipo.nombre` de ese recurso (`grupo.zeraora`, `animacion.medicham.ground_idle`; sin recortar: si no cabe en 60, solo el grupo, y si tampoco, nada). El servidor solo lo cuenta si su tipo es el `w` de la misma petición | `scRecursoCobblemonQueFalta()` (llamada desde `scAvisoCrashPartida()`), de los mensajes `Unknown animation group: …`, `Animation … not found in animation group …`, `Unable to find a poser/model/texture for …`, `No poser found for name: …`, `Unknown pose type …` |
   | `y` | Mod del mixin que mete código en la clase que falla (`cobblemonextendedbattleui`) | «Mixins in Stacktrace» o `handler$zxx000$modid$` |
   | `l` | DLL donde murió Java (`nvoglv64.dll` = driver NVIDIA) | `Problematic frame` de `hs_err_pid*.log` (`scHsErrDe()`) |
   | `x` | En arranque, el error del sistema (`ECONNRESET`, `EPERM`…) o la excepción Java | `scPistaError()` |

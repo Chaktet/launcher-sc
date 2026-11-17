@@ -187,7 +187,11 @@ MAX_VALORES = 50
 # Desde la 1.17.9: a procesador real (x64, arm64), s compilacion de Windows, g marca de la grafica
 # (SC-06/12/13/90), q antivirus como clase fija (SC-14, SC-19), f que dejo el juego al morir y
 # u minutos jugados en tramos (SC-90). SC-19 = archivos borrados entre partidas (n cuantos, t que).
-CAMPOS_PISTA = ('x', 'm', 'd', 'y', 'l', 'e', 'h', 't', 'z', 'k', 'n', 'a', 's', 'g', 'q', 'f', 'u')
+# Desde la 1.17.23 (17-11), solo SC-90: w que recurso del pack no encontro Cobblemon (clase fija, W_VALIDOS) y
+# b = 'tipo.nombre' (grupo.zeraora), aparte de d para no mezclarlo con las pistas Java.
+CAMPOS_PISTA = ('x', 'm', 'd', 'y', 'l', 'e', 'h', 't', 'z', 'k', 'n', 'a', 's', 'g', 'q', 'f', 'u', 'w', 'b')
+W_VALIDOS = ('grupo', 'animacion', 'poser', 'modelo', 'textura', 'pose')
+RE_RECURSO_PACK = re.compile(r'^[a-z]+(\.[A-Za-z0-9_-]+)+$')
 # Claves con tope de valores por prefijo: recursos (inf_r_), pistas (inf_p_) y, desde el 20-10, tambien
 # versiones (inf_v_) y las de SC-90 de la 1.16.12 (inf_m_, inf_x_): antes, variando v, m o x en una query
 # hecha a mano se creaban claves sin limite que fusionar() guardaba para siempre (revision de Codex).
@@ -271,6 +275,14 @@ def contar_informes():
                             for campo in CAMPOS_PISTA:
                                 val = q.get(campo, '')
                                 if not RE_PISTA.match(val):
+                                    continue
+                                # w y b (1.17.23) solo en SC-90: w con sus valores fijos y b = 'w.nombre' con el mismo w de la
+                                # peticion y al menos un nombre, para que una query hecha a mano no meta pares inventados ni
+                                # vacios (revisiones de Codex 17-11).
+                                if campo == 'w' and (q['c'] != 'SC-90' or val not in W_VALIDOS):
+                                    continue
+                                if campo == 'b' and (q['c'] != 'SC-90' or q.get('w') not in W_VALIDOS
+                                                     or not RE_RECURSO_PACK.match(val) or val.split('.', 1)[0] != q.get('w')):
                                     continue
                                 anadir(s, 'inf_p_%s_%s_%s' % (q['c'], campo, val), ip)
                         if q['c'] in CODIGOS_RECURSOS:
