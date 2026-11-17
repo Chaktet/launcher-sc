@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-17-servidor-Separar-una-fusion-ya-no-le-quita-la-skin",
+      "fecha": "2026-11-17",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Separar una fusión ya no le quita la skin",
+      "puntos": [
+        "Si fusionabas un Pokémon con skin (por ejemplo, un Glastrier con Calyrex), al separarlos volvía sin su skin",
+        "Ahora vuelve el mismo Pokémon, con su skin y su mote",
+        "Vale para las fusiones que hagas desde hoy: si ya tenías uno fusionado con skin, abre un ticket antes de separarlo"
+      ]
+    },
+    {
       "id": "2026-11-17-servidor-Las-megapiedras-antiguas-vuelven-a-funcionar",
       "fecha": "2026-11-17",
       "tipo": "servidor",
