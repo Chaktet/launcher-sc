@@ -202,6 +202,18 @@
       ]
     },
     {
+      "id": "2026-11-16-servidor-El-corazon-de-los-casados-vuelve-al-chat",
+      "fecha": "2026-11-16",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "El corazón de los casados vuelve al chat",
+      "puntos": [
+        "Si estabas casado y llevabas una placa o un título, el corazón no salía junto a tu nombre en el chat",
+        "Ya sale, también cuando hablas desde la otra región",
+        "Si sigue sin salirte, avísanos por ticket"
+      ]
+    },
+    {
       "id": "2026-11-16-servidor-El-GTS-te-avisa-antes-de-que-caduquen-tus-anuncios",
       "fecha": "2026-11-16",
       "tipo": "servidor",
