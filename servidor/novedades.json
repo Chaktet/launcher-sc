@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-17-servidor-Tickets-nuevos-en-Discord",
+      "fecha": "2026-11-17",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Tickets nuevos en Discord",
+      "puntos": [
+        "Los tickets de Discord estrenan sistema propio: ábrelos desde el panel del canal de tickets",
+        "Cada ticket es un canal privado entre tú y el staff",
+        "Si tu caso lo lleva otro equipo, el staff lo pasa sin que tengas que abrir otro",
+        "Un ticket cerrado se puede seguir leyendo 7 días"
+      ]
+    },
+    {
       "id": "2026-11-17-servidor-Postulate-a-Helper-o-Builder-desde-la-pagina",
       "fecha": "2026-11-17",
       "tipo": "servidor",
