@@ -358,6 +358,17 @@
       ]
     },
     {
+      "id": "2026-11-14-servidor-Fuera-los-tirones-largos-del-menu-de-legendarios",
+      "fecha": "2026-11-14",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Fuera los tirones largos del menú de legendarios",
+      "puntos": [
+        "Mirar las skins posibles en el menú de legendarios podía congelar la región entre 10 y 24 segundos",
+        "Ya está arreglado en Kanto y en Kalos"
+      ]
+    },
+    {
       "id": "2026-11-14-servidor-La-Ruleta-Pokemon-se-renueva-en-la-PokeNav",
       "fecha": "2026-11-14",
       "tipo": "servidor",
