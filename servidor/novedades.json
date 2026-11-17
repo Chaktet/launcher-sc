@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-17-servidor-Pase-de-Batalla-llave-en-vez-de-un-fly-que-ya-tienes",
+      "fecha": "2026-11-17",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Pase de Batalla: llave en vez de un /fly que ya tienes",
+      "puntos": [
+        "Si ya puedes volar para siempre (por tu rango o porque compraste /fly), el fly temporal del Pase no te servía",
+        "Ahora recibes 1 Llave Evento por cada premio de fly temporal, y el menú del Pase ya te enseña la llave",
+        "Si no te llega, avísanos por ticket"
+      ]
+    },
+    {
       "id": "2026-11-17-servidor-Muebles-sofas-que-sientan-bien-y-mas-FPS",
       "fecha": "2026-11-17",
       "tipo": "servidor",
