@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-17-servidor-Clanes-ves-por-que-aun-no-sumas-en-las-misiones",
+      "fecha": "2026-11-17",
+      "tipo": "servidor",
+      "clase": "retoque",
+      "titulo": "Clanes: ves por qué aún no sumas en las misiones",
+      "puntos": [
+        "Si todavía no cuentas para las misiones de tu clan (llevas poco tiempo en el clan o pocas horas esa semana), ahora lo dice arriba, en la pantalla de misiones"
+      ]
+    },
+    {
       "id": "2026-11-17-servidor-Mirar-un-combate-ya-no-te-estropea-tu-ranked",
       "fecha": "2026-11-17",
       "tipo": "servidor",
