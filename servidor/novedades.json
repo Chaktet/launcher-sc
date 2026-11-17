@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-17-servidor-Los-vales-a-elegir-piden-confirmacion",
+      "fecha": "2026-11-17",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Los vales «a elegir» piden confirmación",
+      "puntos": [
+        "Al comprar un premio «a elegir», el clic de pagar podía escoger por ti la primera opción de la lista",
+        "Ahora eliges y después confirmas en «¿Confirmas?», con un botón para volver a la lista",
+        "Si ves algo raro, avísanos por ticket"
+      ]
+    },
+    {
       "id": "2026-11-17-servidor-Gimnasios-la-pantalla-te-dice-por-que-no-puedes-entrar",
       "fecha": "2026-11-17",
       "tipo": "servidor",
