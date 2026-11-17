@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-17-servidor-Pulsar-rapido-en-los-menus-ya-no-te-expulsa",
+      "fecha": "2026-11-17",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Pulsar rápido en los menús ya no te expulsa",
+      "puntos": [
+        "Si pulsabas muy seguido los botones de la PokéNav (torneos, comunidad, crianza, Pokéwiki…), el juego podía echarte por «spam»",
+        "Los botones de los menús ya no cuentan para eso",
+        "El chat y los mensajes privados siguen con su límite de siempre",
+        "Si te vuelve a pasar, avísanos por ticket"
+      ]
+    },
+    {
       "id": "2026-11-17-pack-SC-3.3.45",
       "fecha": "2026-11-17",
       "tipo": "pack",
