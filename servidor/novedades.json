@@ -358,6 +358,16 @@
       ]
     },
     {
+      "id": "2026-11-14-servidor-La-Tienda-Nocturna-tiene-mas-skins",
+      "fecha": "2026-11-14",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "La Tienda Nocturna tiene más skins",
+      "puntos": [
+        "Ahora también pueden salir las skins de las colecciones más nuevas: unas 275 más entre las que puede tocarte cada noche"
+      ]
+    },
+    {
       "id": "2026-11-14-servidor-Ya-puedes-comprar-llaves-de-5-10-o-25",
       "fecha": "2026-11-14",
       "tipo": "servidor",
