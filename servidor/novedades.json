@@ -16,18 +16,6 @@
       ]
     },
     {
-      "id": "2026-11-17-servidor-Los-Mega-Shard-antiguos-vuelven-a-servir",
-      "fecha": "2026-11-17",
-      "tipo": "servidor",
-      "clase": "arreglo",
-      "titulo": "Los Mega Shard antiguos vuelven a servir",
-      "puntos": [
-        "Los fragmentos rosas antiguos (Mega Shard) ya no tenían uso. Ahora se cambian solos, uno por uno, por Fragmentos Megapiedra.",
-        "Solo tienes que abrir la Herrería con ellos en el inventario: el cambio es automático y te avisa en el chat.",
-        "Úsalos en el Canje de megapiedra de la Herrería."
-      ]
-    },
-    {
       "id": "2026-11-16-servidor-Ya-puedes-evaluar-tus-peces-desde-la-Mochila",
       "fecha": "2026-11-16",
       "tipo": "servidor",
