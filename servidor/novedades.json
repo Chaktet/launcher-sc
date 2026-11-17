@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-17-servidor-Tienda-shop-los-botones-8-16-y-64-ya-suman",
+      "fecha": "2026-11-17",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Tienda /shop: los botones +8, +16 y +64 ya suman",
+      "puntos": [
+        "En la tienda nueva el botón 64 dejaba la cantidad en 64 y para pasar de ahí solo quedaba el +1",
+        "Ahora +8, +16 y +64 se van sumando, hasta lo que puedes pagar y te cabe en el inventario",
+        "«x1» vuelve a 1 y «Máx» sigue igual",
+        "/shop ya no abre a veces la tienda antigua"
+      ]
+    },
+    {
       "id": "2026-11-17-servidor-Los-vales-a-elegir-piden-confirmacion",
       "fecha": "2026-11-17",
       "tipo": "servidor",
