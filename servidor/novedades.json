@@ -2,6 +2,20 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-17-servidor-Muebles-sofas-que-sientan-bien-y-mas-FPS",
+      "fecha": "2026-11-17",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Muebles: sofás que sientan bien y más FPS",
+      "puntos": [
+        "Los sillones del Salón recreativo y de Ciudad Cyber ya sirven para sentarse",
+        "En sofás y bancos largos hay una plaza por bloque: te sientas en la que miras, no en el centro, y mirando al frente",
+        "Donde hay muchísimos muebles juntos ves los más cercanos; en el armario de /cosmetics, el botón de muebles te deja elegir Cercanos, Todos o No",
+        "De lejos, los muebles se dibujan más sencillos para ganar FPS",
+        "Si ves algún mueble raro, avísanos por ticket"
+      ]
+    },
+    {
       "id": "2026-11-17-servidor-Tickets-nuevos-en-Discord",
       "fecha": "2026-11-17",
       "tipo": "servidor",
