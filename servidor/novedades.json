@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-17-servidor-Escaparate-de-skins-en-el-spawn-cambia-cada-dia",
+      "fecha": "2026-11-17",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Escaparate de skins en el spawn: cambia cada día",
+      "puntos": [
+        "Los Pokémon con skin del centro del spawn ahora son un escaparate de 8 puestos con skins legendarias, míticas y exclusivas",
+        "Cambian cada día, y el mismo día no hay dos iguales ni dos de la misma especie",
+        "Quedan 8 por spawn en vez de una veintena, para que el spawn pese menos"
+      ]
+    },
+    {
       "id": "2026-11-17-servidor-Mira-cada-placa-antes-de-comprarla",
       "fecha": "2026-11-17",
       "tipo": "servidor",
