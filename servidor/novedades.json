@@ -202,6 +202,20 @@
       ]
     },
     {
+      "id": "2026-11-16-servidor-El-GTS-te-avisa-antes-de-que-caduquen-tus-anuncios",
+      "fecha": "2026-11-16",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "El GTS te avisa antes de que caduquen tus anuncios",
+      "puntos": [
+        "En tus anuncios ves cuánto tiempo les queda; se pone en rojo cuando falta menos de 1 hora",
+        "En «Tus ventas» ves cuál es el próximo en caducar",
+        "Te avisamos cuando a un anuncio le queda su última hora, y si caduca sin venderse te lo devolvemos",
+        "En las subastas, el vendedor y quien va ganando reciben un aviso 10 minutos antes del final",
+        "En el móvil, descarga el pack nuevo para verlo"
+      ]
+    },
+    {
       "id": "2026-11-16-servidor-Ya-puedes-evaluar-tus-peces-desde-la-Mochila",
       "fecha": "2026-11-16",
       "tipo": "servidor",
