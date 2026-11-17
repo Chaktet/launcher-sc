@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-17-servidor-Las-megapiedras-antiguas-vuelven-a-funcionar",
+      "fecha": "2026-11-17",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Las megapiedras antiguas vuelven a funcionar",
+      "puntos": [
+        "Las megapiedras de antes se veían como cristales o sin dibujo y no megaevolucionaban",
+        "Ahora se cambian solas por las nuevas, la misma cantidad: al entrar, y las de tus cofres al abrirlos",
+        "El Mega Charm antiguo pasa a ser la Pulsera Mega",
+        "Si alguna no se te cambia, avísanos por ticket"
+      ]
+    },
+    {
       "id": "2026-11-17-servidor-Pulsar-rapido-en-los-menus-ya-no-te-expulsa",
       "fecha": "2026-11-17",
       "tipo": "servidor",
