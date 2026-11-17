@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-17-servidor-Postulate-a-Helper-o-Builder-desde-la-pagina",
+      "fecha": "2026-11-17",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Postúlate a Helper o Builder desde la página",
+      "puntos": [
+        "Ya puedes postularte al staff en servidorcobblemon.es/postular",
+        "Hay dos convocatorias abiertas: Helper y Builder",
+        "La respuesta te llega por mensaje privado de Discord"
+      ]
+    },
+    {
       "id": "2026-11-17-servidor-Escaparate-de-skins-en-el-spawn-cambia-cada-dia",
       "fecha": "2026-11-17",
       "tipo": "servidor",
