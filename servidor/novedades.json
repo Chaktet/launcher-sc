@@ -358,6 +358,19 @@
       ]
     },
     {
+      "id": "2026-11-14-servidor-Ya-puedes-comprar-llaves-de-5-10-o-25",
+      "fecha": "2026-11-14",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Ya puedes comprar llaves de 5, 10 o 25",
+      "puntos": [
+        "En Tiendas → SCC → Llaves la compra se quedaba siempre en 1, aunque la tarjeta dijera x5, x10 o x25",
+        "Ya eliges la cantidad antes de pagar",
+        "El botón «Comprar tiradas» de la Ruleta ya abre la compra",
+        "Si algo no te funciona, avísanos por ticket"
+      ]
+    },
+    {
       "id": "2026-11-14-servidor-Fuera-los-tirones-largos-del-menu-de-legendarios",
       "fecha": "2026-11-14",
       "tipo": "servidor",
