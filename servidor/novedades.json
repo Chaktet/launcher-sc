@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-17-servidor-Mineria-el-Encargo-Gemologico-ya-se-puede-completar",
+      "fecha": "2026-11-17",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Minería: el Encargo Gemológico ya se puede completar",
+      "puntos": [
+        "El contrato que pide gemas salía como «Picar bloques» y no había forma de entregarlas",
+        "Ahora «Entregar» abre una ventana con tus gemas sueltas que valen para el contrato",
+        "Cada gema que entregas se vende al mercado a su precio y suma 1 al contrato",
+        "Si algo no te cuadra, avísanos por ticket"
+      ]
+    },
+    {
       "id": "2026-11-17-servidor-Separar-una-fusion-ya-no-le-quita-la-skin",
       "fecha": "2026-11-17",
       "tipo": "servidor",
