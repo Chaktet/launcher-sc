@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-17-pack-SC-3.3.45",
+      "fecha": "2026-11-17",
+      "tipo": "pack",
+      "clase": "arreglo",
+      "version": "SC-3.3.45",
+      "titulo": "Los muebles que se veían rotos, arreglados",
+      "puntos": [
+        "Tras la última actualización, unos 50 muebles (farolas, lámparas, carteles…) se veían con partes de menos",
+        "Vuelven a verse como antes",
+        "Se descarga solo al abrir el launcher"
+      ]
+    },
+    {
       "id": "2026-11-17-servidor-Pase-de-Batalla-llave-en-vez-de-un-fly-que-ya-tienes",
       "fecha": "2026-11-17",
       "tipo": "servidor",
