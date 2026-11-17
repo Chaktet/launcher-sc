@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-17-servidor-Mirar-un-combate-ya-no-te-estropea-tu-ranked",
+      "fecha": "2026-11-17",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Mirar un combate ya no te estropea tu ranked",
+      "puntos": [
+        "Si estabas de espectador en un combate y empezaba tu ranked, no podías elegir ataques y acababas perdiendo puntos",
+        "Ahora, al empezar tu ranked, dejas de ver el otro combate automáticamente",
+        "Si te vuelve a pasar, avísanos por ticket"
+      ]
+    },
+    {
       "id": "2026-11-17-servidor-Tienda-shop-los-botones-8-16-y-64-ya-suman",
       "fecha": "2026-11-17",
       "tipo": "servidor",
