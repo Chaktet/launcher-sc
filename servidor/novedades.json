@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-18-servidor-Mineria-el-netherrack-y-los-planos-mejor-explicados",
+      "fecha": "2026-11-18",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Minería: el netherrack y los planos, mejor explicados",
+      "puntos": [
+        "Al entregar netherrack en el mercado te decía que no lo habías picado tú, aunque lo hubieras picado con tu pico.",
+        "El netherrack, el basalto y la obsidiana son bloques de relleno: se pican, pero el gremio no los compra ni dan planos. El mercado ya te lo explica así.",
+        "En la forja, el plano del T7 dice dónde cae: blackstone, soul sand y menas del Nether."
+      ]
+    },
+    {
       "id": "2026-11-18-servidor-Mineria-el-dinero-del-premio-de-temporada-ya-llega-entero",
       "fecha": "2026-11-18",
       "tipo": "servidor",
