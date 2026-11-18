@@ -21,6 +21,7 @@ distinguir de un vistazo el código heredado del propio y hacer merges del upstr
 | [index.js](../index.js) | Proceso principal de Electron. Ventana, auto-updater, ventanas OAuth de Microsoft. |
 | [app/assets/js/preloader.js](../app/assets/js/preloader.js) | Se ejecuta antes que la UI: engancha el registro, carga la distribución con límite de tiempo, limpia el directorio de datos. |
 | [app/assets/js/registro.js](../app/assets/js/registro.js) | **Propio.** Registro a disco + captura de errores globales. |
+| [app/assets/js/sccandado.js](../app/assets/js/sccandado.js) | **Propio.** Candados de fichero (Windows): saber si el juego, el vigilante u otro launcher siguen vivos sin preguntar a Windows por procesos. **Nunca volver a PowerShell, WMI, `tasklist` ni `taskkill`**: los antivirus lo puntúan (1.17.24). Prueba: `node tools/prueba-candados.js`. |
 | [app/assets/js/scjuegoabierto.js](../app/assets/js/scjuegoabierto.js) | **Propio.** PID del juego en `<instancias>/sc-juego.pid`: reconoce un Minecraft abierto de una sesión anterior del launcher. |
 | [app/assets/js/distromanager.js](../app/assets/js/distromanager.js) | URL de la distribución remota. |
 | [app/assets/js/configmanager.js](../app/assets/js/configmanager.js) | Configuración del jugador en disco (RAM, cuentas, servidor elegido, `perfilElegido`). |

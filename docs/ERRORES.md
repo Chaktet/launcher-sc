@@ -246,7 +246,7 @@ con disco lento o antivirus revisando cada DLL, Java arrancaba antes de que exis
 
 ### Cosas que paran JUGAR sin código SC (1.7.4)
 
-- **Juego abierto de otra sesión.** Al lanzar se anota el PID en `<instancias>/sc-juego.pid`; si el launcher se reabre con ese Minecraft aún abierto (se comprueba la identidad del proceso: java, misma hora de creación y `--gameDir` dentro de nuestras instancias, para no confundirlo con otro java que haya heredado el PID), JUGAR avisa en vez de lanzar otro, y no se tocan `options.txt` ni se repara nada. Ver `app/assets/js/scjuegoabierto.js`.
+- **Juego abierto de otra sesión.** Al lanzar se anota el PID en `<instancias>/sc-juego.pid`; si el launcher se reabre con ese Minecraft aún abierto (en Windows, desde la 1.17.24, lo dice el candado de fichero que el juego hereda al nacer, `sc-vigilante/juego-<id>.lock`: ocupado = sigue abierto, sin mirar el PID ni lanzar PowerShell; en Mac y Linux se comprueba que el proceso sea java y que su `--gameDir` esté dentro de nuestras instancias), JUGAR avisa en vez de lanzar otro, y no se tocan `options.txt` ni se repara nada. Ver `app/assets/js/scjuegoabierto.js`.
 - **Fallo inesperado preparando el arranque.** `dlAsync()` es un envoltorio con `try/catch`: cualquier excepción no prevista sale como **SC-06** con Reintentar, en vez de dejar la barra de progreso puesta para siempre.
 
 ### SC-08 · RAM imposible (comprobación previa)

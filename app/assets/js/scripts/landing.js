@@ -4289,7 +4289,7 @@ async function scDlAsyncInterno(login = true) {
             // El juego sobrevive al launcher (launchDetached): se anota en disco para
             // reconocerlo si el launcher se reabre con él aún abierto.
             const scPid = proc.pid
-            ScJuegoAbierto.anotar(scPid, serv.rawServer.id)
+            ScJuegoAbierto.anotar(scPid, serv.rawServer.id, proc.candado)
             proc.on('exit', () => ScJuegoAbierto.borrar(scPid))
 
             // Bind listeners to stdout.

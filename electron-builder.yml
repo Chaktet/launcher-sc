@@ -50,6 +50,10 @@ nsis:
   # se instalen en silencio desde el propio launcher y que éste se reinicie solo.
   oneClick: true
   perMachine: false
+  # elevate.exe SE QUEDA (packElevateHelper por defecto). Se pensó quitarlo en la 1.17.24 por los
+  # antivirus, pero electron-updater lo usa de respaldo cuando el instalador de una actualización
+  # no arranca (EACCES/UNKNOWN), también en instalaciones por usuario, y con él dentro el
+  # instalador daba 0 detecciones de 68 en VirusTotal (1.17.22): quitarlo solo arriesgaba.
   allowElevation: true
   allowToChangeInstallationDirectory: false
   createDesktopShortcut: always

@@ -1,9 +1,12 @@
 {
   "name": "sclauncher",
-  "version": "1.17.23",
+  "version": "1.17.24",
   "productName": "SC Launcher",
   "description": "Launcher oficial de servidorcobblemon.es — servidor de Minecraft Java con Cobblemon",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
+  "author": "Servidor Cobblemon (https://servidorcobblemon.es)",
+  "contributors": [
+    "Daniel Scalzi (https://github.com/dscalzi/)"
+  ],
   "license": "MIT",
   "homepage": "https://servidorcobblemon.es",
   "bugs": {

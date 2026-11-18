@@ -1,6 +1,11 @@
 # SC Launcher · historial
 
 ## Estado actual
+- **1.17.24 PREPARADA, SIN PUBLICAR (17-11 noche, hora RD): fuera PowerShell/WMI, `tasklist` y `taskkill`.** Compilada y
+  firmada en `dist/` (sha256 `fcf96ab1…`, 93.732.760 B; empresa del exe «Servidor Cobblemon»). Falta: probar una partida
+  real con ella, OK de Felix para publicar, y luego CONGELAR el exe estable en esa versión y mandar ESE a Microsoft
+  (WDSI) y antivirus. Regla nueva: ningún programa externo de Windows para mirar o matar procesos
+  (`node tools/prueba-candados.js` lo comprueba). Entrada de hoy.
 - **1.17.23 publicada para Windows, Mac y Linux (17-11 ~20:20 hora RD): el SC-90 dice qué recurso del pack no encontró
   Cobblemon** (`w` tipo, `b` = `tipo.nombre`, p. ej. `grupo.zeraora`). sc-stats.py y mc-monitor ya lo leen (desplegados).
   Pendiente: mirar los primeros `b` en `stats.json` → `informes.pistas_hoy.SC-90.b` (o el MD del monitor) y arreglar
@@ -147,6 +152,24 @@
   el launcher. Novedad `2026-10-28-modpack-Adios-al-aviso-de-chat-no-verificado` (arreglo) solo en vista previa en
   «diseño-pruebas» (mensaje 1564857375410757703). **Publicada en el launcher el 28-10 15:55 UTC** con la de las
   misiones de escanear (OK de Felix: launcher sí, Discord no). El modpack móvil SC-Movil no lo lleva.
+
+## 2026-11-17 noche (hora RD) · 1.17.24 preparada: antivirus, candados en vez de PowerShell/tasklist/taskkill
+- Felix: Defender y otros antivirus siguen marcando el instalador aunque está firmado; «hemos hecho algo mal».
+- Medido: VirusTotal 0/68 en la 1.17.22 (la que sirve el enlace estable) y 0/67 en la 1.17.15; Defender local limpio
+  en la 1.17.23 y la 1.17.24. Hoy no es detección sino reputación (SmartScreen, fichero poco visto). Causas nuestras: el
+  certificado firmó de la 1.16.16 a la 1.17.13 un launcher que tocaba Defender por PowerShell; 13 instaladores firmados
+  en un mes (cada uno fichero nuevo, y la 1.17.15 enviada a Microsoft ya no es la que se sirve); señales que quedaban.
+- Cambio: `sccandado.js` (ficheros abiertos en exclusiva, `UV_FS_O_EXLOCK` = 0x10000000; el juego hereda el suyo por
+  stdio[3]). `scjuegoabierto.js`, `scvigilante.js`, `scvigilanteproceso.js` y `processbuilder.js` ya no lanzan
+  PowerShell, `tasklist` ni `taskkill`: «¿sigue vivo?» lo dice el candado, no el PID. Reclamaciones con id de instancia
+  al azar. `package.json`: autor «Servidor Cobblemon» (el exe decía «Daniel Scalzi» y la firma otro nombre).
+- NO se hizo: quitar `elevate.exe` (electron-updater lo usa de respaldo; con él ya daba 0/68) ni firmar las DLL de
+  Electron (sin firmar son las de serie, conocidas por todos; firmadas serían ficheros nuevos sin reputación).
+- Verificado: `tools/prueba-candados.js` 33/33 con Node, Electron y el exe firmado empaquetado; Java real arranca con
+  el candado heredado; lint de lo tocado; firma `Valid` y `comprueba-publisher` ok. Codex 5 rondas (`low`), todo
+  arreglado salvo un caso que dejo a Felix: si el candado no se puede crear Y el vigilante muere justo tras lanzar
+  Java, JUGAR no ve ese juego (Codex pide no lanzar sin candado; yo prefiero dejar jugar, antes tampoco se veía).
+- Sin probar: una partida real lanzada desde la 1.17.24 instalada.
 
 ## 2026-11-17 ~20:20 (hora RD) · 1.17.23: el SC-90 dice qué recurso del pack no encontró Cobblemon
 - **Pedido (Felix):** aviso del monitor de 5 SC-90 en una hora; elegido «añadirlo al launcher» para saber la causa.

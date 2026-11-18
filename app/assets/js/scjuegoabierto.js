@@ -9,24 +9,28 @@
  *
  * Un PID se reutiliza, y cualquier otro java.exe (otro launcher, un servidor local)
  * puede acabar con el número de un juego ya cerrado. Por eso no basta con que exista
- * un java con ese PID: se compara la IDENTIDAD del proceso, su hora de creación (la que
- * se anotó al lanzarlo) y que su argumento --gameDir esté dentro de nuestra carpeta de
- * instancias. Si no coincide, el juego anotado ya no está.
+ * un proceso con ese PID.
+ *  - Windows (1.17.24): el juego nace con un candado heredado (sccandado.js) cuya ruta va en
+ *    la marca. Mientras el candado esté ocupado, ESE juego sigue abierto; no se mira el PID.
+ *    Hasta la 1.17.23 se preguntaba a Windows por PowerShell (WMI): fuera, los antivirus
+ *    puntúan un PowerShell oculto que mira otros procesos (Felix 17-11-2026).
+ *  - Mac y Linux: se compara la identidad del proceso (que sea java y que su --gameDir
+ *    esté dentro de nuestra carpeta de instancias).
  *
  * Dos formas de preguntar:
  *  - juegoPrevioAbiertoAsync(): comprobación completa y fresca. Es la que hay que esperar
  *    antes de lanzar el juego, escribir options.txt, reparar o instalar una actualización.
  *  - juegoPrevioAbierto(): el último resultado conocido, sin esperar ni consultar nada
  *    (y pide uno nuevo en segundo plano si está viejo). Solo para avisos de la interfaz.
- * La consulta a Windows (PowerShell, ~1 s) va SIEMPRE en segundo plano: nunca bloquea la
- * interfaz, y si hay varias peticiones a la vez comparten la misma consulta.
  */
 const child_process = require('child_process')
 const fs            = require('fs')
+const os            = require('os')
 const path          = require('path')
 
 const { LoggerUtil } = require('helios-core')
 const ConfigManager  = require('./configmanager')
+const ScCandado      = require('./sccandado')
 
 const logger = LoggerUtil.getLogger('ScJuegoAbierto')
 
@@ -36,9 +40,6 @@ const FICHERO = 'sc-juego.pid'
 const MAX_SIN_VERIFICAR_MS = 12 * 3600 * 1000
 // Cada cuánto se refresca en segundo plano el resultado que usan los avisos pasivos.
 const PASIVO_MS = 30 * 1000
-// Margen entre la hora de creación real y la anotada.
-const MARGEN_CREADO_MS = 3000
-const MARGEN_DESDE_MS = 60 * 1000
 
 // Último resultado conocido (para juegoPrevioAbierto) y consulta en curso.
 let ultimo = { pid: null, en: 0 }
@@ -52,46 +53,23 @@ function normalizar(p){
     return String(p || '').replace(/\//g, '\\').replace(/\\+$/, '').toLowerCase()
 }
 
-// Sin saltarse la directiva de ejecución: solo afecta a scripts en fichero, no a `-Command`,
-// y los antivirus puntúan ese salto como sospechoso (Felix, 02-11).
-function powershell(comando, timeout){
-    return new Promise((resolve, reject) => {
-        child_process.execFile('powershell.exe',
-            ['-NoProfile', '-NonInteractive', '-Command', comando],
-            { encoding: 'utf8', timeout, windowsHide: true },
-            (err, out) => err ? reject(err) : resolve(String(out)))
-    })
-}
-
 /**
- * Identidad de un proceso: { creado: ms UTC|null, nombre, linea } o null si no existe.
- * Rechaza si no se puede consultar.
+ * Identidad de un proceso en Mac y Linux: { nombre, linea } o null si no existe. Rechaza si no
+ * se puede consultar. En Windows no se pregunta por otros procesos (ver arriba): rechaza.
  */
 async function identidad(pid){
     if(process.platform === 'win32'){
-        const out = await powershell('$p = Get-CimInstance Win32_Process -Filter \'ProcessId=' + Number(pid) + '\'; '
-            + 'if($p){ [Console]::Out.WriteLine($p.CreationDate.ToUniversalTime().ToString(\'o\')); '
-            + '[Console]::Out.WriteLine($p.Name); [Console]::Out.WriteLine([string]$p.CommandLine) }', 5000)
-        const lineas = out.split(/\r?\n/)
-        if(lineas[0].trim() === ''){
-            return null
-        }
-        const creado = Date.parse(lineas[0].trim())
-        return {
-            creado: Number.isFinite(creado) ? creado : null,
-            nombre: (lineas[1] || '').trim(),
-            linea: lineas.slice(2).join(' ')
-        }
+        throw new Error('En Windows la identidad la da el candado')
     }
     if(process.platform === 'linux'){
         const linea = (await fs.promises.readFile(`/proc/${pid}/cmdline`, 'utf8')).replace(/\0/g, ' ')
-        return { creado: null, nombre: linea.split(' ')[0], linea }
+        return { nombre: linea.split(' ')[0], linea }
     }
     const linea = await new Promise((resolve, reject) => {
         child_process.execFile('ps', ['-p', String(pid), '-o', 'command='], { encoding: 'utf8', timeout: 3000 },
             (err, out) => err && !out ? reject(err) : resolve(String(out || '')))
     })
-    return linea.trim() === '' ? null : { creado: null, nombre: linea.split(' ')[0], linea }
+    return linea.trim() === '' ? null : { nombre: linea.split(' ')[0], linea }
 }
 
 /** Valor del argumento --gameDir de una línea de comandos (con o sin comillas). */
@@ -100,30 +78,12 @@ function argumentoGameDir(linea){
     return m == null ? null : (m[1] || m[2])
 }
 
-/** Hora de creación anotada en segundo plano tras lanzar (no bloquea el arranque). */
-function anotarCreacion(pid){
-    if(process.platform !== 'win32'){
-        return
-    }
-    powershell('(Get-CimInstance Win32_Process -Filter \'ProcessId=' + Number(pid) + '\').CreationDate.ToUniversalTime().ToString(\'o\')', 10000)
-        .then(out => {
-            const creado = Date.parse(out.trim())
-            if(!Number.isFinite(creado)){
-                return
-            }
-            const d = JSON.parse(fs.readFileSync(ruta(), 'utf8'))
-            if(d.pid === pid){
-                d.creado = creado
-                fs.writeFileSync(ruta(), JSON.stringify(d))
-            }
-        })
-        .catch(() => {
-            // Sin hora exacta se compara con `desde`; o el juego ya se cerró.
-        })
-}
-
-/** Anota el juego recién lanzado. */
-exports.anotar = function(pid, servidor){
+/**
+ * Anota el juego recién lanzado.
+ *
+ * @param {string|null} candado Ruta del candado que heredó el juego (Windows), o null.
+ */
+exports.anotar = function(pid, servidor, candado){
     if(pid == null){
         return
     }
@@ -133,9 +93,9 @@ exports.anotar = function(pid, servidor){
             pid,
             servidor,
             desde: Date.now(),
-            instancias: ConfigManager.getInstanceDirectory()
+            instancias: ConfigManager.getInstanceDirectory(),
+            candado: typeof candado === 'string' ? candado : null
         }))
-        anotarCreacion(pid)
     } catch(e){
         logger.warn('No se pudo anotar el PID del juego', e)
     }
@@ -169,6 +129,15 @@ function existe(pid){
  * consultar.
  */
 async function esElJuegoAnotado(d){
+    if(typeof d.candado === 'string' && d.candado !== ''){
+        // true/false es definitivo: lo dice Windows, no el PID. null = no se pudo abrir por
+        // otro motivo (permisos, disco): decide la regla de la marca reciente.
+        return ScCandado.ocupado(d.candado)
+    }
+    if(process.platform === 'win32'){
+        // Marca sin candado (no se pudo crear): no hay a quién preguntar.
+        return null
+    }
     let id
     try {
         id = await identidad(d.pid)
@@ -179,15 +148,7 @@ async function esElJuegoAnotado(d){
     if(id == null || !/java/i.test(id.nombre)){
         return false
     }
-    if(id.creado != null){
-        const anotado = typeof d.creado === 'number' ? d.creado : d.desde
-        const margen = typeof d.creado === 'number' ? MARGEN_CREADO_MS : MARGEN_DESDE_MS
-        // Sin hora exacta, el juego se creó justo ANTES de anotar `desde`.
-        if(typeof anotado !== 'number' || Math.abs(id.creado - anotado) > margen){
-            return false
-        }
-    }
-    // Línea vacía = proceso de otro usuario sin permiso para leerla: decide la hora.
+    // Línea vacía = proceso de otro usuario sin permiso para leerla.
     if(id.linea.trim() !== ''){
         const gameDir = argumentoGameDir(id.linea)
         const instancias = normalizar(d.instancias || ConfigManager.getInstanceDirectory())
@@ -196,6 +157,28 @@ async function esElJuegoAnotado(d){
         }
     }
     return true
+}
+
+// Lo que devuelven las consultas cuando hay un juego abierto del que no se sabe el PID. No es
+// null (los llamadores solo miran eso) y nadie mata ni busca por este número.
+const PID_DESCONOCIDO = 0
+
+/**
+ * ¿Hay un juego nuestro abierto que no llegó a anotarse? Pasa si su vigilante murió entre lanzar
+ * Java y avisar al launcher: Java sigue con su candado, pero sc-juego.pid nunca se escribió y el
+ * siguiente JUGAR abriría un segundo Minecraft (revisión de Codex 17-11).
+ */
+function juegoSinMarca(){
+    if(!ScCandado.disponible){
+        return false
+    }
+    try {
+        const carpeta = path.join(ConfigManager.getInstanceDirectory(), 'sc-vigilante')
+        return fs.readdirSync(carpeta).some(f => /^juego-[0-9a-f]+\.lock$/.test(f) && ScCandado.ocupado(path.join(carpeta, f)) === true)
+    } catch(_e){
+        // Sin carpeta: nunca se lanzó nada.
+        return false
+    }
 }
 
 async function comprobar(){
@@ -209,11 +192,16 @@ async function comprobar(){
             } catch(_e){
                 // Marca ilegible: no prueba nada.
             }
-            let vivo = d != null && Number.isInteger(d.pid) && d.pid > 0 && existe(d.pid)
+            let vivo = d != null && Number.isInteger(d.pid) && d.pid > 0
             if(vivo){
+                // El candado manda sobre el PID; sin respuesta, PID vivo y marca reciente.
                 const r = await esElJuegoAnotado(d)
+                // Una marca anterior al último arranque del PC no puede ser de un proceso vivo
+                // (marcas de la 1.17.23, sin candado, tras un apagón con el juego abierto).
+                const arranque = Date.now() - os.uptime() * 1000
                 vivo = r === true
-                    || (r == null && Date.now() - (d.desde || 0) < MAX_SIN_VERIFICAR_MS)
+                    || (r == null && existe(d.pid) && (d.desde || 0) > arranque
+                        && Date.now() - (d.desde || 0) < MAX_SIN_VERIFICAR_MS)
             }
             if(vivo){
                 pid = d.pid
@@ -232,6 +220,9 @@ async function comprobar(){
         }
     } catch(e){
         logger.warn('No se pudo leer la marca del juego abierto', e)
+    }
+    if(pid == null && juegoSinMarca()){
+        pid = PID_DESCONOCIDO
     }
     ultimo = { pid, en: Date.now() }
     return pid

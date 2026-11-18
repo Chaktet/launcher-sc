@@ -15,6 +15,8 @@ const child_process = require('child_process')
 const fs            = require('fs')
 const path          = require('path')
 
+const ScCandado     = require('./sccandado')
+
 // Últimas líneas guardadas para el diagnóstico (igual que scSalidaError en landing.js).
 const MAX_LINEAS = 200
 // Mensajes de salida pendientes de enviar al launcher: lo que sobre se descarta, solo es
@@ -34,6 +36,11 @@ let rpc = null
 let rpcActividad = null
 let rutaVivo = null
 let rutaLog = null
+// Candado de este proceso (sccandado.js): abierto hasta morir, es lo que le dice al launcher que
+// este vigilante sigue vivo. Y la ruta del que hereda el juego.
+let rutaCandado = null
+let fdCandado = null
+let rutaCandadoJuego = null
 
 function log(texto){
     if(rutaLog == null){
@@ -204,6 +211,11 @@ function terminar(){
     } catch(_e){
         // Nada.
     }
+    ScCandado.cerrar(fdCandado)
+    fdCandado = null
+    if(rutaCandado != null){
+        ScCandado.borrar(rutaCandado)
+    }
     // Dar tiempo a que salgan el log y el último envío.
     setTimeout(() => process.exit(0), 200)
 }
@@ -213,6 +225,9 @@ function alCerrarJuego(code, signal){
     log('Juego cerrado code=' + code + ' signal=' + signal)
     cerrarDiscord()
     borrarMarcaJuego(pid)
+    if(rutaCandadoJuego != null){
+        ScCandado.borrar(rutaCandadoJuego)
+    }
     if(opciones.tempNativePath){
         fs.rm(opciones.tempNativePath, { recursive: true, force: true }, () => {})
     }
@@ -277,8 +292,22 @@ function lanzar(m){
     rutaVivo = path.join(opciones.carpeta, 'vivo-' + opciones.runId + '.json')
     // «lanzando» ANTES del spawn y el pid de Java justo después: si este proceso muere entre
     // medias, el launcher sabe por esta marca si puede haber un Java vivo (y no lanza otro).
-    escribirAtomico(rutaVivo, { pid: process.pid, runId: opciones.runId, desde: Date.now(), fase: 'lanzando' })
-    log('Lanzando juego (runId ' + opciones.runId + ')')
+    rutaCandado = path.join(opciones.carpeta, 'vivo-' + opciones.runId + '.lock')
+    fdCandado = ScCandado.abrir(rutaCandado)
+    // `candado: true` = este vigilante tiene candado y el launcher debe creerle a él, no al pid.
+    // El juego hereda su candado: sigue ocupado mientras viva, aunque este proceso muera. Su ruta
+    // va en la marca ANTES del spawn: si este proceso muere justo después, el launcher sabe por
+    // el candado si nació un Java aunque no llegara a anotarse su pid.
+    const candadoJuego = ScCandado.paraJuego(opciones.carpeta, opciones.runId)
+    rutaCandadoJuego = candadoJuego == null ? null : candadoJuego.ruta
+    const marca = { pid: process.pid, runId: opciones.runId, desde: Date.now(), candado: fdCandado != null, candadoJuego: rutaCandadoJuego }
+    try {
+        escribirAtomico(rutaVivo, Object.assign({ fase: 'lanzando' }, marca))
+    } catch(e){
+        ScCandado.soltar(candadoJuego)
+        throw e
+    }
+    log('Lanzando juego (runId ' + opciones.runId + ')' + (fdCandado == null ? ' sin candado' : ''))
 
     const reConectando = regex(opciones.reConectando)
     const reServidor = regex(opciones.reServidorUnido)
@@ -289,14 +318,17 @@ function lanzar(m){
             cwd: opciones.cwd,
             env: opciones.env,
             detached: true,
-            windowsHide: false
+            windowsHide: false,
+            stdio: ScCandado.stdio(candadoJuego)
         })
     } catch(e){
+        ScCandado.soltar(candadoJuego)
         log('spawn lanzó: ' + e.message)
         enviar({ tipo: 'error', origen: 'java', error: errorPlano(e) }, true)
         terminar()
         return
     }
+    ScCandado.soltar(candadoJuego)
 
     juego.on('error', (e) => {
         log('Error del proceso del juego: ' + e.message)
@@ -312,13 +344,13 @@ function lanzar(m){
         return
     }
     try {
-        escribirAtomico(rutaVivo, { pid: process.pid, runId: opciones.runId, desde: Date.now(), fase: 'lanzado', javaPid: juego.pid })
+        escribirAtomico(rutaVivo, Object.assign({ fase: 'lanzado', javaPid: juego.pid }, marca))
     } catch(e){
         // Sin esta marca el launcher no daría por seguro un respaldo: prefiere no lanzar otro.
         log('No se pudo anotar el pid de Java: ' + e.message)
     }
     // Sin unref(): el juego es justo lo que debe mantener vivo a este proceso.
-    enviar({ tipo: 'lanzado', pid: juego.pid }, true)
+    enviar({ tipo: 'lanzado', pid: juego.pid, candado: rutaCandadoJuego }, true)
     iniciarDiscord()
 
     const leer = (canal) => (data) => {

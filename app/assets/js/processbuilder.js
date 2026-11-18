@@ -79,11 +79,23 @@ class ProcessBuilder {
      */
     build(){
         const { exe, args, cwd, env, tempNativePath } = this.preparar()
-        const child = child_process.spawn(exe, args, {
-            cwd,
-            detached: ConfigManager.getLaunchDetached(),
-            env
-        })
+        // sc: el juego hereda un candado de fichero para reconocerlo si el launcher se reabre con
+        // él abierto, sin preguntar a Windows por el proceso (sccandado.js, scjuegoabierto.js).
+        const ScCandado = require('./sccandado')
+        const sc$candado = ScCandado.paraJuego(path.join(ConfigManager.getInstanceDirectory(), 'sc-vigilante'),
+            crypto.randomBytes(8).toString('hex'))
+        let child
+        try {
+            child = child_process.spawn(exe, args, {
+                cwd,
+                detached: ConfigManager.getLaunchDetached(),
+                env,
+                stdio: ScCandado.stdio(sc$candado)
+            })
+        } finally {
+            ScCandado.soltar(sc$candado)
+        }
+        child.candado = sc$candado == null ? null : sc$candado.ruta
 
         if(ConfigManager.getLaunchDetached()){
             child.unref()
