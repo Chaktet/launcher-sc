@@ -392,7 +392,12 @@
     "2026-11-17-servidor-Separar-una-fusion-ya-no-le-quita-la-skin",
     "2026-11-17-servidor-Las-megapiedras-antiguas-vuelven-a-funcionar",
     "2026-11-17-servidor-Pulsar-rapido-en-los-menus-ya-no-te-expulsa",
-    "2026-11-17-pack-SC-3.3.45"
+    "2026-11-17-pack-SC-3.3.45",
+    "2026-11-17-modpack-Ya-ves-los-ataques-que-usa-tu-rival-en-combate",
+    "2026-11-17-servidor-Pase-de-Batalla-llave-en-vez-de-un-fly-que-ya-tienes",
+    "2026-11-17-servidor-Mira-cada-placa-antes-de-comprarla",
+    "2026-11-18-pack-SC-3.3.47",
+    "2026-11-18-servidor-La-tienda-de-expediciones-ahora-va-con-puntos"
   ],
   "mensajes": [
     {
@@ -1145,6 +1150,17 @@
         "2026-11-17-servidor-Las-megapiedras-antiguas-vuelven-a-funcionar",
         "2026-11-17-servidor-Pulsar-rapido-en-los-menus-ya-no-te-expulsa",
         "2026-11-17-pack-SC-3.3.45"
+      ]
+    },
+    {
+      "fecha": "2026-11-18",
+      "mensaje": "1572670473374924862",
+      "entradas": [
+        "2026-11-17-modpack-Ya-ves-los-ataques-que-usa-tu-rival-en-combate",
+        "2026-11-17-servidor-Pase-de-Batalla-llave-en-vez-de-un-fly-que-ya-tienes",
+        "2026-11-17-servidor-Mira-cada-placa-antes-de-comprarla",
+        "2026-11-18-pack-SC-3.3.47",
+        "2026-11-18-servidor-La-tienda-de-expediciones-ahora-va-con-puntos"
       ]
     }
   ]
