@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-18-pack-SC-3.3.47",
+      "fecha": "2026-11-18",
+      "tipo": "pack",
+      "clase": "cambio",
+      "version": "SC-3.3.47",
+      "titulo": "Quitamos skins repetidas de San Valentín y gimnasio",
+      "puntos": [
+        "La skin antigua de San Valentín 2024 desaparece en 31 Pokémon que ya tienen la nueva: los verás con su aspecto normal.",
+        "También quitamos skins de gimnasio y de abril que estaban repetidas (Ironmoth, Deoxys, Giratina y Guzzlord)."
+      ]
+    },
+    {
       "id": "2026-11-18-servidor-La-tienda-de-expediciones-ahora-va-con-puntos",
       "fecha": "2026-11-18",
       "tipo": "servidor",
