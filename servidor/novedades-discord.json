@@ -383,7 +383,16 @@
     "2026-11-17-servidor-Tickets-nuevos-en-Discord",
     "2026-11-17-servidor-Postulate-a-Helper-o-Builder-desde-la-pagina",
     "2026-11-17-servidor-Escaparate-de-skins-en-el-spawn-cambia-cada-dia",
-    "2026-11-17-servidor-Clanes-ves-por-que-aun-no-sumas-en-las-misiones"
+    "2026-11-17-servidor-Clanes-ves-por-que-aun-no-sumas-en-las-misiones",
+    "2026-11-17-servidor-Mirar-un-combate-ya-no-te-estropea-tu-ranked",
+    "2026-11-17-servidor-Tienda-shop-los-botones-8-16-y-64-ya-suman",
+    "2026-11-17-servidor-Los-vales-a-elegir-piden-confirmacion",
+    "2026-11-17-servidor-Gimnasios-la-pantalla-te-dice-por-que-no-puedes-entrar",
+    "2026-11-17-servidor-Mineria-el-Encargo-Gemologico-ya-se-puede-completar",
+    "2026-11-17-servidor-Separar-una-fusion-ya-no-le-quita-la-skin",
+    "2026-11-17-servidor-Las-megapiedras-antiguas-vuelven-a-funcionar",
+    "2026-11-17-servidor-Pulsar-rapido-en-los-menus-ya-no-te-expulsa",
+    "2026-11-17-pack-SC-3.3.45"
   ],
   "mensajes": [
     {
@@ -1121,6 +1130,21 @@
         "2026-11-17-servidor-Postulate-a-Helper-o-Builder-desde-la-pagina",
         "2026-11-17-servidor-Escaparate-de-skins-en-el-spawn-cambia-cada-dia",
         "2026-11-17-servidor-Clanes-ves-por-que-aun-no-sumas-en-las-misiones"
+      ]
+    },
+    {
+      "fecha": "2026-11-18",
+      "mensaje": "1572451285184028774",
+      "entradas": [
+        "2026-11-17-servidor-Mirar-un-combate-ya-no-te-estropea-tu-ranked",
+        "2026-11-17-servidor-Tienda-shop-los-botones-8-16-y-64-ya-suman",
+        "2026-11-17-servidor-Los-vales-a-elegir-piden-confirmacion",
+        "2026-11-17-servidor-Gimnasios-la-pantalla-te-dice-por-que-no-puedes-entrar",
+        "2026-11-17-servidor-Mineria-el-Encargo-Gemologico-ya-se-puede-completar",
+        "2026-11-17-servidor-Separar-una-fusion-ya-no-le-quita-la-skin",
+        "2026-11-17-servidor-Las-megapiedras-antiguas-vuelven-a-funcionar",
+        "2026-11-17-servidor-Pulsar-rapido-en-los-menus-ya-no-te-expulsa",
+        "2026-11-17-pack-SC-3.3.45"
       ]
     }
   ]
