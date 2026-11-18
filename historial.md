@@ -1,6 +1,10 @@
 # SC Launcher · historial
 
 ## Estado actual
+- **1.17.23 publicada para Windows, Mac y Linux (17-11 ~20:20 hora RD): el SC-90 dice qué recurso del pack no encontró
+  Cobblemon** (`w` tipo, `b` = `tipo.nombre`, p. ej. `grupo.zeraora`). sc-stats.py y mc-monitor ya lo leen (desplegados).
+  Pendiente: mirar los primeros `b` en `stats.json` → `informes.pistas_hoy.SC-90.b` (o el MD del monitor) y arreglar
+  esos posers en el pack. Estables siguen en la 1.17.22. Sin novedad.
 - **TooManyPlayers fuera de PRO, LITE y SUPER LITE (11-11 21:00 hora RD):** su NPE en los menús de FancyMenu llenaba el log. Sin novedad publicada (pendiente del OK de Felix si se quiere).
 - **1.17.22 publicada para Windows, Mac y Linux (07-11 ~19:35 hora RD; Mac/Linux del CI run 42425717741, en verde, 19 ficheros): CAUSA REAL de «Actualizando el launcher… Casi listo» para siempre** (muchos jugadores, captura de LAUTIXDY676672L en la 1.17.20). Una marca `sc-vigilante/vivo-*.json` huérfana (PC apagado o juego muerto de golpe) apuntaba a un PID que Windows había dado a un servicio (EPERM, contado como vivo) u otro programa: `hayVigilanteVivo` = true para siempre, index.js no instalaba y la puerta (<=1.17.20) se quedaba sin botones. Release, exe por GitHub y Cloudflare con sha512 = build, estables de la web renovados a la 1.17.22 (Felix OK 07-11; copia de la 1.17.15 en `_backups/launcher-exe-congelado-1.17.15`). **Los atascados en <=1.17.21 no salen solos**: instalar a mano la 1.17.22 encima (aviso arriba de la release). Sin aviso en Discord ni en el launcher (Felix 07-11). Pendiente: volver a mandar el exe estable nuevo a Microsoft (WDSI) y antivirus.
 - **1.17.21 publicada para Windows, Mac y Linux (06-11 ~19:40 hora RD, Felix: «Sí, publícala»):** la puerta ya no se
@@ -143,6 +147,28 @@
   el launcher. Novedad `2026-10-28-modpack-Adios-al-aviso-de-chat-no-verificado` (arreglo) solo en vista previa en
   «diseño-pruebas» (mensaje 1564857375410757703). **Publicada en el launcher el 28-10 15:55 UTC** con la de las
   misiones de escanear (OK de Felix: launcher sí, Discord no). El modpack móvil SC-Movil no lo lleva.
+
+## 2026-11-17 ~20:20 (hora RD) · 1.17.23: el SC-90 dice qué recurso del pack no encontró Cobblemon
+- **Pedido (Felix):** aviso del monitor de 5 SC-90 en una hora; elegido «añadirlo al launcher» para saber la causa.
+- **Datos:** SC-90 de hoy 16 (normal: 11-21/día), pero `IllegalArgumentException` en `com.cobblemon.mod` sube (2, 4, 1,
+  6). Los dos casos conocidos (Armarouge 04-11, Zeraora 16-11) eran `Unknown animation group`. Pista: chino18172 cayó
+  en Kanto (19:01 RD) al entrar al Royale; otro a las 17:01 RD al empezar la Ditto Party (sin confirmar).
+- **Cambio:** `scRecursoCobblemonQueFalta()` (landing.js), llamada desde `scAvisoCrashPartida()`: solo la línea entera
+  de una IAE/ISE con mensaje de recurso de Cobblemon 1.8.3 (sacados de sus clases) cuyo primer marco es
+  `com.cobblemon.mod.common.client.render.…` → `w` + `b`. Sin rutas, IP ni espacios; no recorta (si no cabe, solo el
+  grupo o solo `w`). sc-stats.py: `w`/`b` solo en SC-90, `b` solo si casa con su `w`. Monitor: totales por tipo, nombres,
+  Java `d` aparte. ERRORES.md al día.
+- **Codex:** 3 rondas (low); arreglados 5 + 4 + 1 hallazgos. Abierto por decisión de Felix: «lista aprobada de nombres»
+  (dejaría fuera justo un grupo que no existe en el pack).
+- **Comprobado:** 23 casos del extractor (incl. rutas Windows/Linux, texto suelto, traza ajena, IP, nombres largos);
+  sc-stats con peticiones falsas en OVH-A; texto del monitor simulado. Desplegados sc-stats (OVH-A, md5 a5ed115a, copia
+  `.bak-20261117`) y monitor (Hetzner, md5 023ab189, copia `.bak-20261117`), una pasada de cada uno sin error.
+  1.17.23 firmada (`comprueba-publisher` ok, asar con el cambio), release v1.17.23 con 19 ficheros (CI run 44202256348
+  en verde), aviso de launcher viejo puesto, 4 fichas públicas = 1.17.23 y sha512 = build, exe versionado en OVH-A
+  (Cloudflare 93.728.752 B = build). Commits launcher 4dc9e8a, cobblemon-web 917a5d49.
+- **Sin probar:** un crash real que llegue con `b` (necesita que un jugador con 1.17.23 crashee así).
+- **Trampa:** `comprueba-publisher.js` falla desde pwsh 7 («Get-AuthenticodeSignature … no pudo cargarse») por el
+  `PSModulePath` heredado; quitarlo para esa llamada (`Remove-Item Env:PSModulePath`).
 
 ## 2026-11-11 21:00 (hora RD) · Quitado TooManyPlayers de los tres perfiles
 - Pedido: log de un jugador (Dorkii39810) «crashea con el launcher». El log no tiene crash (se copió con el juego abierto),

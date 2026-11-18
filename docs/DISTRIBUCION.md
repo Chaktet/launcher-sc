@@ -227,6 +227,8 @@ GitHub Actions siguen compilando sin firmar.
    SimplySign no está conectado falla con `Cannot find certificate BCC98A…`.
 3. **`node tools/comprueba-publisher.js`** (sale con 1 → NO publicar): firma `Valid` y que el `publisherName` de
    `dist/win-unpacked/resources/app-update.yml` sea EXACTAMENTE el CN del firmante, sin caracteres rotos.
+   Desde PowerShell 7 falla con «Get-AuthenticodeSignature … el módulo no pudo cargarse» (el `powershell.exe` 5 que
+   lanza hereda el `PSModulePath` de pwsh): `Remove-Item Env:PSModulePath` antes de llamarlo (17-11).
    Primera release firmada: **1.16.16** (19/10/2026), verificada también descargándola por Cloudflare.
 
 Al firmar, electron-builder escribe `publisherName` en `app-update.yml`: a partir de la primera versión firmada,
