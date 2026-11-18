@@ -1,11 +1,15 @@
 # SC Launcher · historial
 
 ## Estado actual
-- **1.17.24 PREPARADA, SIN PUBLICAR (17-11 noche, hora RD): fuera PowerShell/WMI, `tasklist` y `taskkill`.** Compilada y
-  firmada en `dist/` (sha256 `fcf96ab1…`, 93.732.760 B; empresa del exe «Servidor Cobblemon»). Falta: probar una partida
-  real con ella, OK de Felix para publicar, y luego CONGELAR el exe estable en esa versión y mandar ESE a Microsoft
-  (WDSI) y antivirus. Regla nueva: ningún programa externo de Windows para mirar o matar procesos
-  (`node tools/prueba-candados.js` lo comprueba). Entrada de hoy.
+- **1.17.24 publicada para Windows, Mac y Linux (17-11 ~22:00 hora RD, Felix: «Publícala ya»): fuera PowerShell/WMI,
+  `tasklist` y `taskkill`.** Release v1.17.24 con 19 ficheros (CI run 44212669145 en verde), aviso de launcher viejo
+  puesto, las cuatro fichas `latest*.yml`/`catalina-mac.yml` dicen 1.17.24 y sha512 = build. **Estables de la web
+  CONGELADOS en la 1.17.24** (`SC-Launcher-setup.exe` y `-1.0.0.exe`, `chattr +i`; por Cloudflare 93.732.760 B, sha256
+  `fcf96ab1…` = build, firma `Valid`; copia de la 1.17.22 en `_backups/launcher-exe-congelado-1.17.22`). Sin novedad
+  (no cambia nada que el jugador vea). **Pendiente de Felix:** mandar ESE exe a Microsoft (WDSI) y a los antivirus, y
+  no renovar el estable en semanas. **Sin probar antes de publicar:** una partida real desde la 1.17.24 (Felix eligió
+  publicar ya): mirar SC-05/SC-14 y «juego abierto» en `stats.json` mañana. Regla nueva: ningún programa externo de
+  Windows para mirar o matar procesos (`node tools/prueba-candados.js`). Entrada de hoy.
 - **1.17.23 publicada para Windows, Mac y Linux (17-11 ~20:20 hora RD): el SC-90 dice qué recurso del pack no encontró
   Cobblemon** (`w` tipo, `b` = `tipo.nombre`, p. ej. `grupo.zeraora`). sc-stats.py y mc-monitor ya lo leen (desplegados).
   Pendiente: mirar los primeros `b` en `stats.json` → `informes.pistas_hoy.SC-90.b` (o el MD del monitor) y arreglar

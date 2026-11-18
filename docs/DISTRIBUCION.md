@@ -304,9 +304,11 @@ gh release create vX.Y.Z --repo Chaktet/launcher-sc \
 node tools/notas-release.js vX.Y.Z --aplica && node tools/notas-release.js vX.Y.Z
 
 # 4. el .exe al VPS: SOLO el versionado (SC-Launcher-setup-X.Y.Z.exe), que el VPS baja de GitHub.
-#    ⛔ Los estables (SC-Launcher-setup.exe y -1.0.0.exe) están CONGELADOS en la 1.17.22 (Felix 02-11 en la 1.17.15;
-#    renovados el 07-11 con su OK porque la 1.17.15 se atasca con la marca de vigilante huérfana; chattr +i;
-#    copia de la 1.17.15 en /home/ubuntu/_backups/launcher-exe-congelado-1.17.15/):
+#    ⛔ Los estables (SC-Launcher-setup.exe y -1.0.0.exe) están CONGELADOS en la 1.17.24 (Felix 02-11 en la 1.17.15;
+#    renovados el 07-11 a la 1.17.22 porque la 1.17.15 se atasca con la marca de vigilante huérfana, y el 17-11 a la
+#    1.17.24, la primera sin PowerShell/tasklist/taskkill; chattr +i; copias de las anteriores en
+#    /home/ubuntu/_backups/launcher-exe-congelado-1.17.15/ y -1.17.22/). Para que gane reputación NO se cambia en
+#    semanas: las versiones siguientes del launcher llegan por la actualización automática, no por este enlace.
 #    los antivirus y Microsoft aprueban por fichero exacto. Quien lo instala se actualiza solo al abrirlo. No se
 #    renuevan sin que Felix lo pida (entonces: sudo chattr -i, renovar, sudo chattr +i y volver a mandarlo a los antivirus).
 
