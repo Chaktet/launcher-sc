@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-17-modpack-Ya-ves-los-ataques-que-usa-tu-rival-en-combate",
+      "fecha": "2026-11-17",
+      "tipo": "modpack",
+      "clase": "arreglo",
+      "titulo": "Ya ves los ataques que usa tu rival en combate",
+      "puntos": [
+        "Pasa el ratón por encima de un Pokémon rival y su ficha te enseña los ataques que ya ha usado, con los PP que le quedan más o menos.",
+        "Antes, con el juego en español, esa lista se quedaba vacía al pelear contra otros jugadores."
+      ]
+    },
+    {
       "id": "2026-11-17-servidor-Clanes-ves-por-que-aun-no-sumas-en-las-misiones",
       "fecha": "2026-11-17",
       "tipo": "servidor",
