@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-18-servidor-Mineria-el-dinero-del-premio-de-temporada-ya-llega-entero",
+      "fecha": "2026-11-18",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Minería: el dinero del premio de temporada ya llega entero",
+      "puntos": [
+        "Quien quedaba arriba en la temporada de minería podía cobrar el Polvo del premio y quedarse sin el dinero, porque contaba para el tope diario de ganancias.",
+        "El premio se paga entero y ya no cuenta para ese tope.",
+        "Si tenías un premio de temporada sin cobrar, te llega al entrar."
+      ]
+    },
+    {
       "id": "2026-11-18-pack-SC-3.3.47",
       "fecha": "2026-11-18",
       "tipo": "pack",
