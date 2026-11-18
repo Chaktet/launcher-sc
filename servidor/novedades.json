@@ -2,6 +2,20 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-18-servidor-La-tienda-de-expediciones-ahora-va-con-puntos",
+      "fecha": "2026-11-18",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "La tienda de expediciones ahora va con puntos",
+      "puntos": [
+        "Cada expedición que juegas te da puntos de expedición: cuanto más aportas al combate, más ganas, y el MVP se lleva un extra",
+        "Al terminar ya no caen objetos al azar: el premio lo eliges tú en la tienda de expediciones, que ahora se paga con esos puntos",
+        "La tienda tiene 8 pestañas: Premios, Equipo, Libros, Entrenamiento, Poké Balls, Efectos, Comida y Varios",
+        "Nuevo en la tienda: el Vale de mejora +1, que sube un nivel un encantamiento de tu arma cosmética sin gastar SCC",
+        "Si no tienes hueco en el inventario, la compra no se hace y no pierdes puntos"
+      ]
+    },
+    {
       "id": "2026-11-17-modpack-Ya-ves-los-ataques-que-usa-tu-rival-en-combate",
       "fecha": "2026-11-17",
       "tipo": "modpack",
