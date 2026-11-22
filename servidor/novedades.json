@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-22-servidor-Dejarse-ganar-en-ranked-ya-no-sirve",
+      "fecha": "2026-11-22",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Dejarse ganar en ranked ya no sirve",
+      "puntos": [
+        "Entre los mismos dos jugadores cuentan 3 partidas cada 24 horas, en ranked y en casual. Desde la cuarta, ninguno de los dos gana ELO ni premios; contra otros rivales todo cuenta como siempre.",
+        "Las partidas entre cuentas conectadas desde la misma IP tampoco dan ELO ni premios.",
+        "En la tercera partida contra el mismo rival te sale un aviso, y si una partida no cuenta, el chat te dice cuánto falta para que vuelva a contar.",
+        "Quien llegue a 5 partidas anuladas en una temporada se queda sin el premio de fin de temporada, y los que van detrás suben un puesto."
+      ]
+    },
+    {
       "id": "2026-11-21-servidor-La-guia-para-jugar-sin-launcher-ya-no-borra-tus-mods",
       "fecha": "2026-11-21",
       "tipo": "servidor",
