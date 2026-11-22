@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-19-servidor-El-Vale-de-mejora-1-ya-se-puede-usar",
+      "fecha": "2026-11-19",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "El Vale de mejora +1 ya se puede usar",
+      "puntos": [
+        "Si comprabas el Vale de mejora +1 en la tienda de expediciones, al mejorar tu arma cosmética el menú seguía enseñando el precio en SCC y no nombraba el vale",
+        "El menú marca ya 0 SCC cuando la mejora la paga el vale, y te deja aceptar aunque no tengas SCC",
+        "Si compraste uno y no llegaste a usarlo, lo sigues teniendo. Si no te deja usarlo, abre un ticket"
+      ]
+    },
+    {
       "id": "2026-11-18-servidor-Mineria-el-netherrack-y-los-planos-mejor-explicados",
       "fecha": "2026-11-18",
       "tipo": "servidor",
