@@ -397,7 +397,16 @@
     "2026-11-17-servidor-Pase-de-Batalla-llave-en-vez-de-un-fly-que-ya-tienes",
     "2026-11-17-servidor-Mira-cada-placa-antes-de-comprarla",
     "2026-11-18-pack-SC-3.3.47",
-    "2026-11-18-servidor-La-tienda-de-expediciones-ahora-va-con-puntos"
+    "2026-11-18-servidor-La-tienda-de-expediciones-ahora-va-con-puntos",
+    "2026-11-18-servidor-Mineria-el-netherrack-y-los-planos-mejor-explicados",
+    "2026-11-19-servidor-Postulaciones-con-tu-Discord-vinculado-en-el-juego",
+    "2026-11-19-servidor-Los-muebles-de-Ciudad-Cyber-brillan-con-poca-luz",
+    "2026-11-19-servidor-Alas-mochilas-y-colas-siguen-tu-tamano",
+    "2026-11-19-servidor-El-Vale-de-mejora-1-ya-se-puede-usar",
+    "2026-11-21-servidor-Las-habilidades-que-se-quedaban-fijas-ya-cambian",
+    "2026-11-22-servidor-Dejarse-ganar-en-ranked-ya-no-sirve",
+    "2026-11-21-servidor-La-guia-para-jugar-sin-launcher-ya-no-borra-tus-mods",
+    "2026-11-21-modpack-El-Probador-de-la-ruleta-dice-que-Pokemon-lleva-la-skin"
   ],
   "mensajes": [
     {
@@ -1161,6 +1170,21 @@
         "2026-11-17-servidor-Mira-cada-placa-antes-de-comprarla",
         "2026-11-18-pack-SC-3.3.47",
         "2026-11-18-servidor-La-tienda-de-expediciones-ahora-va-con-puntos"
+      ]
+    },
+    {
+      "fecha": "2026-11-22",
+      "mensaje": "1574092775312588956",
+      "entradas": [
+        "2026-11-18-servidor-Mineria-el-netherrack-y-los-planos-mejor-explicados",
+        "2026-11-19-servidor-Postulaciones-con-tu-Discord-vinculado-en-el-juego",
+        "2026-11-19-servidor-Los-muebles-de-Ciudad-Cyber-brillan-con-poca-luz",
+        "2026-11-19-servidor-Alas-mochilas-y-colas-siguen-tu-tamano",
+        "2026-11-19-servidor-El-Vale-de-mejora-1-ya-se-puede-usar",
+        "2026-11-21-servidor-Las-habilidades-que-se-quedaban-fijas-ya-cambian",
+        "2026-11-22-servidor-Dejarse-ganar-en-ranked-ya-no-sirve",
+        "2026-11-21-servidor-La-guia-para-jugar-sin-launcher-ya-no-borra-tus-mods",
+        "2026-11-21-modpack-El-Probador-de-la-ruleta-dice-que-Pokemon-lleva-la-skin"
       ]
     }
   ]
