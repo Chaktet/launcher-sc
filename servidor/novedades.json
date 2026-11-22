@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-21-modpack-El-Probador-de-la-ruleta-dice-que-Pokemon-lleva-la-skin",
+      "fecha": "2026-11-21",
+      "tipo": "modpack",
+      "clase": "retoque",
+      "titulo": "El Probador de la ruleta dice qué Pokémon lleva la skin",
+      "puntos": [
+        "Junto a la rareza de cada skin sale «Pokémon:» con el nombre del Pokémon que la lleva",
+        "En las skins del catálogo ves en qué ruleta salen, o que ahora no salen en ninguna",
+        "En el móvil tienes que descargar el pack nuevo para verlo"
+      ]
+    },
+    {
       "id": "2026-11-21-servidor-Las-habilidades-que-se-quedaban-fijas-ya-cambian",
       "fecha": "2026-11-21",
       "tipo": "servidor",
