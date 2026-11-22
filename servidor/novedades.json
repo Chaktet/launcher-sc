@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-19-servidor-Postulaciones-con-tu-Discord-vinculado-en-el-juego",
+      "fecha": "2026-11-19",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Postulaciones: con tu Discord vinculado en el juego",
+      "puntos": [
+        "En servidorcobblemon.es/postular entras con Discord y cuenta el Minecraft que tengas vinculado a ese Discord con /vincular discord. También vale si lo vinculaste con /reclamar",
+        "El código de la web ya no se usa",
+        "El día 18 hubo unas horas en que no dejaba enviar aunque cumplieras todos los requisitos. Si te pasó, vuelve a pulsar Enviar: tus respuestas están guardadas"
+      ]
+    },
+    {
       "id": "2026-11-19-servidor-Los-muebles-de-Ciudad-Cyber-brillan-con-poca-luz",
       "fecha": "2026-11-19",
       "tipo": "servidor",
