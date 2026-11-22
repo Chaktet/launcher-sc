@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-21-servidor-La-guia-para-jugar-sin-launcher-ya-no-borra-tus-mods",
+      "fecha": "2026-11-21",
+      "tipo": "servidor",
+      "clase": "retoque",
+      "titulo": "La guía para jugar sin launcher ya no borra tus mods",
+      "puntos": [
+        "La guía de servidorcobblemon.es/como-jugar decía que vaciaras la carpeta de mods de .minecraft, y así perdías los mods de tus otros perfiles",
+        "Ahora te pide crear una carpeta vacía para ese perfil del juego y meter ahí los mods y los packs de texturas, sin borrar nada de .minecraft"
+      ]
+    },
+    {
       "id": "2026-11-21-modpack-El-Probador-de-la-ruleta-dice-que-Pokemon-lleva-la-skin",
       "fecha": "2026-11-21",
       "tipo": "modpack",
