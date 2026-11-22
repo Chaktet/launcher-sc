@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-19-servidor-Alas-mochilas-y-colas-siguen-tu-tamano",
+      "fecha": "2026-11-19",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Alas, mochilas y colas siguen tu tamaño",
+      "puntos": [
+        "Si cambiabas de tamaño en el menú de tamaño, lo que llevas a la espalda se quedaba como estaba. Ahora alas, mochilas y colas crecen o encogen contigo",
+        "Ya no se esconden al mirar muy arriba o muy abajo",
+        "Seis piezas de espalda quedan colocadas igual que en el Armario",
+        "Si a otro jugador le ves las alas descolocadas, avísanos por ticket"
+      ]
+    },
+    {
       "id": "2026-11-19-servidor-El-Vale-de-mejora-1-ya-se-puede-usar",
       "fecha": "2026-11-19",
       "tipo": "servidor",
