@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-19-servidor-Los-muebles-de-Ciudad-Cyber-brillan-con-poca-luz",
+      "fecha": "2026-11-19",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Los muebles de Ciudad Cyber brillan con poca luz",
+      "puntos": [
+        "Las luces de neón y las partes blancas de los 21 muebles de Ciudad Cyber brillan solas, aunque el sitio esté a oscuras",
+        "Te llega solo al abrir el launcher"
+      ]
+    },
+    {
       "id": "2026-11-19-servidor-Alas-mochilas-y-colas-siguen-tu-tamano",
       "fecha": "2026-11-19",
       "tipo": "servidor",
