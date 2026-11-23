@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-23-servidor-Las-mentas-de-colores-ya-sirven-en-el-Builder",
+      "fecha": "2026-11-23",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Las mentas de colores ya sirven en el Builder",
+      "puntos": [
+        "Las mentas de colores que comprabas en /expedicion shop salían como «mentas antiguas» y el /cobblebuilder no las aceptaba. Las que compres desde hoy ya te sirven para cambiar la naturaleza."
+      ]
+    },
+    {
       "id": "2026-11-22-servidor-Dejarse-ganar-en-ranked-ya-no-sirve",
       "fecha": "2026-11-22",
       "tipo": "servidor",
