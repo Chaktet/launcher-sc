@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-23-servidor-Reshiram-Zekrom-y-mas-ya-entran-en-la-ruleta-legendaria",
+      "fecha": "2026-11-23",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Reshiram, Zekrom y más ya entran en la ruleta legendaria",
+      "puntos": [
+        "En /tradelegendario ya puedes elegir a Reshiram, Zekrom, Kyurem, Spectrier, Glastrier y Calyrex. Antes salían como «No disponible».",
+        "Ojo con Kyurem y Calyrex fusionados: si no sale, pierdes también el Pokémon que llevan dentro. Sepáralos antes si no quieres jugarte los dos."
+      ]
+    },
+    {
       "id": "2026-11-23-servidor-Las-mentas-de-colores-ya-sirven-en-el-Builder",
       "fecha": "2026-11-23",
       "tipo": "servidor",
