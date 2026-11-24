@@ -2,6 +2,21 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-23-pack-SC-3.3.49",
+      "fecha": "2026-11-23",
+      "tipo": "pack",
+      "clase": "arreglo",
+      "version": "SC-3.3.49",
+      "titulo": "Seis skins que se veían mal, arregladas",
+      "puntos": [
+        "Pyroar (macho y hembra) ya no tiene bloques rojos en la cara y la melena.",
+        "La estatua de Dialga vuelve a su tamaño en el equipo, el PC y la ficha, y ya se mueve.",
+        "Yveltal sale centrado y entero en la foto del PC y de la ficha.",
+        "Raikou Héroes ya se ve entero, no solo el rayo de la cola.",
+        "Ceruledge con disfraz de octubre conserva su bastón en combate."
+      ]
+    },
+    {
       "id": "2026-11-23-servidor-Reshiram-Zekrom-y-mas-ya-entran-en-la-ruleta-legendaria",
       "fecha": "2026-11-23",
       "tipo": "servidor",
