@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-24-servidor-Los-jefes-de-las-expediciones-ya-aguantan-de-verdad",
+      "fecha": "2026-11-24",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Los jefes de las expediciones ya aguantan de verdad",
+      "puntos": [
+        "Los jefes, minijefes y Pokémon de las oleadas morían muy rápido porque tenían la vida de un Pokémon cualquiera, en cualquier dificultad.",
+        "Cada uno tiene ahora la vida y el daño de su grado: en Fácil aguantan menos, y en Difícil y Experto tienen más vida y pegan más fuerte.",
+        "El jefe final es el que más cambia. Para Difícil y Experto, ve bien equipado y mejor en grupo."
+      ]
+    },
+    {
       "id": "2026-11-24-servidor-Los-muebles-que-salian-oscuros-ya-se-ven-bien",
       "fecha": "2026-11-24",
       "tipo": "servidor",
