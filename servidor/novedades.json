@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-24-servidor-Tus-muebles-ya-no-se-rompen-de-un-golpe",
+      "fecha": "2026-11-24",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Tus muebles ya no se rompen de un golpe",
+      "puntos": [
+        "Para quitar un mueble tienes que agacharte (Shift) y golpearlo. Un golpe normal ya no lo rompe, aunque pases dándole clic.",
+        "Los muebles que pongas a partir de hoy recuerdan quién los puso: fuera de un claim solo tú puedes quitarlos o girarlos.",
+        "Dentro de tu claim también pueden quitarlos quienes tengan permiso de romper en él.",
+        "Los que ya tenías puestos siguen protegidos por tu claim, igual que antes."
+      ]
+    },
+    {
       "id": "2026-11-24-servidor-Vuelve-a-la-eleccion-de-equipo-en-ranked",
       "fecha": "2026-11-24",
       "tipo": "servidor",
