@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-23-modpack-Particulas-de-evolucion-en-el-tiempo-exacto",
+      "fecha": "2026-11-23",
+      "tipo": "modpack",
+      "clase": "arreglo",
+      "titulo": "Partículas de evolución en el tiempo exacto",
+      "puntos": [
+        "Al evolucionar un Pokémon, la nube de partículas salía tarde o no salía. Ahora aparece en el momento exacto en que empieza la evolución, en PC y en móvil."
+      ]
+    },
+    {
       "id": "2026-11-23-pack-SC-3.3.49",
       "fecha": "2026-11-23",
       "tipo": "pack",
