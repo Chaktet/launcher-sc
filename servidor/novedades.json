@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-24-servidor-Tus-premios-de-ranked-sin-cobrar-llegan-al-Buzon",
+      "fecha": "2026-11-24",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Tus premios de ranked sin cobrar llegan al Buzón",
+      "puntos": [
+        "Los premios de ranked que dejaste sin reclamar, de la temporada 4 en adelante, te llegan al Buzón de la PokéNav como un billete.",
+        "Saca el billete del Buzón y haz clic derecho con él en la mano, en Kanto o en Kalos, para recibir el premio.",
+        "Cada premio se cobra una sola vez: si ya lo reclamaste en /ranked, el billete desaparece solo."
+      ]
+    },
+    {
       "id": "2026-11-24-servidor-Clasificacion-de-ranked-de-temporadas-anteriores",
       "fecha": "2026-11-24",
       "tipo": "servidor",
