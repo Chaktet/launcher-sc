@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-23-servidor-Dos-expediciones-nuevas-Agua-y-Tierra",
+      "fecha": "2026-11-23",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Dos expediciones nuevas: Agua y Tierra",
+      "puntos": [
+        "Ya puedes entrar en la Expedición Acuática y en la Expedición de Tierra, en Kanto y Kalos, con un grupo de 3 a 6 jugadores.",
+        "En la Acuática, Gyarados os corta el paso a mitad de camino y el jefe final es un Kyogre gigante.",
+        "En la de Tierra, Piloswine hace de minijefe y abajo del todo espera un Groudon igual de enorme.",
+        "Entra desde el PokéNav o con /expedicion. Cada entrada gasta energía, que se recarga jugando."
+      ]
+    },
+    {
       "id": "2026-11-23-modpack-Particulas-de-evolucion-en-el-tiempo-exacto",
       "fecha": "2026-11-23",
       "tipo": "modpack",
