@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-24-servidor-Clasificacion-de-ranked-de-temporadas-anteriores",
+      "fecha": "2026-11-24",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Clasificación de ranked de temporadas anteriores",
+      "puntos": [
+        "En la Clasificación de ranked, usa las flechas que hay junto a «Temporada» para ver el top de las temporadas pasadas.",
+        "Las pestañas Individual y Dobles y el cambio de página se quedan en la temporada que estás mirando."
+      ]
+    },
+    {
       "id": "2026-11-24-servidor-Tus-Pokemon-ya-no-pierden-la-skin-al-evolucionar",
       "fecha": "2026-11-24",
       "tipo": "servidor",
