@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-24-pack-SC-3.3.51",
+      "fecha": "2026-11-24",
+      "tipo": "pack",
+      "clase": "arreglo",
+      "version": "SC-3.3.51",
+      "titulo": "La estatua de Dialga ya se pone de pie",
+      "puntos": [
+        "Tenía las patas dobladas y la boca abierta todo el rato.",
+        "Ahora se apoya bien en el suelo y se mueve como cualquier otro Dialga."
+      ]
+    },
+    {
       "id": "2026-11-24-modpack-Cobblemon-1.8.4-en-el-launcher-y-en-el-movil",
       "fecha": "2026-11-24",
       "tipo": "modpack",
