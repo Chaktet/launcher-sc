@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-24-modpack-Cobblemon-1.8.4-en-el-launcher-y-en-el-movil",
+      "fecha": "2026-11-24",
+      "tipo": "modpack",
+      "clase": "cambio",
+      "titulo": "Cobblemon 1.8.4 en el launcher y en el móvil",
+      "puntos": [
+        "El launcher y la app del móvil la descargan solos la próxima vez que los abras",
+        "Trae los arreglos de combate de la versión nueva de Cobblemon",
+        "Si juegas sin launcher, cambia Cobblemon a la 1.8.4 (está en Modrinth). Con la 1.8.3 aún puedes entrar"
+      ]
+    },
+    {
       "id": "2026-11-24-servidor-Los-jefes-de-las-expediciones-ya-aguantan-de-verdad",
       "fecha": "2026-11-24",
       "tipo": "servidor",
