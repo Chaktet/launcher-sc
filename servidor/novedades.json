@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-24-servidor-Los-muebles-que-salian-oscuros-ya-se-ven-bien",
+      "fecha": "2026-11-24",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Los muebles que salían oscuros ya se ven bien",
+      "puntos": [
+        "Algunos muebles se veían casi negros: los cofres Pidgeot de invierno, el trineo, la mesa de jengibre, el muérdago y varios peluches. Ya se ven con su color normal.",
+        "También se arreglan los que ya tenías puestos, no hace falta quitarlos y volver a colocarlos."
+      ]
+    },
+    {
       "id": "2026-11-24-servidor-Tus-muebles-ya-no-se-rompen-de-un-golpe",
       "fecha": "2026-11-24",
       "tipo": "servidor",
