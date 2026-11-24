@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-24-servidor-Vuelve-a-la-eleccion-de-equipo-en-ranked",
+      "fecha": "2026-11-24",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Vuelve a la elección de equipo en ranked",
+      "puntos": [
+        "Si cerrabas sin querer la confirmación, la elección de equipo o la de líder (con Esc o porque se abría otra ventana), /ranked te decía que el comando estaba bloqueado y no había forma de volver.",
+        "/ranked, /ranked menu o /casual te llevan de vuelta a ese paso, con el tiempo que te quede."
+      ]
+    },
+    {
       "id": "2026-11-24-servidor-Tus-premios-de-ranked-sin-cobrar-llegan-al-Buzon",
       "fecha": "2026-11-24",
       "tipo": "servidor",
