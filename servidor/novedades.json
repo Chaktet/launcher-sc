@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-24-servidor-Tus-Pokemon-ya-no-pierden-la-skin-al-evolucionar",
+      "fecha": "2026-11-24",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Tus Pokémon ya no pierden la skin al evolucionar",
+      "puntos": [
+        "Si tu Pokémon lleva una skin que su evolución no tiene, la evolución se para antes de gastar la piedra o el objeto y te sale un aviso en el chat.",
+        "Si aun así quieres evolucionarlo, pulsa «Evolucionar igual y perder la skin» en ese aviso y repite la evolución en los 3 minutos siguientes.",
+        "Las skins que también existen en la evolución, o en su forma regional, se conservan y evolucionan como siempre."
+      ]
+    },
+    {
       "id": "2026-11-23-servidor-Dos-expediciones-nuevas-Agua-y-Tierra",
       "fecha": "2026-11-23",
       "tipo": "servidor",
