@@ -406,7 +406,15 @@
     "2026-11-21-servidor-Las-habilidades-que-se-quedaban-fijas-ya-cambian",
     "2026-11-22-servidor-Dejarse-ganar-en-ranked-ya-no-sirve",
     "2026-11-21-servidor-La-guia-para-jugar-sin-launcher-ya-no-borra-tus-mods",
-    "2026-11-21-modpack-El-Probador-de-la-ruleta-dice-que-Pokemon-lleva-la-skin"
+    "2026-11-21-modpack-El-Probador-de-la-ruleta-dice-que-Pokemon-lleva-la-skin",
+    "2026-11-23-servidor-Dos-expediciones-nuevas-Agua-y-Tierra",
+    "2026-11-23-modpack-Particulas-de-evolucion-en-el-tiempo-exacto",
+    "2026-11-23-pack-SC-3.3.49",
+    "2026-11-23-servidor-Reshiram-Zekrom-y-mas-ya-entran-en-la-ruleta-legendaria",
+    "2026-11-23-servidor-Las-mentas-de-colores-ya-sirven-en-el-Builder",
+    "2026-11-24-servidor-Tus-muebles-ya-no-se-rompen-de-un-golpe",
+    "2026-11-24-servidor-Vuelve-a-la-eleccion-de-equipo-en-ranked",
+    "2026-11-24-servidor-Tus-premios-de-ranked-sin-cobrar-llegan-al-Buzon"
   ],
   "mensajes": [
     {
@@ -1185,6 +1193,20 @@
         "2026-11-22-servidor-Dejarse-ganar-en-ranked-ya-no-sirve",
         "2026-11-21-servidor-La-guia-para-jugar-sin-launcher-ya-no-borra-tus-mods",
         "2026-11-21-modpack-El-Probador-de-la-ruleta-dice-que-Pokemon-lleva-la-skin"
+      ]
+    },
+    {
+      "fecha": "2026-11-24",
+      "mensaje": "1574764099924009071",
+      "entradas": [
+        "2026-11-23-servidor-Dos-expediciones-nuevas-Agua-y-Tierra",
+        "2026-11-23-modpack-Particulas-de-evolucion-en-el-tiempo-exacto",
+        "2026-11-23-pack-SC-3.3.49",
+        "2026-11-23-servidor-Reshiram-Zekrom-y-mas-ya-entran-en-la-ruleta-legendaria",
+        "2026-11-23-servidor-Las-mentas-de-colores-ya-sirven-en-el-Builder",
+        "2026-11-24-servidor-Tus-muebles-ya-no-se-rompen-de-un-golpe",
+        "2026-11-24-servidor-Vuelve-a-la-eleccion-de-equipo-en-ranked",
+        "2026-11-24-servidor-Tus-premios-de-ranked-sin-cobrar-llegan-al-Buzon"
       ]
     }
   ]
