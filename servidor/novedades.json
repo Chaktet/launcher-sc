@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-25-servidor-cambiaforma-te-dice-que-objeto-te-falta",
+      "fecha": "2026-11-25",
+      "tipo": "servidor",
+      "clase": "retoque",
+      "titulo": "/cambiaforma te dice qué objeto te falta",
+      "puntos": [
+        "Antes solo decía «No posees el objeto necesario». Ahora te nombra el que necesita tu Pokémon: Gracidea, Reveal Glass, DNA Splicer, Prison Bottle…",
+        "Si ese Pokémon no puede cambiar de forma con el comando, te enseña la lista de los que sí"
+      ]
+    },
+    {
       "id": "2026-11-25-servidor-La-mineria-estrena-pantallas-en-el-PokeNav",
       "fecha": "2026-11-25",
       "tipo": "servidor",
