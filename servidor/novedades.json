@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-25-servidor-La-Navidad-llega-a-los-spawns",
+      "fecha": "2026-11-25",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "La Navidad llega a los spawns",
+      "puntos": [
+        "Nieva en el spawn de Kanto y Kalos y también en el Lobby",
+        "El Lobby se decora con un árbol de Navidad enorme, regalos, farolas, bastones, un trineo y muñecos de nieve"
+      ]
+    },
+    {
       "id": "2026-11-25-servidor-Sin-transformaciones-dentro-de-los-minijuegos",
       "fecha": "2026-11-25",
       "tipo": "servidor",
