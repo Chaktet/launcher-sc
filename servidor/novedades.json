@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-25-modpack-El-PC-y-la-ficha-vuelven-a-tener-su-diseno",
+      "fecha": "2026-11-25",
+      "tipo": "modpack",
+      "clase": "arreglo",
+      "titulo": "El PC y la ficha vuelven a tener su diseño",
+      "puntos": [
+        "Tras pasar a Cobblemon 1.8.4, el PC, la ficha, la Pokédex y las MT salían grises con el diseño de serie",
+        "Ya vuelven a salir con las pantallas del servidor: buscador, cajas y botones de orden",
+        "En PC se actualiza solo al abrir el launcher. En el móvil descarga el pack nuevo"
+      ]
+    },
+    {
       "id": "2026-11-25-servidor-La-cesta-de-la-tienda-web-ya-no-da-errores-raros",
       "fecha": "2026-11-25",
       "tipo": "servidor",
