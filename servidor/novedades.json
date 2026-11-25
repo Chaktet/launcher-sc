@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-25-servidor-La-cesta-de-la-tienda-web-ya-no-da-errores-raros",
+      "fecha": "2026-11-25",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "La cesta de la tienda web ya no da errores raros",
+      "puntos": [
+        "A veces la cesta fallaba con un mensaje incomprensible y no dejaba pagar",
+        "Si algo no se puede comprar, la web te explica el motivo",
+        "Cada «Mejora de rango» avisa en su ficha y en la cesta: solo se compra si tu nick ya tiene el rango anterior"
+      ]
+    },
+    {
       "id": "2026-11-25-servidor-La-Navidad-llega-a-los-spawns",
       "fecha": "2026-11-25",
       "tipo": "servidor",
