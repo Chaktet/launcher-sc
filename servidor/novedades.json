@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-24-servidor-Mineria-llegas-al-tope-diario-en-la-mitad-de-tiempo",
+      "fecha": "2026-11-24",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Minería: llegas al tope diario en la mitad de tiempo",
+      "puntos": [
+        "El mercado, los contratos y las gemas de la minería pagan un 45 % más por lo que entregas.",
+        "El tope diario de dinero de la minería baja: 240.000, 480.000, 750.000 o 1.100.000 según tu nivel más alto, y cada prestigio suma 35.000 más.",
+        "Con los dos cambios, un buen minero llega al tope en unas 4 horas en lugar de 8.",
+        "Al llegar al tope sigues ganando el doble de Polvo de Mina y más experiencia, igual que antes."
+      ]
+    },
+    {
       "id": "2026-11-24-pack-SC-3.3.51",
       "fecha": "2026-11-24",
       "tipo": "pack",
