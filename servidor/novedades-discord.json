@@ -414,7 +414,16 @@
     "2026-11-23-servidor-Las-mentas-de-colores-ya-sirven-en-el-Builder",
     "2026-11-24-servidor-Tus-muebles-ya-no-se-rompen-de-un-golpe",
     "2026-11-24-servidor-Vuelve-a-la-eleccion-de-equipo-en-ranked",
-    "2026-11-24-servidor-Tus-premios-de-ranked-sin-cobrar-llegan-al-Buzon"
+    "2026-11-24-servidor-Tus-premios-de-ranked-sin-cobrar-llegan-al-Buzon",
+    "2026-11-24-servidor-El-Sumo-ya-funciona-con-Litematica",
+    "2026-11-24-servidor-Sumo-y-Quien-es-Quien-tambien-sin-apostar",
+    "2026-11-24-servidor-Mineria-llegas-al-tope-diario-en-la-mitad-de-tiempo",
+    "2026-11-24-pack-SC-3.3.51",
+    "2026-11-24-modpack-Cobblemon-1.8.4-en-el-launcher-y-en-el-movil",
+    "2026-11-24-servidor-Los-jefes-de-las-expediciones-ya-aguantan-de-verdad",
+    "2026-11-24-servidor-Los-muebles-que-salian-oscuros-ya-se-ven-bien",
+    "2026-11-24-servidor-Clasificacion-de-ranked-de-temporadas-anteriores",
+    "2026-11-24-servidor-Tus-Pokemon-ya-no-pierden-la-skin-al-evolucionar"
   ],
   "mensajes": [
     {
@@ -1207,6 +1216,21 @@
         "2026-11-24-servidor-Tus-muebles-ya-no-se-rompen-de-un-golpe",
         "2026-11-24-servidor-Vuelve-a-la-eleccion-de-equipo-en-ranked",
         "2026-11-24-servidor-Tus-premios-de-ranked-sin-cobrar-llegan-al-Buzon"
+      ]
+    },
+    {
+      "fecha": "2026-11-25",
+      "mensaje": "1574989406354280469",
+      "entradas": [
+        "2026-11-24-servidor-El-Sumo-ya-funciona-con-Litematica",
+        "2026-11-24-servidor-Sumo-y-Quien-es-Quien-tambien-sin-apostar",
+        "2026-11-24-servidor-Mineria-llegas-al-tope-diario-en-la-mitad-de-tiempo",
+        "2026-11-24-pack-SC-3.3.51",
+        "2026-11-24-modpack-Cobblemon-1.8.4-en-el-launcher-y-en-el-movil",
+        "2026-11-24-servidor-Los-jefes-de-las-expediciones-ya-aguantan-de-verdad",
+        "2026-11-24-servidor-Los-muebles-que-salian-oscuros-ya-se-ven-bien",
+        "2026-11-24-servidor-Clasificacion-de-ranked-de-temporadas-anteriores",
+        "2026-11-24-servidor-Tus-Pokemon-ya-no-pierden-la-skin-al-evolucionar"
       ]
     }
   ]
