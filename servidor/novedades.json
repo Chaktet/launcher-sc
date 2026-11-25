@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-25-servidor-La-mineria-estrena-pantallas-en-el-PokeNav",
+      "fecha": "2026-11-25",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "La minería estrena pantallas en el PokéNav",
+      "puntos": [
+        "El pico, la forja, los contratos, el mercado, tu progreso, los talentos, el museo, el ranking y la temporada de la minería se abren ahora en pantallas propias del PokéNav.",
+        "Antes de mejorar el pico, repararlo o ponerle una gema ves lo que cuesta y lo confirmas con un botón.",
+        "Para verlas, entra con el launcher: se actualiza solo al darle a JUGAR."
+      ]
+    },
+    {
       "id": "2026-11-25-servidor-Los-premios-del-PokeNav-estrenan-pantallas",
       "fecha": "2026-11-25",
       "tipo": "servidor",
