@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-24-servidor-Sumo-y-Quien-es-Quien-tambien-sin-apostar",
+      "fecha": "2026-11-24",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Sumo y Quién es Quién, también sin apostar",
+      "puntos": [
+        "La partida rápida de Sumo y Quién es Quién ya es gratis: entras en la cola y juegas sin apostar.",
+        "Al retar a alguien puedes elegir un duelo amistoso, sin apuesta.",
+        "Si prefieres apostar, el reto te pide confirmar la cantidad en el chat antes de cobrarte.",
+        "En Quién es Quién, pasar turno, rendirte o elegir tu Pokémon secreto desde el PokéNav se confirma en el chat, así un clic sin querer no cuenta."
+      ]
+    },
+    {
       "id": "2026-11-24-servidor-Mineria-llegas-al-tope-diario-en-la-mitad-de-tiempo",
       "fecha": "2026-11-24",
       "tipo": "servidor",
