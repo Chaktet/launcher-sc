@@ -2,6 +2,20 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-25-servidor-Los-premios-del-PokeNav-estrenan-pantallas",
+      "fecha": "2026-11-25",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Los premios del PokéNav estrenan pantallas",
+      "puntos": [
+        "Kits, recompensa diaria, agenda, suscripción, trayectoria y tiempo jugado se abren ahora en pantallas propias del PokéNav, con pestañas para saltar de una a otra.",
+        "El pase de batalla, los premios de la Pokédex, los referidos, el buzón, las PokéParadas y las llaves también tienen pantalla nueva.",
+        "Al abrir una llave ves pasar los premios de la caja y, al final, el que te ha tocado.",
+        "Si cambias de región justo mientras cobras un premio de la agenda, te llega solo al volver a entrar.",
+        "Para verlas, entra con el launcher: se actualiza solo al darle a JUGAR."
+      ]
+    },
+    {
       "id": "2026-11-25-servidor-Cambia-la-forma-regional-de-tu-Pokemon",
       "fecha": "2026-11-25",
       "tipo": "servidor",
