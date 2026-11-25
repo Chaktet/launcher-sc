@@ -423,7 +423,16 @@
     "2026-11-24-servidor-Los-jefes-de-las-expediciones-ya-aguantan-de-verdad",
     "2026-11-24-servidor-Los-muebles-que-salian-oscuros-ya-se-ven-bien",
     "2026-11-24-servidor-Clasificacion-de-ranked-de-temporadas-anteriores",
-    "2026-11-24-servidor-Tus-Pokemon-ya-no-pierden-la-skin-al-evolucionar"
+    "2026-11-24-servidor-Tus-Pokemon-ya-no-pierden-la-skin-al-evolucionar",
+    "2026-11-25-servidor-Pesca-puedes-vender-mucho-mas-cada-dia",
+    "2026-11-25-modpack-El-PC-y-la-ficha-vuelven-a-tener-su-diseno",
+    "2026-11-25-servidor-La-cesta-de-la-tienda-web-ya-no-da-errores-raros",
+    "2026-11-25-servidor-La-Navidad-llega-a-los-spawns",
+    "2026-11-25-servidor-Sin-transformaciones-dentro-de-los-minijuegos",
+    "2026-11-25-servidor-Mas-comida-en-la-tienda-shop",
+    "2026-11-25-servidor-La-mineria-estrena-pantallas-en-el-PokeNav",
+    "2026-11-25-servidor-Los-premios-del-PokeNav-estrenan-pantallas",
+    "2026-11-25-servidor-cambiaforma-te-dice-que-objeto-te-falta"
   ],
   "mensajes": [
     {
@@ -1231,6 +1240,21 @@
         "2026-11-24-servidor-Los-muebles-que-salian-oscuros-ya-se-ven-bien",
         "2026-11-24-servidor-Clasificacion-de-ranked-de-temporadas-anteriores",
         "2026-11-24-servidor-Tus-Pokemon-ya-no-pierden-la-skin-al-evolucionar"
+      ]
+    },
+    {
+      "fecha": "2026-11-25",
+      "mensaje": "1575172381440221347",
+      "entradas": [
+        "2026-11-25-servidor-Pesca-puedes-vender-mucho-mas-cada-dia",
+        "2026-11-25-modpack-El-PC-y-la-ficha-vuelven-a-tener-su-diseno",
+        "2026-11-25-servidor-La-cesta-de-la-tienda-web-ya-no-da-errores-raros",
+        "2026-11-25-servidor-La-Navidad-llega-a-los-spawns",
+        "2026-11-25-servidor-Sin-transformaciones-dentro-de-los-minijuegos",
+        "2026-11-25-servidor-Mas-comida-en-la-tienda-shop",
+        "2026-11-25-servidor-La-mineria-estrena-pantallas-en-el-PokeNav",
+        "2026-11-25-servidor-Los-premios-del-PokeNav-estrenan-pantallas",
+        "2026-11-25-servidor-cambiaforma-te-dice-que-objeto-te-falta"
       ]
     }
   ]
