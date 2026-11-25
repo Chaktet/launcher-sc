@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-25-servidor-Pesca-puedes-vender-mucho-mas-cada-dia",
+      "fecha": "2026-11-25",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Pesca: puedes vender mucho más cada día",
+      "puntos": [
+        "El máximo que puedes ganar al día vendiendo lo que pescas sube casi al doble"
+      ]
+    },
+    {
       "id": "2026-11-25-modpack-El-PC-y-la-ficha-vuelven-a-tener-su-diseno",
       "fecha": "2026-11-25",
       "tipo": "modpack",
