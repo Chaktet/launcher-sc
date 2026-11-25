@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-25-servidor-Mas-comida-en-la-tienda-shop",
+      "fecha": "2026-11-25",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Más comida en la tienda /shop",
+      "puntos": [
+        "La carne cruda (filete, cerdo, pollo, cordero y conejo) ya está en la sección Comida, al lado de la cocinada",
+        "Entran 15 cosas más en Comida: salmón crudo, pez globo, estofado de conejo, bayas dulces, panal, cubo con leche, huevos, bambú y más"
+      ]
+    },
+    {
       "id": "2026-11-25-servidor-cambiaforma-te-dice-que-objeto-te-falta",
       "fecha": "2026-11-25",
       "tipo": "servidor",
