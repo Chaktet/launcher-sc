@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-24-servidor-El-Sumo-ya-funciona-con-Litematica",
+      "fecha": "2026-11-24",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "El Sumo ya funciona con Litematica",
+      "puntos": [
+        "El arma del Sumo es ahora una vara de brisa y ya no choca con Litematica al golpear."
+      ]
+    },
+    {
       "id": "2026-11-24-servidor-Sumo-y-Quien-es-Quien-tambien-sin-apostar",
       "fecha": "2026-11-24",
       "tipo": "servidor",
