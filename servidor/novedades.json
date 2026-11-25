@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-25-servidor-Cambia-la-forma-regional-de-tu-Pokemon",
+      "fecha": "2026-11-25",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Cambia la forma regional de tu Pokémon",
+      "puntos": [
+        "En el PokéBuilder (/cobblebuilder) tu Pokémon ya puede pasar de su forma normal a la de Alola, Galar, Hisui o Paldea, y también volver a la normal.",
+        "Elige al Pokémon y pulsa el botón de Forma regional: el cambio entra en el carrito y se paga con Tokens. Los VIP tienen descuento.",
+        "Antes de pagar ves lo que cambia: el tipo, la habilidad y los movimientos que olvida si con la forma nueva no puede aprenderlos.",
+        "Su skin se queda. Si con la forma nueva no puede llevarla, el cambio no se hace y no se te cobra nada."
+      ]
+    },
+    {
       "id": "2026-11-24-servidor-El-Sumo-ya-funciona-con-Litematica",
       "fecha": "2026-11-24",
       "tipo": "servidor",
