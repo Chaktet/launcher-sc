@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-25-servidor-Sin-transformaciones-dentro-de-los-minijuegos",
+      "fecha": "2026-11-25",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Sin transformaciones dentro de los minijuegos",
+      "puntos": [
+        "Quien entraba transformado a la Ditto Party se veía a la vez como persona y como Pokémon",
+        "Al entrar en Ditto Party, Escondite, Royale, Arena o Sumo vuelves a tu forma humana, y dentro no se puede usar /pokemorph",
+        "El disfraz del Escondite y del Sumo ya no se pierde por una transformación"
+      ]
+    },
+    {
       "id": "2026-11-25-servidor-Mas-comida-en-la-tienda-shop",
       "fecha": "2026-11-25",
       "tipo": "servidor",
