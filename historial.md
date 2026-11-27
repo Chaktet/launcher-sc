@@ -166,7 +166,8 @@
 - Causa probable de «a veces»: `options.txt` solo se pone en instalaciones nuevas (nunca se sobrescribe), así que quien ya
   tenía el juego conserva el mapa de Xaero en M (su valor por defecto) y la M abre el mapa; o pulsan M en el Lobby (sin
   Cobblemon) o con el chat abierto. Móvil sin mirar.
-- Cierre: queda abierta — Felix decide si se añade una salida que no dependa de la tecla (comando o botón de inicial).
+- Felix: «Sí, añádela» → plugin SCInicial (`/inicial`), ver `SCInicial/historial.md`.
+- Cierre: cerrada
 
 ## 2026-11-17 noche (hora RD) · 1.17.24 preparada: antivirus, candados en vez de PowerShell/tasklist/taskkill
 - Felix: Defender y otros antivirus siguen marcando el instalador aunque está firmado; «hemos hecho algo mal».
