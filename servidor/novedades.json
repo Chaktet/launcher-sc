@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-27-servidor-Torre-los-Pokemon-prestados-ya-no-se-quedan-a-nivel-1",
+      "fecha": "2026-11-27",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Torre: los Pokémon prestados ya no se quedan a nivel 1",
+      "puntos": [
+        "Al hacer un cambio con la reserva, el Pokémon prestado podía quedarse a nivel 1 en vez de a nivel 50.",
+        "Entra a nivel 50, como debe. Si te vuelve a pasar, avísanos por ticket."
+      ]
+    },
+    {
       "id": "2026-11-27-servidor-Los-cebos-de-la-cana-ya-se-quitan-bien",
       "fecha": "2026-11-27",
       "tipo": "servidor",
