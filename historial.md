@@ -3,7 +3,7 @@
 ## Estado actual
 - **1.17.25 publicada para Windows, Mac y Linux (27-11 ~16:15 hora RD, Felix: «Sí, sácala ya»): apaga una vez el
   narrador a las instalaciones existentes.** Las nuevas ya traen `narrator:0`, `onboardAccessibility:false` y
-  `guiScale:3` desde la distribución. Estables siguen congelados en la 1.17.24. Novedad para jugadores sin publicar.
+  `guiScale:3` desde la distribución. Estables siguen congelados en la 1.17.24. Sin novedad (Felix 27-11).
 - **1.17.24 publicada para Windows, Mac y Linux (17-11 ~22:00 hora RD, Felix: «Publícala ya»): fuera PowerShell/WMI,
   `tasklist` y `taskkill`.** Release v1.17.24 con 19 ficheros (CI run 44212669145 en verde), aviso de launcher viejo
   puesto, las cuatro fichas `latest*.yml`/`catalina-mac.yml` dicen 1.17.24 y sha512 = build. **Estables de la web
@@ -175,7 +175,7 @@
 - Publicado como 1.17.25 (Felix: «Sí, sácala ya»): firmada (`comprueba-publisher` ok, parche dentro del app.asar), CI
   46060342410 en verde, release con 19 ficheros + aviso de launcher viejo; las 4 fichas `latest*.yml`/`catalina-mac.yml`
   dicen 1.17.25; `SC-Launcher-setup-1.17.25.exe` en OVH-A con sha512 = build por Cloudflare. Estables sin tocar.
-- Sin probar en una partida real. El móvil no se tocó. Novedad del launcher: pendiente del OK de Felix.
+- Sin probar en una partida real. El móvil no se tocó. Sin novedad (Felix 27-11).
 - Cierre: cerrada
 
 ## 2026-11-27 · Tecla M para elegir inicial «a veces no va» (diagnóstico)
