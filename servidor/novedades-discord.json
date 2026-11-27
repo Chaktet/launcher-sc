@@ -432,7 +432,13 @@
     "2026-11-25-servidor-Mas-comida-en-la-tienda-shop",
     "2026-11-25-servidor-La-mineria-estrena-pantallas-en-el-PokeNav",
     "2026-11-25-servidor-Los-premios-del-PokeNav-estrenan-pantallas",
-    "2026-11-25-servidor-cambiaforma-te-dice-que-objeto-te-falta"
+    "2026-11-25-servidor-cambiaforma-te-dice-que-objeto-te-falta",
+    "2026-11-24-servidor-Tus-objetos-ya-no-se-gastan-en-los-gimnasios",
+    "2026-11-24-servidor-Nuevas-normas-en-Ranked-dobles",
+    "2026-11-25-servidor-Expediciones-mas-justas-si-vas-solo-o-con-pocos",
+    "2026-11-25-servidor-En-ranked-nadie-puede-atacarte-ni-pierdes-objetos",
+    "2026-11-25-servidor-Cambia-la-forma-regional-de-tu-Pokemon",
+    "2026-11-26-modpack-Recuperar-la-cuenta-con-verificacion-en-dos-pasos"
   ],
   "mensajes": [
     {
@@ -1255,6 +1261,18 @@
         "2026-11-25-servidor-La-mineria-estrena-pantallas-en-el-PokeNav",
         "2026-11-25-servidor-Los-premios-del-PokeNav-estrenan-pantallas",
         "2026-11-25-servidor-cambiaforma-te-dice-que-objeto-te-falta"
+      ]
+    },
+    {
+      "fecha": "2026-11-27",
+      "mensaje": "1575698475549466716",
+      "entradas": [
+        "2026-11-24-servidor-Tus-objetos-ya-no-se-gastan-en-los-gimnasios",
+        "2026-11-24-servidor-Nuevas-normas-en-Ranked-dobles",
+        "2026-11-25-servidor-Expediciones-mas-justas-si-vas-solo-o-con-pocos",
+        "2026-11-25-servidor-En-ranked-nadie-puede-atacarte-ni-pierdes-objetos",
+        "2026-11-25-servidor-Cambia-la-forma-regional-de-tu-Pokemon",
+        "2026-11-26-modpack-Recuperar-la-cuenta-con-verificacion-en-dos-pasos"
       ]
     }
   ]
