@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-27-servidor-Quita-o-cambia-tu-mismo-el-Discord-vinculado",
+      "fecha": "2026-11-27",
+      "tipo": "servidor",
+      "clase": "nuevo",
+      "titulo": "Quita o cambia tú mismo el Discord vinculado",
+      "puntos": [
+        "Con /vincular discord quitar desvinculas el Discord de tu cuenta sin pedírselo al staff.",
+        "Si no eres premium, escribe tu contraseña detrás del comando. Los premium no la necesitan.",
+        "Para cambiar de Discord, quita el viejo y vincula el nuevo con /vincular discord."
+      ]
+    },
+    {
       "id": "2026-11-27-servidor-El-PokeBuilder-ensena-tu-Pokemon-con-su-skin",
       "fecha": "2026-11-27",
       "tipo": "servidor",
