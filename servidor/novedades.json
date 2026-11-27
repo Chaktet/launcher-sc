@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-27-servidor-El-PokeBuilder-ensena-tu-Pokemon-con-su-skin",
+      "fecha": "2026-11-27",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "El PokéBuilder enseña tu Pokémon con su skin",
+      "puntos": [
+        "La vista previa del PokéBuilder mostraba el Pokémon sin skin, sobre todo con Ditto.",
+        "Ya sale con la skin que lleva puesta."
+      ]
+    },
+    {
       "id": "2026-11-27-servidor-La-fusion-de-Ditto-ya-funciona-en-el-PokeNav-nuevo",
       "fecha": "2026-11-27",
       "tipo": "servidor",
