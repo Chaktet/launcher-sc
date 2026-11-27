@@ -120,6 +120,17 @@
       ]
     },
     {
+      "id": "2026-11-24-servidor-Tus-objetos-ya-no-se-gastan-en-los-gimnasios",
+      "fecha": "2026-11-24",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Tus objetos ya no se gastan en los gimnasios",
+      "puntos": [
+        "Las bayas, bandas, semillas y demás objetos que lleva tu Pokémon siguen ahí al acabar un combate de gimnasio, ganes o pierdas.",
+        "Si un movimiento como Truco le cambia el objeto durante el combate, al terminar vuelve a tener el suyo."
+      ]
+    },
+    {
       "id": "2026-11-24-servidor-Nuevas-normas-en-Ranked-dobles",
       "fecha": "2026-11-24",
       "tipo": "servidor",
