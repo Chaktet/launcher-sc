@@ -157,6 +157,17 @@
   «diseño-pruebas» (mensaje 1564857375410757703). **Publicada en el launcher el 28-10 15:55 UTC** con la de las
   misiones de escanear (OK de Felix: launcher sí, Discord no). El modpack móvil SC-Movil no lo lleva.
 
+
+## 2026-11-27 · Tecla M para elegir inicial «a veces no va» (diagnóstico)
+- Pedido: jugadores nuevos dicen que la M del launcher a veces no abre la elección de inicial.
+- Visto: en vivo los 3 perfiles (PRO, LITE, SUPER LITE) traen `cobblemon.summary`=M y el mapa de Xaero en N; ninguna otra
+  tecla en M. En Kanto dos nuevos eligieron inicial hoy por la pantalla de Cobblemon (POKE-LIBRO causa=inicial, 12:09 y
+  12:24 UTC). Servidor y launcher bien.
+- Causa probable de «a veces»: `options.txt` solo se pone en instalaciones nuevas (nunca se sobrescribe), así que quien ya
+  tenía el juego conserva el mapa de Xaero en M (su valor por defecto) y la M abre el mapa; o pulsan M en el Lobby (sin
+  Cobblemon) o con el chat abierto. Móvil sin mirar.
+- Cierre: queda abierta — Felix decide si se añade una salida que no dependa de la tecla (comando o botón de inicial).
+
 ## 2026-11-17 noche (hora RD) · 1.17.24 preparada: antivirus, candados en vez de PowerShell/tasklist/taskkill
 - Felix: Defender y otros antivirus siguen marcando el instalador aunque está firmado; «hemos hecho algo mal».
 - Medido: VirusTotal 0/68 en la 1.17.22 (la que sirve el enlace estable) y 0/67 en la 1.17.15; Defender local limpio
