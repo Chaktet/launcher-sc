@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-27-servidor-Los-NPC-de-EVs-vuelven-a-dejarte-combatir",
+      "fecha": "2026-11-27",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Los NPC de EVs vuelven a dejarte combatir",
+      "puntos": [
+        "Los NPC de EVs de PS, Ataque y Defensa se quedaban en «Límite de combates alcanzado» para siempre. Su límite se reinicia cada día, como en los otros NPC de EVs.",
+        "Si estabas bloqueado en alguno de esos tres, ya puedes volver a combatir.",
+        "Los NPC de nivel 60 y 80 solo dejaban un combate al día. Pasan a 10 al día, como los de los demás niveles.",
+        "En la sala de EVs se ven todos los NPC; antes siempre faltaba uno."
+      ]
+    },
+    {
       "id": "2026-11-27-servidor-Quita-o-cambia-tu-mismo-el-Discord-vinculado",
       "fecha": "2026-11-27",
       "tipo": "servidor",
