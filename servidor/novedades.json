@@ -120,6 +120,21 @@
       ]
     },
     {
+      "id": "2026-11-24-servidor-Nuevas-normas-en-Ranked-dobles",
+      "fecha": "2026-11-24",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Nuevas normas en Ranked dobles",
+      "puntos": [
+        "Solo un Pokémon restringido por equipo, en cualquier forma: Mewtwo, Kyogre, Groudon, Rayquaza, Zacian, Calyrex, Koraidon, Miraidon, Terapagos y los demás. Si llevas dos, la cola te dice cuáles.",
+        "Ningún singular puede jugar: Mew, Celebi, Jirachi, Deoxys, Manaphy, Darkrai, Arceus, Keldeo, Zeraora, Pecharunt y los demás.",
+        "Movimientos prohibidos: Fisura, Guillotina, Frío Polar, Perforador, Doble Equipo, Reducción, Relevo, Acupresión y Aligerar.",
+        "Habilidades prohibidas: Velo Arena, Manto Níveo, Unísono, Agrupamiento, General Supremo, Tumbos y Fuerte Afecto.",
+        "Tampoco se pueden llevar Polvo Brillo, Cinta Focus, Roca del Rey, Garra Rápida ni las megapiedras de Mewtwo, Zygarde, Zeraora, Magearna, Heatran, Darkrai, Golurk y Tatsugiri.",
+        "Megaevolución y teracristalización sí; movimientos Z y dinamax, no. Individuales no cambia."
+      ]
+    },
+    {
       "id": "2026-11-24-servidor-El-Sumo-ya-funciona-con-Litematica",
       "fecha": "2026-11-24",
       "tipo": "servidor",
