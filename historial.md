@@ -1,6 +1,9 @@
 # SC Launcher · historial
 
 ## Estado actual
+- **1.17.26 publicada para Windows, Mac y Linux (27-11 ~17:55 hora RD): «Regiones en línea» al día.** Pide
+  estado.json ~6 s después de cada escritura del servidor, también con el juego abierto si la ventana tiene el foco, y
+  al volver a ella. Estables siguen en la 1.17.24. Novedad para jugadores: pendiente del OK de Felix.
 - **1.17.25 publicada para Windows, Mac y Linux (27-11 ~16:15 hora RD, Felix: «Sí, sácala ya»): apaga una vez el
   narrador a las instalaciones existentes.** Las nuevas ya traen `narrator:0`, `onboardAccessibility:false` y
   `guiScale:3` desde la distribución. Estables siguen congelados en la 1.17.24. Sin novedad (Felix 27-11).
@@ -160,6 +163,19 @@
   «diseño-pruebas» (mensaje 1564857375410757703). **Publicada en el launcher el 28-10 15:55 UTC** con la de las
   misiones de escanear (OK de Felix: launcher sí, Discord no). El modpack móvil SC-Movil no lo lleva.
 
+
+## 2026-11-27 ~17:55 (hora RD) · Jugadores en línea que no se actualizan (1.17.26)
+- Pedido (Felix, captura): «Regiones en línea» no se actualiza sola.
+- Causa: el servidor escribe estado.json cada minuto (segundo :01) y está bien. El launcher (a) no lo pedía nunca con
+  el juego abierto, justo cuando el jugador mira el launcher, y (b) lo pedía cada 60 s desde que se abría, sin
+  coordinarse con el servidor: hasta 2 min de retraso.
+- Arreglo (`eventos.js`): pide ~6 s después de cada escritura (`scEsperaHastaEstado`, entre 10 y 60 s); con el juego
+  abierto solo si la ventana tiene el foco; y en `focus` si la última petición tiene más de 15 s.
+- Verificado con un launcher aislado por CDP: sin juego, peticiones a las :07 de cada minuto; juego simulado sin foco,
+  0 peticiones en 130 s; al volver el foco, petición al momento con los datos del mismo minuto. Release v1.17.26
+  firmada (publisher ok, arreglo en el app.asar), CI 46071289869 en verde, 19 ficheros, aviso puesto, 4 fichas =
+  1.17.26, exe versionado en OVH-A con sha512 = build por Cloudflare.
+- Cierre: queda abierta — novedad para jugadores pendiente del OK de Felix.
 
 ## 2026-11-27 ~16:00 (hora RD) · Narrador encendido en la primera partida e interfaz demasiado grande
 - Pedido (Felix): el narrador se enciende solo la primera vez y no hay forma de apagarlo; la interfaz de Minecraft sale muy grande.
