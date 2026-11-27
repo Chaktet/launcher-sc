@@ -488,14 +488,50 @@ function scPintarTodo(){
     }
 }
 
-scRefrescarEstado()
-setInterval(() => {
-    // Same rule as the ping: nothing while the game is running.
-    if(scJugando()){
-        return
+/*
+ * Cuándo se pide estado.json (Felix 27-11: «los jugadores online no se actualizan»).
+ * - El servidor lo reescribe en el segundo :01 de cada minuto. Pedirlo cada 60 s desde que se abrió el launcher
+ *   dejaba los números hasta 2 min por detrás; ahora se pide unos segundos después de cada escritura.
+ * - Con el juego abierto no se pedía nunca, y es justo cuando el jugador abre el launcher para mirar quién hay.
+ *   Ahora se pide si la ventana tiene el foco (son ~2 KB: no compite con el juego), y al volver a ella.
+ */
+const SC_ESTADO_TRAS_ESCRITURA = 6000
+let scUltimaPeticion = 0
+
+function scPedirEstado(){
+    scUltimaPeticion = Date.now()
+    return scRefrescarEstado()
+}
+
+/** Ms hasta unos segundos después de la próxima escritura del servidor (entre 10 y 60 s, por si el reloj del PC va mal). */
+function scEsperaHastaEstado(){
+    const base = scEstado != null && Number.isFinite(scEstado.actualizado) ? scEstado.actualizado : null
+    if(base == null){
+        return 60000
     }
-    scRefrescarEstado()
-}, 60000)
+    const falta = (60000 - ((Date.now() - base - SC_ESTADO_TRAS_ESCRITURA) % 60000 + 60000) % 60000)
+    return Math.min(60000, Math.max(10000, falta))
+}
+
+function scProgramarEstado(){
+    setTimeout(async () => {
+        try {
+            if(!scJugando() || document.hasFocus()){
+                await scPedirEstado()
+            }
+        } finally {
+            scProgramarEstado()
+        }
+    }, scEsperaHastaEstado())
+}
+
+window.addEventListener('focus', () => {
+    if(Date.now() - scUltimaPeticion > 15000){
+        scPedirEstado()
+    }
+})
+
+scPedirEstado().finally(scProgramarEstado)
 // The countdown moves between fetches (and a stale state hides itself).
 setInterval(() => {
     if(scJugando()){
