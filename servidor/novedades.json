@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-27-servidor-Los-cebos-de-la-cana-ya-se-quitan-bien",
+      "fecha": "2026-11-27",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Los cebos de la caña ya se quitan bien",
+      "puntos": [
+        "Los cebos que se quedaban atascados en la caña ya salen al quitarlos.",
+        "Con el inventario lleno, el cebo se queda en la caña en vez de perderse.",
+        "Un cebo a medio usar guarda los usos que le quedaban cuando lo quitas; lo ves en «Usos restantes»."
+      ]
+    },
+    {
       "id": "2026-11-27-servidor-Royale-recuperas-tus-cosas-aunque-vuelvas-a-otro-sitio",
       "fecha": "2026-11-27",
       "tipo": "servidor",
