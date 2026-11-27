@@ -3,7 +3,7 @@
 ## Estado actual
 - **1.17.26 publicada para Windows, Mac y Linux (27-11 ~17:55 hora RD): «Regiones en línea» al día.** Pide
   estado.json ~6 s después de cada escritura del servidor, también con el juego abierto si la ventana tiene el foco, y
-  al volver a ella. Estables siguen en la 1.17.24. Novedad para jugadores: pendiente del OK de Felix.
+  al volver a ella. Estables siguen en la 1.17.24. Sin novedad (Felix 27-11).
 - **1.17.25 publicada para Windows, Mac y Linux (27-11 ~16:15 hora RD, Felix: «Sí, sácala ya»): apaga una vez el
   narrador a las instalaciones existentes.** Las nuevas ya traen `narrator:0`, `onboardAccessibility:false` y
   `guiScale:3` desde la distribución. Estables siguen congelados en la 1.17.24. Sin novedad (Felix 27-11).
@@ -175,7 +175,8 @@
   0 peticiones en 130 s; al volver el foco, petición al momento con los datos del mismo minuto. Release v1.17.26
   firmada (publisher ok, arreglo en el app.asar), CI 46071289869 en verde, 19 ficheros, aviso puesto, 4 fichas =
   1.17.26, exe versionado en OVH-A con sha512 = build por Cloudflare.
-- Cierre: queda abierta — novedad para jugadores pendiente del OK de Felix.
+- Sin novedad (Felix 27-11).
+- Cierre: cerrada
 
 ## 2026-11-27 ~16:00 (hora RD) · Narrador encendido en la primera partida e interfaz demasiado grande
 - Pedido (Felix): el narrador se enciende solo la primera vez y no hay forma de apagarlo; la interfaz de Minecraft sale muy grande.
