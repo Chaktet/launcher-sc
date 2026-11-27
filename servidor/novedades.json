@@ -2,6 +2,16 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-26-modpack-Recuperar-la-cuenta-con-verificacion-en-dos-pasos",
+      "fecha": "2026-11-26",
+      "tipo": "modpack",
+      "clase": "cambio",
+      "titulo": "Recuperar la cuenta con verificación en dos pasos",
+      "puntos": [
+        "Si tienes la verificación en dos pasos, al recuperar la contraseña desde la pantalla de entrada ya puedes escribir el código de tu app ahí mismo, sin pasar por el chat."
+      ]
+    },
+    {
       "id": "2026-11-25-servidor-Expediciones-mas-justas-si-vas-solo-o-con-pocos",
       "fecha": "2026-11-25",
       "tipo": "servidor",
