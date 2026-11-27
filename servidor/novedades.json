@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-25-servidor-En-ranked-nadie-puede-atacarte-ni-pierdes-objetos",
+      "fecha": "2026-11-25",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "En ranked nadie puede atacarte ni pierdes objetos",
+      "puntos": [
+        "Desde que entras en la cola hasta que acaba la partida, ningún jugador puede pegarte ni tú a él, aunque tengáis el PvP activado. Vale también para flechas y mascotas.",
+        "Mientras estás en ranked no puedes tirar nada al suelo: lo que intentes soltar se queda en tu inventario.",
+        "Si un premio de ranked no te cabe en el inventario, lo que sobra va a tu Buzón. Si te desconectas antes de cobrar el premio de la partida, también te espera allí."
+      ]
+    },
+    {
       "id": "2026-11-25-servidor-Pesca-puedes-vender-mucho-mas-cada-dia",
       "fecha": "2026-11-25",
       "tipo": "servidor",
