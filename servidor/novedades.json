@@ -2,6 +2,19 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-25-servidor-Expediciones-mas-justas-si-vas-solo-o-con-pocos",
+      "fecha": "2026-11-25",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Expediciones más justas si vas solo o con pocos",
+      "puntos": [
+        "Si entras solo, los Pokémon de las oleadas, el minijefe y el jefe tienen la mitad de vida.",
+        "Con dos jugadores tienen el 65 % de su vida, con tres el 80 % y con cuatro el 90 %. De cinco en adelante, la de siempre.",
+        "Cuenta el grupo que entra al empezar: si alguien se va a mitad de la expedición, la vida no vuelve a subir.",
+        "En grado Extrema salen menos alfas, y los que salen tienen menos vida y pegan menos."
+      ]
+    },
+    {
       "id": "2026-11-25-servidor-En-ranked-nadie-puede-atacarte-ni-pierdes-objetos",
       "fecha": "2026-11-25",
       "tipo": "servidor",
