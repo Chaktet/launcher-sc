@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-27-servidor-Las-MT-cuestan-la-tercera-parte",
+      "fecha": "2026-11-27",
+      "tipo": "servidor",
+      "clase": "cambio",
+      "titulo": "Las MT cuestan la tercera parte",
+      "puntos": [
+        "Todas las MT de la tienda bajan a un tercio de su precio, en SCC y en Pokédólares.",
+        "Común: 11 SCC o 6.700 ₽. Buena: 25 SCC o 15.000 ₽. Competitiva: 50 SCC o 30.000 ₽."
+      ]
+    },
+    {
       "id": "2026-11-26-modpack-Recuperar-la-cuenta-con-verificacion-en-dos-pasos",
       "fecha": "2026-11-26",
       "tipo": "modpack",
