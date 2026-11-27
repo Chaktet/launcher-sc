@@ -143,7 +143,9 @@ actualización le borraría al jugador sus ajustes de vídeo, sus teclas y sus p
 
 La consecuencia es que **cambiar `options.txt` en la distribución solo afecta a instalaciones
 nuevas**. Para arreglar a los jugadores que ya existen hay que parchear desde el launcher — es
-exactamente lo que hacen `scCorregirTeclasEnConflicto()` y `sc$activarPacksOficialesNuevos()`,
+exactamente lo que hacen `scCorregirTeclasEnConflicto()`, `scApagarNarradorUnaVez()` (27-11: el narrador que encendía la
+pantalla de accesibilidad de la primera partida; desde ese día el options.txt lleva `narrator:0`,
+`onboardAccessibility:false` y `guiScale:3`) y `sc$activarPacksOficialesNuevos()`,
 explicados en [PAQUETES-Y-SHADERS.md](PAQUETES-Y-SHADERS.md).
 
 ### Checklist para tocar el modpack

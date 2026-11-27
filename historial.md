@@ -1,6 +1,8 @@
 # SC Launcher · historial
 
 ## Estado actual
+- **Narrador apagado e interfaz a 3 para instalaciones nuevas (27-11, en vivo).** Para las existentes,
+  `scApagarNarradorUnaVez()` está en master SIN publicar: sale con la próxima versión firmada del launcher.
 - **1.17.24 publicada para Windows, Mac y Linux (17-11 ~22:00 hora RD, Felix: «Publícala ya»): fuera PowerShell/WMI,
   `tasklist` y `taskkill`.** Release v1.17.24 con 19 ficheros (CI run 44212669145 en verde), aviso de launcher viejo
   puesto, las cuatro fichas `latest*.yml`/`catalina-mac.yml` dicen 1.17.24 y sha512 = build. **Estables de la web
@@ -157,6 +159,20 @@
   «diseño-pruebas» (mensaje 1564857375410757703). **Publicada en el launcher el 28-10 15:55 UTC** con la de las
   misiones de escanear (OK de Felix: launcher sí, Discord no). El modpack móvil SC-Movil no lo lleva.
 
+
+## 2026-11-27 ~16:00 (hora RD) · Narrador encendido en la primera partida e interfaz demasiado grande
+- Pedido (Felix): el narrador se enciende solo la primera vez y no hay forma de apagarlo; la interfaz de Minecraft sale muy grande.
+- Causa: el `options.txt` de la distribución no llevaba `narrator:0` ni `onboardAccessibility:false` (la pantalla de
+  accesibilidad de la primera partida enciende el narrador) y traía `guiScale:4`.
+- Hecho: los tres perfiles (PRO, LITE, SUPER LITE) llevan `narrator:0`, `onboardAccessibility:false` y `guiScale:3`.
+  Subidos a `/var/www/packs/launcher/servers/*/files/options.txt` y `distribution.json` parcheado en vivo (solo size y
+  `?v=` de esas 3 entradas; copias `*.bak-narrador-20261127`). Comprobado por Cloudflare: 3/3 tamaño = manifiesto,
+  `?v=` = MD5, y las tres claves dentro. Copia local de `sc-distribution/distribution.json` = viva.
+- Jugadores existentes (Felix eligió): `scApagarNarradorUnaVez()` en landing.js pone `narrator:0` una vez (marcador
+  `.sc-narrador-auto`). Probado con un arnés (CRLF, marcador, sin options.txt) y eslint limpio. La interfaz de los
+  existentes no se toca (Felix: solo nuevos).
+- Pendiente: el parche sale con la próxima versión firmada del launcher (SimplySign de Felix). El móvil no se tocó.
+- Cierre: queda abierta — parche del narrador sin publicar hasta la próxima release del launcher (Claude, con Felix para firmar).
 
 ## 2026-11-27 · Tecla M para elegir inicial «a veces no va» (diagnóstico)
 - Pedido: jugadores nuevos dicen que la M del launcher a veces no abre la elección de inicial.

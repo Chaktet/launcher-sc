@@ -2935,6 +2935,41 @@ function scCorregirTeclasEnConflicto(){
 }
 
 /**
+ * Apaga el narrador una única vez en instalaciones que ya existen (Felix 27-11).
+ *
+ * Hasta el 27-11 el options.txt de la distribución no llevaba narrator:0 ni
+ * onboardAccessibility:false: la primera partida abría la pantalla de
+ * accesibilidad de Minecraft, que enciende el narrador, y nuestros menús de
+ * FancyMenu no tienen su botón, así que muchos se quedaron con él para siempre.
+ * Las instalaciones nuevas ya vienen bien de la distribución. El marcador hace
+ * que, si el jugador lo vuelve a encender él (Ctrl+B), se le respete.
+ */
+function scApagarNarradorUnaVez(){
+    const nodeFs = require('fs')
+    const nodePath = require('path')
+    try {
+        const dir = nodePath.join(ConfigManager.getInstanceDirectory(), ConfigManager.getSelectedServer() || '')
+        const ruta = nodePath.join(dir, 'options.txt')
+        const marcador = nodePath.join(dir, '.sc-narrador-auto')
+        if(!nodeFs.existsSync(ruta) || nodeFs.existsSync(marcador)){
+            return
+        }
+        const raw = nodeFs.readFileSync(ruta, 'utf8')
+        const eol = raw.includes('\r\n') ? '\r\n' : '\n'
+        const lineas = raw.split(/\r?\n/)
+        const i = lineas.findIndex(l => l.startsWith('narrator:'))
+        if(i >= 0 && lineas[i].slice('narrator:'.length).trim() !== '0'){
+            lineas[i] = 'narrator:0'
+            nodeFs.writeFileSync(ruta, lineas.join(eol))
+            loggerLanding.info('Narrador apagado (una sola vez)')
+        }
+        nodeFs.writeFileSync(marcador, '1')
+    } catch(e){
+        loggerLanding.warn('No se pudo apagar el narrador', e)
+    }
+}
+
+/**
  * Comprobaciones previas al arranque. Detectan las causas más habituales antes
  * de que el juego falle con un error incomprensible.
  *
@@ -4271,6 +4306,7 @@ async function scDlAsyncInterno(login = true) {
             // La opción del launcher manda sobre lo que el juego tenga guardado.
             scAplicarPantallaCompleta()
             scCorregirTeclasEnConflicto()
+            scApagarNarradorUnaVez()
             scActivarPacksInternosDeMods()
             sc$quitarPacksScViejos()
             sc$asegurarPackOficial()
