@@ -2,6 +2,17 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-27-servidor-Royale-recuperas-tus-cosas-aunque-vuelvas-a-otro-sitio",
+      "fecha": "2026-11-27",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "Royale: recuperas tus cosas aunque vuelvas a otro sitio",
+      "puntos": [
+        "Al salir de una partida, si tu sitio de vuelta no era seguro (un túnel de mina, por ejemplo), te subía a la superficie y tus cosas no te llegaban.",
+        "Las recibes allí mismo, y también cuando te manda al spawn porque ese sitio ya no tiene suelo seguro o el mundo de recursos se renovó."
+      ]
+    },
+    {
       "id": "2026-11-27-servidor-Los-NPC-de-EVs-vuelven-a-dejarte-combatir",
       "fecha": "2026-11-27",
       "tipo": "servidor",
