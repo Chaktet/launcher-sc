@@ -2,6 +2,18 @@
   "version": 1,
   "entradas": [
     {
+      "id": "2026-11-27-servidor-La-fusion-de-Ditto-ya-funciona-en-el-PokeNav-nuevo",
+      "fecha": "2026-11-27",
+      "tipo": "servidor",
+      "clase": "arreglo",
+      "titulo": "La fusión de Ditto ya funciona en el PokéNav nuevo",
+      "puntos": [
+        "En el PokéBuilder del PokéNav nuevo, el botón «Fusión» de la ficha del Ditto no hacía nada.",
+        "Ahora abre la fusión: eliges el Ditto 6x31 que entregas, ves sus IVs y pulsas «Fusionar».",
+        "Si el juego no te deja fusionar en ese momento, la pantalla te dice por qué; toca otra vez el Ditto para volver a intentarlo."
+      ]
+    },
+    {
       "id": "2026-11-27-servidor-Las-MT-cuestan-la-tercera-parte",
       "fecha": "2026-11-27",
       "tipo": "servidor",
